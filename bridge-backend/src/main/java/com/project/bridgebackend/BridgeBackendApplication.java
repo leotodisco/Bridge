@@ -7,8 +7,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class BridgeBackendApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(BridgeBackendApplication.class, args);
         System.out.println("ciao");
+        SpringApplication.run(BridgeBackendApplication.class, args);
     }
 
 }
