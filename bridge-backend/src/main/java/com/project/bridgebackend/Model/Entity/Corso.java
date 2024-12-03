@@ -1,5 +1,6 @@
 package com.project.bridgebackend.Model.Entity;
 
+import com.project.bridgebackend.Model.Entity.enumeration.Lingua;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -21,7 +22,7 @@ import java.io.Serializable;
 @Getter
 @Setter
 @Table(name = "inserimento_corso")
-public class InserimentoCorso implements Serializable {
+public class Corso implements Serializable {
 
     /**
      * L'ID viene generato automaticamente. È un valore univoco per ogni corso.
