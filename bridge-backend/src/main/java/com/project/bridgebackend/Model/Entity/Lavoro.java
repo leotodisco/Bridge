@@ -21,38 +21,66 @@ import com.project.bridgebackend.Model.Entity.enumeration.*;
 @Table(name = "lavoro")
 public class Lavoro extends Annuncio {
 
+    /**
+     * La posizione lavorativa richiesta nell'annuncio.
+     */
     @Column(name = "posizione_lavorativa", nullable = false, length = 100)
     @NotBlank(message = "La posizione lavorativa è obbligatoria")
-    @Size(max = 100, message = "La posizione lavorativa non può superare i 100 caratteri")
+    @Pattern(regexp = "^[A-zÀ-ù ‘]{2,100}$", message = "Formato posizione lavorativa non valido ")
+    @Size(max = 100, message = "La posizione lavorativa non può superare i 100 caratteri ")
     private String posizioneLavorativa;
 
+    /**
+     * Il nome dell'azienda che offre il lavoro.
+     */
     @Column(name = "nome_azienda", nullable = false, length = 100)
     @NotBlank(message = "Il nome dell'azienda è obbligatorio")
-    @Size(max = 100, message = "Il nome dell'azienda non può superare i 100 caratteri")
+    @Pattern(regexp = "^[A-zÀ-ù0-9 ‘]{2,100}$", message = "Formato nome azienda non valido ")
+    @Size(max = 100, message = "Il nome dell'azienda non può superare i 100 caratteri ")
     private String nomeAzienda;
 
+    /**
+     * L'orario di lavoro specificato nell'annuncio (ad esempio, 09:00-17:00).
+     */
     @Column(name = "orario_lavoro", nullable = false, length = 50)
     @NotBlank(message = "L'orario di lavoro è obbligatorio")
-    @Size(max = 50, message = "L'orario di lavoro non può superare i 50 caratteri")
+    @Pattern(regexp = "^\\d{2}:\\d{2}-d{2}:\\d{2}$", message = "Formato orario di lavoro non valido ")
     private String orarioLavoro;
 
+    /**
+     * Il tipo di contratto offerto.
+     */
     @Enumerated(EnumType.STRING)
     @Column(name = "tipo_contratto", nullable = false, length = 50)
     @NotNull(message = "Il tipo di contratto è obbligatorio")
+    @Pattern(regexp = "^[A-zÀ-ù0-9 ‘]{2,50}$", message = "Formato tipo di contratto non valido ")
+    @Size(max = 50, message = "Il tipo di contratto non può superare i 50 caratteri ")
     private TipoContratto tipoContratto;
 
-    @Column(name = "retribuzione", nullable = false, precision = 10, scale = 2)
+    /**
+     * La retribuzione offerta per la posizione.
+     */
+    @Column(name = "retribuzione", nullable = false)
     @DecimalMin(value = "0.0", inclusive = false, message = "La retribuzione deve essere positiva")
+    @Pattern(regexp = "^\\d{1,8}(\\.\\d{2})?$", message = "Formato retribuzione non valido ")
     private double retribuzione;
 
+    /**
+     * Il nome della sede di lavoro.
+     */
     @Column(name = "nome_sede", nullable = false, length = 100)
     @NotBlank(message = "Il nome della sede è obbligatorio")
-    @Size(max = 100, message = "Il nome della sede non può superare i 100 caratteri")
+    @Pattern(regexp = "^[A-zÀ-ù ‘]{2,100}$", message = "Formato nome sede non valido ")
+    @Size(max = 100, message = "Il nome della sede non può superare i 100 caratteri ")
     private String nomeSede;
 
+    /**
+     * Informazioni aggiuntive utili per il lavoro.
+     */
     @Column(name = "info_utili", nullable = false, length = 500)
     @NotBlank(message = "Le info utili sono obbligatorie")
-    @Size(max = 500, message = "Le info utili non possono superare i 500 caratteri")
+    @Pattern(regexp = "^[\\wÀ-ÿ\s,.!?\'\\-]{1,500}$", message = "Formato info utili non valido ")
+    @Size(max = 500, message = "Le info utili non possono superare i 500 caratteri ")
     private String infoUtili;
 
     /**
