@@ -4,10 +4,12 @@ import com.project.bridgebackend.Model.Entity.enumeration.Gender;
 import com.project.bridgebackend.Model.Entity.enumeration.Ruolo;
 import com.project.bridgebackend.Model.Entity.enumeration.TitoloDiStudio;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Past;
 import lombok.Data;
 import lombok.NonNull;
 import lombok.experimental.SuperBuilder;
-
+import jakarta.validation.constraints.Pattern;
 import java.io.Serializable;
 import java.time.LocalDate;
 
@@ -40,42 +42,47 @@ public class Utente implements Serializable {
      * */
     @Id
     @Column(name = "email")
-    @NonNull
+    @NotNull
+    @Pattern(regexp = "/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,10}$/", message = "regexp per l'email non rispettata")
     protected String email;
 
     /*
      * Nome dell'utente
      * */
     @Column(name = "nome")
-    @NonNull
+    @NotNull
+    @Pattern(regexp = "/^[A-Za-zÀ-ÖØ-öø-ÿ' -]{2,30}$/", message = "regexp per il nome non rispettata")
     private String nome;
 
     /*
      * Cognome dell'utente
      * */
     @Column(name = "cognome")
-    @NonNull
+    @NotNull
+    @Pattern(regexp="/^[A-Za-zÀ-ÖØ-öø-ÿ' -]{2,30}$/", message="regexp per il cognome non rispettata")
     private String cognome;
 
     /*
      * Password dell'utente
      * */
     @Column(name = "password")
-    @NonNull
+    @NotNull
+    @Pattern(regexp="/^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)[A-Za-z\\d]{8,20}$", message="regexp per la password non rispettata")
     protected String password;
 
     /*
      * Nazionalità dell'utente
      * */
     @Column(name = "nazionalita")
-    @NonNull
+    @NotNull
+    @Pattern(regexp="/^[a-zA-Z\\s]{5,30}$/\n", message="regexp per la nazionalità non rispettata")
     private String nazionalita;
 
     /*
      * Salt utilizzato per la sicurezza della password
      * */
     @Column(name = "salt")
-    @NonNull
+    @NotNull
     protected String Salt;
 
     /*
@@ -83,7 +90,7 @@ public class Utente implements Serializable {
      * */
     @Column(name = "genere")
     @Enumerated(EnumType.STRING)
-    @NonNull
+    @NotNull
     private Gender gender;
 
     /*
@@ -91,14 +98,14 @@ public class Utente implements Serializable {
      * */
     @Column(name = "ruolo")
     @Enumerated(EnumType.STRING)
-    @NonNull
+    @NotNull
     private Ruolo role;
 
     /*
      * Titolo di studio posseduto dall'utente
      * */
     @Column(name = "titoloDiStudio")
-    @NonNull
+    @NotNull
     @Enumerated(EnumType.STRING)
     private TitoloDiStudio titoloDiStudio;
 
@@ -106,28 +113,29 @@ public class Utente implements Serializable {
      * Data di nascita dell'utente
      * */
     @Column(name = "dataNascita")
-    @NonNull
+    @NotNull
+    @Past
     private LocalDate dataNascita;
 
     /*
      * Skill o competenze dell'utente
      * */
     @Column(name = "skill")
-    @NonNull
     private String skill;
 
     /*
      * Foto profilo dell'utente (in formato Byte[])
      * */
     @Column(name = "fotoProfilo")
-    @NonNull
+    @NotNull
     private Byte[] fotoProfilo;
 
     /*
      * Lingue parlate dall'utente
-     * */
+     */
     @Column(name = "lingueParlate")
-    @NonNull
+    @NotNull
+    @Pattern(regexp="/^[a-zA-Z\\s]{5,30}$/\n", message="regexp per le lingue parlate non rispettate")
     private String lingueParlate;
 
     /*

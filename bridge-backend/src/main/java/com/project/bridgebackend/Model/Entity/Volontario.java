@@ -7,17 +7,15 @@ import jakarta.persistence.Entity;
 import lombok.Data;
 
 import java.time.LocalDate;
-
-
 /**
  * @author Antonio Ceruso.
  * Creato il: 03/12/2024.
- * Questa è la classe relativa ad un Rifugiato.
+ * Questa è la classe relativa ad un Volontario.
  * */
 @Entity
 @Data
-public class Rifugiato extends Utente{
-    /*
+public class Volontario extends Utente{
+    /**
      * Costruttore con tutti i campi dell'utente
      * @param email
      * @param nome
@@ -33,12 +31,12 @@ public class Rifugiato extends Utente{
      * @param nazionalita
      * @param password
      */
-    public Rifugiato(String email, String nome, String cognome, String lingueParlate, Byte[] fotoProfilo, String skill, LocalDate dataNascita, TitoloDiStudio titoloDiStudio, Ruolo role, Gender gender, String salt, String nazionalita, String password) {
+    public Volontario(String email, String nome, String cognome, String lingueParlate, Byte[] fotoProfilo, String skill, LocalDate dataNascita, TitoloDiStudio titoloDiStudio, Ruolo role, Gender gender, String salt, String nazionalita, String password) {
         super(email, nome, cognome, lingueParlate, fotoProfilo, skill, dataNascita, titoloDiStudio, role, gender, salt, nazionalita, password);
     }
     /**
      * costruttore vuoto.
      */
-    public Rifugiato() {
+    public Volontario() {
     }
 }
