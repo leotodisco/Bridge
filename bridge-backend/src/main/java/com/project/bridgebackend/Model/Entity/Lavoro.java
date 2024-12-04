@@ -7,11 +7,11 @@ package com.project.bridgebackend.Model.Entity;
  * Entità per la gestione degli annunci di lavoro
  */
 
-import jakarta.persistence.*;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.NonNull;
-import javax.validation.constraints.*;
+import jakarta.persistence.*; // Per le annotazioni JPA
+import javax.validation.constraints.*; // Per le annotazioni di validazione
+import lombok.*; // Per Lombok
+import com.project.bridgebackend.Model.Entity.TipoContratto;
+import com.project.bridgebackend.Model.Entity.Indirizzo;
 
 @Entity
 @Table(name = "Lavoro")
