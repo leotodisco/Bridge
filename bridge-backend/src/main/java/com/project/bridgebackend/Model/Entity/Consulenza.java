@@ -7,6 +7,7 @@ import lombok.Setter;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
+import java.util.List;
 
 @Entity
 @Getter
@@ -45,5 +46,18 @@ public class Consulenza extends Annuncio {
             regexp = "^((00|\\+)39[\\. ]??)??3\\d{2}[\\. ]??\\d{6,7}$",
             message = "Numero di telefono non valido. Deve seguire il formato italiano."
     )
-    @Column(name = "numero", nullable = false, length = 15)    private String numero;
+    @Column(name = "numero", nullable = false, length = 15)
+    private String numero;
+
+    public Consulenza() {
+        super();
+    }
+
+    public Consulenza(Utente proprietario, Boolean tipologia, String titolo, Boolean disponibilita, Indirizzo indirizzo, int maxCandidature, List<Rifugiato> candidati, String orariDisponibili, String descrizione, String numero, TipoConsulenza tipo) {
+        super(proprietario, tipologia, titolo, disponibilita, indirizzo, maxCandidature, candidati);
+        this.orariDisponibili = orariDisponibili;
+        this.descrizione = descrizione;
+        this.numero = numero;
+        this.tipo = tipo;
+    }
 }

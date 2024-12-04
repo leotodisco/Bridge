@@ -67,7 +67,11 @@ public class Alloggio {
 
     /**
      *  Campo che rappresenta il proprietario dell'alloggio.
+     *  todo: error find: non si può definire una colonna specifica per un ManytoOne
+     *  todo: va definita una join se quello che stai cercando di fare è una ref all'utente
+     *
      */
+
     @Column(nullable = false)
     @ManyToOne
     private Utente proprietario;
