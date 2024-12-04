@@ -6,6 +6,7 @@ import com.project.bridgebackend.Model.Entity.Volontario;
 import com.project.bridgebackend.Model.Entity.enumeration.Lingua;
 import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
@@ -55,7 +56,11 @@ public interface EventoDAO extends JpaRepository<Evento, Long> {
      */
     @Transactional
     void deleteByDataBefore(LocalDate dataBefore);
+
+    /**
+     * Restituisce gli eventi con spazio disponibile.
+     * @return Lista di evento
+     */
+    @Query("SELECT e FROM Evento e WHERE SIZE(e.listaPartecipanti) < e.maxPartecipanti")
+    List<Evento> findEventiConSpazioDisponibile();
 }
-
-
-
