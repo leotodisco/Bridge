@@ -42,7 +42,7 @@ public class FiguraSpecializzata extends Utente{
      * @param password
      * @param disponibilita
      */
-    public FiguraSpecializzata(String email, String nome, String cognome, String lingueParlate, Byte[] fotoProfilo, String skill, LocalDate dataNascita, TitoloDiStudio titoloDiStudio, Ruolo role, Gender gender, String salt, String nazionalita, String password, String disponibilita) {
+    public FiguraSpecializzata(String email, String nome, String cognome, String lingueParlate, byte[] fotoProfilo, String skill, LocalDate dataNascita, TitoloDiStudio titoloDiStudio, Ruolo role, Gender gender, String salt, String nazionalita, String password, String disponibilita) {
         super(email, nome, cognome, lingueParlate, fotoProfilo, skill, dataNascita, titoloDiStudio, role, gender, salt, nazionalita, password);
         this.disponibilita = disponibilita;
     }

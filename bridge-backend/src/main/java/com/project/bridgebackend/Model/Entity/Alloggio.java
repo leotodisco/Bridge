@@ -29,7 +29,7 @@ import javax.validation.constraints.Size;
  */
 
 @Entity
-@Table(name = "Alloggio")
+@Table(name = "alloggio")
 public class Alloggio {
 
     /**

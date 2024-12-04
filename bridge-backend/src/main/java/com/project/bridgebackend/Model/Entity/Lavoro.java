@@ -13,6 +13,8 @@ import lombok.*; // Per Lombok
 import com.project.bridgebackend.Model.Entity.enumeration.TipoContratto;
 import com.project.bridgebackend.Model.Entity.Indirizzo;
 
+import java.math.BigDecimal;
+
 @Entity
 @Table(name = "Lavoro")
 public class Lavoro {
@@ -61,7 +63,7 @@ public class Lavoro {
      */
     @Column(nullable = false, precision = 10, scale = 2)
     @DecimalMin(value = "0.0", inclusive = false, message = "La retribuzione deve essere positiva")
-    private double retribuzione;
+    private BigDecimal retribuzione;
 
     /**
      * Nome Sede
