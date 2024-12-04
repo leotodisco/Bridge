@@ -14,8 +14,6 @@ import lombok.NonNull;
 import javax.validation.constraints.*;
 
 @Entity
-@Getter
-@Setter
 @Table(name = "Lavoro")
 public class Lavoro {
 
