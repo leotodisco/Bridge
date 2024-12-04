@@ -3,7 +3,7 @@ package com.project.bridgebackend.Model.Entity;
 /**
  * @author: Mario Zurolo
  * created: 3/12/24
- * entity per la gestione degli annuncio di lavoro
+ * entity per la gestione degli alloggi
  */
 
 import com.project.bridgebackend.Model.Entity.enumeration.Servizi;
@@ -83,6 +83,7 @@ public class Alloggio {
      *  Campo che rappresenta i servizi offerti dall'alloggio
      */
     @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
     private Servizi servizi;
 
     /**
@@ -100,5 +101,4 @@ public class Alloggio {
     public Alloggio() {
 
     }
-
 }
