@@ -100,4 +100,23 @@ public class Annuncio {
      */
     @OneToMany(mappedBy = "annuncio",fetch = FetchType.LAZY)
     private List<Rifugiato> candidati;
+
+
+    /**
+    * Costruttore vuoto
+     */
+    public Annuncio() {}
+
+    /**
+    * Costruttore completo
+     */
+    public Annuncio(Utente proprietario, Boolean tipologia, String titolo, Boolean disponibilita, Indirizzo indirizzo, int maxCandidature, List<Rifugiato> candidati) {
+        this.proprietario = proprietario;
+        this.tipologia = tipologia;
+        this.titolo = titolo;
+        this.disponibilita = disponibilita;
+        this.indirizzo = indirizzo;
+        this.maxCandidature = maxCandidature;
+        this.candidati = candidati;
+    }
 }
