@@ -11,10 +11,11 @@ import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NonNull;
 
-import java.util.*;// Genera automaticamente metodi getter, setter, toString, equals e hashCode.
+import java.util.*;
 
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 /**
@@ -67,13 +68,11 @@ public class Alloggio {
 
     /**
      *  Campo che rappresenta il proprietario dell'alloggio.
-     *  todo: error find: non si può definire una colonna specifica per un ManytoOne
-     *  todo: va definita una join se quello che stai cercando di fare è una ref all'utente
      *
      */
 
-    @Column(nullable = false)
-    @ManyToOne
+    @JoinColumn(name = "proprietario_email", referencedColumnName = "email", nullable = false)
+    @ManyToOne()
     private Utente proprietario;
 
     /**
@@ -94,10 +93,11 @@ public class Alloggio {
      *  campo per le foto dell'alloggio
      */
     @ElementCollection
-    @CollectionTable(name = "byte_list", joinColumns = @JoinColumn(name = "entity_id"))
-    @Column(name = "byte_value")
-    @NonNull
-    private List<Byte> byteList;
+    @CollectionTable(name = "alloggio_foto", joinColumns = @JoinColumn(name = "alloggio_id"))
+    @Column(name = "foto_url")
+    @NotNull
+    @Size(min = 1, max = 3, message = "Devi fornire almeno 1 foto e massimo 3.")
+    private List<Byte> foto;
 
     /**
      *  Costruttore predefinito (senza argomenti) per inizializzare l'oggetto.
