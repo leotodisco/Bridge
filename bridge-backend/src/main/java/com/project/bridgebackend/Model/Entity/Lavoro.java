@@ -10,7 +10,7 @@ package com.project.bridgebackend.Model.Entity;
 import jakarta.persistence.*; // Per le annotazioni JPA
 import javax.validation.constraints.*; // Per le annotazioni di validazione
 import lombok.*; // Per Lombok
-import com.project.bridgebackend.Model.Entity.TipoContratto;
+import com.project.bridgebackend.Model.Entity.enumeration.TipoContratto;
 import com.project.bridgebackend.Model.Entity.Indirizzo;
 
 @Entity
