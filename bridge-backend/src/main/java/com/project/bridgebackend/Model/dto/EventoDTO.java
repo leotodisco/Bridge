@@ -3,6 +3,7 @@ package com.project.bridgebackend.Model.dto;
 import com.project.bridgebackend.Model.Entity.Indirizzo;
 import com.project.bridgebackend.Model.Entity.Volontario;
 import com.project.bridgebackend.Model.Entity.enumeration.Lingua;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -25,6 +26,7 @@ import java.util.List;
 @Setter
 @ToString
 @SuperBuilder
+@AllArgsConstructor
 public class EventoDTO {
 
     /**
