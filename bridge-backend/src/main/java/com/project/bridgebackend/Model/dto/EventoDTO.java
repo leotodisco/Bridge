@@ -81,4 +81,7 @@ public class EventoDTO {
      **/
     private int maxPartecipanti;
 
+    //Costruttore vuoto
+    public EventoDTO() {
+    }
 }
