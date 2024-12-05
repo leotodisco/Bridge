@@ -23,10 +23,10 @@ public interface EventoDAO extends JpaRepository<Evento, Long> {
 
     /**
      * Trova eventi per lingua parlata.
-     * @param lingua lingua dell'evento
+     * @param lingua lista di lingue dell'evento
      * @return lista di eventi
      */
-    List<Evento> findByLingueParlate(Lingua lingua);
+    List<Evento> findByLingueParlate(List<Lingua> lingua);
 
 
     /**

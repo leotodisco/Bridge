@@ -29,7 +29,7 @@ import java.util.List;
 @SuperBuilder
 @Getter
 @Setter
-@Table(name = "Evento")
+@Table(name = "evento")
 public class Evento implements Serializable {
 
     /**
@@ -69,11 +69,14 @@ public class Evento implements Serializable {
     private LocalTime ora;
 
     /**
-     * Campo relativo alla lingua dell'evento
+     * Campo relativo alle lingue parlate durante l'evento
      **/
-    @NotNull(message = "La lingua dell'evento è obbligatoria")
+    @NotNull(message = "La lingue dell'evento sono obbligatorie")
+    @ElementCollection(targetClass = Lingua.class)
+    @Enumerated(EnumType.STRING)
+    @CollectionTable(name = "evento_lingue_parlate", joinColumns = @JoinColumn(name = "evento_id"))
     @Column(name = "lingueParlate", nullable = false)
-    private Lingua lingueParlate;
+    private List<Lingua> lingueParlate;
 
     /**
      * Campo relativo alla descrizione dell'evento
