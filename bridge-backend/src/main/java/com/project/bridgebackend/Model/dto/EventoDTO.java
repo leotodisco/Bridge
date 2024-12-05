@@ -3,7 +3,9 @@ package com.project.bridgebackend.Model.dto;
 import com.project.bridgebackend.Model.Entity.Indirizzo;
 import com.project.bridgebackend.Model.Entity.Volontario;
 import com.project.bridgebackend.Model.Entity.enumeration.Lingua;
-import lombok.*;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 import lombok.experimental.SuperBuilder;
 
 import java.time.LocalDate;
@@ -75,7 +77,7 @@ public class EventoDTO {
 
     /**
      * Numero massimo di partecipanti all'evento.
-     * Indica il numero massimo di partecipanti che possono partecipare all'evento.
+     * Numero massimo di partecipanti all'evento.
      **/
     private int maxPartecipanti;
 
