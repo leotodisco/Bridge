@@ -33,7 +33,7 @@ public class Rifugiato extends Utente{
      * @param nazionalita
      * @param password
      */
-    public Rifugiato(String email, String nome, String cognome, String lingueParlate, Byte[] fotoProfilo, String skill, LocalDate dataNascita, TitoloDiStudio titoloDiStudio, Ruolo role, Gender gender, String salt, String nazionalita, String password) {
+    public Rifugiato(String email, String nome, String cognome, String lingueParlate, byte[] fotoProfilo, String skill, LocalDate dataNascita, TitoloDiStudio titoloDiStudio, Ruolo role, Gender gender, String salt, String nazionalita, String password) {
         super(email, nome, cognome, lingueParlate, fotoProfilo, skill, dataNascita, titoloDiStudio, role, gender, salt, nazionalita, password);
     }
     /**

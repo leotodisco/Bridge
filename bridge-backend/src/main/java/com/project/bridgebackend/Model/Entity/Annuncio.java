@@ -98,9 +98,13 @@ public class Annuncio {
      * È una relazione @OneToMany, in cui un annuncio può essere associato a più candidati.
      * La relazione è mappata dall'attributo annuncio nell'entità Rifugiato.
      */
-    @OneToMany(mappedBy = "annuncio",fetch = FetchType.LAZY)
-    private List<Rifugiato> candidati;
-
+    @ElementCollection
+    @CollectionTable(
+            name = "annuncio_rifugiati",
+            joinColumns = @JoinColumn(name = "annuncio_id")
+    )
+    @Column(name = "rifugiato_email", nullable = false)
+    private List<String> candidati;
 
     /**
     * Costruttore vuoto
@@ -110,7 +114,7 @@ public class Annuncio {
     /**
     * Costruttore completo
      */
-    public Annuncio(Utente proprietario, Boolean tipologia, String titolo, Boolean disponibilita, Indirizzo indirizzo, int maxCandidature, List<Rifugiato> candidati) {
+    public Annuncio(Utente proprietario, Boolean tipologia, String titolo, Boolean disponibilita, Indirizzo indirizzo, int maxCandidature, List<String> candidati) {
         this.proprietario = proprietario;
         this.tipologia = tipologia;
         this.titolo = titolo;
