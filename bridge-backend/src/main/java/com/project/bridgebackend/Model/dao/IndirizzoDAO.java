@@ -12,5 +12,4 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface IndirizzoDAO extends JpaRepository<Indirizzo, Long> {
-
 }
