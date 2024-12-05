@@ -53,7 +53,7 @@ public class Consulenza extends Annuncio {
         super();
     }
 
-    public Consulenza(Utente proprietario, Boolean tipologia, String titolo, Boolean disponibilita, Indirizzo indirizzo, int maxCandidature, List<String> candidati, String orariDisponibili, String descrizione, String numero, TipoConsulenza tipo) {
+    public Consulenza(FiguraSpecializzata proprietario, Boolean tipologia, String titolo, Boolean disponibilita, Indirizzo indirizzo, int maxCandidature, List<String> candidati, String orariDisponibili, String descrizione, String numero, TipoConsulenza tipo) {
         super(proprietario, tipologia, titolo, disponibilita, indirizzo, maxCandidature, candidati);
         this.orariDisponibili = orariDisponibili;
         this.descrizione = descrizione;
