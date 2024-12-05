@@ -60,7 +60,7 @@ public class UtenteDTO {
     /**
      * Parametro foto dell'Utente
      */
-    private Byte[] fotoUtente;
+    private byte[] fotoUtente;
 
     /**
      * Parametro disponibilità dell'Utente
@@ -77,4 +77,8 @@ public class UtenteDTO {
      */
     private String lingueParlateUtente;
 
+    /**
+     * Parametro salt password dell'Utente
+     */
+    private String saltUtente;
 }

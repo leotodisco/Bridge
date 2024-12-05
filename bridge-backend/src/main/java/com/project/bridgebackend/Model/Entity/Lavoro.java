@@ -41,7 +41,7 @@ public class Lavoro extends Annuncio {
     @NotNull(message = "Il tipo di contratto è obbligatorio")
     private TipoContratto tipoContratto;
 
-    @Column(name = "retribuzione", nullable = false, precision = 10, scale = 2)
+    @Column(name = "retribuzione", nullable = false, precision = 10)
     @DecimalMin(value = "0.0", inclusive = false, message = "La retribuzione deve essere positiva")
     private double retribuzione;
 
@@ -71,5 +71,8 @@ public class Lavoro extends Annuncio {
         this.retribuzione = retribuzione;
         this.nomeSede = nomeSede;
         this.infoUtili = infoUtili;
+    }
+
+    public Lavoro() {
     }
 }
