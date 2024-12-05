@@ -38,6 +38,7 @@ public class GestioneAnnuncioController {
     /**
      * DAO per accedere ai dati degli utenti-> figure specializzate
      */
+    @Autowired
     private FiguraSpecializzataDAO figuraSpecializzataDAO;
 
     /**
@@ -72,6 +73,7 @@ public class GestioneAnnuncioController {
         indirizzo.setCap(consulenzaDTO.getIndirizzo().getCap());
         indirizzo.setProvincia(consulenzaDTO.getIndirizzo().getProvincia());
         indirizzo.setNumCivico(consulenzaDTO.getIndirizzo().getNumCivico());
+        System.out.println(indirizzo.getNumCivico());
 
         /*
          * si occupa di salvare l'indirizzo nel database
@@ -90,12 +92,13 @@ public class GestioneAnnuncioController {
         consulenza.setOrariDisponibili(consulenzaDTO.getOrariDisponibili());
         consulenza.setNumero(consulenzaDTO.getNumero());
         consulenza.setTipo(consulenzaDTO.getTipo());
+        consulenza.setTipologia(true);
         consulenza.setIndirizzo(indirizzoDAO.getReferenceById(indirizzoId));
 
         /*
          * Recupero della figura specializzata proprietaria della consulenza.
          */
-        FiguraSpecializzata figuraSpecializzata = figuraSpecializzataDAO.findByEmail(consulenzaDTO.getProprietario().getEmail());
+        FiguraSpecializzata figuraSpecializzata = figuraSpecializzataDAO.findByEmail(consulenzaDTO.getProprietario());
         if (figuraSpecializzata == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         }

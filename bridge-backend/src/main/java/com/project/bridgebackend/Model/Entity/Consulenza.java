@@ -16,6 +16,7 @@ import java.util.List;
  *
  * eredita altri attributi dall'entity Annuncio
  */
+@Inheritance(strategy = InheritanceType.JOINED)
 @Entity
 @Getter
 @Setter

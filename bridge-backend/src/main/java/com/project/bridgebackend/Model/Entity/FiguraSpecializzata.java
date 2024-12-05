@@ -5,6 +5,9 @@ import com.project.bridgebackend.Model.Entity.enumeration.Ruolo;
 import com.project.bridgebackend.Model.Entity.enumeration.TitoloDiStudio;
 import jakarta.persistence.Entity;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.time.LocalDate;
 /**
@@ -12,8 +15,10 @@ import java.time.LocalDate;
  * Creato il: 03/12/2024.
  * Questa è la classe relativa ad una Figura Specializzata.
  * */
+@EqualsAndHashCode(callSuper = true)
 @Entity
 @Data
+
 public class FiguraSpecializzata extends Utente{
     /**
      * Disponibilità orarie della Figura Specializzata

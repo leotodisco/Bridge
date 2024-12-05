@@ -66,7 +66,7 @@ public class ConsulenzaDTO {
      */
     @Valid
     @NotNull(message = "il proprietario è obbligatorio")
-    private FiguraSpecializzata proprietario;
+    private String proprietario;
 
     /**
      * Numero massimo di candidature accettate per l'annuncio.
