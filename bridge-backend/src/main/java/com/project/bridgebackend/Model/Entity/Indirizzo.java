@@ -75,6 +75,8 @@ public final class Indirizzo implements Serializable {
     public Indirizzo() {
     }
 
+
+
     /**
      * Costruttore con parametri.
      * @param citta
@@ -123,11 +125,10 @@ public final class Indirizzo implements Serializable {
     @Override
     public int hashCode() {
         return Objects.hash(id,
-                            getCitta(),
-                            getNumCivico(),
-                            getCap(),
-                            getProvincia(),
-                            getVia());
+                getCitta(),
+                getNumCivico(),
+                getCap(),
+                getProvincia(),
+                getVia());
     }
-
 }
