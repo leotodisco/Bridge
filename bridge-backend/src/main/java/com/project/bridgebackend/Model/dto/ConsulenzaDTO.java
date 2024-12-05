@@ -1,9 +1,17 @@
 package com.project.bridgebackend.Model.dto;
 
 import com.project.bridgebackend.Model.Entity.enumeration.TipoConsulenza;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 
 import javax.validation.constraints.*;
 
+@Getter
+@Setter
+@ToString
+@EqualsAndHashCode
 public class ConsulenzaDTO {
 
     // Campi di Annuncio
@@ -22,7 +30,7 @@ public class ConsulenzaDTO {
     private Long indirizzoId;
 
     @NotNull(message = "L'ID del proprietario è obbligatorio")
-    private Long proprietarioId;
+    private String proprietario_email;
 
     @NotNull(message = "Il numero massimo di candidature è obbligatorio")
     private Integer maxCandidature;
@@ -46,86 +54,4 @@ public class ConsulenzaDTO {
     )
     private String numero;
 
-    public Boolean getDisponibilita() {
-        return disponibilita;
-    }
-
-    public void setDisponibilita(Boolean disponibilita) {
-        this.disponibilita = disponibilita;
-    }
-
-    public String getTitolo() {
-        return titolo;
-    }
-
-    public void setTitolo(String titolo) {
-        this.titolo = titolo;
-    }
-
-    public Boolean getTipologia() {
-        return tipologia;
-    }
-
-    public void setTipologia(Boolean tipologia) {
-        this.tipologia = tipologia;
-    }
-
-    public Long getIndirizzoId() {
-        return indirizzoId;
-    }
-
-    public void setIndirizzoId(Long indirizzoId) {
-        this.indirizzoId = indirizzoId;
-    }
-
-    public Long getProprietarioId() {
-        return proprietarioId;
-    }
-
-    public void setProprietarioId(Long proprietarioId) {
-        this.proprietarioId = proprietarioId;
-    }
-
-    public Integer getMaxCandidature() {
-        return maxCandidature;
-    }
-
-    public void setMaxCandidature(Integer maxCandidature) {
-        this.maxCandidature = maxCandidature;
-    }
-
-    public TipoConsulenza getTipo() {
-        return tipo;
-    }
-
-    public void setTipo(TipoConsulenza tipo) {
-        this.tipo = tipo;
-    }
-
-    public String getOrariDisponibili() {
-        return orariDisponibili;
-    }
-
-    public void setOrariDisponibili(String orariDisponibili) {
-        this.orariDisponibili = orariDisponibili;
-    }
-
-    public String getDescrizione() {
-        return descrizione;
-    }
-
-    public void setDescrizione(String descrizione) {
-        this.descrizione = descrizione;
-    }
-
-    public String getNumero() {
-        return numero;
-    }
-
-    public void setNumero(String numero) {
-        this.numero = numero;
-    }
-
-    // Getters e Setters
-    // ...
 }
