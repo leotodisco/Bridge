@@ -1,11 +1,13 @@
 package com.project.bridgebackend.GestioneEvento.service;
 
 import com.project.bridgebackend.Model.Entity.Evento;
+import com.project.bridgebackend.Model.Entity.Indirizzo;
 import com.project.bridgebackend.Model.dao.EventoDAO;
-import com.project.bridgebackend.Model.dto.EventoDTO;
+import com.project.bridgebackend.Model.dao.IndirizzoDAO;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -24,36 +26,23 @@ public class GestioneEventoServiceImpl implements GestioneEventoService {
     private EventoDAO eventoDAO;
 
     /**
+     * DAO per la gestione degli indirizzi.
+     **/
+    @Autowired
+    private IndirizzoDAO indirizzoDAO;
+
+    /**
      * Permette di creare un evento.
-     * @param eventoDTO evento da creare.
+     * @param evento evento da creare.
      * @return evento creato.
      **/
     @Transactional
     @Override
-    public Evento createEvento(final EventoDTO eventoDTO) {
+    public Evento insertEvento(final Evento evento) {
         //Controllo su DTO nullo o id nullo
-        if (eventoDTO == null || eventoDTO.getId() == null) {
-            throw new IllegalArgumentException("Id evento non valido o DTO nullo");
+        if (evento == null || evento.getId() == null) {
+            throw new IllegalArgumentException("Evento non valido.");
         }
-
-        //Creazione entità Evento
-        Evento evento = new Evento();
-        evento.setNome(
-                eventoDTO.getNome());
-        evento.setData(
-                eventoDTO.getData());
-        evento.setOra(
-                eventoDTO.getOra());
-        evento.setLingueParlate(
-                eventoDTO.getLingueParlate());
-        evento.setDescrizione(
-                eventoDTO.getDescrizione());
-        evento.setLuogo(
-                eventoDTO.getLuogo());
-        evento.setOrganizzatore(
-                eventoDTO.getOrganizzatore());
-        evento.setMaxPartecipanti(
-                eventoDTO.getMaxPartecipanti());
 
         //Salvataggio entità Evento
         return eventoDAO.save(evento);
@@ -61,45 +50,42 @@ public class GestioneEventoServiceImpl implements GestioneEventoService {
 
     /**
      * Permette di aggiornare un evento.
-     * @param eventoDTO evento da aggiornare.
-     * @return eventoDTO aggiornato.
+     * @param evento evento da aggiornare.
+     * @return evento aggiornato.
      */
     @Override
-    public EventoDTO updateEvento(final EventoDTO eventoDTO) {
+    public Evento updateEvento(final Evento evento) {
         //Controllo su DTO nullo o id nullo
-        if (eventoDTO == null || eventoDTO.getId() == null) {
-            throw new IllegalArgumentException("Id evento non valido");
+        if (evento == null || evento.getId() == null) {
+            throw new
+                    IllegalArgumentException("Id evento non valido");
         }
 
-        //Controllo esistenza evento
-        if (eventoDAO.existsById(eventoDTO.getId())) {
-            //Update campi Evento
-            Evento evento = new Evento();
-            evento.setId(
-                    eventoDTO.getId());
-            evento.setNome(
-                    eventoDTO.getNome());
-            evento.setData(
-                    eventoDTO.getData());
-            evento.setOra(
-                    eventoDTO.getOra());
-            evento.setLingueParlate(
-                    eventoDTO.getLingueParlate());
-            evento.setDescrizione(
-                    eventoDTO.getDescrizione());
-            evento.setLuogo(
-                    eventoDTO.getLuogo());
-            evento.setOrganizzatore(
-                    eventoDTO.getOrganizzatore());
-            evento.setMaxPartecipanti(
-                    eventoDTO.getMaxPartecipanti());
+        //Verifica che l'evento esista
+        Evento existingEvento = eventoDAO.findById(evento.getId())
+                .orElseThrow(() -> new
+                        IllegalArgumentException("Evento non trovato"));
 
-            //Salvataggio entità Evento
-            eventoDAO.save(evento);
-            return eventoDTO;
-        } else {
-            throw new IllegalArgumentException("Evento con id " + eventoDTO.getId() + " non trovato");
-        }
+        //Aggiornamento evento
+        existingEvento
+                .setNome(evento.getNome());
+        existingEvento
+                .setData(evento.getData());
+        existingEvento
+                .setOra(evento.getOra());
+        existingEvento
+                .setLingueParlate(evento.getLingueParlate());
+        existingEvento
+                .setDescrizione(evento.getDescrizione());
+        existingEvento
+                .setLuogo(evento.getLuogo());
+        existingEvento
+                .setOrganizzatore(evento.getOrganizzatore());
+        existingEvento
+                .setMaxPartecipanti(evento.getMaxPartecipanti());
+
+        //Salvataggio entità Evento
+        return eventoDAO.save(existingEvento);
     }
 
     /**
@@ -108,29 +94,86 @@ public class GestioneEventoServiceImpl implements GestioneEventoService {
      */
     @Override
     public void deleteEvento(final long id) {
+       //Controllo su id nullo
+        if (id <= 0) {
+           throw new
+                   IllegalArgumentException("Id evento non valido");
+       }
+
+        //Verifica che l'evento esista
+        if (eventoDAO.existsById(id)) {
+            eventoDAO.deleteById(id);
+        } else {
+            throw new IllegalArgumentException(
+                    "Evento con id " + id + " non trovato");
+        }
+    }
+
+    /**
+     * Permette di avere tutti gli eventi.
+     * @return lista di tutti gli eventi.
+     */
+    @Override
+    public List<Evento> getAllEventi() {
+        return eventoDAO.findAll();
+    }
+
+    /**
+     * Permette di avere un evento tramite id.
+     * @param id identificativo dell'evento.
+     * @return evento.
+     */
+    @Override
+    public Optional<Evento> getEventoById(final long id) {
         //Controllo su id nullo
         if (id <= 0) {
             throw new IllegalArgumentException("Id evento non valido");
         }
 
-        //Controllo esistenza evento e cancellazione
-        if (eventoDAO.existsById(id)) {
-            eventoDAO.deleteById(id);
-        } else {
-            throw new IllegalArgumentException("Evento con id " + "non trovato");
-        }
+        //Recupero evento
+        return eventoDAO.findById(id);
     }
 
     /**
-     * Permette di ottenere un evento tramite il suo id.
-     * @param id identificativo dell'evento.
-     * @return l'evento, se viene trovato
+     * Permette di salvare l'indirizzo di un evento.
+     * @param indirizzo indirizzo da salvare.
+     * @return indirizzo salvato.
      */
     @Override
-    public Optional<Evento> getEventoById(final long id) {
-        if (id <= 0) {
-            throw new IllegalArgumentException("Id evento non valido");
+    public Indirizzo salvaIndirizzoEvento(final Indirizzo indirizzo) {
+        //Controllo su Indirizzo nullo o id nullo
+        if (indirizzo == null || indirizzo.getId() == null) {
+            throw new IllegalArgumentException("Id indirizzo non valido");
         }
-        return eventoDAO.findById(id);
+
+        //Salvataggio indirizzo
+        return indirizzoDAO.save(indirizzo);
+    }
+
+    /**
+     * Permette di aggiornare l'indirizzo di un evento.
+     * @param indirizzo indirizzo da aggiornare.
+     * @return indirizzo aggiornato.
+     */
+    @Override
+    public Indirizzo updateIndirizzoEvento(final Indirizzo indirizzo) {
+        //Controllo su Indirizzo nullo o id nullo
+        if (indirizzo == null || indirizzo.getId() == null) {
+            throw new IllegalArgumentException("Id indirizzo non valido");
+        }
+
+        //Verifica che l'indirizzo esista
+        Indirizzo existingIndirizzo = indirizzoDAO.findById(indirizzo.getId())
+                .orElseThrow(() -> new
+                        IllegalArgumentException("Indirizzo non trovato"));
+
+        //Aggiornamento indirizzo
+        existingIndirizzo.setCitta(indirizzo.getCitta());
+        existingIndirizzo.setNumCivico(indirizzo.getNumCivico());
+        existingIndirizzo.setCap(indirizzo.getCap());
+        existingIndirizzo.setProvincia(indirizzo.getProvincia());
+        existingIndirizzo.setVia(indirizzo.getVia());
+
+        return indirizzoDAO.save(existingIndirizzo);
     }
 }

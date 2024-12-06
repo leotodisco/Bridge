@@ -1,7 +1,8 @@
 package com.project.bridgebackend.GestioneEvento.service;
 
 import com.project.bridgebackend.Model.Entity.Evento;
-import com.project.bridgebackend.Model.dto.EventoDTO;
+import com.project.bridgebackend.Model.Entity.Indirizzo;
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -14,17 +15,17 @@ public interface GestioneEventoService {
 
     /**
      * Permette di creare un evento.
-     * @param eventoDTO evento da creare.
-     * @return eventoDTO creato.
+     * @param evento evento da creare.
+     * @return evento creato.
      **/
-    Evento createEvento(EventoDTO eventoDTO);
+    Evento insertEvento(Evento evento);
 
     /**
      * Permette di aggiornare un evento.
-     * @param eventoDTO evento da aggiornare.
-     * @return eventoDTO aggiornato.
+     * @param evento evento da aggiornare.
+     * @return evento aggiornato.
      **/
-    EventoDTO updateEvento(EventoDTO eventoDTO);
+    Evento updateEvento(Evento evento);
 
     /**
      * Permette di eliminare un evento.
@@ -33,10 +34,29 @@ public interface GestioneEventoService {
     void deleteEvento(long id);
 
     /**
-     * Permette di ottenere un evento tramite il suo id.
-     *
+     * Permette di avere tutti gli eventi.
+     * @return lista di eventi.
+     */
+    List<Evento> getAllEventi();
+
+    /**
+     * Permette di avere un evento tramite id.
      * @param id identificativo dell'evento.
-     * @return eventoDTO.
-     **/
+     * @return evento.
+     */
     Optional<Evento> getEventoById(long id);
+
+    /**
+     * Permette di salvare l'indirizzo di un evento.
+     * @param indirizzo indirizzo da salvare.
+     * @return indirizzo salvato.
+     */
+    Indirizzo salvaIndirizzoEvento(Indirizzo indirizzo);
+
+    /**
+     * Permette di aggiornare l'inidirzzo di un evento.
+     * @param indirizzo indirizzo da aggiornare.
+     * @return indirizzo aggiornato.
+     */
+    Indirizzo updateIndirizzoEvento(Indirizzo indirizzo);
 }
