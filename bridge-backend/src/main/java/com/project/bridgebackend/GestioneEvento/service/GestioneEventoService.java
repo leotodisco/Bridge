@@ -51,7 +51,7 @@ public interface GestioneEventoService {
      * @param indirizzo indirizzo da salvare.
      * @return indirizzo salvato.
      */
-    Indirizzo salvaIndirizzoEvento(Indirizzo indirizzo);
+    long salvaIndirizzoEvento(Indirizzo indirizzo);
 
     /**
      * Permette di aggiornare l'inidirzzo di un evento.

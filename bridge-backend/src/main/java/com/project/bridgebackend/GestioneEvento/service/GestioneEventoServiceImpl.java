@@ -141,14 +141,14 @@ public class GestioneEventoServiceImpl implements GestioneEventoService {
      * @return indirizzo salvato.
      */
     @Override
-    public Indirizzo salvaIndirizzoEvento(final Indirizzo indirizzo) {
+    public long salvaIndirizzoEvento(final Indirizzo indirizzo) {
         //Controllo su Indirizzo nullo o id nullo
         if (indirizzo == null || indirizzo.getId() == null) {
             throw new IllegalArgumentException("Id indirizzo non valido");
         }
 
-        //Salvataggio indirizzo
-        return indirizzoDAO.save(indirizzo);
+        //Salvataggio indirizzo e ritorno id
+        return indirizzoDAO.save(indirizzo).getId();
     }
 
     /**
