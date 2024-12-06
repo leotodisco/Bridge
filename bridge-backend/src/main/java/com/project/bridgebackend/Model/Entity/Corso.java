@@ -61,7 +61,7 @@ public class Corso implements Serializable {
     /**
      * Categoria del corso.
      */
-    @Column(name = "categoriaCorso", nullable = false)
+    @Column(name = "categoria_corso", nullable = false)
     private String categoriaCorso;
 
 
