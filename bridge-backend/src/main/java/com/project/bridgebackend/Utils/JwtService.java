@@ -1,80 +1,156 @@
 package com.project.bridgebackend.Utils;
 
+import com.project.bridgebackend.Model.Entity.Utente;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.io.Decoders;
+import io.jsonwebtoken.security.Keys;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
+import io.jsonwebtoken.SignatureAlgorithm;
 
+import javax.crypto.SecretKey;
+import java.security.Key;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.Map;
+import java.util.function.Function;
 
 /**
  * @author Benedetta Colella
  * Creato il: 04/12/2024
- * Questa classe fornisce metodi per generare, validare e decodificare
- * i token JWT. Utilizza una chiave segreta per firmare i token e include
- * informazioni come email, ruolo e altre proprietà utente.
- * È responsabile di:
- * - Creare token con claims personalizzati
- * - Estrarre informazioni dai token
- * - Verificare la validità dei token
+ * Questa classe fornisce un servizio per la gestione dei token JWT (JSON Web Token), utilizzati per
+ * autenticazione e autorizzazione nelle applicazioni. I principali compiti di questa classe sono:
+ * - Generazione dei token JWT: Creazione di token firmati con una chiave segreta, includendo informazioni
+ *   personalizzate (claims) come identificativo utente e ruolo.
+ * - Validazione dei token JWT: Verifica che un token sia valido, non scaduto e appartenga all'utente corretto.
+ * - Estrazione di informazioni dai token JWT: Recupero di dati come il subject (es. email) o la data di scadenza.
+ * La chiave segreta utilizzata per firmare i token è configurata esternamente, migliorando la sicurezza e la
+ * flessibilità. La durata del token è anch'essa configurabile, consentendo un controllo preciso sul ciclo di vita
+ * dei token.
+ * Principali caratteristiche:
+ * - Sicurezza: Utilizza l'algoritmo HMAC-SHA256 per la firma dei token.
+ * - Modularità: Separazione chiara tra generazione, validazione ed estrazione di informazioni.
+ * - Configurabilità: Chiave segreta e durata del token sono gestite tramite file di configurazione.
+ * Questo servizio è un componente essenziale per l'integrazione con meccanismi di autenticazione basati su JWT
+ * in un'applicazione Spring.
  */
+
 
 @Service
 public class JwtService {
 
-    /**
-     * Chiave segreta per firmare i token.
-     */
-    private static final String SECRET_KEY =
-            "5267556B58703272357538782F413F4428472B4B6250655368566D5971337436";
+    @Value("${jwt-secret}")
+    private String secretKey; // Chiave segreta configurata in application.properties
 
     /**
-     * Estrae l'email dall'header del token.
+     * Metodo per la generazione di un token.
+     * @param userDetails
+     * @return token.
+     */
+    public String generateToken(Utente userDetails) {
+        HashMap<String, Object> mappaClaims = new HashMap<>();
+        mappaClaims.put("id", userDetails.getEmail());
+        mappaClaims.put("ruolo", userDetails.getRole());
+        return generateToken(mappaClaims, userDetails);
+    }
+
+    /**
+     * Metodo per la generazione di un token.
+     * Un token dura 24 ore.
+     * Al suo interno, il token contiene: email, data di scadenza,
+     * id, ruolo.
+     * @param extraClaims
+     * @param userDetails
+     * @return token.
+     *
+     */
+    public String generateToken(final Map<String, Object> extraClaims,
+                                final Utente userDetails) {
+        Date now = new Date();
+        Date expiration = new Date(now.getTime() + 1000 * 60 * 60 * 24); // 24 ore
+        return Jwts.builder()
+                .setClaims(extraClaims)
+                .setSubject(userDetails.getEmail())
+                .setIssuedAt(now)
+                .setExpiration(expiration)
+                .signWith(getSignInKey(), SignatureAlgorithm.HS256)
+                .compact();
+    }
+
+    /**
+     * Metodo che restituisce l'email presente nel token.
+     * @param token
+     * @return username/password.
      */
     public String extractUsername(String token) {
         return extractClaim(token, Claims::getSubject);
     }
 
     /**
-     * Estrae un claim specifico dal token.
+     * Estrae la data di scadenza dal token.
+     * @param token Token JWT.
+     * @return Data di scadenza.
      */
-    public <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {
+    public Date extractExpiration(String token) {
+        return extractClaim(token, Claims::getExpiration);
+    }
+
+    /**
+     * Metodo che controlla che il token sia valido.
+     * @param token
+     * @param userDetails
+     * @return booleano si o no.
+     */
+    public boolean isTokenValid(final String token,
+                                final UserDetails userDetails) {
+        final String username = extractUsername(token);
+        return (username.equals(userDetails.getUsername()))
+                && !isTokenExpired(token);
+
+    }
+
+    /**
+     * Metodo che controlla se il token è scaduto.
+     * @param token
+     * @return true o false.
+     */
+    private boolean isTokenExpired(final String token) {
+        return extractExpiration(token).before(new Date());
+    }
+
+    /**
+     * Estrae un claim specifico dal token.
+     * @param token Token JWT.
+     * @param claimsResolver Funzione per risolvere il claim.
+     * @return Valore del claim.
+     */
+    private <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {
         final Claims claims = extractAllClaims(token);
         return claimsResolver.apply(claims);
     }
 
     /**
      * Estrae tutti i claims dal token.
+     * @param token Token JWT.
+     * @return Tutti i claims.
      */
     private Claims extractAllClaims(String token) {
-        return Jwts.parser().setSigningKey(SECRET_KEY).parseClaimsJws(token).getBody();
+        return Jwts.parserBuilder()
+                .setSigningKey(getSignInKey())
+                .build()
+                .parseClaimsJws(token)
+                .getBody();
     }
 
     /**
-     * Verifica se il token è scaduto.
+     * Metodo che ottiene la chiave di firma utilizzata per verificare e firmare i token.
+     * @return Key una chiave segreta basata sull'algoritmo HMAC.
      */
-
-    public Boolean isTokenExpired(String token) {
-        return extractExpiration(token).before(new Date());
+    private Key getSignInKey() {
+        byte[] keyBytes = Decoders.BASE64.decode(secretKey);
+        return Keys.hmacShaKeyFor(keyBytes);
     }
 
-    /**
-     * Estrae la data di scadenza dal token.
-     */
-    private Date extractExpiration(String token) {
-        return extractClaim(token, Claims::getExpiration);
-    }
-
-    /**
-     * Genera un token JWT con claims personalizzati.
-     */
-
-    public String generateToken(String email, String role) {
-        Map<String, Object> claims = new HashMap<>();
-        claims.put("email", email);
-        claims.put("role", role);
-        return createToken(claims, email);
-    }
-
-    /**
-     * Crea un token JWT con claims personalizzati.
-     */
-
-
+}

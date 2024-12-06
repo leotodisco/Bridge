@@ -7,8 +7,10 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
@@ -17,73 +19,93 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import java.io.IOException;
 
 /**
- *
  * @author Benedetta Colella
  * Creato il: 04/12/2024
- * Questo filtro intercetta ogni richiesta HTTP per verificare se è presente
- * un token JWT nell'header di autorizzazione. Se il token è valido, il filtro
- * autentica l'utente e aggiorna il contesto di sicurezza di Spring.
- * È un filtro di tipo OncePerRequestFilter, quindi viene eseguito una sola
- * volta per ogni richiesta.
- *
+ * JwtAuthenticationFilter
+ * Questo filtro intercetta ogni richiesta HTTP per verificare la presenza di un token JWT
+ * nell'header "Authorization". Se il token è valido:
+ * - Estrae l'username dal token.
+ * - Carica i dettagli utente tramite `UserDetailsService`.
+ * - Autentica l'utente impostando un oggetto di autenticazione nel contesto di sicurezza di Spring.
+ * Funzionalità:
+ * - Controlla il formato dell'header "Authorization" per assicurarsi che contenga un token valido.
+ * - Utilizza il servizio `JwtService` per estrarre e validare il token JWT.
+ * - Aggiorna il contesto di sicurezza con le credenziali dell'utente autenticato.
+ * Specifiche tecniche:
+ * - Estende `OncePerRequestFilter`, garantendo che il filtro venga eseguito una sola volta per ogni richiesta.
+ * - Gestisce anche gli header CORS per supportare richieste provenienti da domini diversi.
  */
 
-@Component // Spring lo riconosce come un componente
+
 @RequiredArgsConstructor
+@Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
-    /**
-     * jwtService.
-     */
-    private final JwtService jwtService;
-    /**
-     * userDetailsService.
-     */
-    private final UserDetailsService userDetailsService;
 
     /**
-     * Questo metodo è chiamato per ogni richiesta HTTP.
-     * Controlla se il token è presente nell'header di autorizzazione.
-     * Se il token è valido, autentica l'utente e aggiorna il contesto di sicurezza.
+     * service.
+     */
+    @Autowired
+    private JwtService jwtService;
+
+    /**
+     * user.
+     */
+    @Autowired
+    private UserDetailsService userDetailsService;
+
+    /**
      *
-     * @param request richiesta HTTP
-     * @param response risposta HTTP
-     * @param filterChain catena dei filtri
+     * @param request richiesta.
+     * @param response risposta.
+     * @param filterChain carena dei filtri che la richiesta attraversa.
+     * @throws ServletException
+     * @throws IOException
      */
-    @Override
-    protected void doFilterInternal(@NonNull HttpServletRequest request,
-                                    @NonNull HttpServletResponse response,
-                                    @NonNull FilterChain filterChain)
-            throws ServletException, IOException {
-        // Estrae l'header di autenticazione dalla richiesta
-        final String authHeader = request.getHeader("Authorization");
-        final String jwt;
-        final String userEmail;
 
-        // Se l'header di autenticazione è nullo o non inizia con "Bearer ", lascia passare la richiesta senza autenticazione
-        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+    @Override
+    protected void doFilterInternal(@NonNull final HttpServletRequest request,
+                                    @NonNull final HttpServletResponse response,
+                                    @NonNull final FilterChain filterChain)
+            throws ServletException, IOException {
+        final String authHeader = request.getHeader("Authorization");
+        if (!isValidAuthorizationHeader(authHeader)) {
+            logger.debug("Invalid or missing Authorization header");
             filterChain.doFilter(request, response);
             return;
         }
 
-        // Estrae il token JWT dall'header di autenticazione (rimuovendo prefisso "Bearer ")
-        jwt = authHeader.substring(7);
+        final String jwt = authHeader.substring(7);
+        final String userEmail;
 
-        // Estrae l'indirizzo email dal token
-        userEmail = jwtService.extractUsername(jwt);
+        try {
+            userEmail = jwtService.extractUsername(jwt);
+        } catch (Exception e) {
+            logger.error("Error extracting username from token", e);
+            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Invalid JWT token");
+            return;
+        }
 
-        // Se l'indirizzo email è valido e l'utente non è già autenticato, autentica l'utente
         if (userEmail != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-            // Carica i dettagli dell'utente dal servizio UserDetailsService
-            var userDetails = (Utente) this.userDetailsService.loadUserByUsername(userEmail);
+            var userDetails = this.userDetailsService.loadUserByUsername(userEmail);
 
-            // Se il token è valido, autentica l'utente e aggiorna il contesto di sicurezza
             if (jwtService.isTokenValid(jwt, userDetails)) {
-                var authToken = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
-
-                // Aggiunge i dettagli della richiesta corrente
+                var authToken = new UsernamePasswordAuthenticationToken(
+                        userDetails, null, userDetails.getAuthorities());
                 authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                 SecurityContextHolder.getContext().setAuthentication(authToken);
             }
         }
+
+        setCorsHeaders(response);
+        filterChain.doFilter(request, response);
+    }
+
+    private boolean isValidAuthorizationHeader(String authHeader) {
+        return authHeader != null && authHeader.startsWith("Bearer ");
+    }
+
+    private void setCorsHeaders(HttpServletResponse response) {
+        response.setHeader("Access-Control-Allow-Headers",
+                "Authorization, OPTIONS, Origin, X-Requested-With, Content-Type, Access-Control-Request-Headers, Accept, Access-Control-Request-Method");
     }
 }
