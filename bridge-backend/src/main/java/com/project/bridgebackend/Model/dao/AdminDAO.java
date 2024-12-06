@@ -9,7 +9,7 @@ import org.springframework.stereotype.Repository;
  * Interfaccia che indica un DAO per l'admin
  */
 @Repository
-public interface AdminDAO {
+public interface AdminDAO extends UtenteDAO{
     /**
      * Query che ci permette di ricercare un admin dalla email
      * @param email dell'admin da ricercare

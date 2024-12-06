@@ -20,15 +20,15 @@ public interface RegistrazioneService {
      * Metodo per la registrazione di un Rifugiato
      * @param rifugiato è il rifugiato che viene registrato
      * */
-    void registraRifugiato(Rifugiato rifugiato) throws Exception;
+    void registraRifugiato(Rifugiato rifugiato, String confermaPW) throws Exception;
     /**
      * Metodo per la registrazione di un admin
      * @param admin è l'admin che viene registrato
      * */
-    void registraAdmin(Admin admin) throws Exception;
+    void registraAdmin(Admin admin, String confermaPW) throws Exception;
     /**
      * Metodo per la registrazione di una Figura Specializzata
      * @param figspec è la figura specializzata che viene registrata
      * */
-    void registraFiguraSpecializzata(FiguraSpecializzata figspec) throws Exception;
+    void registraFiguraSpecializzata(FiguraSpecializzata figspec, String confermaPW) throws Exception;
 }

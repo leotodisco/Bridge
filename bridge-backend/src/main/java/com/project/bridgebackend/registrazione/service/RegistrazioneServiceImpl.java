@@ -15,38 +15,39 @@ import org.springframework.stereotype.Service;
 /**
  * @author Antonio Ceruso.
  * Data creazione: 04/12/2024.
- * Classe che rappresenta il service della registrazione
+ * Classe che rappresenta il service della registrazione.
  */
 @Service
 public class RegistrazioneServiceImpl implements RegistrazioneService {
     /**
-     * Si occupa delle operazioni relative all'admin nel db
+     * Si occupa delle operazioni relative all'admin nel db.
      * */
     private AdminDAO adminDAO;
     /**
-     * Si occupa delle operazioni relative al rifugiato nel db
+     * Si occupa delle operazioni relative al rifugiato nel db.
      * */
+    @Autowired
     private RifugiatoDAO rifugiatoDAO;
     /**
-     * Si occupa delle operazioni relative al volontario nel db
+     * Si occupa delle operazioni relative al volontario nel db.
      * */
     @Autowired
     private VolontarioDAO volontarioDAO;
     /**
-     * Si occupa delle operazioni relative alla figura specializzata nel db
+     * Si occupa delle operazioni relative alla figura specializzata nel db.
      * */
     private FiguraSpecializzataDAO figSpecDAO;
 
 
     /**
-     *Implementazione metodo di registrazione di un volontario
+     *Implementazione metodo di registrazione di un volontario.
      * @param volontario
-     * @return response
+     * @param confermaPW
      * */
     @Override
     public void registraVolontario(@Valid final Volontario volontario,
-                                   String confermaPW)
-            throws Exception {
+                                                String confermaPW)
+                                                            throws Exception {
         if(volontario == null){
             throw new IllegalArgumentException("Volontario non valido");
         }else if(volontarioDAO.findByEmail(volontario.getEmail())!= null){
@@ -60,33 +61,68 @@ public class RegistrazioneServiceImpl implements RegistrazioneService {
     }
 
     /**
-     *Implementazione metodo di registrazione di un rifugiato
+     *Implementazione metodo di registrazione di un rifugiato.
      * @param rifugiato
-     * @return response
+     * @param confermaPW
      * */
     @Override
-    public void registraRifugiato(@Valid final Rifugiato rifugiato)
-            throws Exception {
+    public void registraRifugiato(@Valid final Rifugiato rifugiato,
+                                                String confermaPW)
+                                                            throws Exception {
+        if(rifugiato == null){
+            throw new IllegalArgumentException("Rifugiato non valido");
+        }else if(rifugiatoDAO.findByEmail(rifugiato.getEmail())!= null){
+            throw new IllegalArgumentException("Rifugiato già presente");
+        }
 
+        if(!rifugiato.getPassword().equals(confermaPW)){
+            throw new IllegalArgumentException("Le due password non combaciano");
+        }
+        rifugiato.setPassword(confermaPW);
+        rifugiatoDAO.save(rifugiato);
     }
 
     /**
-     *Implementazione metodo di registrazione di un admin
+     *Implementazione metodo di registrazione di un admin.
      * @param admin
-     * @return response
+     * @param confermaPW
      * */
     @Override
-    public void registraAdmin(@Valid final Admin admin)
-            throws Exception {
+    public void registraAdmin(@Valid final Admin admin,
+                                                String confermaPW)
+                                                        throws Exception {
+        if(admin == null){
+            throw new IllegalArgumentException("Admin non valido");
+        }else if(adminDAO.findByEmail(admin.getEmail())!= null){
+            throw new IllegalArgumentException("Admin già presente");
+        }
+
+        if(!admin.getPassword().equals(confermaPW)){
+            throw new IllegalArgumentException("Le due password non combaciano");
+        }
+        admin.setPassword(confermaPW);
+        adminDAO.save(admin);
     }
 
     /**
-     *Implementazione metodo di registrazione di una Figura Specializzata
+     *Implementazione metodo di registrazione di una Figura Specializzata.
      * @param figspec
-     * @return response
+     * @param confermaPW
      * */
     @Override
-    public void registraFiguraSpecializzata(@Valid final FiguraSpecializzata figspec)
-            throws Exception {
+    public void registraFiguraSpecializzata(@Valid final FiguraSpecializzata figspec,
+                                                                        String confermaPW)
+                                                                        throws Exception {
+        if(figspec == null){
+            throw new IllegalArgumentException("Figura Specializzata non valida");
+        }else if(figSpecDAO.findByEmail(figspec.getEmail())!= null){
+            throw new IllegalArgumentException("Figura Specializzata già presente");
+        }
+
+        if(!figspec.getPassword().equals(confermaPW)){
+            throw new IllegalArgumentException("Le due password non combaciano");
+        }
+        figspec.setPassword(confermaPW);
+        figSpecDAO.save(figspec);
     }
 }
