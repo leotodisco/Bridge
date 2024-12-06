@@ -13,7 +13,7 @@ import java.io.Serializable;
  * @author [Biagio]
  * Creato il: [03/12/2024].
  * Questa è la classe relativa ad un Corso.
- * I campi sono: id, descrizione, categoria del corso, titolo, pdf, lingua.
+ * I campi sono: id, descrizione, categoria del corso, titolo, pdf, lingua, volontario.
  */
 
 
@@ -71,13 +71,13 @@ public class Corso implements Serializable {
 
 
     /**
-     * Proprietario del corso. Indica l'utente che ha creato o possiede il corso.
-     * La relazione è ManyToOne, poiché un utente può possedere molti corsi.
+     * Proprietario del corso. Indica il volontario che ha creato o possiede il corso.
+     * La relazione è ManyToOne, poiché un volontario può possedere molti corsi.
      * È un campo obbligatorio.
      */
     @ManyToOne(optional = false)
     @JoinColumn(name = "proprietario", nullable = false)
-    private Utente proprietario;
+    private Volontario proprietario;
 
 }
 

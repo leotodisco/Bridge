@@ -1,26 +1,45 @@
 package com.project.bridgebackend.Model.Entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.project.bridgebackend.Model.Entity.enumeration.Lingua;
-import jakarta.persistence.*;
+import jakarta.persistence.Id;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
+import jakarta.persistence.Column;
+import jakarta.persistence.ElementCollection;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.CollectionTable;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.ManyToMany;
+import jakarta.persistence.JoinTable;
+import jakarta.validation.constraints.FutureOrPresent;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Min;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 import lombok.experimental.SuperBuilder;
-
-import javax.validation.constraints.NotBlank;
+import org.springframework.format.annotation.DateTimeFormat;
+import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
 
-
 /**
- * @author Alessia De Filippo
- * Creato il: 03/12/2024
- * è la classe relativa all'entità Evento
+ * @author Alessia De Filippo.
+ * Creato il: 03/12/2024.
+ * È la classe relativa all'entità Evento.
  * I campi sono: id, nome, data, ora,
  * lingueParlate, descrizione, luogo,
- * organizzatore, maxPartecipanti e listaCandidati
+ * organizzatore, maxPartecipanti e listaCandidati.
  **/
 
 @Entity
@@ -28,12 +47,33 @@ import java.util.List;
 @SuperBuilder
 @Getter
 @Setter
-@Table(name = "Evento")
+@EqualsAndHashCode
+@Table(name = "evento")
 public class Evento implements Serializable {
 
     /**
-     * Campo relativo all'id dell'evento
-     * Generato automaticamente
+     * Costante lunghezza minima nome.
+     */
+    private static final int MIN_NAME_LENGTH = 3;
+
+    /**
+     * Costante lunghezza massima nome.
+     */
+    private static final int MAX_NAME_LENGTH = 100;
+
+    /**
+     * Costante lunghezza minima descrizione.
+     */
+    private static final int MIN_DESCRIPTION_LENGTH = 1;
+
+    /**
+     * Costante lunghezza massima descrizione.
+     */
+    private static final int MAX_DESCRIPTION_LENGTH = 1000;
+
+    /**
+     * Campo relativo all'id dell'evento.
+     * Generato automaticamente.
      **/
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -41,78 +81,106 @@ public class Evento implements Serializable {
     private Long id;
 
     /**
-     * Campo relativo al nome dell'evento
+     * Campo relativo al nome dell'evento.
      **/
-    @NotBlank
-    @Column(name = "nome", nullable = false)
+    @NotBlank(message = "Il nome dell'evento non può essere vuoto")
+    @Pattern(regexp = "^[A-Za-z0-0-ÿ .,'-]{3,100}$",
+            message = "Il nome contiene caratteri non validi")
+    @Size(min = MIN_NAME_LENGTH,
+          max = MAX_NAME_LENGTH,
+          message = "Il nome deve essere tra 3 e 100 caratteri")
+    @Column(name = "nome",
+            nullable = false,
+            length = MAX_NAME_LENGTH)
     private String nome;
 
     /**
-     * Campo relativo alla data dell'evento
+     * Campo relativo alla data dell'evento.
      **/
 
-    @NotBlank
+    @NotNull(message = "La data dell'evento è obbligatoria")
+    @FutureOrPresent(message = "La data non può essere nel passato")
+    @DateTimeFormat(pattern = "dd/MM/yyyy")
     @Column(name = "data", nullable = false)
     private LocalDate data;
 
     /**
-     * Campo relativo all'ora dell'evento
+     * Campo relativo all'ora dell'evento.
      **/
-    @NotBlank
+    @NotNull(message = "L'ora è obbligatoria")
+    @DateTimeFormat(pattern = "HH:mm")
     @Column(name = "ora", nullable = false)
     private LocalTime ora;
 
     /**
-     * Campo relativo alla lingua dell'evento
+     * Campo relativo alle lingue parlate durante l'evento.
      **/
-    @NotBlank
+    @NotNull(message = "La lingue sono obbligatorie")
+    @ElementCollection(targetClass = Lingua.class)
+    @Enumerated(EnumType.STRING)
+    @CollectionTable(name = "evento_lingue_parlate",
+            joinColumns = @JoinColumn(name = "evento_id"))
     @Column(name = "lingueParlate", nullable = false)
-    private Lingua lingueParlate;
+    private List<Lingua> lingueParlate;
 
     /**
-     * Campo relativo alla descrizione dell'evento
+     * Campo relativo alla descrizione dell'evento.
      **/
-    @NotBlank
-    @Column(name = "descrizione", nullable = false)
+    @NotBlank(message = "La descrizione non può essere vuota")
+    @Pattern(regexp = "^[A-Za-zÀ-ÿ0-9]{2,500}$")
+    @Size(min = MIN_DESCRIPTION_LENGTH,
+          max = MAX_DESCRIPTION_LENGTH,
+          message = "La descrizione deve essere tra 1 e 1000 caratteri")
+    @Column(name = "descrizione",
+            nullable = false,
+            length = MAX_DESCRIPTION_LENGTH)
     private String descrizione;
 
     /**
-     * Campo relativo al luogo dell'evento
-     * è chiave esterna di Indirizzo
+     * Campo relativo al luogo dell'evento.
+     * È chiave esterna di Indirizzo.
      **/
+    @NotNull(message = "Il luogo è obbligatorio")
     @ManyToOne
     @JoinColumn(name = "luogo", referencedColumnName = "id")
     private Indirizzo luogo;
 
     /**
-     * Campo relativo all'organizzatore dell'evento
-     * è chiave esterna di Volontario
+     * Campo relativo all'organizzatore dell'evento.
+     * È chiave esterna di Volontario.
      **/
-    @NotBlank
+    @NotNull(message = "L'organizzatore è obbligatorio")
     @ManyToOne
     @JoinColumn(name = "organizzatore", referencedColumnName = "email")
     private Volontario organizzatore;
 
     /**
-     * Campo relativo al numero massimo di partecipanti dell'evento
+     * Campo relativo al numero massimo di partecipanti dell'evento.
      **/
-    @NotBlank
-    @Column(name = "maxPartecipanti", nullable = false)
+    @Min(value = 0,
+         message = "Il numero massimo di partecipanti non può essere negativo")
+    @NotNull(message = "Il numero massimo di partecipanti è obbligatorio")
+    @Min(value = 1,
+         message = "Deve esserci almeno un partecipante")
+    @Column(name = "maxPartecipanti",
+            nullable = false)
     private int maxPartecipanti;
 
     /**
-     * Campo relativo alla lista di partecipanti dell'evento
-     * è chiave esterna di Rifugiato
+     * Campo relativo alla lista di partecipanti dell'evento.
+     * è chiave esterna di Rifugiato.
      **/
-    @NotBlank
+    @JsonIgnore
     @ManyToMany
-    @JoinTable(name = "evento_rifugiato",
+    @JoinTable(name = "evento_lista_partecipanti",
             joinColumns = @JoinColumn(name = "evento_id"),
             inverseJoinColumns = @JoinColumn(name = "rifugiato_email"))
     private List<Rifugiato> listaPartecipanti;
 
     /**
-     * Costruttore vuoto
+     * Costruttore vuoto.
      **/
-    public Evento() {}
+    public Evento() {
+
+    }
 }

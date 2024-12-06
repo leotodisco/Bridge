@@ -128,7 +128,7 @@ public class Utente implements Serializable {
      * */
     @Column(name = "fotoProfilo")
     @NotNull
-    private Byte[] fotoProfilo;
+    private byte[] fotoProfilo;
 
     /*
      * Lingue parlate dall'utente
@@ -160,7 +160,7 @@ public class Utente implements Serializable {
      * @param nazionalita rappresenta la nazionalità dell'utente
      * @param password rappresenta la password dell'utente
      */
-    public Utente(String email, String nome, String cognome, String lingueParlate, Byte[] fotoProfilo, String skill, LocalDate dataNascita, TitoloDiStudio titoloDiStudio, Ruolo role, Gender gender, String salt, String nazionalita, String password) {
+    public Utente(String email, String nome, String cognome, String lingueParlate, byte[] fotoProfilo, String skill, LocalDate dataNascita, TitoloDiStudio titoloDiStudio, Ruolo role, Gender gender, String salt, String nazionalita, String password) {
         this.email = email;
         this.nome = nome;
         this.cognome = cognome;

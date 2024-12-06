@@ -7,88 +7,97 @@ package com.project.bridgebackend.Model.Entity;
  * Entità per la gestione degli annunci di lavoro
  */
 
-import jakarta.persistence.*; // Per le annotazioni JPA
-import javax.validation.constraints.*; // Per le annotazioni di validazione
-import lombok.*; // Per Lombok
-import com.project.bridgebackend.Model.Entity.enumeration.TipoContratto;
-import com.project.bridgebackend.Model.Entity.Indirizzo;
+import jakarta.persistence.*;
+import lombok.*;
+import javax.validation.constraints.*;
+import com.project.bridgebackend.Model.Entity.enumeration.*;
 
+/**
+ * Classe che rappresenta un annuncio di lavoro, estende la classe base Annuncio.
+ */
 @Entity
-@Table(name = "Lavoro")
-public class Lavoro {
+@Getter
+@Setter
+@Table(name = "lavoro")
+public class Lavoro extends Annuncio {
 
     /**
-     * ID incrementale (Genera automaticamente il valore della chiave primaria)
+     * La posizione lavorativa richiesta nell'annuncio.
      */
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
-
-    /**
-     * Posizione Lavorativa
-     */
-    @Column(nullable = false, length = 100)
+    @Column(name = "posizione_lavorativa", nullable = false, length = 100)
     @NotBlank(message = "La posizione lavorativa è obbligatoria")
-    @Size(max = 100, message = "La posizione lavorativa non può superare i 100 caratteri")
+    @Pattern(regexp = "^[A-zÀ-ù ‘]{2,100}$", message = "Formato posizione lavorativa non valido ")
+    @Size(max = 100, message = "La posizione lavorativa non può superare i 100 caratteri ")
     private String posizioneLavorativa;
 
     /**
-     * Nome Azienda
+     * Il nome dell'azienda che offre il lavoro.
      */
-    @Column(nullable = false, length = 100)
+    @Column(name = "nome_azienda", nullable = false, length = 100)
     @NotBlank(message = "Il nome dell'azienda è obbligatorio")
-    @Size(max = 100, message = "Il nome dell'azienda non può superare i 100 caratteri")
+    @Pattern(regexp = "^[A-zÀ-ù0-9 ‘]{2,100}$", message = "Formato nome azienda non valido ")
+    @Size(max = 100, message = "Il nome dell'azienda non può superare i 100 caratteri ")
     private String nomeAzienda;
 
     /**
-     * Orario di Lavoro
+     * L'orario di lavoro specificato nell'annuncio (ad esempio, 09:00-17:00).
      */
-    @Column(nullable = false, length = 50)
+    @Column(name = "orario_lavoro", nullable = false, length = 50)
     @NotBlank(message = "L'orario di lavoro è obbligatorio")
-    @Size(max = 50, message = "L'orario di lavoro non può superare i 50 caratteri")
+    @Pattern(regexp = "^\\d{2}:\\d{2}-d{2}:\\d{2}$", message = "Formato orario di lavoro non valido ")
     private String orarioLavoro;
 
     /**
-     * Tipo di Contratto
+     * Il tipo di contratto offerto.
      */
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false, length = 50)
+    @Column(name = "tipo_contratto", nullable = false, length = 50)
     @NotNull(message = "Il tipo di contratto è obbligatorio")
+    @Pattern(regexp = "^[A-zÀ-ù0-9 ‘]{2,50}$", message = "Formato tipo di contratto non valido ")
+    @Size(max = 50, message = "Il tipo di contratto non può superare i 50 caratteri ")
     private TipoContratto tipoContratto;
 
     /**
-     * Retribuzione
+     * La retribuzione offerta per la posizione.
      */
-    @Column(nullable = false, precision = 10, scale = 2)
+    @Column(name = "retribuzione", nullable = false)
     @DecimalMin(value = "0.0", inclusive = false, message = "La retribuzione deve essere positiva")
+    @Pattern(regexp = "^\\d{1,8}(\\.\\d{2})?$", message = "Formato retribuzione non valido ")
     private double retribuzione;
 
     /**
-     * Nome Sede
+     * Il nome della sede di lavoro.
      */
-    @Column(nullable = false, length = 100)
+    @Column(name = "nome_sede", nullable = false, length = 100)
     @NotBlank(message = "Il nome della sede è obbligatorio")
-    @Size(max = 100, message = "Il nome della sede non può superare i 100 caratteri")
+    @Pattern(regexp = "^[A-zÀ-ù ‘]{2,100}$", message = "Formato nome sede non valido ")
+    @Size(max = 100, message = "Il nome della sede non può superare i 100 caratteri ")
     private String nomeSede;
 
     /**
-     * Info Utili
+     * Informazioni aggiuntive utili per il lavoro.
      */
-    @Column(nullable = false, length = 500)
+    @Column(name = "info_utili", nullable = false, length = 500)
     @NotBlank(message = "Le info utili sono obbligatorie")
-    @Size(max = 500, message = "Le info utili non possono superare i 500 caratteri")
+    @Pattern(regexp = "^[\\wÀ-ÿ\s,.!?\'\\-]{1,500}$", message = "Formato info utili non valido ")
+    @Size(max = 500, message = "Le info utili non possono superare i 500 caratteri ")
     private String infoUtili;
 
     /**
-     * Indirizzo
+     * Costruttore completo.
      */
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinColumn(name = "indirizzo_id", nullable = false)
-    @NotNull(message = "L'indirizzo è obbligatorio")
-    private Indirizzo indirizzo;
+    public Lavoro(String posizioneLavorativa, String nomeAzienda, String orarioLavoro, TipoContratto tipoContratto,
+                  double retribuzione, String nomeSede, String infoUtili) {
+        // Inizializza i campi ereditati da Annuncio
+        super();
 
-    /**
-     * Costruttore
-     */
-    public Lavoro () {}
+        // Inizializza i campi specifici di Lavoro
+        this.posizioneLavorativa = posizioneLavorativa;
+        this.nomeAzienda = nomeAzienda;
+        this.orarioLavoro = orarioLavoro;
+        this.tipoContratto = tipoContratto;
+        this.retribuzione = retribuzione;
+        this.nomeSede = nomeSede;
+        this.infoUtili = infoUtili;
+    }
 }
