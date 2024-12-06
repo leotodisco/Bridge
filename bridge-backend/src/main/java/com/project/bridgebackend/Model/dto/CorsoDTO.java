@@ -1,31 +1,32 @@
+/**
+ * Questo è il package che contiene i DTO per la gestione dei corsi.
+ */
 package com.project.bridgebackend.Model.dto;
+
 
 import lombok.Data;
 
 /**
  * @author Biagio Gallo.
  * Creato il: 04/12/2024.
- * Questa classe rappresenta il DTO del corso.
+ *
  */
 
 @Data
 public class CorsoDTO {
 
     /**
-     * Descrizione del corso. Il campo è obbligatorio.
-     * Può contenere fino a 500 caratteri.
+     * Descrizione del corso.
      */
     private String descrizione;
 
     /**
-     * Categoria del corso. Indica la categoria del corso.
-     * Lunghezza massima di 50 caratteri.
+     * Categoria del corso.
      */
     private String categoriaCorso;
 
     /**
      * Titolo del corso.
-     * Rappresenta il nome del corso.
      */
     private String titolo;
 
@@ -36,7 +37,6 @@ public class CorsoDTO {
 
     /**
      * Lingua del corso.
-     * Indica la lingua in cui è scritto il corso.
      */
     private String lingua;
 }
