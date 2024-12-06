@@ -53,6 +53,7 @@ public class GestioneEventoServiceImpl implements GestioneEventoService {
      * @param evento evento da aggiornare.
      * @return evento aggiornato.
      */
+    @Transactional
     @Override
     public Evento updateEvento(final Evento evento) {
         //Controllo su DTO nullo o id nullo
@@ -155,6 +156,7 @@ public class GestioneEventoServiceImpl implements GestioneEventoService {
      * @param indirizzo indirizzo da aggiornare.
      * @return indirizzo aggiornato.
      */
+    @Transactional
     @Override
     public Indirizzo updateIndirizzoEvento(final Indirizzo indirizzo) {
         //Controllo su Indirizzo nullo o id nullo
