@@ -2,7 +2,9 @@ package com.project.bridgebackend.GetioneAnnuncio.Controller;
 
 
 import com.project.bridgebackend.GetioneAnnuncio.Service.GestioneAnnuncioService;
-import com.project.bridgebackend.Model.Entity.*;
+import com.project.bridgebackend.Model.Entity.Consulenza;
+import com.project.bridgebackend.Model.Entity.FiguraSpecializzata;
+import com.project.bridgebackend.Model.Entity.Indirizzo;
 import com.project.bridgebackend.Model.dao.FiguraSpecializzataDAO;
 import com.project.bridgebackend.Model.dao.IndirizzoDAO;
 import com.project.bridgebackend.Model.dto.ConsulenzaDTO;
@@ -21,7 +23,7 @@ import javax.validation.Valid;
  * Creato il: 03/12/2024.
 
  * Controller per la gestione degli annunci.
- * Questo controller gestisce le richieste HTTP legate alla creazione di annunci
+ * Questo controller gestisce le richieste HTTP legate alla creazione di annunci.
  * di consulenza, includendo validazione e interazione con il database.
  */
 
@@ -36,7 +38,7 @@ public class GestioneAnnuncioController {
     private GestioneAnnuncioService gestioneAnnuncioService;
 
     /**
-     * DAO per accedere ai dati degli utenti-> figure specializzate
+     * DAO per accedere ai dati degli utenti-> figure specializzate.
      */
     @Autowired
     private FiguraSpecializzataDAO figuraSpecializzataDAO;
@@ -53,11 +55,11 @@ public class GestioneAnnuncioController {
      * valida l'input, e crea le entità necessarie nel database.
      *
      * @param consulenzaDTO DTO contenente i dati della consulenza.
-     *                      Include informazioni sull'indirizzo, il proprietario,
-     *                      e altri dettagli rilevanti.
-     *                      semplifica la gestione e validazione dei dati passati con JSON
-     * @return ResponseEntity contenente l'entità `Consulenza` appena creata
-     *         oppure un errore se le operazioni non vanno a buon fine.
+     *                      Include informazioni sull'indirizzo,
+     *                      il proprietario e altri dettagli rilevanti.
+     *                      Semplifica la gestione e validazione dei dati passati con JSON.
+     * @return ResponseEntity contenente l'entità `Consulenza` appena creata.
+     *         Oppure un errore se le operazioni non vanno a buon fine.
      */
     @PostMapping
     public ResponseEntity<Consulenza> creaConsulenza(@Valid @RequestBody ConsulenzaDTO consulenzaDTO) {
@@ -73,16 +75,11 @@ public class GestioneAnnuncioController {
         indirizzo.setCap(consulenzaDTO.getIndirizzo().getCap());
         indirizzo.setProvincia(consulenzaDTO.getIndirizzo().getProvincia());
         indirizzo.setNumCivico(consulenzaDTO.getIndirizzo().getNumCivico());
-        System.out.println(indirizzo.getNumCivico());
 
-        /*
-         * si occupa di salvare l'indirizzo nel database
-         */
+        //si occupa di salvare l'indirizzo nel database.
         Long indirizzoId = gestioneAnnuncioService.salvaIndirizzoConsulenza(indirizzo);
 
-        /*
-         *Creazione dell'entità Consulenza a partire dai dati del DTO.
-        */
+        //Creazione dell'entità Consulenza a partire dai dati del DTO.
         Consulenza consulenza = new Consulenza();
         consulenza.setTitolo(consulenzaDTO.getTitolo());
         consulenza.setDescrizione(consulenzaDTO.getDescrizione());
@@ -95,21 +92,16 @@ public class GestioneAnnuncioController {
         consulenza.setTipologia(true);
         consulenza.setIndirizzo(indirizzoDAO.getReferenceById(indirizzoId));
 
-        /*
-         * Recupero della figura specializzata proprietaria della consulenza.
-         */
-        FiguraSpecializzata figuraSpecializzata = figuraSpecializzataDAO.findByEmail(consulenzaDTO.getProprietario());
+        // Recupero della figura specializzata proprietaria della consulenza.
+        FiguraSpecializzata figuraSpecializzata =
+        figuraSpecializzataDAO.findByEmail(consulenzaDTO.getProprietario());
         if (figuraSpecializzata == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         }
-        /*
-         * Associa la figura specializzata come proprietario della consulenza.
-         */
+        //Associa la figura specializzata come proprietario della consulenza
         consulenza.setProprietario(figuraSpecializzata);
 
-        /*
-         * Salvataggio della consulenza nel database.
-         */
+        //Salvataggio della consulenza nel database
         Consulenza nuovaConsulenza = gestioneAnnuncioService.inserimentoConsulenza(consulenza);
 
         return new ResponseEntity<>(nuovaConsulenza, HttpStatus.CREATED);
