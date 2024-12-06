@@ -4,6 +4,7 @@
 package com.project.bridgebackend.Model.dto;
 
 
+import com.project.bridgebackend.Model.Entity.Utente;
 import lombok.Data;
 
 /**
@@ -39,4 +40,9 @@ public class CorsoDTO {
      * Lingua del corso.
      */
     private String lingua;
+
+    /**
+    * Email del proprietario del corso.
+     */
+    private String proprietarioEmail;
 }
