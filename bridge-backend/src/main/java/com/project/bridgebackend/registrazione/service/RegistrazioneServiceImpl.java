@@ -22,6 +22,7 @@ public class RegistrazioneServiceImpl implements RegistrazioneService {
     /**
      * Si occupa delle operazioni relative all'admin nel db.
      * */
+    @Autowired
     private AdminDAO adminDAO;
     /**
      * Si occupa delle operazioni relative al rifugiato nel db.
@@ -36,6 +37,7 @@ public class RegistrazioneServiceImpl implements RegistrazioneService {
     /**
      * Si occupa delle operazioni relative alla figura specializzata nel db.
      * */
+    @Autowired
     private FiguraSpecializzataDAO figSpecDAO;
 
 
@@ -46,15 +48,16 @@ public class RegistrazioneServiceImpl implements RegistrazioneService {
      * */
     @Override
     public void registraVolontario(@Valid final Volontario volontario,
-                                                String confermaPW)
+                                                final String confermaPW)
                                                             throws Exception {
-        if(volontario == null){
+        if (volontario == null) {
             throw new IllegalArgumentException("Volontario non valido");
-        }else if(volontarioDAO.findByEmail(volontario.getEmail())!= null){
+        } else if (volontarioDAO.findByEmail(volontario.getEmail()) != null) {
             throw new IllegalArgumentException("Volontario già presente");
         }
-        if(!volontario.getPassword().equals(confermaPW)){
-            throw new IllegalArgumentException("Le due password non combaciano");
+        if (!volontario.getPassword().equals(confermaPW)) {
+            throw new
+                  IllegalArgumentException("Le due password non combaciano");
         }
         volontario.setPassword(confermaPW);
         volontarioDAO.save(volontario);
@@ -67,16 +70,17 @@ public class RegistrazioneServiceImpl implements RegistrazioneService {
      * */
     @Override
     public void registraRifugiato(@Valid final Rifugiato rifugiato,
-                                                String confermaPW)
+                                            final String confermaPW)
                                                             throws Exception {
-        if(rifugiato == null){
+        if (rifugiato == null) {
             throw new IllegalArgumentException("Rifugiato non valido");
-        }else if(rifugiatoDAO.findByEmail(rifugiato.getEmail())!= null){
+        } else if (rifugiatoDAO.findByEmail(rifugiato.getEmail()) != null) {
             throw new IllegalArgumentException("Rifugiato già presente");
         }
 
-        if(!rifugiato.getPassword().equals(confermaPW)){
-            throw new IllegalArgumentException("Le due password non combaciano");
+        if (!rifugiato.getPassword().equals(confermaPW)) {
+            throw new
+                  IllegalArgumentException("Le due password non combaciano");
         }
         rifugiato.setPassword(confermaPW);
         rifugiatoDAO.save(rifugiato);
@@ -89,16 +93,17 @@ public class RegistrazioneServiceImpl implements RegistrazioneService {
      * */
     @Override
     public void registraAdmin(@Valid final Admin admin,
-                                                String confermaPW)
+                                            final String confermaPW)
                                                         throws Exception {
-        if(admin == null){
+        if (admin == null) {
             throw new IllegalArgumentException("Admin non valido");
-        }else if(adminDAO.findByEmail(admin.getEmail())!= null){
+        } else if (adminDAO.findByEmail(admin.getEmail()) != null) {
             throw new IllegalArgumentException("Admin già presente");
         }
 
-        if(!admin.getPassword().equals(confermaPW)){
-            throw new IllegalArgumentException("Le due password non combaciano");
+        if (!admin.getPassword().equals(confermaPW)) {
+            throw new
+                  IllegalArgumentException("Le due password non combaciano");
         }
         admin.setPassword(confermaPW);
         adminDAO.save(admin);
@@ -110,17 +115,21 @@ public class RegistrazioneServiceImpl implements RegistrazioneService {
      * @param confermaPW
      * */
     @Override
-    public void registraFiguraSpecializzata(@Valid final FiguraSpecializzata figspec,
-                                                                        String confermaPW)
-                                                                        throws Exception {
-        if(figspec == null){
-            throw new IllegalArgumentException("Figura Specializzata non valida");
-        }else if(figSpecDAO.findByEmail(figspec.getEmail())!= null){
-            throw new IllegalArgumentException("Figura Specializzata già presente");
+    public void registraFiguraSpecializzata(@Valid
+                                           final FiguraSpecializzata figspec,
+                                           final String confermaPW)
+                                           throws Exception {
+        if (figspec == null) {
+            throw new
+                  IllegalArgumentException("Figura Specializzata non valida");
+        } else if (figSpecDAO.findByEmail(figspec.getEmail()) != null) {
+            throw new
+                  IllegalArgumentException("Figura Specializzata già presente");
         }
 
-        if(!figspec.getPassword().equals(confermaPW)){
-            throw new IllegalArgumentException("Le due password non combaciano");
+        if (!figspec.getPassword().equals(confermaPW)) {
+            throw new
+                  IllegalArgumentException("Le due password non combaciano");
         }
         figspec.setPassword(confermaPW);
         figSpecDAO.save(figspec);

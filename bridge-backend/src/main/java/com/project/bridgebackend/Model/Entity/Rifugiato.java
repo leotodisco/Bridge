@@ -17,8 +17,8 @@ import java.time.LocalDate;
 @Entity
 @Data
 public class Rifugiato extends Utente{
-    /*
-     * Costruttore con tutti i campi dell'utente
+    /**
+     * Costruttore con tutti i campi dell'utente.
      * @param email
      * @param nome
      * @param cognome
@@ -29,12 +29,18 @@ public class Rifugiato extends Utente{
      * @param titoloDiStudio
      * @param role
      * @param gender
-     * @param salt
      * @param nazionalita
      * @param password
      */
-    public Rifugiato(String email, String nome, String cognome, String lingueParlate, byte[] fotoProfilo, String skill, LocalDate dataNascita, TitoloDiStudio titoloDiStudio, Ruolo role, Gender gender, String salt, String nazionalita, String password) {
-        super(email, nome, cognome, lingueParlate, fotoProfilo, skill, dataNascita, titoloDiStudio, role, gender, salt, nazionalita, password);
+    public Rifugiato(String email, String nome, String cognome,
+                     String lingueParlate, byte[] fotoProfilo,
+                     String skill, LocalDate dataNascita,
+                     TitoloDiStudio titoloDiStudio, Ruolo role,
+                     Gender gender, String nazionalita, String password) {
+        super(email, nome, cognome,
+                lingueParlate, fotoProfilo, skill,
+                dataNascita, titoloDiStudio, role,
+                gender, nazionalita, password);
     }
     /**
      * costruttore vuoto.

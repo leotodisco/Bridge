@@ -9,11 +9,11 @@ import org.springframework.stereotype.Repository;
  * Interfaccia che indica un DAO per la Figura Specializzata
  */
 @Repository
-public interface FiguraSpecializzataDAO extends UtenteDAO{
+public interface FiguraSpecializzataDAO extends UtenteDAO {
     /**
-     * Query che ci permette di ricercare una Figura Specializzata dalla email
-     * @param email della Figura Specializzata da ricercare
-     * return Figura Specializzata corrispondente
+     * Query che ci permette di ricercare una Figura Specializzata dalla email.
+     * @param email della Figura Specializzata da ricercare.
+     * @return Figura Specializzata corrispondente.
      * */
     FiguraSpecializzata findByEmail(String email);
 }

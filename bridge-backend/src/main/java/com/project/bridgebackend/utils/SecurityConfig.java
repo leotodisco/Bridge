@@ -4,19 +4,29 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
 import static org.springframework.security.config.Customizer.withDefaults;
-
+/**
+ * @author Antonio Ceruso.
+ * @co-author Geraldine Montella.
+ * Data creazione: 05/12/2024.
+ * Classe di configurazione, viene richiamata da Spring automaticamente.
+ * */
 @Configuration
 public class SecurityConfig {
 
+    /**
+     * Mertodo che permette di aggiungere filtri a una request.
+     * @param http
+     * @return l'insieme dei filtri che la richiesta http deve attraversare.
+     * @throws Exception
+     */
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain securityFilterChain(HttpSecurity http)
+                                                throws Exception {
         http
                 .csrf(csrf -> csrf.disable()) // Disabilita CSRF per API REST
                 .authorizeHttpRequests(auth -> auth
@@ -35,7 +45,7 @@ public class SecurityConfig {
 
      @Bean
     public AuthenticationManager authenticationManager(HttpSecurity http)
-                                                                throws Exception {
+                                                        throws Exception {
         AuthenticationManagerBuilder authenticationManagerBuilder =
                 http.getSharedObject(AuthenticationManagerBuilder.class);
 

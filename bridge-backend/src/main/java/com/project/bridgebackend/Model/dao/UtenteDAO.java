@@ -15,9 +15,9 @@ import org.springframework.stereotype.Repository;
 public interface UtenteDAO extends JpaRepository<Utente, Long> {
 
     /**
-     * Query che ci permette di ricercare un utente dalla email
-     * @param email dell'utente da ricercare
-     * return utente corrispondente
+     * Query che ci permette di ricercare un utente dalla email.
+     * @param email dell'utente da ricercare.
+     * @return utente corrispondente.
      * */
     Utente findByEmail(String email);
 }

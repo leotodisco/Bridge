@@ -16,16 +16,15 @@ import java.time.LocalDate;
 
 @Entity
 @Data
-public class Admin extends Utente{
+public class Admin extends Utente {
     /**
-     * Costruttore con tutti i campi dell'utente
+     * Costruttore con tutti i campi dell'utente.
      * @param email
      * @param nome
      * @param nazionalita
      * @param titoloDiStudio
      * @param lingueParlate
      * @param role
-     * @param salt
      * @param password
      * @param gender
      * @param dataNascita
@@ -34,8 +33,15 @@ public class Admin extends Utente{
      * @param fotoProfilo
      */
 
-    public Admin(String email, String nome, String cognome, String lingueParlate, byte[] fotoProfilo, String skill, LocalDate dataNascita, TitoloDiStudio titoloDiStudio, Ruolo role, Gender gender, String salt, String nazionalita, String password) {
-        super(email, nome, cognome, lingueParlate, fotoProfilo, skill, dataNascita, titoloDiStudio, role, gender, salt, nazionalita, password);
+    public Admin(String email, String nome,
+                 String cognome, String lingueParlate,
+                 byte[] fotoProfilo, String skill,
+                 LocalDate dataNascita, TitoloDiStudio titoloDiStudio,
+                 Ruolo role, Gender gender,
+                 String nazionalita, String password) {
+        super(email, nome, cognome, lingueParlate, fotoProfilo,
+                skill, dataNascita, titoloDiStudio, role, gender,
+                nazionalita, password);
     }
 
     /**

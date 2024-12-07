@@ -6,15 +6,15 @@ package com.project.bridgebackend.Model.Entity.enumeration;
  */
 public enum Gender {
     /**
-    * Genere Maschio
+    * Genere Maschio.
      */
     Maschio,
     /**
-     * Genere Femminile
+     * Genere Femminile.
      */
     Femmina,
     /**
-     * Genere Non Specificato
+     * Genere Non Specificato.
      */
     NonSpecificato
 }

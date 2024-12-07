@@ -14,9 +14,9 @@ import java.time.LocalDate;
  * */
 @Entity
 @Data
-public class FiguraSpecializzata extends Utente{
+public class FiguraSpecializzata extends Utente {
     /**
-     * Disponibilità orarie della Figura Specializzata
+     * Disponibilità orarie della Figura Specializzata.
      * */
     private String disponibilita;
     /**
@@ -26,7 +26,7 @@ public class FiguraSpecializzata extends Utente{
     }
 
     /**
-     * Costruttore con tutti i campi dell'utente
+     * Costruttore con tutti i campi dell'utente.
      * @param email
      * @param nome
      * @param cognome
@@ -37,13 +37,21 @@ public class FiguraSpecializzata extends Utente{
      * @param titoloDiStudio
      * @param role
      * @param gender
-     * @param salt
      * @param nazionalita
      * @param password
      * @param disponibilita
      */
-    public FiguraSpecializzata(String email, String nome, String cognome, String lingueParlate, byte[] fotoProfilo, String skill, LocalDate dataNascita, TitoloDiStudio titoloDiStudio, Ruolo role, Gender gender, String salt, String nazionalita, String password, String disponibilita) {
-        super(email, nome, cognome, lingueParlate, fotoProfilo, skill, dataNascita, titoloDiStudio, role, gender, salt, nazionalita, password);
+    public FiguraSpecializzata(String email, String nome,
+                               String cognome, String lingueParlate,
+                               byte[] fotoProfilo, String skill,
+                               LocalDate dataNascita,
+                               TitoloDiStudio titoloDiStudio,
+                               Ruolo role, Gender gender, String nazionalita,
+                               String password, String disponibilita) {
+        super(email, nome, cognome,
+                lingueParlate, fotoProfilo, skill,
+                dataNascita, titoloDiStudio, role,
+                gender, nazionalita, password);
         this.disponibilita = disponibilita;
     }
 }
