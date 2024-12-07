@@ -62,12 +62,12 @@ public class GestioneAnnuncioController {
      *         Oppure un errore se le operazioni non vanno a buon fine.
      */
     @PostMapping
-    public ResponseEntity<Consulenza> creaConsulenza(@Valid @RequestBody ConsulenzaDTO consulenzaDTO) {
+    public ResponseEntity<Consulenza> creaConsulenza(@Valid @RequestBody final ConsulenzaDTO consulenzaDTO) {
 
         /*
-         * Prendendo le informazioni dal DTO di consulenza
-         * genera anche l'entity indirizzo in modo da poterne
-         * salvare il contenuto nel db
+         * Prendendo le informazioni dal DTO di consulenza,
+         * genera anche l'entity indirizzo in modo da poterne,
+         * salvare il contenuto nel db.
          */
         Indirizzo indirizzo = new Indirizzo();
         indirizzo.setVia(consulenzaDTO.getIndirizzo().getVia());
@@ -98,13 +98,14 @@ public class GestioneAnnuncioController {
         if (figuraSpecializzata == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         }
-        //Associa la figura specializzata come proprietario della consulenza
+        //Associa la figura specializzata come proprietario della consulenza.
         consulenza.setProprietario(figuraSpecializzata);
 
-        //Salvataggio della consulenza nel database
+        //Salvataggio della consulenza nel database.
         Consulenza nuovaConsulenza = gestioneAnnuncioService.inserimentoConsulenza(consulenza);
 
         return new ResponseEntity<>(nuovaConsulenza, HttpStatus.CREATED);
     }
 
 }
+
