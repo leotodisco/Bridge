@@ -160,10 +160,17 @@ public class Utente implements Serializable {
      * @param nazionalita rappresenta la nazionalità dell'utente.
      * @param password rappresenta la password dell'utente.
      */
-    public Utente(String email, String nome, String cognome,
-                  String lingueParlate, byte[] fotoProfilo, String skill,
-                  LocalDate dataNascita, TitoloDiStudio titoloDiStudio, Ruolo role,
-                  Gender gender, String nazionalita, String password) {
+    public Utente(final String email,
+                  final String nome,
+                  final String cognome,
+                  final String lingueParlate,
+                  final byte[] fotoProfilo, String skill,
+                  final LocalDate dataNascita,
+                  final TitoloDiStudio titoloDiStudio,
+                  final Ruolo role,
+                  final Gender gender,
+                  final String nazionalita,
+                  final String password) {
         this.email = email;
         this.nome = nome;
         this.cognome = cognome;
