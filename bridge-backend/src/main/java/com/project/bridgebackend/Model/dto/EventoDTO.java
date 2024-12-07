@@ -45,7 +45,7 @@ public class EventoDTO {
      * Data dell'evento.
      * Rappresenta la data di svolgimento dell'evento.
      **/
-    private LocalDate data;
+    private String data;
 
     /**
      * Ora dell'evento.

@@ -1,6 +1,4 @@
 import { useState } from "react";
-import axios from "axios";
-import { useNavigate } from "react-router";
 
 const Lingua = {
     ITALIANO: "ITALIANO",
@@ -35,9 +33,6 @@ const CreaEvento = () => {
         provincia: ""
     });
     const[maxPartecipanti, setMaxPartecipanti] = useState(1);
-
-
-    const nav = useNavigate();
 
     /*
      * Funzione che aggiorna il campo nome.
@@ -133,37 +128,63 @@ const CreaEvento = () => {
         setMaxPartecipanti(event.target.value);
     }
 
-    const handleSubmit = (event) => {
+    const handleSubmit = async (event) => {
         //Previene il comportamento di default del form
         event.preventDefault();
 
         //Creazione dell'oggetto eventoDTO
         const eventoDTO = {
-            nome,
-            data,
-            ora,
-            lingueParlate,
-            descrizione,
-            luogo,
-            maxPartecipanti
+            nome: nome,
+            data: data,
+            ora: ora,
+            lingueParlate: lingueParlate,
+            descrizione: descrizione,
+            luogo: luogo,
+            maxPartecipanti: maxPartecipanti
         };
 
+        console.log("Evento da creare: ", eventoDTO);
+
         //Invio della richiesta al backend
-        axios
-            //Richiesta POST al backend
-            .post("http://localhost:8080/eventi/crea", eventoDTO)
-            //Se la richiesta ha successo
-            .then((response) => {
-                //Stampa a console il messaggio di successo
-                console.log("Evento creato con successo: ", response.data);
-                nav("/overviewEventi");
-            })
-            //Se la richiesta fallisce
-            .catch((error) => {
-                //Stampa a console l'errore
-                console.log("Errore durante la creazione dell'evento: ", error);
-                alert("Errore durante la creazione dell'evento");
+        try {
+            const response = await fetch("http://localhost:8080/eventi/crea", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json", // Specifica che il corpo è in formato JSON
+                    "Accept": "application/json" // Specifica che il server risponde in formato JSON
+                },
+                body: JSON.stringify({
+                    "nome": nome,
+                    "data": data,
+                    "ora": ora,
+                    "lingueParlate": lingueParlate,
+                    "descrizione": descrizione,
+                    "luogo": {
+                        "via": luogo.via,
+                        "numCivico": luogo.numCivico,
+                        "cap": luogo.cap,
+                        "citta": luogo.citta,
+                        "provincia": luogo.provincia
+                    },
+                    "organizzatore": {
+                        "email": "volontario@example.com" //todo: prendere l'email dell'utente loggato
+                    },
+                    "maxPartecipanti": maxPartecipanti
+                })
             });
+
+
+            if (!response.ok) {
+                throw new Error(`Errore HTTP: ${response.status}`);
+            }
+
+            const result = await response.json();
+            console.log("Evento creato con successo: ", result);
+        } catch (error) {
+            console.error("Errore durante la creazione dell'evento: ", error);
+            alert("Errore durante la creazione dell'evento");
+        }
+
     };
 
     return (

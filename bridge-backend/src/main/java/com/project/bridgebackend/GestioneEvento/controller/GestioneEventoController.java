@@ -10,11 +10,10 @@ import com.project.bridgebackend.Model.dao.IndirizzoDAO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-import javax.validation.Valid;
+import org.springframework.web.bind.annotation.*;
+
+import java.time.LocalDate;
+import jakarta.validation.Valid;
 
 
 /**
@@ -23,6 +22,7 @@ import javax.validation.Valid;
  * Controller per la gestione degli eventi.
  */
 @RestController
+@CrossOrigin(origins = "http://localhost:5174", allowedHeaders = "*")
 @RequestMapping("/eventi")
 public class GestioneEventoController {
 
@@ -78,18 +78,21 @@ public class GestioneEventoController {
                 .findByEmail(eventoDTO.getOrganizzatore().getEmail());
         //Controllo se il volontario esiste
         if (volontario == null) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
+
+
 
         //Creazione entity Evento da DTO
         Evento evento = new Evento();
         evento.setNome(eventoDTO.getNome());
-        evento.setData(eventoDTO.getData());
+        evento.setData(LocalDate.parse(eventoDTO.getData()));
         evento.setOra(eventoDTO.getOra());
         evento.setLingueParlate(eventoDTO.getLingueParlate());
         evento.setDescrizione(eventoDTO.getDescrizione());
         evento.setLuogo(indirizzoDAO.getReferenceById(idIndirizzo));
         evento.setOrganizzatore(volontario);
+        evento.setMaxPartecipanti(eventoDTO.getMaxPartecipanti());
 
         //Salvataggio evento in DB
         Evento createdEvent = gestioneEventoService.insertEvento(evento);

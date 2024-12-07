@@ -4,6 +4,8 @@ import com.project.bridgebackend.Model.Entity.Admin;
 import com.project.bridgebackend.Model.Entity.FiguraSpecializzata;
 import com.project.bridgebackend.Model.Entity.Rifugiato;
 import com.project.bridgebackend.Model.Entity.Volontario;
+import com.project.bridgebackend.util.AuthenticationRequest;
+import com.project.bridgebackend.util.AuthenticationResponse;
 
 /**
  *@author: Antonio Ceruso.
@@ -39,4 +41,6 @@ public interface RegistrazioneService {
     void registraFiguraSpecializzata(FiguraSpecializzata figspec,
                                      String confermaPW)
             throws Exception;
+
+    AuthenticationResponse login(final AuthenticationRequest request) throws Exception;
 }

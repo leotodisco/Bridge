@@ -16,18 +16,13 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.JoinTable;
+import jakarta.validation.constraints.*;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 import lombok.experimental.SuperBuilder;
 import org.springframework.format.annotation.DateTimeFormat;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Pattern;
-import jakarta.validation.constraints.Size;
-import jakarta.validation.constraints.FutureOrPresent;
-import jakarta.validation.constraints.Min;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -100,7 +95,7 @@ public class Evento implements Serializable {
 
     @NotNull(message = "La data dell'evento è obbligatoria")
     @FutureOrPresent(message = "La data non può essere nel passato")
-    @DateTimeFormat(pattern = "dd/MM/yyyy")
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     @Column(name = "data", nullable = false)
     private LocalDate data;
 
@@ -127,7 +122,6 @@ public class Evento implements Serializable {
      * Campo relativo alla descrizione dell'evento.
      **/
     @NotBlank(message = "La descrizione non può essere vuota")
-    @Pattern(regexp = "^[A-Za-zÀ-ÿ0-9]{2,500}$")
     @Size(min = MIN_DESCRIPTION_LENGTH,
           max = MAX_DESCRIPTION_LENGTH,
           message = "La descrizione deve essere tra 1 e 1000 caratteri")
@@ -157,11 +151,8 @@ public class Evento implements Serializable {
     /**
      * Campo relativo al numero massimo di partecipanti dell'evento.
      **/
-    @Min(value = 0,
-         message = "Il numero massimo di partecipanti non può essere negativo")
     @NotNull(message = "Il numero massimo di partecipanti è obbligatorio")
-    @Min(value = 1,
-         message = "Deve esserci almeno un partecipante")
+    @Positive(message = "Il numero massimo di partecipanti deve essere positivo")
     @Column(name = "maxPartecipanti",
             nullable = false)
     private int maxPartecipanti;
@@ -181,6 +172,5 @@ public class Evento implements Serializable {
      * Costruttore vuoto.
      **/
     public Evento() {
-
     }
 }

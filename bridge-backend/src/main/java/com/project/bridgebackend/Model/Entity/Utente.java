@@ -200,6 +200,11 @@ public class Utente implements Serializable, UserDetails {
     }
 
     @Override
+    public String getPassword() {
+        return password;
+    }
+
+    @Override
     public String getUsername() {
         return email;
     }

@@ -40,7 +40,7 @@ public class GestioneEventoServiceImpl implements GestioneEventoService {
     @Override
     public Evento insertEvento(final Evento evento) {
         //Controllo su DTO nullo o id nullo
-        if (evento == null || evento.getId() == null) {
+        if (evento == null) {
             throw new IllegalArgumentException("Evento non valido.");
         }
 
@@ -143,7 +143,7 @@ public class GestioneEventoServiceImpl implements GestioneEventoService {
     @Override
     public long salvaIndirizzoEvento(final Indirizzo indirizzo) {
         //Controllo su Indirizzo nullo o id nullo
-        if (indirizzo == null || indirizzo.getId() == null) {
+        if (indirizzo == null) {
             throw new IllegalArgumentException("Id indirizzo non valido");
         }
 
