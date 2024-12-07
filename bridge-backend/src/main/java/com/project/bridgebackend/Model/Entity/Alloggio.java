@@ -18,16 +18,8 @@ import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
-/**
- * Annotazione Lombok per ridurre il codice boilerplate, automatizzando getter, setter e altri metodi.
- */
 
 @Data
-
-/**
- * Annotazione JPA per dichiarare che questa classe rappresenta un'entità del database.
- */
-
 @Entity
 @Table(name = "alloggio")
 public class Alloggio {
@@ -40,6 +32,7 @@ public class Alloggio {
      *  Genera automaticamente il valore della chiave primaria (ad esempio, un ID incrementale).
      */
     @GeneratedValue()
+    @Column(nullable = false)
     private long id;
 
     /**
