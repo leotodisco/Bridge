@@ -3,6 +3,7 @@ package com.project.bridgebackend.GetioneAnnuncio.Service;
 import com.project.bridgebackend.Model.Entity.Consulenza;
 import com.project.bridgebackend.Model.Entity.Indirizzo;
 import com.project.bridgebackend.Model.Entity.Lavoro;
+import com.project.bridgebackend.Model.Entity.enumeration.TipoContratto;
 import com.project.bridgebackend.Model.dao.ConsulenzaDAO;
 import com.project.bridgebackend.Model.dao.IndirizzoDAO;
 import com.project.bridgebackend.Model.dao.LavoroDAO;
@@ -35,6 +36,8 @@ public class GestioneAnnuncioServiceImp implements GestioneAnnuncioService {
     @Autowired
     private IndirizzoDAO indirizzoDAO;
 
+    @Autowired
+    private LavoroDAO lavoroDAO;
     /**
      * Metodo per inserire una nuova consulenza nel sistema.
      * Prima di salvare, viene verificato che il numero massimo di candidature

@@ -1,18 +1,11 @@
-package com.project.bridgebackend.GestioneAnnuncio.Service.Impl;
+package com.project.bridgebackend.GetioneAnnuncio.Service;
 
-import com.project.bridgebackend.GestioneAnnuncio.Service.GestioneAnnuncioService;
-import com.project.bridgebackend.Model.Entity.Annuncio;
+
 import com.project.bridgebackend.Model.Entity.Consulenza;
 import com.project.bridgebackend.Model.Entity.Indirizzo;
 import com.project.bridgebackend.Model.Entity.Lavoro;
-import com.project.bridgebackend.Repository.ConsulenzaRepository;
-import com.project.bridgebackend.Repository.LavoroRepository;
-import com.project.bridgebackend.Repository.IndirizzoRepository;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
-import java.util.Optional;
 
 
 /**
