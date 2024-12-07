@@ -19,6 +19,7 @@ import com.project.bridgebackend.Model.Entity.enumeration.*;
 @Getter
 @Setter
 @Table(name = "lavoro")
+@Inheritance(strategy = InheritanceType.JOINED)
 public class Lavoro extends Annuncio {
 
     /**
