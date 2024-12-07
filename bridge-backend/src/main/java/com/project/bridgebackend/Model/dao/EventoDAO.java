@@ -23,44 +23,45 @@ public interface EventoDAO extends JpaRepository<Evento, Long> {
 
     /**
      * Trova eventi per lingua parlata.
-     * @param lingua lingua dell'evento
-     * @return lista di eventi
+     * @param lingua lista di lingue dell'evento.
+     * @return lista di eventi.
      */
-    List<Evento> findByLingueParlate(Lingua lingua);
+    List<Evento> findByLingueParlate(List<Lingua> lingua);
 
 
     /**
-     * Restituisce gli eventi svolti in determinata data
-     * @param data Data dell'evento
-     * @return Lista di eventi
+     * Restituisce gli eventi svolti in determinata data.
+     * @param data Data dell'evento.
+     * @return Lista di eventi.
      */
     List<Evento> findByData(LocalDate data);
 
     /**
-     * Restituisce gli eventi che si svolgono in un determinato luogo
-     * @param luogo Luogo dell'evento
-     * @return Lista di eventi
+     * Restituisce gli eventi che si svolgono in un determinato luogo.
+     * @param luogo Luogo dell'evento.
+     * @return Lista di eventi.
      */
     List<Evento> findByLuogo(Indirizzo luogo);
 
     /**
      * Restituisce gli eventi organizzati da un determinato volontario.
-     * @param organizzatore Volontario organizzatore dell'evento
-     * @return Lista di eventi
+     * @param organizzatore Volontario organizzatore dell'evento.
+     * @return Lista di eventi.
      */
     List<Evento> findByOrganizzatore(Volontario organizzatore);
 
     /**
-     * Elimina gli eventi con data precedente alla data fornita.
-     * @param dataBefore Data di riferimento per l'eliminazione
+     * Elimina gli eventi con data precedente a oggi.
+     * @param dataBefore Data per l'eliminazione.
      */
     @Transactional
     void deleteByDataBefore(LocalDate dataBefore);
 
     /**
      * Restituisce gli eventi con spazio disponibile.
-     * @return Lista di evento
+     * @return Lista di evento.
      */
-    @Query("SELECT e FROM Evento e WHERE SIZE(e.listaPartecipanti) < e.maxPartecipanti")
+    @Query("SELECT e FROM Evento e WHERE "
+            + "SIZE(e.listaPartecipanti) < e.maxPartecipanti")
     List<Evento> findEventiConSpazioDisponibile();
 }

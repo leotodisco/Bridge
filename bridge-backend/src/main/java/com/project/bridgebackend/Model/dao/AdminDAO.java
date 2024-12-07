@@ -1,19 +1,21 @@
 package com.project.bridgebackend.Model.dao;
 
-import com.project.bridgebackend.Model.Entity.Rifugiato;
-import org.springframework.stereotype.Repository;
+
+import com.project.bridgebackend.Model.Entity.Admin;
 
 /**
- * @author Antonio Ceruso.
- * Data creazione: 04/12/2024.
- * Interfaccia che indica un DAO per l'admin
+ *
+ * @author Benedetta Colella.
+ * Data creazione: 05/12/2024
+ * Interfaccia che indica un DAO per l'Admin
  */
-@Repository
+
 public interface AdminDAO extends UtenteDAO {
     /**
-     * Query che ci permette di ricercare un admin dalla email.
-     * @param email dell'admin da ricercare.
-     * @return Admin corrispondente.
+     * Query che ci permette di ricercare un Admin dalla email.
+     * @param email dell'Admin da ricercare
+     * @return Admin corrispondente
      * */
-    Rifugiato findByEmail(String email);
+    Admin findByEmail(String email);
+
 }

@@ -1,8 +1,12 @@
 package com.project.bridgebackend.Model.Entity;
 
-import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
+import jakarta.persistence.Id;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Column;
+import lombok.Data;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
@@ -10,18 +14,17 @@ import java.util.Objects;
 
 /**
  *
- * @author Benedetta Colella
+ * @author Benedetta Colella.
  * Creato il: 03/12/2024
  * Questa Java Persistence Entity rappresenta un indirizzo,
  *
  */
 @Entity
 @Table(name = "Indirizzo")
-@Getter
-@Setter
+@Data
 public final class Indirizzo implements Serializable {
 
-    /**
+    /**87
      * Rappresenta l'id autogenerato.
      */
     @Id
@@ -46,7 +49,7 @@ public final class Indirizzo implements Serializable {
 
     /**
      * Numero Intero che rappresenta il cap dell'indirizzo.
-     * deve essere un numero intero di 5 cifre.
+     * deve essere un numero intero di 5 cifre
      */
     @NotNull
     @Column(name = "cap")
@@ -72,6 +75,8 @@ public final class Indirizzo implements Serializable {
     public Indirizzo() {
     }
 
+
+
     /**
      * Costruttore con parametri.
      * @param citta
@@ -80,7 +85,11 @@ public final class Indirizzo implements Serializable {
      * @param provincia
      * @param via
      */
-    public Indirizzo(String citta, int numCivico, int cap, String provincia, String via) {
+    public Indirizzo(final String citta,
+                     final int numCivico,
+                     final int cap,
+                     final String provincia,
+                     final String via) {
         this.citta = citta;
         this.numCivico = numCivico;
         this.cap = cap;
@@ -89,19 +98,19 @@ public final class Indirizzo implements Serializable {
     }
 
     /**
-     * Metodo equals
+     * Metodo equals.
      * @param o oggetto da confermare
      * @return true se l'oggetto è uguale, false altrimenti
      */
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(final Object o) {
         if (this == o) {
             return true;
         }
-        if(!(o instanceof Indirizzo indirizzo)) {
+        if (!(o instanceof Indirizzo indirizzo)) {
             return false;
         }
-        return Objects.equals(getId(), indirizzo.getId())
+        return Objects.equals(id, indirizzo.id)
                 && Objects.equals(getCitta(), indirizzo.getCitta())
                 && Objects.equals(getNumCivico(), indirizzo.getNumCivico())
                 && Objects.equals(getCap(), indirizzo.getCap())
@@ -111,11 +120,15 @@ public final class Indirizzo implements Serializable {
 
     /**
      * Metodo hashCode.
-     * @return hashcode
+     * @return hashcode.
      */
     @Override
     public int hashCode() {
-        return Objects.hash(id, getCitta(), getNumCivico(), getCap(), getProvincia(), getVia());
+        return Objects.hash(id,
+                getCitta(),
+                getNumCivico(),
+                getCap(),
+                getProvincia(),
+                getVia());
     }
-
 }
