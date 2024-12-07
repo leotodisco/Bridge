@@ -41,8 +41,7 @@ import java.util.function.Function;
 @Service
 public class JwtService {
 
-    @Value("${jwt-secret}")
-    private String secretKey; // Chiave segreta configurata in application.properties
+    private String secretKey = "UmdVa1hwMnI1dTh4L0E/RChHK0tiUGVTaFZtWXEzdDY="; // Chiave segreta configurata in application.properties
 
     /**
      * Metodo per la generazione di un token.

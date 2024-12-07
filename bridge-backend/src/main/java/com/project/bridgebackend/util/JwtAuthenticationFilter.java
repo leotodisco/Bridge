@@ -36,8 +36,8 @@ import java.io.IOException;
  */
 
 
-@RequiredArgsConstructor
 @Component
+@RequiredArgsConstructor
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     /**
