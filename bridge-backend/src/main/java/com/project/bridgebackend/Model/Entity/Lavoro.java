@@ -10,7 +10,7 @@ package com.project.bridgebackend.Model.Entity;
 import jakarta.persistence.*;
 import lombok.*;
 import com.project.bridgebackend.Model.Entity.enumeration.*;
-import javax.validation.constraints.*;
+import jakarta.validation.constraints.*;
 
 /**
  * Classe che rappresenta un annuncio di lavoro, estende la classe base Annuncio.
