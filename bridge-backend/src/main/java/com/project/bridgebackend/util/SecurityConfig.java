@@ -32,7 +32,7 @@ import java.util.List;
 @EnableWebSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
-
+    @Autowired
     private final JwtAuthenticationFilter authFilter;
     @Autowired
     private final AuthenticationProvider provider;
