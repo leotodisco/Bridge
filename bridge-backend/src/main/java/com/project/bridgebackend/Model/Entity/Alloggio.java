@@ -21,6 +21,7 @@ import javax.validation.constraints.Size;
 
 @Data
 @Entity
+@Inheritance(strategy = InheritanceType.JOINED)
 @Table(name = "alloggio")
 public class Alloggio {
 

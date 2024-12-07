@@ -44,7 +44,7 @@ public final class Indirizzo implements Serializable {
      * Numero Intero che rappresenta il numero civico dell'indirizzo.
      */
     @NotNull
-    @Column(name = "numCivico")
+    @Column(name = "num_civico")
     private int numCivico;
 
     /**

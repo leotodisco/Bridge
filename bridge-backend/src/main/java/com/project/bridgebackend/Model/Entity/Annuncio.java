@@ -1,6 +1,7 @@
 package com.project.bridgebackend.Model.Entity;
 
 import jakarta.persistence.*;
+import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -9,11 +10,8 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.util.List;
 
-@Entity
-@Getter
-@Setter
-@Table(name = "annuncio")
-@Inheritance(strategy = InheritanceType.JOINED)
+@MappedSuperclass
+@Data
 /**
  *
  * @author Geraldine Montella.
