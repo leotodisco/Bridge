@@ -9,8 +9,8 @@ package com.project.bridgebackend.Model.Entity;
 
 import jakarta.persistence.*;
 import lombok.*;
-import javax.validation.constraints.*;
 import com.project.bridgebackend.Model.Entity.enumeration.*;
+import javax.validation.constraints.*;
 
 /**
  * Classe che rappresenta un annuncio di lavoro, estende la classe base Annuncio.
@@ -100,5 +100,9 @@ public class Lavoro extends Annuncio {
         this.retribuzione = retribuzione;
         this.nomeSede = nomeSede;
         this.infoUtili = infoUtili;
+    }
+
+    public Lavoro() {
+
     }
 }

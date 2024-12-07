@@ -17,50 +17,50 @@ import java.util.HashMap;
  */
 public interface GestioneAnnuncioService {
     /**
-     * Funzione per l'inserimento di una consulenza nel db
-     * @param consulenza ovvero l'annuncio che si vuole inserire
-     *                   già correttamente validato e popolato
-     * @return la consulenza appena inserita nel db
+     * Funzione per l'inserimento di una consulenza nel db.
+     * @param consulenza ovvero l'annuncio che si vuole inserire,
+     *                   già correttamente validato e popolato.
+     * @return la consulenza appena inserita nel db.
      */
     Consulenza inserimentoConsulenza(Consulenza consulenza);
 
     /**
      * Funzione per l'inserimento dell'indirizzo specifico per
-     * la sede di consulenza
-     * @param indirizzo ovvero dove la sede di consulenza è locata
-     *                  tale struttura pre-popolata e validata
-     * @return l'identificativo in long dell'indirizzo appena inserito
+     * la sede di consulenza.
+     * @param indirizzo ovvero dove la sede di consulenza è locata,
+     *                  tale struttura pre-popolata e validata.
+     * @return l'identificativo in long dell'indirizzo appena inserito.
      */
     long salvaIndirizzoConsulenza(Indirizzo indirizzo);
 
     /**
-     * Funzione per l'inserimento di un annuncio di lavoro nel db
-     * @param lavoro ovvero l'annuncio di lavoro che si vuole inserire
-     *               già correttamente validato e popolato
-     * @return l'annuncio di lavoro appena inserito nel db
+     * Funzione per l'inserimento di un annuncio di lavoro nel db.
+     * @param lavoro ovvero l'annuncio di lavoro che si vuole inserire,
+     *               già correttamente validato e popolato.
+     * @return l'annuncio di lavoro appena inserito nel db.
      */
     Lavoro inserimentoLavoro(Lavoro lavoro);
 
     /**
      * Funzione per l'inserimento dell'indirizzo specifico per
-     * la sede di lavoro
-     * @param indirizzo ovvero dove la sede di lavoro è locata
-     *                  tale struttura pre-popolata e validata
-     * @return l'identificativo in long dell'indirizzo appena inserito
+     * la sede di lavoro.
+     * @param indirizzo ovvero dove la sede di lavoro è locata,
+     *                  tale struttura pre-popolata e validata.
+     * @return l'identificativo in long dell'indirizzo appena inserito.
      */
     long salvaIndirizzoLavoro(Indirizzo indirizzo);
 
     /**
-     * Funzione per la modifica di un annuncio di lavoro
-     * @param idAnnuncio identificativo dell'annuncio da modificare
-     * @param aggiornamenti mappa contenente i campi da aggiornare e i relativi valori
-     * @return l'annuncio di lavoro aggiornato
+     * Funzione per la modifica di un annuncio di lavoro.
+     * @param idAnnuncio identificativo dell'annuncio da modificare.
+     * @param aggiornamenti mappa contenente i campi da aggiornare e i relativi valori.
+     * @return l'annuncio di lavoro aggiornato.
      */
     Lavoro modificaAnnuncioLavoro(long idAnnuncio, HashMap<String, Object> aggiornamenti);
 
     /**
-     * Funzione per eliminare un annuncio di lavoro dal db
-     * @param idAnnuncio identificativo dell'annuncio da eliminare
+     * Funzione per eliminare un annuncio di lavoro dal db.
+     * @param idAnnuncio identificativo dell'annuncio da eliminare.
      */
     void eliminaAnnuncioLavoro(long idAnnuncio);
 }
