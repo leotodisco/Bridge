@@ -11,9 +11,9 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface RifugiatoDAO extends UtenteDAO {
     /**
-     * Query che ci permette di ricercare un Rifugiato dalla email
-     * @param email del Rifugiato da ricercare
-     * return Rifugiato corrispondente
+     * Query che ci permette di ricercare un Rifugiato dalla email.
+     * @param email del Rifugiato da ricercare.
+     * @return Rifugiato corrispondente.
      * */
     Rifugiato findByEmail(String email);
 }
