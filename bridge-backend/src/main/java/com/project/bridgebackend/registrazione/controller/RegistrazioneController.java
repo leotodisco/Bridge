@@ -9,6 +9,8 @@ import com.project.bridgebackend.Model.Entity.enumeration.Ruolo;
 import com.project.bridgebackend.Model.Entity.enumeration.TitoloDiStudio;
 import com.project.bridgebackend.Model.dto.UtenteDTO;
 import com.project.bridgebackend.registrazione.service.RegistrazioneService;
+import com.project.bridgebackend.util.AuthenticationRequest;
+import com.project.bridgebackend.util.AuthenticationResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -198,5 +200,17 @@ public class RegistrazioneController {
                 password);
         registrazioneService
                 .registraAdmin(a, admin.getPasswordUtente());
+    }
+
+    /**
+     * Metodo per il login.
+     * @param req richiesta per il login.
+     * @return response.
+     */
+    @PostMapping(value = "/login")
+    public AuthenticationResponse login(@RequestBody
+                                        final AuthenticationRequest req)
+            throws Exception {
+        return registrazioneService.login(req);
     }
 }
