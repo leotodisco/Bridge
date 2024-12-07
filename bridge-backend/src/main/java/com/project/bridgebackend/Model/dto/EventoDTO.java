@@ -3,11 +3,15 @@ package com.project.bridgebackend.Model.dto;
 import com.project.bridgebackend.Model.Entity.Indirizzo;
 import com.project.bridgebackend.Model.Entity.Volontario;
 import com.project.bridgebackend.Model.Entity.enumeration.Lingua;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 import lombok.experimental.SuperBuilder;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.List;
 
 /**
  * @author Alessia De Filippo
@@ -22,7 +26,6 @@ import java.time.LocalTime;
 @Setter
 @ToString
 @SuperBuilder
-@NoArgsConstructor
 @AllArgsConstructor
 public class EventoDTO {
 
@@ -52,9 +55,9 @@ public class EventoDTO {
 
     /**
      * Lingue parlate durante l'evento.
-     * Indica la lingua parlata durante l'evento.
+     * Indica le lingue parlate durante l'evento.
      **/
-    private Lingua lingueParlate;
+    private List<Lingua> lingueParlate;
 
     /**
      * Descrizione dell'evento.
@@ -76,8 +79,11 @@ public class EventoDTO {
 
     /**
      * Numero massimo di partecipanti all'evento.
-     * Indica il numero massimo di partecipanti che possono partecipare all'evento.
+     * Numero massimo di partecipanti all'evento.
      **/
     private int maxPartecipanti;
 
+    //Costruttore vuoto
+    public EventoDTO() {
+    }
 }

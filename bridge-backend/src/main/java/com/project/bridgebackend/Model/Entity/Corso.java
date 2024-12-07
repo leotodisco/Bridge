@@ -1,7 +1,16 @@
 package com.project.bridgebackend.Model.Entity;
 
 import com.project.bridgebackend.Model.Entity.enumeration.Lingua;
-import jakarta.persistence.*;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -10,10 +19,11 @@ import java.io.Serializable;
 
 
 /**
- * @author [Biagio]
- * Creato il: [03/12/2024].
- * Questa è la classe relativa ad un Corso.
- * I campi sono: id, descrizione, categoria del corso, titolo, pdf, lingua, volontario.
+ * @author Biagio Gallo.
+ * Creato il: 03/12/2024.
+ * Questa è la classe relativa a un Corso.
+ * I campi sono: id, descrizione, categoria del corso,
+ * titolo, pdf, lingua, volontario.
  */
 
 
@@ -21,49 +31,55 @@ import java.io.Serializable;
 @ToString
 @Getter
 @Setter
-@Table(name = "inserimento_corso")
+@Table(name = "corso")
 public class Corso implements Serializable {
 
     /**
-     * L'ID viene generato automaticamente. È un valore univoco per ogni corso.
-     * */
+     * Lunghezza massima di descrizione.
+     */
+    private static final int MAX_DESCRIZONE_LENGTH = 500;
+    /**
+     * Lunghezza massima del titolo.
+     */
+    private static final int MAX_TITOLO_LENGTH = 50;
+
+    /**
+     * L'ID viene generato automaticamente.
+     */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
     private Long id;
 
     /**
-     * Descrizione del corso. Il campo è obbligatorio e può contenere fino a 500 caratteri.
+     * Descrizione del corso.
      */
-    @Column(name = "descrizione", nullable = false, length = 500)
+    @Column(name = "descrizione", nullable = false,
+            length = MAX_DESCRIZONE_LENGTH)
     private String descrizione;
 
     /**
-     * Categoria del corso. Indica la categoria o il tipo del corso.
-     * È un campo obbligatorio con una lunghezza massima di 50 caratteri.
+     * Categoria del corso.
      */
-    @Column(name = "categoriaCorso", nullable = false, length = 50)
+    @Column(name = "categoria_corso", nullable = false)
     private String categoriaCorso;
 
 
     /**
-     * Titolo del corso. Rappresenta il nome del corso.
-     * È un campo obbligatorio con una lunghezza massima di 50 caratteri.
+     * Titolo del corso.
      */
-    @Column(name = "titolo", nullable = false, length = 50)
+    @Column(name = "titolo", nullable = false, length = MAX_TITOLO_LENGTH)
     private String titolo;
 
 
     /**
-     * PDF del corso. Contiene i dati in formato binario relativi al documento del corso.
-     * È un campo obbligatorio.
+     * PDF del corso.
      */
     @Column(name = "pdf", nullable = false)
     private byte[] pdf;
 
     /**
-     * Lingua del corso. È un campo che rappresenta la lingua in cui è disponibile il corso.
-     * Utilizza un enum che può contenere valori come ITALIANO, INGLESE, TEDESCO, FRANCESE, SPAGNOLO.
+     * Lingua del corso.
      */
     @Enumerated(EnumType.STRING)
     @Column(name = "lingua", nullable = false)
@@ -71,9 +87,7 @@ public class Corso implements Serializable {
 
 
     /**
-     * Proprietario del corso. Indica il volontario che ha creato o possiede il corso.
-     * La relazione è ManyToOne, poiché un volontario può possedere molti corsi.
-     * È un campo obbligatorio.
+     * Proprietario del corso.
      */
     @ManyToOne(optional = false)
     @JoinColumn(name = "proprietario", nullable = false)
