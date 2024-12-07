@@ -45,5 +45,5 @@ public class SecurityConfig {
                 .withUser("admin").password(passwordEncoder().encode("adminpassword")).roles("ADMIN");
 
         return authenticationManagerBuilder.build();
-   }
+    }
 }

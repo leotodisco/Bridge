@@ -1,11 +1,10 @@
 package com.project.bridgebackend.Model.dao;
 
 import com.project.bridgebackend.Model.Entity.Corso;
-import com.project.bridgebackend.Model.Entity.Volontario;
+import com.project.bridgebackend.Model.Entity.Utente;
 import com.project.bridgebackend.Model.Entity.enumeration.Lingua;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
-import java.util.List;
 
 
 /**
@@ -17,24 +16,30 @@ import java.util.List;
 
 @Repository
 public interface CorsoDAO extends JpaRepository<Corso, Long> {
-
     /**
-     * Questo metodo permette di trovare un corso tramite il suo proprietario.
-     * @param proprietario proprietario del corso
+     * Questo metodo permette di trovare un corso tramite il suo id.
+     * @param id id del corso da trovare.
      * @return il corso trovato.
      */
-    List<Corso> findByProprietario(Volontario proprietario);
+    Corso findById(long id);
 
     /**
-     * Questo metodo permette di trovare un corso tramite il genere.
-     * @param categoriaCorso genere del corso
+     * Questo metodo permette di trovare un corso tramite il suo titolo.
+     * @param titolo titolo del corso da trovare.
      * @return il corso trovato.
      */
-    List<Corso> findByCategoriaCorso(String categoriaCorso);
+    Corso findByTitolo(String titolo);
+
+    /**
+     * Questo metodo permette di trovare un corso tramite il proprietario.
+     * @param proprietario proprietario del corso da trovare.
+     * @return il corso trovato.
+     */
+    Corso findByProprietario(Utente proprietario);
 
     /**
      * Questo metodo permette di trovare un corso tramite la lingua.
-     * @param lingua lingua del corso
+     * @param lingua lingua del corso da trovare.
      * @return il corso trovato.
      */
     Corso findByLingua(Lingua lingua);
