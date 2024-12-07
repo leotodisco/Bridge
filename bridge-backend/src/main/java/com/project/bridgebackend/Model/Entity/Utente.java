@@ -13,8 +13,14 @@ import jakarta.validation.constraints.Past;
 import lombok.Data;
 import lombok.experimental.SuperBuilder;
 import jakarta.validation.constraints.Pattern;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.util.Collection;
+import java.util.List;
 
 /**
  * @author Antonio Ceruso.
@@ -37,7 +43,7 @@ import java.time.LocalDate;
 @Entity
 @SuperBuilder
 @Data
-public class Utente implements Serializable {
+public class Utente implements Serializable, UserDetails {
 
     /**
      * Rappresenta l'email dell'utente registrato (chiave primaria).
@@ -183,5 +189,38 @@ public class Utente implements Serializable {
         this.gender = gender;
         this.nazionalita = nazionalita;
         this.password = password;
+    }
+
+    /**
+     * Metodo che ritorna una lista di ruoli.
+     */
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return List.of(new SimpleGrantedAuthority(role.name()));
+    }
+
+    @Override
+    public String getUsername() {
+        return email;
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return UserDetails.super.isAccountNonExpired();
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return UserDetails.super.isAccountNonLocked();
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return UserDetails.super.isCredentialsNonExpired();
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return UserDetails.super.isEnabled();
     }
 }

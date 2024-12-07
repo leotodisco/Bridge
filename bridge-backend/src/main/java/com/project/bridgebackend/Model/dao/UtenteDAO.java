@@ -12,7 +12,7 @@ import org.springframework.stereotype.Repository;
  * per creare i DAO delle classi figlie di Utente.
  */
 @Repository
-public interface UtenteDAO extends JpaRepository<Utente, Long> {
+public interface UtenteDAO extends JpaRepository<Utente, String> {
 
     /**
      * Query che ci permette di ricercare un utente dalla email.

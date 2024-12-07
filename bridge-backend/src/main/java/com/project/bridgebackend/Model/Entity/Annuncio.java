@@ -1,17 +1,27 @@
 package com.project.bridgebackend.Model.Entity;
 
-import jakarta.persistence.*;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.MappedSuperclass;
+import jakarta.persistence.Id;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToOne;
+import jakarta.persistence.ElementCollection;
+import jakarta.persistence.CollectionTable;
+import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.NoArgsConstructor;
 
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import java.util.List;
 
-@MappedSuperclass
-@Data
+
 /**
  *
  * @author Geraldine Montella.
@@ -20,6 +30,11 @@ import java.util.List;
  * la inheritance è settata a JOINED perciò Ogni entità ha la propria tabella,
  * e le tabelle sono unite tramite chiavi primarie.
  */
+
+@MappedSuperclass
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class Annuncio {
 
     /**
@@ -31,10 +46,10 @@ public class Annuncio {
 
     /**
      * Riferimento all'utente proprietario dell'annuncio.
-     * È una relazione @ManyToOne, in cui più annunci possono appartenere allo stesso utente
-     * il fetch lazy è stato aggiunto per evitare che i dati vengano carricati
-     * immediatamente appena l'entità principale viene caricata, ma solo quando
-     * richiesti nel codice
+     * È una relazione @ManyToOne, in cui più annunci possono appartenere allo stesso utente,
+     * il fetch lazy è stato aggiunto per evitare che i dati vengano carricati,
+     * immediatamente appena l'entità principale viene caricata, ma solo quando,
+     * richiesti nel codice.
      */
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "proprietario_email", referencedColumnName = "email", nullable = false)
@@ -103,22 +118,4 @@ public class Annuncio {
     )
     @Column(name = "rifugiato_email", nullable = false)
     private List<String> candidati;
-
-    /**
-    * Costruttore vuoto
-     */
-    public Annuncio() {}
-
-    /**
-    * Costruttore completo
-     */
-    public Annuncio(Utente proprietario, Boolean tipologia, String titolo, Boolean disponibilita, Indirizzo indirizzo, int maxCandidature, List<String> candidati) {
-        this.proprietario = proprietario;
-        this.tipologia = tipologia;
-        this.titolo = titolo;
-        this.disponibilita = disponibilita;
-        this.indirizzo = indirizzo;
-        this.maxCandidature = maxCandidature;
-        this.candidati = candidati;
-    }
 }

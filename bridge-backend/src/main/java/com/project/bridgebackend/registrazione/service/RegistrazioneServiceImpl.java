@@ -8,8 +8,13 @@ import com.project.bridgebackend.Model.dao.AdminDAO;
 import com.project.bridgebackend.Model.dao.FiguraSpecializzataDAO;
 import com.project.bridgebackend.Model.dao.RifugiatoDAO;
 import com.project.bridgebackend.Model.dao.VolontarioDAO;
+import com.project.bridgebackend.util.AuthenticationRequest;
+import com.project.bridgebackend.util.AuthenticationResponse;
+import com.project.bridgebackend.util.JwtService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.stereotype.Service;
 
 /**
@@ -40,6 +45,11 @@ public class RegistrazioneServiceImpl implements RegistrazioneService {
     @Autowired
     private FiguraSpecializzataDAO figSpecDAO;
 
+    @Autowired
+    private AuthenticationManager authenticationManager;
+
+    @Autowired
+    private JwtService jwtService;
 
     /**
      *Implementazione metodo di registrazione di un volontario.
@@ -134,4 +144,37 @@ public class RegistrazioneServiceImpl implements RegistrazioneService {
         figspec.setPassword(confermaPW);
         figSpecDAO.save(figspec);
     }
+
+    /**
+     * Implementazione per il metodo del login tramite token jwt.
+     * @param request parametro richiesta per il login.
+     * @return response.
+     */
+    @Override
+    public AuthenticationResponse login(final AuthenticationRequest request)
+            throws Exception {
+        authenticationManager
+                .authenticate(new UsernamePasswordAuthenticationToken(
+                        request.getEmail(),
+                        request.getPassword()
+                ));
+
+        String jwtToken;
+        if (adminDAO.findByEmail(request.getEmail()) != null) {
+            jwtToken = jwtService.generateToken(adminDAO.findByEmail(request.getEmail()));
+        } else if (volontarioDAO.findByEmail(request.getEmail()) != null) {
+            jwtToken = jwtService.generateToken(volontarioDAO.findByEmail(request.getEmail()));
+        } else if (rifugiatoDAO.findByEmail(request.getEmail()) != null) {
+            jwtToken = jwtService.generateToken(rifugiatoDAO.findByEmail(request.getEmail()));
+        } else if (figSpecDAO.findByEmail(request.getEmail()) != null) {
+            jwtToken = jwtService.generateToken(figSpecDAO.findByEmail(request.getEmail()));
+        } else {
+            throw new IllegalArgumentException("Utente non trovato");
+        }
+
+        return AuthenticationResponse.builder()
+                .token(jwtToken)
+                .build();
+    }
+
 }
