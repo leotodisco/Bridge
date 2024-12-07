@@ -14,9 +14,9 @@ import java.time.LocalDate;
  * */
 @Entity
 @Data
-public class Volontario extends Utente{
+public class Volontario extends Utente {
     /**
-     * Costruttore con tutti i campi dell'utente
+     * Costruttore con tutti i campi dell'utente.
      * @param email
      * @param nome
      * @param cognome
@@ -30,18 +30,18 @@ public class Volontario extends Utente{
      * @param nazionalita
      * @param password
      */
-    public Volontario(String email,
-                      String nome,
-                      String cognome,
-                      String lingueParlate,
-                      byte[] fotoProfilo,
-                      String skill,
-                      LocalDate dataNascita,
-                      TitoloDiStudio titoloDiStudio,
-                      Ruolo role,
-                      Gender gender,
-                      String nazionalita,
-                      String password) {
+    public Volontario(final String email,
+                      final String nome,
+                      final String cognome,
+                      final String lingueParlate,
+                      final byte[] fotoProfilo,
+                      final String skill,
+                      final LocalDate dataNascita,
+                      final TitoloDiStudio titoloDiStudio,
+                      final Ruolo role,
+                      final Gender gender,
+                      final String nazionalita,
+                      final String password) {
         super(email, nome, cognome,
                 lingueParlate, fotoProfilo, skill,
                 dataNascita, titoloDiStudio, role,
