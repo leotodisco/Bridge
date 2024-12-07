@@ -7,6 +7,8 @@ import com.project.bridgebackend.Model.Entity.Volontario;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -28,15 +30,29 @@ public class AlloggioController {
      * @param idAlloggio l'identificativo dell'alloggio
      * @return ResponseEntity con lo stato dell'operazione
      */
+
     @PostMapping("/aggiungi")
     public ResponseEntity<String> addAlloggio(@RequestBody Alloggio alloggio,
                                               @RequestParam int idAlloggio) {
-        boolean result = alloggioService.addAlloggio(alloggio, idAlloggio);
-
-        if (result) {
-            return new ResponseEntity<>("Alloggio aggiunto con successo", HttpStatus.CREATED);
-        } else {
-            return new ResponseEntity<>("Errore nell'aggiunta dell'alloggio", HttpStatus.BAD_REQUEST);
+        try {
+            /**
+             *Verifico prima se sia un volontoria, in caso positivo può aggiungere l'alloggio, in caso negativo non fa nulla
+             */
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            if (authentication != null && authentication.getAuthorities().stream()
+                    .anyMatch(auth -> auth.getAuthority().equals("Volontario"))) {
+                boolean result = alloggioService.addAlloggio(alloggio, idAlloggio);
+                if (result) {
+                    return new ResponseEntity<>("Alloggio aggiunto con successo", HttpStatus.CREATED);
+                } else {
+                    return new ResponseEntity<>("Errore nell'aggiunta dell'alloggio", HttpStatus.BAD_REQUEST);
+                }
+            } else {
+                return new ResponseEntity<>("Accesso negato: Solo i volontari possono aggiungere alloggi", HttpStatus.FORBIDDEN);
+            }
+        } catch (Exception e) {
+            return new ResponseEntity<>("Errore interno del server: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
 }
