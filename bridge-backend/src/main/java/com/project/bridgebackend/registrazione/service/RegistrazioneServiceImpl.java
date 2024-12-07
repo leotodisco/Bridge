@@ -8,9 +8,10 @@ import com.project.bridgebackend.Model.dao.AdminDAO;
 import com.project.bridgebackend.Model.dao.FiguraSpecializzataDAO;
 import com.project.bridgebackend.Model.dao.RifugiatoDAO;
 import com.project.bridgebackend.Model.dao.VolontarioDAO;
-import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import javax.validation.Valid;
 
 /**
  * @author Antonio Ceruso.

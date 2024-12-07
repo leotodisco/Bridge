@@ -8,11 +8,11 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.Id;
 import jakarta.persistence.Column;
 import jakarta.persistence.EnumType;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Past;
 import lombok.Data;
 import lombok.experimental.SuperBuilder;
-import jakarta.validation.constraints.Pattern;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Past;
 import java.io.Serializable;
 import java.time.LocalDate;
 
