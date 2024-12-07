@@ -44,7 +44,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
      * service.
      */
     @Autowired
-    private com.project.bridgebackend.util.JwtService jwtService;
+    private JwtService jwtService;
 
     /**
      * user.

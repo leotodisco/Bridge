@@ -34,6 +34,7 @@ import java.util.List;
 public class SecurityConfig {
     @Autowired
     private final JwtAuthenticationFilter authFilter;
+
     @Autowired
     private final AuthenticationProvider provider;
 
