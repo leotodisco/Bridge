@@ -5,9 +5,6 @@ import com.project.bridgebackend.Model.Entity.enumeration.Ruolo;
 import com.project.bridgebackend.Model.Entity.enumeration.TitoloDiStudio;
 import jakarta.persistence.Entity;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.Setter;
 
 import java.time.LocalDate;
 /**
@@ -15,13 +12,11 @@ import java.time.LocalDate;
  * Creato il: 03/12/2024.
  * Questa è la classe relativa ad una Figura Specializzata.
  * */
-@EqualsAndHashCode(callSuper = true)
 @Entity
 @Data
-
-public class FiguraSpecializzata extends Utente{
+public class FiguraSpecializzata extends Utente {
     /**
-     * Disponibilità orarie della Figura Specializzata
+     * Disponibilità orarie della Figura Specializzata.
      * */
     private String disponibilita;
     /**
@@ -31,7 +26,7 @@ public class FiguraSpecializzata extends Utente{
     }
 
     /**
-     * Costruttore con tutti i campi dell'utente
+     * Costruttore con tutti i campi dell'utente.
      * @param email
      * @param nome
      * @param cognome
@@ -42,13 +37,27 @@ public class FiguraSpecializzata extends Utente{
      * @param titoloDiStudio
      * @param role
      * @param gender
-     * @param salt
      * @param nazionalita
      * @param password
      * @param disponibilita
      */
-    public FiguraSpecializzata(String email, String nome, String cognome, String lingueParlate, byte[] fotoProfilo, String skill, LocalDate dataNascita, TitoloDiStudio titoloDiStudio, Ruolo role, Gender gender, String salt, String nazionalita, String password, String disponibilita) {
-        super(email, nome, cognome, lingueParlate, fotoProfilo, skill, dataNascita, titoloDiStudio, role, gender, salt, nazionalita, password);
+    public FiguraSpecializzata(final String email,
+                               final String nome,
+                               final String cognome,
+                               final String lingueParlate,
+                               final byte[] fotoProfilo,
+                               final String skill,
+                               final LocalDate dataNascita,
+                               final TitoloDiStudio titoloDiStudio,
+                               final Ruolo role,
+                               final Gender gender,
+                               final String nazionalita,
+                               final String password,
+                               final String disponibilita) {
+        super(email, nome, cognome,
+                lingueParlate, fotoProfilo, skill,
+                dataNascita, titoloDiStudio, role,
+                gender, nazionalita, password);
         this.disponibilita = disponibilita;
     }
 }

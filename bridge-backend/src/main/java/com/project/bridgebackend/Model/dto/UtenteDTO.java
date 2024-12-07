@@ -14,67 +14,66 @@ import java.time.LocalDate;
 @Data
 public class UtenteDTO {
     /**
-     * Parametro email dell'Utente
+     * Parametro email dell'Utente.
      * */
     private String emailUtente;
     /**
-     * Parametro nome dell'Utente
+     * Parametro nome dell'Utente.
      */
     private String nomeUtente;
 
     /**
-     * Parametro cognome dell'Utente
+     * Parametro cognome dell'Utente.
      */
     private String cognomeUtente;
 
     /**
-     * Parametro nazionalità dell'Utente
+     * Parametro nazionalità dell'Utente.
      */
     private String nazionalitaUtente;
 
     /**
-     * Parametro data di nascita dell'Utente
+     * Parametro data di nascita dell'Utente.
      */
     private LocalDate dataNascitaUtente;
 
     /**
-     * Parametro genere dell'Utente
+     * Parametro genere dell'Utente.
      */
     private Gender genderUtente;
 
     /**
-     * Parametro titolo di studio dell'Utente
+     * Parametro titolo di studio dell'Utente.
      */
     private TitoloDiStudio titoloDiStudioUtente;
 
     /**
-     * Parametro password dell'Utente
+     * Parametro password dell'Utente.
      */
     private String passwordUtente;
 
     /**
-     * Parametro competenze dell'Utente
+     * Parametro competenze dell'Utente.
      */
     private String skillUtente;
 
     /**
-     * Parametro foto dell'Utente
+     * Parametro foto dell'Utente.
      */
-    private Byte[] fotoUtente;
+    private byte[] fotoUtente;
 
     /**
-     * Parametro disponibilità dell'Utente
+     * Parametro disponibilità dell'Utente.
      */
     private String disponibilitaUtente;
 
     /**
-     * Parametro ruolo dell'Utente
+     * Parametro ruolo dell'Utente.
      */
     private Ruolo ruoloUtente;
 
     /**
-     * Parametro lingue parlate dell'Utente
+     * Parametro lingue parlate dell'Utente.
      */
     private String lingueParlateUtente;
-
 }
