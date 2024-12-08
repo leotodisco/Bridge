@@ -4,7 +4,10 @@
 package com.project.bridgebackend.Model.dto;
 
 
+import com.project.bridgebackend.Model.Entity.FiguraSpecializzata;
 import com.project.bridgebackend.Model.Entity.Utente;
+import com.project.bridgebackend.Model.Entity.enumeration.CategoriaCorso;
+import com.project.bridgebackend.Model.Entity.enumeration.Lingua;
 import lombok.Data;
 
 /**
@@ -24,7 +27,7 @@ public class CorsoDTO {
     /**
      * Categoria del corso.
      */
-    private String categoriaCorso;
+    private CategoriaCorso categoriaCorso;
 
     /**
      * Titolo del corso.
@@ -39,10 +42,10 @@ public class CorsoDTO {
     /**
      * Lingua del corso.
      */
-    private String lingua;
+    private Lingua lingua;
 
     /**
     * Email del proprietario del corso.
      */
-    private String proprietarioEmail;
+    private FiguraSpecializzata proprietario;
 }
