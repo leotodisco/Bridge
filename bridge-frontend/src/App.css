@@ -5,17 +5,47 @@
   text-align: center;
 }
 
-.logo {
+.main-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh; /* Centra il contenuto verticalmente */
+}
+
+.logo-container {
+  margin-bottom: 2rem; /* Distanza tra il logo e i link */
+}
+
+.site-logo {
   height: 6em;
   padding: 1.5em;
   will-change: filter;
   transition: filter 300ms;
 }
-.logo:hover {
+
+.site-logo:hover {
   filter: drop-shadow(0 0 2em #646cffaa);
 }
-.logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
+
+.nav-links {
+  display: flex;
+  justify-content: center;
+  gap: 30px; /* Distanza maggiore tra i link */
+  margin-bottom: 2rem;
+}
+
+.nav-link {
+  text-decoration: none;
+  color: #007bff;
+  font-weight: bold;
+  padding: 10px 20px;
+  border-radius: 5px;
+  transition: background-color 0.3s;
+}
+
+.nav-link:hover {
+  background-color: #e0e0e0;
 }
 
 @keyframes logo-spin {
