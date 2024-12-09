@@ -202,7 +202,7 @@ select:-webkit-autofill {
     -webkit-text-fill-color: #2c3e50 !important;
 }
 
-/* Linea orizzontale */
+/* Linea orizzontale*/
 hr {
      /* Rimuove lo stile predefinito */
     height: 1px; /* Spessore della linea */
