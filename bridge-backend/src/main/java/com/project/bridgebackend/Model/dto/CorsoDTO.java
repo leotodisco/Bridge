@@ -37,7 +37,7 @@ public class CorsoDTO {
     /**
      * PDF del corso.
      */
-    private byte[] pdf;
+   // private byte[] pdf;
 
     /**
      * Lingua del corso.
@@ -47,5 +47,5 @@ public class CorsoDTO {
     /**
     * Email del proprietario del corso.
      */
-    private FiguraSpecializzata proprietario;
+    private String proprietario;
 }

@@ -1,5 +1,5 @@
 import './App.css'
-import CreaEvento from './GestioneEvento/components/formEvento.jsx'
+import CreaCorso from "./GestioneCorso/components/formCorso.jsx";
 
 
 function App() {
@@ -8,7 +8,7 @@ function App() {
       <>
           <p>ACIUAOAOAAOA</p>
 
-              <CreaEvento/>
+              <CreaCorso/>
 
           <p className="read-the-docs">
               Click on the Vite and React logos to learn more

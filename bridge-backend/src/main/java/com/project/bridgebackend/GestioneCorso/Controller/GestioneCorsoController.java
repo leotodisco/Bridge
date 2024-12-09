@@ -21,6 +21,7 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("/api/corsi")
+@CrossOrigin(origins = "http://localhost:5174", allowedHeaders = "*")
 public class GestioneCorsoController {
 
     @Autowired
@@ -40,10 +41,10 @@ public class GestioneCorsoController {
         System.out.println("Categoria: " + newCorso.getCategoriaCorso());
         newCorso.setDescrizione(corsoDTO.getDescrizione());
         System.out.println("Descrizione: " + newCorso.getDescrizione());
-        newCorso.setPdf(corsoDTO.getPdf());
-        System.out.println("PDF: " + newCorso.getPdf());
+        //newCorso.setPdf(corsoDTO.getPdf());
+        //System.out.println("PDF: " + newCorso.getPdf());
 
-        FiguraSpecializzata figuraSpecializzata = figuraSpecializzataDAO.findByEmail(corsoDTO.getProprietario().getEmail());
+        FiguraSpecializzata figuraSpecializzata = figuraSpecializzataDAO.findByEmail(corsoDTO.getProprietario());
         newCorso.setProprietario(figuraSpecializzata);
         System.out.println("Proprietario: " + figuraSpecializzata);
 
