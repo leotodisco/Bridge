@@ -1,13 +1,18 @@
 package com.project.bridgebackend.GestioneCorso.Service;
 
+import com.project.bridgebackend.GestioneCorso.pdf.PDFDoc;
+import com.project.bridgebackend.GestioneCorso.pdf.PDFService;
 import com.project.bridgebackend.Model.Entity.Corso;
 import com.project.bridgebackend.Model.Entity.enumeration.Lingua;
 import com.project.bridgebackend.Model.dao.CorsoDAO;
 import com.project.bridgebackend.Model.dto.CorsoDTO;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -32,19 +37,27 @@ public class GestioneCorsoServiceImpl implements GestioneCorsoService {
     private final CorsoDAO corsoDAO;
 
     /**
+     * Iniezione logica di gestione per i pdf
+     */
+    @Autowired
+    private final PDFService pdfService;
+    /**
      * Crea un nuovo corso.
      * @param corso il DTO del corso contenente i dettagli del corso.
      * @return il corso creato come CorsoDTO.
      */
+
     @Override
     public Corso creaCorso(final Corso corso) {
         if (corso == null) {
             throw new IllegalArgumentException("Corso non valido");
         }
+
         return corsoDAO.save(corso);
     }
     /**
      * Modifica un corso esistente.
+     * todo: inserire possibilità modifica pdf
      * @param corso il DTO del corso contenente
      * i dettagli aggiornati del corso.
      * @return il corso modificato come CorsoDTO.
@@ -61,16 +74,21 @@ public class GestioneCorsoServiceImpl implements GestioneCorsoService {
      * i dettagli del corso da eliminare.
      */
     @Override
+    @Transactional
     public void eliminaCorso(final Corso corso) {
-       if (corso.getId() == null) {
+        if (corso.getId() == null) {
             throw new IllegalArgumentException("ID del corso non valido");
         }
 
-       if (corsoDAO.findById(corso.getId()).isEmpty()) {
-            throw new IllegalArgumentException("Corso non trovato");
-        }
-        corsoDAO.delete(corso);
+        Corso existingCorso = corsoDAO.findById(corso.getId())
+                .orElseThrow(() -> new IllegalArgumentException("Corso non trovato"));
 
+        // Elimina il PDF associato
+        if (existingCorso.getPdf() != null) {
+            pdfService.deletePdf(existingCorso.getPdf());
+        }
+
+        corsoDAO.delete(existingCorso);
     }
 
     /**

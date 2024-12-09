@@ -1,6 +1,5 @@
 import { useState } from "react";
 
-// Constants for available languages
 const LINGUA = {
     ITALIANO: "ITALIANO",
     INGLESE: "INGLESE",
@@ -14,9 +13,8 @@ const LINGUA = {
     ARABO: "ARABO",
 };
 
-// Constants for available categories
 const CATEGORIA = {
-    LINGUA: "LINGUA",
+    LINGUA: "LINGUE",
     INFORMATICA: "INFORMATICA",
     ALTRO: "ALTRO",
 };
@@ -26,67 +24,111 @@ const CreaCorso = () => {
     const [descrizione, setDescrizione] = useState("");
     const [categoria, setCategoria] = useState("");
     const [lingua, setLingua] = useState("");
+    const [pdfFile, setPdfFile] = useState(null);
+    const [pdfId, setPdfId] = useState(null);
+    const [loading, setLoading] = useState(false);
 
-    /*
-     * Funzioni di aggiornamento dei campi
-     */
-    const aggiornaTitolo = (event) => {
-        setTitolo(event.target.value);
+    const aggiornaTitolo = (e) => setTitolo(e.target.value);
+    const aggiornaDescrizione = (e) => setDescrizione(e.target.value);
+    const aggiornaCategoria = (e) => setCategoria(e.target.value);
+    const aggiornaLingua = (e) => setLingua(e.target.value);
+    const aggiornaPdfFile = (e) => setPdfFile(e.target.files[0]);
+
+    const validateForm = () => {
+        if (!titolo || !descrizione || !categoria || !lingua) {
+            alert("Compila tutti i campi obbligatori!");
+            return false;
+        }
+        if (pdfFile && pdfFile.type !== "application/pdf") {
+            alert("Il file deve essere un PDF valido!");
+            return false;
+        }
+        return true;
     };
 
-    const aggiornaDescrizione = (event) => {
-        setDescrizione(event.target.value);
-    };
+    const handlePdfUpload = async (file) => {
+        const formData = new FormData();
+        formData.append("nome", file.name);  // nome del file
+        formData.append("pdf", file);  // il file stesso
 
-    const aggiornaCategoria = (event) => {
-        setCategoria(event.target.value);
-    };
+        try {
+            const response = await fetch("http://localhost:8080/api/corsi/upload", {
+                method: "POST",
+                body: formData,  // Qui siamo comunque obbligati a usare FormData per il file
+            });
 
-    const aggiornaLingua = (event) => {
-        setLingua(event.target.value);
-    };
+            if (!response.ok) {
+                const errorMessage = await response.text(); // Leggi il corpo della risposta qui
+                throw new Error(`Errore durante il caricamento del PDF: ${errorMessage}`);
+            }
 
+            // Leggi il corpo della risposta solo una volta
+            const pdfId = await response.text();  // Ottenere l'ID del PDF dal corpo della risposta
+            console.log("ID del PDF caricato:", pdfId);  // Stampare l'ID del PDF
+            return pdfId;  // Restituire l'ID del PDF
+        } catch (error) {
+            console.error("Errore durante l'upload del PDF:", error);
+            alert(`Errore durante il caricamento del PDF: ${error.message}`);
+            throw error;
+        }
+    };
     const handleSubmit = async (event) => {
-        // Previene il comportamento di default del form
         event.preventDefault();
+        if (!validateForm()) return;
 
-        // Creazione dell'oggetto da inviare
+        setLoading(true);
+        let uploadedPdfId = pdfId;
+
+        if (pdfFile && !pdfId) {
+            console.log("PDF non ancora caricato, procedo con l'upload");
+            try {
+                uploadedPdfId = await handlePdfUpload(pdfFile);
+                setPdfId(uploadedPdfId);
+            } catch {
+                setLoading(false);
+                return;
+            }
+
+        }
+
         const corsoDTO = {
-            titolo: titolo,
-            descrizione: descrizione,
-            categoria: categoria,
-            lingua: lingua
+            titolo,
+            descrizione,
+            categoria,
+            lingua,
+            pdf: uploadedPdfId,
         };
 
-        console.log("Corso da creare:", corsoDTO);
+
+        console.log("Corso da creare:", corsoDTO);  // Log dei dettagli del corso da creare
 
         try {
             const response = await fetch("http://localhost:8080/api/corsi/crea", {
                 method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    "Accept": "application/json"
-                },
+                headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
                     titolo: titolo,
                     descrizione: descrizione,
                     categoria: categoria,
                     lingua: lingua,
-                    proprietario: "FiguraSpecializzata@example.com"
-                })
+                    pdf: uploadedPdfId,
+                    proprietario: "FiguraSpecializzata@example.come",  // Nota: Cambiato "example.come" in "example.com"
+                }),
             });
 
             if (!response.ok) {
-                const errorText = await response.text();
-                throw new Error(`Errore HTTP: ${response.status} - ${errorText}`);
+                const errorDetails = await response.text(); // Leggi il corpo della risposta
+                console.error("Errore 403:", errorDetails);  // Log dei dettagli dell'errore
+                throw new Error("Errore durante la creazione del corso: " + errorDetails);
             }
-
             const result = await response.json();
-            console.log("Corso creato con successo:", result);
+            console.log("Corso creato con successo:", result);  // Log del risultato
             alert("Corso creato con successo!");
         } catch (error) {
             console.error("Errore durante la creazione del corso:", error);
             alert(`Errore durante la creazione del corso: ${error.message}`);
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -94,53 +136,23 @@ const CreaCorso = () => {
         <div className="formContainer">
             <h2>Crea un Corso</h2>
             <form onSubmit={handleSubmit}>
-                <input
-                    type="text"
-                    placeholder="Titolo del corso"
-                    className="formEditText"
-                    value={titolo}
-                    onChange={aggiornaTitolo}
-                    required
-                />
-
-                <textarea
-                    placeholder="Descrizione"
-                    className="formEditText"
-                    value={descrizione}
-                    onChange={aggiornaDescrizione}
-                    required
-                />
-
-                <select
-                    className="formEditText"
-                    value={categoria}
-                    onChange={aggiornaCategoria}
-                    required
-                >
+                <input type="text" placeholder="Titolo del corso" value={titolo} onChange={aggiornaTitolo} required />
+                <textarea placeholder="Descrizione" value={descrizione} onChange={aggiornaDescrizione} required />
+                <select value={categoria} onChange={aggiornaCategoria} required>
                     <option value="">Seleziona una categoria</option>
                     {Object.values(CATEGORIA).map((cat) => (
-                        <option key={cat} value={cat}>
-                            {cat}
-                        </option>
+                        <option key={cat} value={cat}>{cat}</option>
                     ))}
                 </select>
-
-                <select
-                    className="formEditText"
-                    value={lingua}
-                    onChange={aggiornaLingua}
-                    required
-                >
+                <select value={lingua} onChange={aggiornaLingua} required>
                     <option value="">Seleziona una lingua</option>
                     {Object.values(LINGUA).map((lang) => (
-                        <option key={lang} value={lang}>
-                            {lang}
-                        </option>
+                        <option key={lang} value={lang}>{lang}</option>
                     ))}
                 </select>
-
-                <button type="submit" className="formButton">
-                    Crea Corso
+                <input type="file" accept="application/pdf" onChange={aggiornaPdfFile} />
+                <button type="submit" disabled={loading}>
+                    {loading ? "Caricamento..." : "Crea Corso"}
                 </button>
             </form>
         </div>

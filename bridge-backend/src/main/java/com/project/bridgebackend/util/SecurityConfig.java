@@ -45,7 +45,8 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable()) // Disabilita CSRF esplicitamente
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/authentication/login", "/authentication/registrazioneVolontario",
-                                "/eventi/crea", "/api/corsi/crea", "/api/annunci/creaConsulenza").permitAll()
+                                "/eventi/crea", "/api/corsi/crea", "/api/annunci/creaConsulenza",
+                        "/api/corsi/upload").permitAll()
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))

@@ -8,6 +8,9 @@ import com.project.bridgebackend.Model.Entity.FiguraSpecializzata;
 import com.project.bridgebackend.Model.Entity.Utente;
 import com.project.bridgebackend.Model.Entity.enumeration.CategoriaCorso;
 import com.project.bridgebackend.Model.Entity.enumeration.Lingua;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
 /**
@@ -22,30 +25,37 @@ public class CorsoDTO {
     /**
      * Descrizione del corso.
      */
+    @NotBlank(message = "La descrizione del corso non può essere vuota.")
     private String descrizione;
 
     /**
      * Categoria del corso.
      */
-    private CategoriaCorso categoriaCorso;
+    @NotNull(message = "La categoria del corso è obbligatoria.")
+    private CategoriaCorso categoria;
 
     /**
      * Titolo del corso.
      */
+    @NotBlank(message = "Il titolo del corso è obbligatorio.")
     private String titolo;
 
     /**
      * PDF del corso.
      */
-   // private byte[] pdf;
+    @NotBlank(message = "Il PDF del corso è obbligatorio.")
+    private String pdf;
 
     /**
      * Lingua del corso.
      */
+    @NotNull(message = "La lingua del corso è obbligatoria.")
     private Lingua lingua;
 
     /**
     * Email del proprietario del corso.
      */
+    @NotBlank(message = "L'email del proprietario è obbligatoria.")
+    @Email(message = "L'email del proprietario non è valida.")
     private String proprietario;
 }
