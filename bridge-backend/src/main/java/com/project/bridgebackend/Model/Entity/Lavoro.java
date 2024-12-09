@@ -1,19 +1,30 @@
 package com.project.bridgebackend.Model.Entity;
 
-/**
- * @author Vito Vernellati
- * @created 04/12/2024
- * @version 1.0
- * Entità per la gestione degli annunci di lavoro
- */
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.Inheritance;
+import jakarta.persistence.InheritanceType;
+import jakarta.persistence.Table;
 
-import jakarta.persistence.*;
-import lombok.*;
-import com.project.bridgebackend.Model.Entity.enumeration.*;
-import jakarta.validation.constraints.*;
+import lombok.Getter;
+import lombok.Setter;
+
+import com.project.bridgebackend.Model.Entity.enumeration.TipoContratto;
+
+import jakarta.validation.constraints.DecimalMin;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
 
 /**
  * Classe che rappresenta un annuncio di lavoro, estende la classe base Annuncio.
+ *
+ * @author Vito Vernellati
+ * @created 04/12/2024
+ * @version 1.0
  */
 @Entity
 @Getter
@@ -45,7 +56,7 @@ public class Lavoro extends Annuncio {
      */
     @Column(name = "orario_lavoro", nullable = false, length = 50)
     @NotBlank(message = "L'orario di lavoro è obbligatorio")
-    @Pattern(regexp = "^\\d{2}:\\d{2}-d{2}:\\d{2}$", message = "Formato orario di lavoro non valido ")
+    @Pattern(regexp = "^\\d{2}:\\d{2}-\\d{2}:\\d{2}$", message = "Formato orario di lavoro non valido ")
     private String orarioLavoro;
 
     /**
@@ -80,15 +91,23 @@ public class Lavoro extends Annuncio {
      */
     @Column(name = "info_utili", nullable = false, length = 500)
     @NotBlank(message = "Le info utili sono obbligatorie")
-    @Pattern(regexp = "^[\\wÀ-ÿ\s,.!?\'\\-]{1,500}$", message = "Formato info utili non valido ")
+    @Pattern(regexp = "^[\\wÀ-ÿ\\s,.!?\\'\\-]{1,500}$", message = "Formato info utili non valido ")
     @Size(max = 500, message = "Le info utili non possono superare i 500 caratteri ")
     private String infoUtili;
 
     /**
      * Costruttore completo.
+     *
+     * @param posizioneLavorativa la posizione lavorativa richiesta nell'annuncio
+     * @param nomeAzienda il nome dell'azienda che offre il lavoro
+     * @param orarioLavoro l'orario di lavoro specificato nell'annuncio
+     * @param tipoContratto il tipo di contratto offerto
+     * @param retribuzione la retribuzione offerta per la posizione
+     * @param nomeSede il nome della sede di lavoro
+     * @param infoUtili informazioni aggiuntive utili per il lavoro
      */
-    public Lavoro(String posizioneLavorativa, String nomeAzienda, String orarioLavoro, TipoContratto tipoContratto,
-                  double retribuzione, String nomeSede, String infoUtili) {
+    public Lavoro(final String posizioneLavorativa, final String nomeAzienda, final String orarioLavoro, final TipoContratto tipoContratto,
+                  final double retribuzione, final String nomeSede, final String infoUtili) {
         // Inizializza i campi ereditati da Annuncio
         super();
 
@@ -102,7 +121,10 @@ public class Lavoro extends Annuncio {
         this.infoUtili = infoUtili;
     }
 
+    /**
+     * Costruttore di default.
+     */
     public Lavoro() {
-
+        super();
     }
 }

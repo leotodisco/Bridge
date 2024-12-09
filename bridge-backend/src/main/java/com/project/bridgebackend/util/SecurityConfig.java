@@ -46,7 +46,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/authentication/login", "/authentication/registrazioneUtente",
                                 "/eventi/crea", "/api/corsi/crea", "/api/annunci/creaConsulenza",
-                        "/api/corsi/upload", "/alloggi/aggiungi").permitAll()
+                                "/api/corsi/upload", "/alloggi/aggiungi", "/api/annunci/creaLavoro").permitAll()
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))

@@ -1,9 +1,9 @@
-package com.project.bridgebackend.GetioneAnnuncio.Service;
+package com.project.bridgebackend.GestioneAnnuncio.Service;
 
+import com.project.bridgebackend.Model.Entity.enumeration.TipoContratto;
 import com.project.bridgebackend.Model.Entity.Consulenza;
 import com.project.bridgebackend.Model.Entity.Indirizzo;
 import com.project.bridgebackend.Model.Entity.Lavoro;
-import com.project.bridgebackend.Model.Entity.enumeration.TipoContratto;
 import com.project.bridgebackend.Model.dao.ConsulenzaDAO;
 import com.project.bridgebackend.Model.dao.IndirizzoDAO;
 import com.project.bridgebackend.Model.dao.LavoroDAO;
@@ -12,7 +12,9 @@ import org.springframework.stereotype.Service;
 
 import jakarta.validation.Valid;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Optional;
+import java.util.ArrayList;
 
 /**
  * @author Geraldine Montella, Vito Vernellati.
@@ -21,9 +23,11 @@ import java.util.Optional;
  * Questa classe implementa il servizio per la gestione degli annunci,
  * interagendo con i repository di Consulenza e Indirizzo per il salvataggio nel database.
  */
+
 @Valid
 @Service
 public class GestioneAnnuncioServiceImp implements GestioneAnnuncioService {
+
     /**
      * Repository per la gestione delle consulenze nel database.
      */
@@ -41,32 +45,28 @@ public class GestioneAnnuncioServiceImp implements GestioneAnnuncioService {
      */
     @Autowired
     private LavoroDAO lavoroDAO;
+
+    // Implementazioni dei metodi per Consulenza
+
     /**
-     * Metodo per inserire una nuova consulenza nel sistema.
-     * Prima di salvare, viene verificato che il numero massimo di candidature,
-     * sia almeno 1. Se non è valido, viene lanciata un'eccezione.
-     * @param consulenza -> l'oggetto Consulenza da salvare
-     * @return la consulenza salvata nel database
+     * Inserisce una nuova consulenza nel database.
+     * Verifica che il numero massimo di candidature sia almeno 1.
+     *
+     * @param consulenza l'oggetto Consulenza da inserire.
+     * @return la consulenza salvata nel database.
      */
     @Override
     public Consulenza inserimentoConsulenza(final Consulenza consulenza) {
-
-        /*
-         * Verifica che il numero massimo di candidature sia almeno 1
-         */
         if (consulenza.getMaxCandidature() < 1) {
             throw new IllegalArgumentException("Il numero massimo di candidature deve essere almeno 1.");
         }
-
         return consulenzaDAO.save(consulenza);
     }
 
-
-
     /**
-     * Metodo per salvare un indirizzo di consulenza.
-     * Dopo aver salvato l'indirizzo, viene restituito il suo ID.
-     * @param indirizzo -> l'oggetto Indirizzo da salvare.
+     * Salva un indirizzo di consulenza nel database.
+     *
+     * @param indirizzo l'oggetto Indirizzo da salvare.
      * @return l'ID dell'indirizzo salvato.
      */
     @Override
@@ -75,10 +75,14 @@ public class GestioneAnnuncioServiceImp implements GestioneAnnuncioService {
         return indirizzo.getId();
     }
 
+    // Implementazioni dei metodi per Lavoro
+
     /**
-     * Metodo per inserire un nuovo annuncio di lavoro nel sistema.
-     * @param lavoro L'oggetto Lavoro da salvare.
-     * @return L'annuncio di lavoro salvato nel database.
+     * Inserisce un nuovo annuncio di lavoro nel database.
+     * Verifica che la retribuzione sia positiva.
+     *
+     * @param lavoro l'oggetto Lavoro da inserire.
+     * @return l'annuncio di lavoro salvato nel database.
      */
     @Override
     public Lavoro inserimentoLavoro(final Lavoro lavoro) {
@@ -89,9 +93,10 @@ public class GestioneAnnuncioServiceImp implements GestioneAnnuncioService {
     }
 
     /**
-     * Metodo per salvare un indirizzo di lavoro.
-     * @param indirizzo L'oggetto Indirizzo da salvare.
-     * @return L'ID dell'indirizzo salvato.
+     * Salva un indirizzo di lavoro nel database.
+     *
+     * @param indirizzo l'oggetto Indirizzo da salvare.
+     * @return l'ID dell'indirizzo salvato.
      */
     @Override
     public long salvaIndirizzoLavoro(final Indirizzo indirizzo) {
@@ -100,19 +105,18 @@ public class GestioneAnnuncioServiceImp implements GestioneAnnuncioService {
     }
 
     /**
-     * Metodo per modificare un annuncio di lavoro esistente.
-     * @param idAnnuncio L'ID dell'annuncio da modificare.
-     * @param aggiornamenti Mappa con i campi e i nuovi valori.
-     * @return L'annuncio di lavoro aggiornato.
+     * Modifica un annuncio di lavoro esistente nel database.
+     *
+     * @param idAnnuncio l'ID dell'annuncio da modificare.
+     * @param aggiornamenti mappa contenente i campi da aggiornare e i relativi valori.
+     * @return l'annuncio di lavoro aggiornato.
      */
     @Override
-    public Lavoro modificaAnnuncioLavoro(final long idAnnuncio,
-                                         final HashMap<String, Object> aggiornamenti) {
+    public Lavoro modificaAnnuncioLavoro(final long idAnnuncio, final HashMap<String, Object> aggiornamenti) {
         Optional<Lavoro> lavoroOptional = lavoroDAO.findById(idAnnuncio);
         if (lavoroOptional.isEmpty()) {
-            throw new IllegalArgumentException("Annuncio di lavoro non trovato");
+            throw new IllegalArgumentException("Annuncio di lavoro non trovato.");
         }
-
 
         Lavoro lavoro = lavoroOptional.get();
 
@@ -147,14 +151,10 @@ public class GestioneAnnuncioServiceImp implements GestioneAnnuncioService {
         return lavoroDAO.save(lavoro);
     }
 
-    /**
-     * Metodo per eliminare un annuncio di lavoro.
-     * @param idAnnuncio L'ID dell'annuncio da eliminare.
-     */
     @Override
     public void eliminaAnnuncioLavoro(final long idAnnuncio) {
         if (!lavoroDAO.existsById(idAnnuncio)) {
-            throw new IllegalArgumentException("Annuncio di lavoro non trovato");
+            throw new IllegalArgumentException("Annuncio di lavoro non trovato.");
         }
         lavoroDAO.deleteById(idAnnuncio);
     }

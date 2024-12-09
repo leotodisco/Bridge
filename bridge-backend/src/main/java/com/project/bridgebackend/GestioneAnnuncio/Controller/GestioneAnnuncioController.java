@@ -1,13 +1,20 @@
-package com.project.bridgebackend.GetioneAnnuncio.Controller;
+package com.project.bridgebackend.GestioneAnnuncio.Controller;
 
-
-import com.project.bridgebackend.GetioneAnnuncio.Service.GestioneAnnuncioService;
+import com.project.bridgebackend.GestioneAnnuncio.Service.GestioneAnnuncioService;
 import com.project.bridgebackend.Model.Entity.Consulenza;
+import com.project.bridgebackend.Model.Entity.Lavoro;
 import com.project.bridgebackend.Model.Entity.FiguraSpecializzata;
+import com.project.bridgebackend.Model.Entity.Volontario;
 import com.project.bridgebackend.Model.Entity.Indirizzo;
+import com.project.bridgebackend.Model.Entity.Utente;
+
 import com.project.bridgebackend.Model.dao.FiguraSpecializzataDAO;
+import com.project.bridgebackend.Model.dao.VolontarioDAO;
 import com.project.bridgebackend.Model.dao.IndirizzoDAO;
+import com.project.bridgebackend.Model.dao.UtenteDAO;
 import com.project.bridgebackend.Model.dto.ConsulenzaDTO;
+import com.project.bridgebackend.Model.dto.LavoroDTO;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -19,9 +26,9 @@ import jakarta.validation.Valid;
 
 
 /**
- * @author Geraldine Montella.
+ * @author Geraldine Montella, Vito Vernellati.
  * Creato il: 03/12/2024.
-
+ *
  * Controller per la gestione degli annunci.
  * Questo controller gestisce le richieste HTTP legate alla creazione di annunci.
  * di consulenza, includendo validazione e interazione con il database.
@@ -32,16 +39,29 @@ import jakarta.validation.Valid;
 public class GestioneAnnuncioController {
 
     /**
+     * DAO per accedere ai dati dell' utente.
+     */
+
+    @Autowired
+    private UtenteDAO utenteDAO;
+
+    /**
      * Service per la logica di gestione degli annunci.
      */
     @Autowired
     private GestioneAnnuncioService gestioneAnnuncioService;
 
     /**
-     * DAO per accedere ai dati degli utenti-> figure specializzate.
+     * DAO per accedere ai dati delle figure specializzate.
      */
     @Autowired
     private FiguraSpecializzataDAO figuraSpecializzataDAO;
+
+    /**
+     * DAO per accedere ai dati dei volontari.
+     */
+    @Autowired
+    private VolontarioDAO volontarioDAO;
 
     /**
      * DAO per accedere ai dati degli indirizzi.
@@ -61,7 +81,7 @@ public class GestioneAnnuncioController {
      * @return ResponseEntity contenente l'entità `Consulenza` appena creata.
      *         Oppure un errore se le operazioni non vanno a buon fine.
      */
-    @PostMapping("/creaConsulenza")
+    @PostMapping
     public ResponseEntity<Consulenza> creaConsulenza(@Valid @RequestBody final ConsulenzaDTO consulenzaDTO) {
 
         /*
@@ -94,7 +114,7 @@ public class GestioneAnnuncioController {
 
         // Recupero della figura specializzata proprietaria della consulenza.
         FiguraSpecializzata figuraSpecializzata =
-        figuraSpecializzataDAO.findByEmail(consulenzaDTO.getProprietario());
+                figuraSpecializzataDAO.findByEmail(consulenzaDTO.getProprietario());
         if (figuraSpecializzata == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         }
@@ -107,5 +127,65 @@ public class GestioneAnnuncioController {
         return new ResponseEntity<>(nuovaConsulenza, HttpStatus.CREATED);
     }
 
-}
 
+    /**
+     * Metodo per creare un nuovo annuncio di lavoro.
+     * Questo metodo riceve un oggetto DTO contenente i dati del lavoro,
+     * valida l'input, e crea le entità necessarie nel database.
+     *
+     * @param lavoroDTO DTO contenente i dati del lavoro.
+     *                  Include informazioni sull'indirizzo,
+     *                  il proprietario e altri dettagli rilevanti.
+     *                  Semplifica la gestione e validazione dei dati passati con JSON.
+     * @return ResponseEntity contenente l'entità `Lavoro` appena creata.
+     *         Oppure un errore se le operazioni non vanno a buon fine.
+     */
+    @PostMapping("/creaLavoro")
+    public ResponseEntity<Lavoro> creaLavoro(@Valid @RequestBody final LavoroDTO lavoroDTO) {
+
+        /*
+         * Creazione dell'entità Indirizzo a partire dai dati del DTO di lavoro.
+         */
+        Indirizzo indirizzo = new Indirizzo();
+        indirizzo.setVia(lavoroDTO.getIndirizzo().getVia());
+        indirizzo.setCitta(lavoroDTO.getIndirizzo().getCitta());
+        indirizzo.setCap(lavoroDTO.getIndirizzo().getCap());
+        indirizzo.setProvincia(lavoroDTO.getIndirizzo().getProvincia());
+        indirizzo.setNumCivico(lavoroDTO.getIndirizzo().getNumCivico());
+
+        // Salvataggio dell'indirizzo nel database.
+        Long indirizzoId = gestioneAnnuncioService.salvaIndirizzoLavoro(indirizzo);
+
+        // Recupero del proprietario dell'annuncio come Utente.
+        Utente proprietario = utenteDAO.findByEmail(lavoroDTO.getProprietario());
+        if (proprietario == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        }
+
+        // Creazione dell'entità Lavoro a partire dai dati del DTO.
+        Lavoro lavoro = new Lavoro();
+        lavoro.setTitolo(lavoroDTO.getTitolo());
+        lavoro.setDisponibilita(lavoroDTO.getDisponibilita());
+        lavoro.setTipologia(lavoroDTO.getTipologia());
+        lavoro.setIndirizzo(indirizzoDAO.getReferenceById(indirizzoId));
+        lavoro.setMaxCandidature(lavoroDTO.getMaxCandidature());
+        lavoro.setCandidati(lavoroDTO.getCandidati());
+
+        // Impostazione dei campi specifici di Lavoro.
+        lavoro.setPosizioneLavorativa(lavoroDTO.getPosizioneLavorativa());
+        lavoro.setNomeAzienda(lavoroDTO.getNomeAzienda());
+        lavoro.setOrarioLavoro(lavoroDTO.getOrarioLavoro());
+        lavoro.setTipoContratto(lavoroDTO.getTipoContratto());
+        lavoro.setRetribuzione(lavoroDTO.getRetribuzione());
+        lavoro.setNomeSede(lavoroDTO.getNomeSede());
+        lavoro.setInfoUtili(lavoroDTO.getInfoUtili());
+
+        // Impostazione del proprietario.
+        lavoro.setProprietario(proprietario);
+
+        // Salvataggio del lavoro nel database.
+        Lavoro nuovoLavoro = gestioneAnnuncioService.inserimentoLavoro(lavoro);
+
+        return new ResponseEntity<>(nuovoLavoro, HttpStatus.CREATED);
+    }
+}
