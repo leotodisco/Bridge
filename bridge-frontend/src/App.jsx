@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
 import CreaEvento from './GestioneEvento/components/formEvento.jsx';
 import CreaConsulenza from './GestioneAnnuncio/components/formConsulenza.jsx';
 import CreaCorso from './GestioneCorso/components/formCorso.jsx';
+import CreaUtente from "./Registrazione/components/formRegistrazione.jsx";
 import logo from './assets/IMG_1580.PNG';
 
 function App() {
@@ -17,12 +18,14 @@ function App() {
                     <Link to="/crea-evento" className="nav-link">Crea Evento</Link>
                     <Link to="/crea-consulenza" className="nav-link">Crea Consulenza</Link>
                     <Link to = "/crea-corso" className = "nav-link">Crea Corso</Link>
+                    <Link to = "/crea-utente" className = "nav-link">Crea Utente</Link>
                 </nav>
                 <Routes>
                     <Route path="/" element={<p>Benvenuto nel sistema di gestione!</p>}/>
                     <Route path="/crea-evento" element={<CreaEvento/>}/>
                     <Route path="/crea-consulenza" element={<CreaConsulenza/>}/>
                     <Route path="/crea-corso" element={<CreaCorso/>}/>
+                    <Route path="/crea-utente" element={<CreaUtente/>}/>
                 </Routes>
             </main>
         </Router>

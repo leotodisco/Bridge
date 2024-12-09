@@ -9,6 +9,8 @@ import com.project.bridgebackend.registrazione.service.RegistrazioneService;
 import com.project.bridgebackend.util.AuthenticationRequest;
 import com.project.bridgebackend.util.AuthenticationResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -25,7 +27,7 @@ import java.time.LocalDate;
  * Classe controller che implementa i metodi per la registrazione degli utenti.
  * */
 @RestController
-@CrossOrigin
+@CrossOrigin(origins = "http://localhost:5173", allowedHeaders = "*")
 @RequestMapping(path = "authentication")
 public class RegistrazioneController {
     /**
@@ -50,8 +52,10 @@ public class RegistrazioneController {
      * @param utente
      * */
     @PostMapping(value = "/registrazioneUtente")
-    public void registrazioneUtente(@RequestBody final UtenteDTO utente)
+    public ResponseEntity<String> registrazioneUtente(@RequestBody final UtenteDTO utente)
             throws Exception {
+        try{
+        System.out.println("Ricevuto DTO: " + utente.toString());
         String nome = utente.getNomeUtente();
         String cognome = utente.getCognomeUtente();
         String email = utente.getEmailUtente();
@@ -149,8 +153,13 @@ public class RegistrazioneController {
                 break;
         }
 
-
+        return ResponseEntity.ok("Registrazione avvenuta con successo.");
+    } catch (Exception e) {
+        System.err.println("Errore durante la registrazione: " + e.getMessage());
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Errore durante la registrazione: " + e.getMessage());
     }
+}
+
 
     /**
      * Metodo per il login.

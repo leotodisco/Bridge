@@ -1,4 +1,5 @@
 import {useState} from "react";
+import './CreaUtente.css';
 
 const TitolodiStudio = {
     ScuolaPrimaria: "Scuola Primaria",
@@ -9,9 +10,9 @@ const TitolodiStudio = {
 };
 
 const Genere = {
-    Maschio : "Maschio",
+    Maschio: "Maschio",
     Femmina: "Femmina",
-    NonSpecificato: "NonSpecificato"
+    NonSpecificato: "Non Specificato"
 };
 
 const Ruolo = {
@@ -23,17 +24,17 @@ const Ruolo = {
 
 const CreaUtente = () => {
     const [nome, setNome] = useState("");
-    const[cognome, setCognome] = useState("");
-    const[email, setEmail] = useState("");
-    const[password, setPassword] = useState("");
-    const[nazionalita, setNazionalita] = useState("");
-    const[titolodistudio, setTitolodistudio] = useState([]);
-    const[genere, setGenere] = useState([]);
-    const[ruolo, setRuolo] = useState([]);
-    const[skill, setSkill] = useState("");
-    const[lingueParlate, setLingue] = useState("");
-    const [dataDiNascita, setDataDiNascita] = useState(null);
-    const [fotoProfilo, setFotoProfilo] = useState([]);
+    const [cognome, setCognome] = useState("");
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
+    const [nazionalita, setNazionalita] = useState("");
+    const [titolodistudio, setTitolodistudio] = useState([]);
+    const [genere, setGenere] = useState([]);
+    const [ruolo, setRuolo] = useState([]);
+    const [skill, setSkill] = useState("");
+    const [lingueParlate, setLingue] = useState("");
+    const [dataDiNascita, setDataDiNascita] = useState("");
+    //const [fotoProfilo, setFotoProfilo] = useState([]);
 
     const aggiornaNome = (event) => {
         setNome(event.target.value);
@@ -55,23 +56,23 @@ const CreaUtente = () => {
         setNazionalita(event.target.value);
     };
 
-    const aggiornaTitoloDiStudio = (event) => {
+    /*const aggiornaTitoloDiStudio = (event) => {
         const options = event.target.selectedOptions;
         const values = Array.from(options).map(option => option.value);
         setTitolodistudio(values);
-    };
+    };*/
 
-    const aggiornaGenere = (event) => {
+    /*const aggiornaGenere = (event) => {
         const options = event.target.selectedOptions;
         const values = Array.from(options).map(option => option.value);
         setGenere(values);
-    };
+    };*/
 
-    const aggiornaRuolo = (event) => {
+    /*const aggiornaRuolo = (event) => {
         const options = event.target.selectedOptions;
         const values = Array.from(options).map(option => option.value);
         setRuolo(values);
-    };
+    };*/
 
     const aggiornaSkill = (event) => {
         setSkill(event.target.value);
@@ -81,11 +82,11 @@ const CreaUtente = () => {
         setLingue(event.target.value);
     };
 
-    const aggiornaDataDiNascita = (data) => {
-        setDataDiNascita(data);
+    const aggiornaDataDiNascita = (event) => {
+        setDataDiNascita(event.target.value);
     };
 
-    const aggiornaFotoProfilo = (event) => {
+    /*const aggiornaFotoProfilo = (event) => {
         const file = event.target.files[0];
         if (file) {
             const reader = new FileReader();
@@ -94,60 +95,69 @@ const CreaUtente = () => {
             };
             reader.readAsDataURL(file);
         }
-    };
+    };*/
 
 
-    const gestisciSubmit = async (event) =>{
+    const gestisciSubmit = async (event) => {
         event.preventDefault();
         const utenteDTO = {
-            nome: nome,
-            cognome: cognome,
-            email: email,
-            password: password,
-            dataDiNascita: dataDiNascita,
-            genere: genere,
-            titolodistudio: titolodistudio,
-            ruolo: ruolo,
-            skill: skill,
-            nazionalita: nazionalita,
-            lingueParlate: lingueParlate,
-            fotoProfilo: fotoProfilo
-        }
+            nomeUtente: nome,
+            cognomeUtente: cognome,
+            emailUtente: email,
+            passwordUtente: password,
+            dataNascitaUtente: dataDiNascita,
+            genderUtente: genere, // Singolo valore, es: "Maschio"
+            titoloDiStudioUtente: titolodistudio, // Singolo valore, es: "Laurea"
+            ruoloUtente: ruolo, // Singolo valore, es: "Volontario"
+            skillUtente: skill,
+            nazionalitaUtente: nazionalita,
+            lingueParlateUtente: lingueParlate,
+            fotoUtente: null
+        };
+
 
         console.log(utenteDTO);
-        try{
-            const response = await fetch("http://localhost:8080/authentication/registrazioneVolontario", {
+        try {
+            const response = await fetch("http://localhost:8080/authentication/registrazioneUtente", {
                 method: "POST",
                 headers: {
-                    "Content-Type": "application/json", // Specifica che il corpo è in formato JSON
-                    "Accept": "application/json" // Specifica che il server risponde in formato JSON
+                    "Content-Type": "application/json",
+                    "Accept": "application/json"
                 },
                 body: JSON.stringify({
-                    "nome": nome,
-                    "cognome": cognome,
-                    "email": email,
-                    "password": password,
-                    "dataDiNascita": dataDiNascita,
-                    "genere": genere,
-                    "titolodistudio": titolodistudio,
-                    "ruolo": ruolo,
-                    "skill": skill,
-                    "nazionalita": nazionalita,
-                    "lingueParlate": lingueParlate,
-                    "fotoProfilo": fotoProfilo
+                    "nomeUtente": nome,
+                    "cognomeUtente": cognome,
+                    "emailUtente": email,
+                    "passwordUtente": password,
+                    "dataNascitaUtente": dataDiNascita,
+                    "genderUtente": genere,
+                    "titoloDiStudioUtente": titolodistudio,
+                    "ruoloUtente": ruolo,
+                    "skillUtente": skill,
+                    "nazionalitaUtente": nazionalita,
+                    "lingueParlateUtente": lingueParlate,
+                    "fotoProfiloUtente": null
                 })
             });
 
-            const data = await response.json();
-            console.log(data);
-        }catch (error){
-            console.error("Errore",error);
+            if (response.ok) {
+                const data = await response.text();
+                console.log("Login avvenuto con successo:", data);
+                alert("Login avvenuto con successo!");
+                // Puoi salvare il token o l'utente autenticato nello stato o in localStorage
+            } else {
+                console.error("Errore durante il login");
+                alert("Email o password errati.");
+            }
+        } catch (error) {
+            console.error("Errore nella richiesta di login:", error);
+            alert("Errore nel collegamento al server.");
         }
     };
 
     return (
         //Contenitore del form
-        <div className = "formRegistrazione">
+        <div className="formRegistrazione">
             <h2>Registrazione nuovo utente</h2>
             <form onSubmit={gestisciSubmit}>
                 <input
@@ -177,10 +187,9 @@ const CreaUtente = () => {
                 />
 
                 <select
-                    multiple
                     className={"formEditText"}
                     value={genere}
-                    onChange={aggiornaGenere}
+                    onChange={(event) => setGenere(event.target.value)}
                     required={true}
                 >
                     <option value="">Seleziona Genere</option>
@@ -218,10 +227,9 @@ const CreaUtente = () => {
                 />
 
                 <select
-                    multiple
                     className={"formEditText"}
                     value={titolodistudio}
-                    onChange={aggiornaTitoloDiStudio}
+                    onChange={(event) => setTitolodistudio(event.target.value)}
                     required={true}
                 >
                     <option value="">Seleziona Titolo di Studio</option>
@@ -233,10 +241,9 @@ const CreaUtente = () => {
                 </select>
 
                 <select
-                    multiple
                     className={"formEditText"}
                     value={ruolo}
-                    onChange={aggiornaRuolo}
+                    onChange={(event) => setRuolo(event.target.value)}
                     required={true}
                 >
                     <option value="">Seleziona Ruolo</option>
@@ -246,6 +253,7 @@ const CreaUtente = () => {
                         </option>
                     ))}
                 </select>
+
 
                 <input
                     type="text"
@@ -265,14 +273,7 @@ const CreaUtente = () => {
                     required={true}
                 />
 
-                <input
-                    type="file"
-                    accept="image/*"
-                    className={"formEditText"}
-                    value = {fotoProfilo}
-                    onChange={aggiornaFotoProfilo}
-                    required={true}
-                />
+
                 <button type="submit" className="formButton">
                     Invio
                 </button>
@@ -280,5 +281,14 @@ const CreaUtente = () => {
         </div>
     );
 };
+/*
+<input
+    type="file"
+    accept="image/*"
+    className={"formEditText"}
+    value={fotoProfilo}
+    onChange={aggiornaFotoProfilo}
+    required={true}
+/>*/
 
 export default CreaUtente;
