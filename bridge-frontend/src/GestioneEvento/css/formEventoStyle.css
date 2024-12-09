@@ -1,0 +1,227 @@
+/*Reset di base* */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Montserrat', sans-serif;
+}
+
+/* Stile per lo scrolling fluido */
+html {
+    scroll-behavior: smooth;
+}
+
+/* Corpo principale */
+body {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    background: #f4f4f9;
+    padding: 1rem;
+}
+
+/* Sezione di introduzione */
+.introText {
+    font-size: 1rem; /* Dimensione del testo */
+    color: #333; /* Colore del testo */
+    margin-bottom: 0.2rem; /* Spazio sotto il paragrafo */
+    text-align: left; /* Allinea il testo a sinistra */
+}
+
+
+.introList {
+    list-style-type: disc; /* Tipo di punto */
+    margin: 0.5rem 0; /* Spaziatura sopra e sotto l'elenco */
+    padding-left: 1.5rem; /* Spaziatura a sinistra per il punto */
+    font-size: 0.7rem; /* Dimensione del testo */
+    color: #444; /* Colore del testo */
+    line-height: 1.5; /* Migliora la leggibilità */
+    text-align: left; /* Allinea il testo a sinistra */
+}
+
+.introList li {
+    margin-bottom: 0.5rem; /* Spazio tra gli elementi della lista */
+}
+
+/* Stile per i link */
+.scrollLink {
+    color: #00BF62; /* Colore del link */
+    text-decoration: none; /* Rimuove la sottolineatura */
+    font-weight: bold; /* Evidenzia il link */
+    cursor: pointer;
+}
+
+.scrollLink:hover {
+    text-decoration: underline; /* Aggiunge sottolineatura al passaggio del mouse */
+}
+
+
+strong {
+    color: #00BF62; /* Cambia il colore delle parole */
+    font-weight: bold; /* Mantieni il peso del font */
+}
+
+/* Contenitore principale del form */
+.formContainer {
+    width: 100%;
+    max-width: 600px;
+    padding: 2rem;
+    border-radius: 10px;
+    background: #fff;
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+}
+
+/* Titoli */
+.formContainer h2 {
+    text-align: center;
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: #0C3444;
+}
+
+.formContainer h3 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-top: 1.5rem;
+    margin-bottom: 0.75rem;
+    color: #0C3444;
+}
+
+/* Campi di input, textarea e select */
+.formContainer input[type="text"],
+.formContainer input[type="number"],
+.formContainer input[type="date"],
+.formContainer input[type="time"],
+.formContainer textarea,
+.formContainer select {
+    width: 100%;
+    padding: 0.75rem;
+    margin-bottom: 1rem;
+    border: 1px solid #00BF62;
+    border-radius: 6px;
+    background-color: white;
+    font-size: 1rem;
+    color: #2c3e50;
+    transition: border-color 0.3s, background-color 0.3s;
+}
+
+/* Stile per input e textarea su hover o focus */
+.formContainer input:hover,
+.formContainer textarea:hover,
+.formContainer select:hover {
+    background-color: #f9f9f9;
+}
+
+.formContainer input:focus,
+.formContainer textarea:focus,
+.formContainer select:focus {
+    border-color: #00BF62;
+    outline: none;
+    box-shadow: 0 0 5px rgba(0, 191, 98, 0.2);
+}
+
+/* Layout flessibile per Data e Ora */
+.inlineDateTime {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.inlineDateTime input {
+    flex: 1;
+}
+
+/* Layout flessibile per Via e Numero Civico */
+.inlineAddress {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.inlineAddress input {
+    flex: 1;
+}
+
+/* Layout flessibile per Città, CAP e Provincia */
+.inlineCityDetails {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.inlineCityDetails input {
+    flex: 1;
+}
+
+/* Pulsante di invio */
+button[type="submit"] {
+    width: 100%;
+    padding: 0.75rem;
+    border: none;
+    border-radius: 6px;
+    background: #00BF62;
+    color: #fff;
+    font-size: 1.125rem;
+    font-weight: 600;
+    cursor: pointer;
+    margin-top: 1rem;
+    transition: background 0.3s, transform 0.2s, box-shadow 0.3s;
+}
+
+button[type="submit"]:hover {
+    background: #008f4b;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(0, 143, 75, 0.3);
+}
+
+button[type="submit"]:active {
+    transform: translateY(0);
+    box-shadow: none;
+}
+
+/* Autofill per campi di input */
+input:-webkit-autofill {
+    -webkit-box-shadow: 0 0 0px 1000px #fafafa inset !important; /* Sfondo coerente con il resto */
+    -webkit-text-fill-color: #2c3e50 !important; /* Colore del testo */
+    transition: background-color 5000s ease-in-out 0s; /* Previene il flash di colore */
+}
+
+input:-webkit-autofill:focus {
+    -webkit-box-shadow: 0 0 0px 1000px #ffffff inset !important;
+    -webkit-text-fill-color: #2c3e50 !important;
+}
+
+textarea:-webkit-autofill {
+    -webkit-box-shadow: 0 0 0px 1000px #fafafa inset !important;
+    -webkit-text-fill-color: #2c3e50 !important;
+}
+
+select:-webkit-autofill {
+    -webkit-box-shadow: 0 0 0px 1000px #fafafa inset !important;
+    -webkit-text-fill-color: #2c3e50 !important;
+}
+
+/* Linea orizzontale */
+hr {
+     /* Rimuove lo stile predefinito */
+    height: 1px; /* Spessore della linea */
+    background-color: #396F85; /* Colore della linea */
+    /* Spaziatura sopra e sotto */
+    margin: 10px 100px 20px;
+}
+
+/* Design responsivo */
+@media (max-width: 600px) {
+    .inlineDateTime,
+    .inlineAddress,
+    .inlineCityDetails {
+        flex-direction: column;
+        gap: 0.75rem;
+    }
+
+    button[type="submit"] {
+        font-size: 1rem;
+        padding: 0.65rem;
+    }
+}

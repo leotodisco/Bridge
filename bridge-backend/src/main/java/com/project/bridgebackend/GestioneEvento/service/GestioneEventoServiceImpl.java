@@ -5,6 +5,7 @@ import com.project.bridgebackend.Model.Entity.Indirizzo;
 import com.project.bridgebackend.Model.dao.EventoDAO;
 import com.project.bridgebackend.Model.dao.IndirizzoDAO;
 import jakarta.transaction.Transactional;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.List;
@@ -38,7 +39,7 @@ public class GestioneEventoServiceImpl implements GestioneEventoService {
      **/
     @Transactional
     @Override
-    public Evento insertEvento(final Evento evento) {
+    public Evento insertEvento(@Valid final Evento evento) {
         //Controllo su DTO nullo o id nullo
         if (evento == null) {
             throw new IllegalArgumentException("Evento non valido.");
@@ -75,7 +76,7 @@ public class GestioneEventoServiceImpl implements GestioneEventoService {
         existingEvento
                 .setOra(evento.getOra());
         existingEvento
-                .setLingueParlate(evento.getLingueParlate());
+                .setLinguaParlata(evento.getLinguaParlata());
         existingEvento
                 .setDescrizione(evento.getDescrizione());
         existingEvento
