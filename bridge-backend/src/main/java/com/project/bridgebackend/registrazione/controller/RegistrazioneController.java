@@ -1,9 +1,6 @@
 package com.project.bridgebackend.registrazione.controller;
 
-import com.project.bridgebackend.Model.Entity.Admin;
-import com.project.bridgebackend.Model.Entity.FiguraSpecializzata;
-import com.project.bridgebackend.Model.Entity.Rifugiato;
-import com.project.bridgebackend.Model.Entity.Volontario;
+import com.project.bridgebackend.Model.Entity.*;
 import com.project.bridgebackend.Model.Entity.enumeration.Gender;
 import com.project.bridgebackend.Model.Entity.enumeration.Ruolo;
 import com.project.bridgebackend.Model.Entity.enumeration.TitoloDiStudio;
@@ -49,157 +46,110 @@ public class RegistrazioneController {
     }
 
     /**
-     * Metodo per la registrazione di un Volontario.
-     * @param volontario
+     * Metodo per la registrazione di un utente in base al ruolo.
+     * @param utente
      * */
-    @PostMapping(value = "/registrazioneVolontario")
-    public void registrazione(@RequestBody final UtenteDTO volontario)
+    @PostMapping(value = "/registrazioneUtente")
+    public void registrazioneUtente(@RequestBody final UtenteDTO utente)
             throws Exception {
-        String nome = volontario.getNomeUtente();
-        String cognome = volontario.getCognomeUtente();
-        String email = volontario.getEmailUtente();
-        String password = safePassword(volontario.getPasswordUtente());
-        volontario.setPasswordUtente(password);
-        String nazionalita = volontario.getNazionalitaUtente();
-        String lingueParlate = volontario.getLingueParlateUtente();
-        Gender genere = volontario.getGenderUtente();
-        Ruolo ruolo = volontario.getRuoloUtente();
-        LocalDate dataNascita = volontario.getDataNascitaUtente();
-        String Skill = volontario.getSkillUtente();
-        TitoloDiStudio titoloDiStudio =
-                volontario.getTitoloDiStudioUtente();
-        byte[] fotoProfilo = volontario.getFotoUtente();
+        String nome = utente.getNomeUtente();
+        String cognome = utente.getCognomeUtente();
+        String email = utente.getEmailUtente();
+        String pass = utente.getPasswordUtente();
 
-        Volontario v = new Volontario(email,
-                nome,
-                cognome,
-                lingueParlate,
-                fotoProfilo,
-                Skill,
-                dataNascita,
-                titoloDiStudio,
-                ruolo,
-                genere,
-                nazionalita,
-                password);
+        String regexpPassword =
+                "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])"
+                        + "[A-Za-z\\d@$!%*?&]{8,16}$";
 
-        registrazioneService
-                .registraVolontario(v, volontario.getPasswordUtente());
-    }
-
-    /**
-     * Metodo per la registrazione di un Rifugiato.
-     * @param rifugiato
-     * */
-    @PostMapping(value = "/registrazioneRifugiato")
-    public void registrazioneRifugiato(@RequestBody final UtenteDTO rifugiato)
-            throws Exception {
-        String nome = rifugiato.getNomeUtente();
-        String cognome = rifugiato.getCognomeUtente();
-        String email = rifugiato.getEmailUtente();
-        String password = safePassword(rifugiato.getPasswordUtente());
-        rifugiato.setPasswordUtente(password);
-        String nazionalita = rifugiato.getNazionalitaUtente();
-        String lingueParlate = rifugiato.getLingueParlateUtente();
-        Gender genere = rifugiato.getGenderUtente();
-        Ruolo ruolo = rifugiato.getRuoloUtente();
-        LocalDate dataNascita = rifugiato.getDataNascitaUtente();
-        String Skill = rifugiato.getSkillUtente();
-        TitoloDiStudio titoloDiStudio = rifugiato
+        if (!pass.matches(regexpPassword)) {
+            throw new Exception("La password non rispetta "
+                    + "l'espressione regolare");
+        }
+        String password = safePassword(utente.getPasswordUtente());
+        utente.setPasswordUtente(password);
+        String nazionalita = utente.getNazionalitaUtente();
+        String lingueParlate = utente.getLingueParlateUtente();
+        Gender genere = utente.getGenderUtente();
+        Ruolo ruolo = utente.getRuoloUtente();
+        LocalDate dataNascita = utente.getDataNascitaUtente();
+        String Skill = utente.getSkillUtente();
+        TitoloDiStudio titoloDiStudio = utente
                 .getTitoloDiStudioUtente();
-        byte[] fotoProfilo = rifugiato.getFotoUtente();
+        byte[] fotoProfilo = utente.getFotoUtente();
+        switch (ruolo){
+            case Admin:
+                     Admin a = new Admin(email,
+                        nome,
+                        cognome,
+                        lingueParlate,
+                        fotoProfilo,
+                        Skill,
+                        dataNascita,
+                        titoloDiStudio,
+                        ruolo,
+                        genere,
+                        nazionalita,
+                        password);
+                registrazioneService
+                        .registraAdmin(a, utente.getPasswordUtente());
+                break;
 
-        Rifugiato r = new Rifugiato(email,
-                nome,
-                cognome,
-                lingueParlate,
-                fotoProfilo,
-                Skill,
-                dataNascita,
-                titoloDiStudio,
-                ruolo,
-                genere,
-                nazionalita,
-                password);
-        registrazioneService
-                .registraRifugiato(r, rifugiato.getPasswordUtente());
-    }
+            case FiguraSpecializzata:
+                String disponibilita = utente.getDisponibilitaUtente();
+                FiguraSpecializzata fs = new FiguraSpecializzata(email,
+                        nome,
+                        cognome,
+                        lingueParlate,
+                        fotoProfilo,
+                        Skill,
+                        dataNascita,
+                        titoloDiStudio,
+                        ruolo,
+                        genere,
+                        nazionalita,
+                        password,
+                        disponibilita);
+                registrazioneService
+                        .registraFiguraSpecializzata(fs, utente.getPasswordUtente());
+                break;
 
-    /**
-     * Metodo per la registrazione di una Figura Specializzata.
-     * @param figspec
-     * */
-    @PostMapping(value = "/registrazioneFiguraSpecializzata")
-    public void registrazioneFiguraSpecializzata(@RequestBody
-                                                 final UtenteDTO figspec)
-            throws Exception {
-        String nome = figspec.getNomeUtente();
-        String cognome = figspec.getCognomeUtente();
-        String email = figspec.getEmailUtente();
-        String password = safePassword(figspec.getPasswordUtente());
-        figspec.setPasswordUtente(password);
-        String nazionalita = figspec.getNazionalitaUtente();
-        String lingueParlate = figspec.getLingueParlateUtente();
-        Gender genere = figspec.getGenderUtente();
-        Ruolo ruolo = figspec.getRuoloUtente();
-        LocalDate dataNascita = figspec.getDataNascitaUtente();
-        String Skill = figspec.getSkillUtente();
-        TitoloDiStudio titoloDiStudio = figspec
-                .getTitoloDiStudioUtente();
-        byte[] fotoProfilo = figspec.getFotoUtente();
-        String disponibilita = figspec.getDisponibilitaUtente();
-        FiguraSpecializzata fs = new FiguraSpecializzata(email,
-                nome,
-                cognome,
-                lingueParlate,
-                fotoProfilo,
-                Skill,
-                dataNascita,
-                titoloDiStudio,
-                ruolo,
-                genere,
-                nazionalita,
-                password,
-                disponibilita);
-        registrazioneService
-                .registraFiguraSpecializzata(fs, figspec.getPasswordUtente());
-    }
+            case Volontario:
+                Volontario v = new Volontario(email,
+                        nome,
+                        cognome,
+                        lingueParlate,
+                        fotoProfilo,
+                        Skill,
+                        dataNascita,
+                        titoloDiStudio,
+                        ruolo,
+                        genere,
+                        nazionalita,
+                        password);
 
-    /**
-     * Metodo per la registrazione di un admin.
-     * @param admin
-     * */
-    @PostMapping(value = "/registrazioneAdmin")
-    public void registrazioneAdmin(@RequestBody final UtenteDTO admin)
-            throws Exception {
-        String nome = admin.getNomeUtente();
-        String cognome = admin.getCognomeUtente();
-        String email = admin.getEmailUtente();
-        String password = safePassword(admin.getPasswordUtente());
-        admin.setPasswordUtente(password);
-        String nazionalita = admin.getNazionalitaUtente();
-        String lingueParlate = admin.getLingueParlateUtente();
-        Gender genere = admin.getGenderUtente();
-        Ruolo ruolo = admin.getRuoloUtente();
-        LocalDate dataNascita = admin.getDataNascitaUtente();
-        String Skill = admin.getSkillUtente();
-        TitoloDiStudio titoloDiStudio = admin
-                .getTitoloDiStudioUtente();
-        byte[] fotoProfilo = admin.getFotoUtente();
-        Admin a = new Admin(email,
-                nome,
-                cognome,
-                lingueParlate,
-                fotoProfilo,
-                Skill,
-                dataNascita,
-                titoloDiStudio,
-                ruolo,
-                genere,
-                nazionalita,
-                password);
-        registrazioneService
-                .registraAdmin(a, admin.getPasswordUtente());
+                registrazioneService
+                        .registraVolontario(v, utente.getPasswordUtente());
+                break;
+
+            case Rifugiato:
+                Rifugiato r = new Rifugiato(email,
+                        nome,
+                        cognome,
+                        lingueParlate,
+                        fotoProfilo,
+                        Skill,
+                        dataNascita,
+                        titoloDiStudio,
+                        ruolo,
+                        genere,
+                        nazionalita,
+                        password);
+                registrazioneService
+                        .registraRifugiato(r, utente.getPasswordUtente());
+                break;
+        }
+
+
     }
 
     /**

@@ -1,20 +1,29 @@
-import './App.css'
-import CreaCorso from "./GestioneCorso/components/formCorso.jsx";
-
+import './App.css';
+import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
+import CreaEvento from './GestioneEvento/components/formEvento.jsx';
+import CreaConsulenza from './GestioneAnnuncio/components/formConsulenza.jsx';
+import logo from './assets/IMG_1580.PNG';
 
 function App() {
-
-  return (
-      <>
-          <p>ACIUAOAOAAOA</p>
-
-              <CreaCorso/>
-
-          <p className="read-the-docs">
-              Click on the Vite and React logos to learn more
-          </p>
-      </>
-  )
+    return (
+        <Router>
+            <main className="main-content">
+                <div className="logo-container">
+                    <img src={logo} alt="Logo" className="site-logo"/>
+                </div>
+                <nav className="nav-links">
+                    <Link to="/" className="nav-link">Home</Link>
+                    <Link to="/crea-evento" className="nav-link">Crea Evento</Link>
+                    <Link to="/crea-consulenza" className="nav-link">Crea Consulenza</Link>
+                </nav>
+                <Routes>
+                    <Route path="/" element={<p>Benvenuto nel sistema di gestione!</p>}/>
+                    <Route path="/crea-evento" element={<CreaEvento/>}/>
+                    <Route path="/crea-consulenza" element={<CreaConsulenza/>}/>
+                </Routes>
+            </main>
+        </Router>
+    );
 }
 
-export default App
+export default App;

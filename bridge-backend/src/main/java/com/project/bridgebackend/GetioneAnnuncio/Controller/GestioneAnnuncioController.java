@@ -61,7 +61,7 @@ public class GestioneAnnuncioController {
      * @return ResponseEntity contenente l'entità `Consulenza` appena creata.
      *         Oppure un errore se le operazioni non vanno a buon fine.
      */
-    @PostMapping
+    @PostMapping("/creaConsulenza")
     public ResponseEntity<Consulenza> creaConsulenza(@Valid @RequestBody final ConsulenzaDTO consulenzaDTO) {
 
         /*
