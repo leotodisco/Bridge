@@ -45,7 +45,8 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable()) // Disabilita CSRF esplicitamente
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/authentication/login", "/authentication/registrazioneUtente",
-                                "/eventi/crea", "/api/corsi/crea", "/api/annunci/creaConsulenza").permitAll()
+                                "/eventi/crea", "/api/corsi/crea", "/api/annunci/creaConsulenza",
+                        "/api/corsi/upload", "/alloggi/aggiungi").permitAll()
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
@@ -57,7 +58,7 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(List.of("http://localhost:5174", "http://localhost:5173", "https://your-production-domain.com"));
+        configuration.setAllowedOrigins(List.of("http://localhost:5174", "https://your-production-domain.com"));
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"));
         configuration.setAllowedHeaders(List.of("Authorization", "Content-Type"));
         configuration.setExposedHeaders(List.of("Authorization"));

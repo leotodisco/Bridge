@@ -88,7 +88,7 @@ public class GestioneEventoController {
         evento.setNome(eventoDTO.getNome());
         evento.setData(LocalDate.parse(eventoDTO.getData()));
         evento.setOra(eventoDTO.getOra());
-        evento.setLingueParlate(eventoDTO.getLingueParlate());
+        evento.setLinguaParlata(eventoDTO.getLinguaParlata());
         evento.setDescrizione(eventoDTO.getDescrizione());
         evento.setLuogo(indirizzoDAO.getReferenceById(idIndirizzo));
         evento.setOrganizzatore(volontario);

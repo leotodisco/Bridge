@@ -8,10 +8,7 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 import lombok.experimental.SuperBuilder;
-
-import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.List;
 
 /**
  * @author Alessia De Filippo
@@ -57,7 +54,7 @@ public class EventoDTO {
      * Lingue parlate durante l'evento.
      * Indica le lingue parlate durante l'evento.
      **/
-    private List<Lingua> lingueParlate;
+    private Lingua linguaParlata;
 
     /**
      * Descrizione dell'evento.

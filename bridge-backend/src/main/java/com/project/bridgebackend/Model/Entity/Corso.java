@@ -60,7 +60,7 @@ public class Corso implements Serializable {
 
     // Nome del file PDF del corso
     @Column(name = "pdf")
-    private byte[] pdf;
+    private String pdf;
 
     // Titolo del corso
     @Column(name = "titolo", length = TITOLO_MAX_LENGTH)

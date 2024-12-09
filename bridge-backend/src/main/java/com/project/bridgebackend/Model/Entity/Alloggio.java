@@ -21,7 +21,6 @@ import jakarta.validation.constraints.Size;
 
 @Data
 @Entity
-@Inheritance(strategy = InheritanceType.JOINED)
 @Table(name = "alloggio")
 public class Alloggio {
 
@@ -41,23 +40,23 @@ public class Alloggio {
      */
 
     @Column(nullable = false)
-    @Max(value = 99999, message = "La metratura deve essere al massimo 99999")
-    @Min(value = 1, message = "La metratura deve essere almeno di 1")
+    //@Max(value = 99999, message = "La metratura deve essere al massimo 99999")
+    //@Min(value = 1, message = "La metratura deve essere almeno di 1")
     private int metratura;
 
     /**
      *  Campo per il numero massimo di persone che l'alloggio può ospitare.
      */
     @Column(nullable = false)
-    @Min(value = 1, message = "deve esserci almeno una persona")
-    @Max(value = 2, message = "devono esserci al massimo 99 persone")
+    //@Min(value = 1, message = "deve esserci almeno una persona")
+    //@Max(value = 2, message = "devono esserci al massimo 99 persone")
     private int maxPersone;
 
     /**
      *  Campo per una descrizione testuale dell'alloggio (es. caratteristiche, ubicazione, ecc.).
      */
     @Column(nullable = false, length = 400)
-    @Size(max = 400, message = "la descrizione non può superare i 400 caratteri")
+    //@Size(max = 400, message = "la descrizione non può superare i 400 caratteri")
     private String descrizione;
 
     /**
@@ -65,15 +64,15 @@ public class Alloggio {
      *
      */
 
-    @JoinColumn(name = "proprietario_email", referencedColumnName = "email", nullable = false)
-    @ManyToOne()
+    @JoinColumn(name = "proprietario", referencedColumnName = "email", nullable = false)
+    @ManyToOne(fetch = FetchType.LAZY)
     private Utente proprietario;
 
     /**
      *  Lista di rifugiati candidati per l'alloggio.
      */
     @Column(nullable = false)
-    @OneToMany
+    @OneToMany()
     private List<Rifugiato> listaCandidati;
 
     /**
@@ -87,11 +86,11 @@ public class Alloggio {
      *  campo per le foto dell'alloggio
      */
     @ElementCollection
-    @CollectionTable(name = "alloggio_foto", joinColumns = @JoinColumn(name = "alloggio_id"))
+    //@CollectionTable(name = "alloggio_foto", joinColumns = @JoinColumn(name = "alloggio_id"))
     @Column(name = "foto_url")
-    @NotNull
-    @Size(min = 1, max = 3, message = "Devi fornire almeno 1 foto e massimo 3.")
-    private List<Byte> foto;
+    //@NotNull
+    //@Size(min = 1, max = 3, message = "Devi fornire almeno 1 foto e massimo 3.")
+    private List<String> foto;
 
     /**
      *  Costruttore predefinito (senza argomenti) per inizializzare l'oggetto.

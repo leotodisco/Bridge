@@ -131,6 +131,7 @@ public class Utente implements Serializable, UserDetails {
      * Foto profilo dell'utente (in formato Byte[]).
      * */
     @Column(name = "fotoProfilo")
+
     private byte[] fotoProfilo;
 
     /**

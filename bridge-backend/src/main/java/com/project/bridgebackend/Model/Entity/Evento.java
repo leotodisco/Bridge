@@ -111,12 +111,9 @@ public class Evento implements Serializable {
      * Campo relativo alle lingue parlate durante l'evento.
      **/
     @NotNull(message = "La lingue sono obbligatorie")
-    @ElementCollection(targetClass = Lingua.class)
     @Enumerated(EnumType.STRING)
-    @CollectionTable(name = "evento_lingue_parlate",
-            joinColumns = @JoinColumn(name = "evento_id"))
-    @Column(name = "lingueParlate", nullable = false)
-    private List<Lingua> lingueParlate;
+    @Column(name = "linguaParlata", nullable = false)
+    private Lingua linguaParlata;
 
     /**
      * Campo relativo alla descrizione dell'evento.

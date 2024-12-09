@@ -1,5 +1,7 @@
 import { useState } from "react";
+import '../../GestioneEvento/css/formEventoStyle.css';
 
+// Oggetto contenente le lingue disponibili
 const Lingua = {
     ITALIANO: "ITALIANO",
     INGLESE: "INGLESE",
@@ -13,67 +15,43 @@ const Lingua = {
     ARABO: "ARABO"
 };
 
-/*
- * Stati che memorizzano i dati inseriti nel form.
- * Crea una var con valore iniziale vuoto.
- * Crea la funzione che aggiorna i campi.
- */
+// Funzione per creare l'evento
 const CreaEvento = () => {
-
-    const [nome, setNome] = useState("");
-    const[data, setData] = useState("");
-    const[ora, setOra] = useState("");
-    const[lingueParlate, setLingueParlate] = useState([]);
-    const[descrizione, setDescrizione] = useState("");
-    const[luogo, setLuogo] = useState({
+    // Stato per gestire i dati del modulo
+    const [nome, setNome] = useState(""); // Nome dell'evento
+    const [data, setData] = useState(""); // Data dell'evento
+    const [ora, setOra] = useState(""); // Ora dell'evento
+    const [linguaParlata, setLinguaParlata] = useState(""); // Lingua parlata durante l'evento
+    const [descrizione, setDescrizione] = useState(""); // Descrizione dell'evento
+    const [luogo, setLuogo] = useState({ //Oggetto per gestire i dettagli del luogo
         via: "",
         numCivico: "",
         citta: "",
         cap: "",
         provincia: ""
     });
-    const[maxPartecipanti, setMaxPartecipanti] = useState(1);
+    const [maxPartecipanti, setMaxPartecipanti] = useState(1); // Numero massimo di partecipanti
 
-    /*
-     * Funzione che aggiorna il campo nome.
-     */
-    const aggiornaNome = (event) => {
-        setNome(event.target.value);
-    }
+    // Funzioni per aggiornare i valori dello stato
 
-    /*
-     * Funzione che aggiorna il campo data.
-     */
-    const aggiornaData = (event) => {
-        setData(event.target.value);
-    }
+    // Aggiorna il nome dell'evento
+    const aggiornaNome = (event) => setNome(event.target.value);
 
-    /*
-     * Funzione che aggiorna il campo ora.
-     */
-    const aggiornaOra = (event) => {
-        setOra(event.target.value);
-    }
+    // Aggiorna la data dell'evento
+    const aggiornaData = (event) => setData(event.target.value);
 
-    /*
-     * Funzione che aggiorna il campo lingueParlate.
-     */
-    const aggiornaLingueParlate = (event) => {
-        const options = event.target.selectedOptions;
-        const values = Array.from(options).map(option => option.value);
-        setLingueParlate(values);
+    // Aggiorna l'ora dell'evento
+    const aggiornaOra = (event) => setOra(event.target.value);
+
+    //Aggiorna la lingua parlata durante l'evento
+    const aggiornaLinguaParlata = (event) => {
+        setLinguaParlata(event.target.value);
     };
 
-    /*
-     * Funzione che aggiorna il campo descrizione.
-     */
-    const aggiornaDescrizione = (event) => {
-        setDescrizione(event.target.value);
-    }
+    // Aggiorna la descrizione dell'evento
+    const aggiornaDescrizione = (event) => setDescrizione(event.target.value);
 
-    /*
-     * Funzione che aggiorna il campo via.
-     */
+    // Aggiorna la via del luogo dell'evento
     const aggiornaVia = (event) => {
         setLuogo({
             ...luogo,
@@ -81,9 +59,7 @@ const CreaEvento = () => {
         });
     }
 
-    /*
-     * Funzione che aggiorna il campo numCivico.
-     */
+    // Aggiorna il numero civico del luogo dell'evento
     const aggiornaNumCivico = (event) => {
         setLuogo({
             ...luogo,
@@ -91,9 +67,7 @@ const CreaEvento = () => {
         });
     }
 
-    /*
-     * Funzione che aggiorna il campo citta.
-     */
+    // Aggiorna la città del luogo dell'evento
     const aggiornaCitta = (event) => {
         setLuogo({
             ...luogo,
@@ -101,9 +75,7 @@ const CreaEvento = () => {
         });
     }
 
-    /*
-     * Funzione che aggiorna il campo cap.
-     */
+    // Aggiorna il CAP del luogo dell'evento
     const aggiornaCap = (event) => {
         setLuogo({
             ...luogo,
@@ -111,9 +83,7 @@ const CreaEvento = () => {
         });
     }
 
-    /*
-     * Funzione che aggiorna il campo provincia.
-     */
+    // Aggiorna la provincia del luogo dell'evento
     const aggiornaProvincia = (event) => {
         setLuogo({
             ...luogo,
@@ -121,23 +91,20 @@ const CreaEvento = () => {
         });
     }
 
-    /*
-     * Funzione che aggiorna il campo maxPartecipanti.
-     */
-    const aggiornaMaxPartecipanti = (event) => {
-        setMaxPartecipanti(event.target.value);
-    }
+    // Aggiorna il numero massimo di partecipanti
+    const aggiornaMaxPartecipanti = (event) => setMaxPartecipanti(event.target.value);
 
+    // Funzione per gestire la creazione dell'evento
     const handleSubmit = async (event) => {
-        //Previene il comportamento di default del form
+        // Impedisce il comportamento predefinito del form
         event.preventDefault();
 
-        //Creazione dell'oggetto eventoDTO
+        // Oggetto contenente i dati dell'evento
         const eventoDTO = {
             nome: nome,
             data: data,
             ora: ora,
-            lingueParlate: lingueParlate,
+            linguaParlata: linguaParlata,
             descrizione: descrizione,
             luogo: luogo,
             maxPartecipanti: maxPartecipanti
@@ -145,161 +112,184 @@ const CreaEvento = () => {
 
         console.log("Evento da creare: ", eventoDTO);
 
-        //Invio della richiesta al backend
         try {
+            // Richiesta POST per creare l'evento
             const response = await fetch("http://localhost:8080/eventi/crea", {
                 method: "POST",
                 headers: {
-                    "Content-Type": "application/json", // Specifica che il corpo è in formato JSON
-                    "Accept": "application/json" // Specifica che il server risponde in formato JSON
+                    "Content-Type": "application/json",
+                    "Accept": "application/json"
                 },
+                // Converte l'oggetto in formato JSON
                 body: JSON.stringify({
-                    "nome": nome,
-                    "data": data,
-                    "ora": ora,
-                    "lingueParlate": lingueParlate,
-                    "descrizione": descrizione,
-                    "luogo": {
-                        "via": luogo.via,
-                        "numCivico": luogo.numCivico,
-                        "cap": luogo.cap,
-                        "citta": luogo.citta,
-                        "provincia": luogo.provincia
+                    nome: nome,
+                    data: data,
+                    ora: ora,
+                    linguaParlata: linguaParlata,
+                    descrizione: descrizione,
+                    luogo: {
+                        via: luogo.via,
+                        numCivico: luogo.numCivico,
+                        cap: luogo.cap,
+                        citta: luogo.citta,
+                        provincia: luogo.provincia
                     },
-                    "organizzatore": {
+                    organizzatore: {
                         "email": "volontario@example.com" //todo: prendere l'email dell'utente loggato
                     },
-                    "maxPartecipanti": maxPartecipanti
+                    maxPartecipanti: maxPartecipanti
                 })
             });
 
-
+            // Se la richiesta non va a buon fine, lancia un errore
             if (!response.ok) {
                 throw new Error(`Errore HTTP: ${response.status}`);
             }
 
+            // Se la richiesta va a buon fine, stampa il risultato
             const result = await response.json();
             console.log("Evento creato con successo: ", result);
         } catch (error) {
             console.error("Errore durante la creazione dell'evento: ", error);
             alert("Errore durante la creazione dell'evento");
         }
-
     };
 
+    // Form per la creazione dell'evento
     return (
-        //Contenitore del form
-        <div className = "formContainer">
-            <h2>Crea un Evento</h2>
+        // Form per la creazione dell'evento
+        <div className="formContainer">
+            <h2>Crea un nuovo evento</h2>
+            <hr/>
+            <p className="introText">
+                Segui questi passaggi per creare un nuovo evento:
+            </p>
+            <ul className="introList">
+                <li>Compila i campi sottostanti con i dettagli del tuo evento.</li>
+                <li>Assicurati di riempire tutti i campi richiesti.</li>
+                <li>Quando hai completato, clicca sul pulsante <a href="#creaEventoButton" className="scrollLink"><strong>Crea Evento</strong></a> per pubblicare.
+                </li>
+            </ul>
+
             <form onSubmit={handleSubmit}>
+                <h3>Informazioni Principali:</h3>
+                <hr/>
                 <input
-                    type = "text"
-                    placeholder= {"Nome evento"}
-                    className={"formEditText"}
-                    value = {nome}
-                    onChange = {aggiornaNome}
-                    required={true}
+                    type="text"
+                    placeholder="Nome evento"
+                    title="Digita il nome dell'evento"
+                    className="formEditText"
+                    value={nome}
+                    onChange={aggiornaNome}
+                    required
                 />
-
-                <input
-                    type = "date"
-                    className={"formEditText"}
-                    value = {data}
-                    onChange = {aggiornaData}
-                    required={true}
-                />
-
-                <input
-                    type = "time"
-                    className={"formEditText"}
-                    value = {ora}
-                    onChange = {aggiornaOra}
-                    required={true}
+                <textarea
+                    placeholder="Descrizione"
+                    title="Digita la descrizione dell'evento"
+                    value={descrizione}
+                    onChange={aggiornaDescrizione}
+                    required
                 />
 
                 <select
-                    multiple
-                    className={"formEditText"}
-                    value = {lingueParlate}
-                    onChange = {aggiornaLingueParlate}
-                    required={true}
+                    className="formEditText"
+                    value={linguaParlata}
+                    title="Seleziona la lingua parlata durante l'evento"
+                    onChange={aggiornaLinguaParlata}
+                    required
                 >
-                    <option value = "">Seleziona lingue</option>
-                    {Object.values(Lingua).map((lingua) => (
-                        <option key = {lingua} value = {lingua}>
-                            {lingua}
+                    <option value="" disabled>
+                        Seleziona una lingua
+                    </option>
+                    {Object.values(Lingua).map((lang) => (
+                        <option key={lang} value={lang}>
+                            {lang}
                         </option>
                     ))}
                 </select>
 
                 <input
-                    type = "text"
-                    placeholder= {"Descrizione"}
-                    className={"formEditText"}
-                    value = {descrizione}
-                    onChange = {aggiornaDescrizione}
+                    type="number"
+                    placeholder="Max partecipanti"
+                    title="Seleziona il numero massimo di partecipanti"
+                    value={maxPartecipanti}
+                    onChange={aggiornaMaxPartecipanti}
+                    required
                 />
+                <h3>Data e Ora</h3>
+                <hr/>
+                <div className="inlineDateTime">
+                    <input
+                        type="date"
+                        title="Seleziona la data dell'evento"
+                        className="formEditText"
+                        value={data}
+                        onChange={aggiornaData}
+                        required
+                    />
+                    <input
+                        type="time"
+                        title="Seleziona l'ora dell'evento"
+                        className="formEditText"
+                        value={ora}
+                        onChange={aggiornaOra}
+                        required
+                    />
+                </div>
 
-                <input
-                    type = "text"
-                    placeholder= {"Via"}
-                    className={"formEditText"}
-                    value = {luogo.via}
-                    onChange = {aggiornaVia}
-                    required={true}
-                />
+                <h3>Luogo</h3>
+                <hr/>
+                <div className="inlineAddress">
+                    <input
+                        type="text"
+                        placeholder="Via"
+                        title="Inserisci la via del luogo dell'evento"
+                        value={luogo.via}
+                        onChange={aggiornaVia}
+                        required
+                    />
+                    <input
+                        type="text"
+                        placeholder="Numero Civico"
+                        title="Inserisci il numero civico del luogo dell'evento"
+                        value={luogo.numCivico}
+                        onChange={aggiornaNumCivico}
+                        required
+                    />
+                </div>
 
-                <input
-                    type = "text"
-                    placeholder= {"Numero Civico"}
-                    className={"formEditText"}
-                    value = {luogo.numCivico}
-                    onChange = {aggiornaNumCivico}
-                    required={true}
-                />
+                <div className="inlineCityDetails">
+                    <input
+                        type="text"
+                        placeholder="Città"
+                        title="Inserisci la città del luogo dell'evento"
+                        value={luogo.citta}
+                        onChange={aggiornaCitta}
+                        required
+                    />
+                    <input
+                        type="text"
+                        placeholder="CAP"
+                        title="Inserisci il CAP del luogo dell'evento"
+                        value={luogo.cap}
+                        onChange={aggiornaCap}
+                        required
+                    />
+                    <input
+                        type="text"
+                        placeholder="Provincia"
+                        title="Inserisci la provincia del luogo dell'evento"
+                        value={luogo.provincia}
+                        onChange={aggiornaProvincia}
+                        required
+                    />
+                </div>
 
-                <input
-                    type = "text"
-                    placeholder= {"Città"}
-                    className={"formEditText"}
-                    value = {luogo.citta}
-                    onChange = {aggiornaCitta}
-                    required={true}
-                />
-
-                <input
-                    type = "text"
-                    placeholder= {"CAP"}
-                    className={"formEditText"}
-                    value = {luogo.cap}
-                    onChange = {aggiornaCap}
-                    required={true}
-                />
-
-                <input
-                    type = "text"
-                    placeholder= {"Provincia"}
-                    className={"formEditText"}
-                    value = {luogo.provincia}
-                    onChange = {aggiornaProvincia}
-                    required={true}
-                />
-
-                <input
-                    type = "number"
-                    placeholder= {"Numero Massimo Partecipanti"}
-                    className={"formEditText"}
-                    value = {maxPartecipanti}
-                    onChange = {aggiornaMaxPartecipanti}
-                    required={true}
-                />
-
-                <button type = "submit" className = "formButton">
-                    Crea Evento
-                </button>
+                <button id="creaEventoButton" type="submit">Crea Evento</button>
             </form>
         </div>
     );
 };
 
+// Esporta il componente CreaEvento
 export default CreaEvento;

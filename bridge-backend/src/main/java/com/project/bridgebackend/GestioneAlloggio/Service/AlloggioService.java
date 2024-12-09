@@ -2,6 +2,7 @@ package com.project.bridgebackend.GestioneAlloggio.Service;
 
 import com.project.bridgebackend.Model.Entity.Alloggio;
 import com.project.bridgebackend.Model.Entity.Rifugiato;
+import com.project.bridgebackend.Model.dto.AlloggioDTO;
 
 import java.util.List;
 
@@ -11,35 +12,35 @@ public interface AlloggioService {
      * @Param alloggio alloggio da inserire nel sistema
      * rimuovere
      */
-    public boolean addAlloggio(Alloggio alloggio, int idAlloggio);
+    public boolean addAlloggio(AlloggioDTO alloggio);
 
     /**
      *Firma del metodo che invia una email al Rifugiato
      * @Param message messaggio che sarà mostrato nella email
      * @Param idRifugiato id del rifugiato a cui inviare l'email
      */
-    public void sendEmailRifugiato(String message, int idRifugiato);
+    public void sendEmailRifugiato(String message, String emailRifugiato);
 
     /**
      *Firma del metodo che manifesta interesse per un alloggio
      * @Param rifugiato il rifugiato che ha manifestato interesse
      * @Parama alloggio a quale alloggio ha manifestato interesse il rifugiato
      */
-    public void manifestazioneInteresse(Rifugiato rifugiato, Alloggio alloggio);
+    public boolean manifestazioneInteresse(Rifugiato rifugiato, Alloggio alloggio);
 
     /**
      *Firma del metodo che assegna un alloggio ad un rifugiato
      * @Param idAlloggio l'alloggio che è sato assegnato al rifugiato
      * @Param idRifugiato l'identificativo del rifugiato a cui è stato assegnato un alloggio
      */
-    public Alloggio assegnazioneAlloggio(int idAlloggio, int idRifugiato);
+    public Alloggio assegnazioneAlloggio(long idAlloggio, String emailRifugiato);
 
     /**
      *Firma del metodo che notifica il volontario nel caso in cui ci sia una nuova manifestazione di interesse per il suo annuncio
      * @Param message messaggio che viene inviato al volontario
      * @Param idVolontario id del volontario da notificare
      */
-    public void sendEmailVolontario(String message, int idVolontario);
+    public void sendEmailVolontario(String message, String emailVolontario);
 
     /**
      *Firma del metodo che mostra tutti gli alloggi presenti nel sistema
