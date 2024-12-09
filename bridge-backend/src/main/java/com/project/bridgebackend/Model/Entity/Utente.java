@@ -78,8 +78,6 @@ public class Utente implements Serializable, UserDetails {
      * */
     @Column(name = "password")
     @NotNull
-    @Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)[A-Za-z\\d]{8,20}$",
-            message = "regexp per la password non rispettata")
     protected String password;
 
     /**
@@ -87,7 +85,7 @@ public class Utente implements Serializable, UserDetails {
      * */
     @Column(name = "nazionalita")
     @NotNull
-    @Pattern(regexp = "^[a-zA-Z\\s]{5,30}$", message = "regexp per la nazionalità non rispettata")
+    @Pattern(regexp = "^[a-zA-Z\s]{5,30}$", message = "regexp per la nazionalità non rispettata")
     private String nazionalita;
 
 
@@ -189,6 +187,7 @@ public class Utente implements Serializable, UserDetails {
         this.gender = gender;
         this.nazionalita = nazionalita;
         this.password = password;
+
     }
 
     /**
