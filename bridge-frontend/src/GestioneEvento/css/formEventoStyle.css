@@ -40,6 +40,16 @@ body {
     text-align: left; /* Allinea il testo a sinistra */
 }
 
+.formContainer .errore {
+    color: red;
+    font-size: 0.9em;
+    display: block;
+    margin-top: 0.3rem;
+    text-align: start;
+}
+
+
+
 .introList li {
     margin-bottom: 0.5rem; /* Spazio tra gli elementi della lista */
 }
@@ -97,13 +107,14 @@ strong {
 .formContainer select {
     width: 100%;
     padding: 0.75rem;
-    margin-bottom: 1rem;
+    margin-bottom: 0.1rem;
+    margin-top: 1rem;
     border: 1px solid #00BF62;
     border-radius: 6px;
     background-color: white;
     font-size: 1rem;
     color: #2c3e50;
-    transition: border-color 0.3s, background-color 0.3s;
+    transition: background-color 0.3s;
 }
 
 /* Stile per input e textarea su hover o focus */
@@ -170,7 +181,7 @@ button[type="submit"] {
 }
 
 button[type="submit"]:hover {
-    background: #008f4b;
+    background: #00BF62;
     transform: translateY(-2px);
     box-shadow: 0 4px 10px rgba(0, 143, 75, 0.3);
 }
@@ -225,3 +236,4 @@ hr {
         padding: 0.65rem;
     }
 }
+
