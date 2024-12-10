@@ -70,6 +70,7 @@ const CreaUtente = () => {
 
     const aggiornaFotoProfilo = (event) => {
         const file = event.target.files[0];
+        console.log(fotoProfilo);
         if (file) {
             const reader = new FileReader();
             reader.onload = () => {
@@ -78,6 +79,7 @@ const CreaUtente = () => {
             reader.readAsDataURL(file);
         }
     };
+
 
 
     const gestisciSubmit = async (event) => {
@@ -258,7 +260,6 @@ const CreaUtente = () => {
                     type="file"
                     accept="image/*"
                     className={"formEditText"}
-                    value={fotoProfilo}
                     onChange={aggiornaFotoProfilo}
                     required={true}
                 />
