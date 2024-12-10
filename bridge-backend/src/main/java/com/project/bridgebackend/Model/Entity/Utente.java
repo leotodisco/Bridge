@@ -131,8 +131,7 @@ public class Utente implements Serializable, UserDetails {
      * Foto profilo dell'utente (in formato Byte[]).
      * */
     @Column(name = "fotoProfilo")
-
-    private byte[] fotoProfilo;
+    private String fotoProfilo;
 
     /**
      * Lingue parlate dall'utente.
@@ -168,7 +167,7 @@ public class Utente implements Serializable, UserDetails {
                   final String nome,
                   final String cognome,
                   final String lingueParlate,
-                  final byte[] fotoProfilo, String skill,
+                  final String fotoProfilo, String skill,
                   final LocalDate dataNascita,
                   final TitoloDiStudio titoloDiStudio,
                   final Ruolo role,

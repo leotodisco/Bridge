@@ -35,7 +35,7 @@ public class Admin extends Utente {
 
     public Admin(String email, String nome,
                  String cognome, String lingueParlate,
-                 byte[] fotoProfilo, String skill,
+                 String fotoProfilo, String skill,
                  LocalDate dataNascita, TitoloDiStudio titoloDiStudio,
                  Ruolo role, Gender gender,
                  String nazionalita, String password) {

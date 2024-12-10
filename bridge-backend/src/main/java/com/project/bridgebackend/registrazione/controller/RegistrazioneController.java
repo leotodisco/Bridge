@@ -1,10 +1,13 @@
 package com.project.bridgebackend.registrazione.controller;
 
+import com.project.bridgebackend.GestioneCorso.pdf.PDFDoc;
 import com.project.bridgebackend.Model.Entity.*;
 import com.project.bridgebackend.Model.Entity.enumeration.Gender;
 import com.project.bridgebackend.Model.Entity.enumeration.Ruolo;
 import com.project.bridgebackend.Model.Entity.enumeration.TitoloDiStudio;
 import com.project.bridgebackend.Model.dto.UtenteDTO;
+import com.project.bridgebackend.registrazione.fotoProfilo.FotoProfilo;
+import com.project.bridgebackend.registrazione.fotoProfilo.FotoProfiloService;
 import com.project.bridgebackend.registrazione.service.RegistrazioneService;
 import com.project.bridgebackend.util.AuthenticationRequest;
 import com.project.bridgebackend.util.AuthenticationResponse;
@@ -12,14 +15,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 
+import java.io.IOException;
 import java.time.LocalDate;
+import java.util.Arrays;
+import java.util.Base64;
 
 /**
  * @author Antonio Ceruso.
@@ -36,6 +39,8 @@ public class RegistrazioneController {
     @Autowired
     private RegistrazioneService registrazioneService;
 
+    @Autowired
+    private FotoProfiloService fotoser;
     /**
      * Metodo per la cifratura della password.
      * @param password
@@ -79,14 +84,30 @@ public class RegistrazioneController {
         String Skill = utente.getSkillUtente();
         TitoloDiStudio titoloDiStudio = utente
                 .getTitoloDiStudioUtente();
-        byte[] fotoProfilo = utente.getFotoUtente();
-        switch (ruolo){
+
+            // Gestione della foto del profilo (Base64 -> byte[])
+            String fotoProfiloId = null;
+
+            if (utente.getFotoUtente() != null && !utente.getFotoUtente().isEmpty()) {
+                String base64Image = utente.getFotoUtente();
+
+                // Verifica se contiene il prefisso 'data:image/jpeg;base64,' e rimuovilo
+                if (base64Image.startsWith("data:image/jpeg;base64,")) {
+                    base64Image = base64Image.split(",")[1]; // Estrai solo la parte Base64 dopo la virgola
+                    byte[] fotoData = Base64.getDecoder().decode(base64Image);
+                    fotoProfiloId = fotoser.saveIMG(nome, fotoData);
+
+                } else {
+                    System.err.println("Formato immagine non valido: la stringa Base64 non contiene il prefisso corretto.");
+                }
+            }
+            switch (ruolo){
             case Admin:
                      Admin a = new Admin(email,
                         nome,
                         cognome,
                         lingueParlate,
-                        fotoProfilo,
+                        fotoProfiloId,
                         Skill,
                         dataNascita,
                         titoloDiStudio,
@@ -104,7 +125,7 @@ public class RegistrazioneController {
                         nome,
                         cognome,
                         lingueParlate,
-                        fotoProfilo,
+                        fotoProfiloId,
                         Skill,
                         dataNascita,
                         titoloDiStudio,
@@ -122,7 +143,7 @@ public class RegistrazioneController {
                         nome,
                         cognome,
                         lingueParlate,
-                        fotoProfilo,
+                        fotoProfiloId,
                         Skill,
                         dataNascita,
                         titoloDiStudio,
@@ -140,7 +161,7 @@ public class RegistrazioneController {
                         nome,
                         cognome,
                         lingueParlate,
-                        fotoProfilo,
+                        fotoProfiloId,
                         Skill,
                         dataNascita,
                         titoloDiStudio,
@@ -172,4 +193,6 @@ public class RegistrazioneController {
             throws Exception {
         return registrazioneService.login(req);
     }
+
+
 }

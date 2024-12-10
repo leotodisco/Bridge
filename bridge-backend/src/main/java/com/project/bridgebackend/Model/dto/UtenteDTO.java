@@ -60,7 +60,7 @@ public class UtenteDTO {
     /**
      * Parametro foto dell'Utente.
      */
-    private byte[] fotoUtente;
+    private String fotoUtente;
 
     /**
      * Parametro disponibilità dell'Utente.

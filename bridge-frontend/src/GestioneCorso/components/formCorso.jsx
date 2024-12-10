@@ -112,7 +112,7 @@ const CreaCorso = () => {
                     categoria: categoria,
                     lingua: lingua,
                     pdf: uploadedPdfId,
-                    proprietario: "FiguraSpecializzata@example.come",  // Nota: Cambiato "example.come" in "example.com"
+                    proprietario: "negraccio@gedi.it",  // Nota: Cambiato "example.come" in "example.com"
                 }),
             });
 

@@ -34,7 +34,7 @@ const CreaUtente = () => {
     const [skill, setSkill] = useState("");
     const [lingueParlate, setLingue] = useState("");
     const [dataDiNascita, setDataDiNascita] = useState("");
-    const [fotoProfilo, setFotoProfilo] = useState([]);
+    const [fotoProfilo, setFotoProfilo] = useState(null);
 
     const aggiornaNome = (event) => {
         setNome(event.target.value);
@@ -77,6 +77,8 @@ const CreaUtente = () => {
                 setFotoProfilo(reader.result); // Salva la foto come base64
             };
             reader.readAsDataURL(file);
+        }else{
+            setFotoProfilo(null);
         }
     };
 
@@ -96,7 +98,7 @@ const CreaUtente = () => {
             skillUtente: skill,
             nazionalitaUtente: nazionalita,
             lingueParlateUtente: lingueParlate,
-            fotoUtente: null
+            fotoUtente: fotoProfilo
         };
 
 
@@ -120,7 +122,7 @@ const CreaUtente = () => {
                     "skillUtente": skill,
                     "nazionalitaUtente": nazionalita,
                     "lingueParlateUtente": lingueParlate,
-                    "fotoProfiloUtente": null
+                    "fotoUtente": fotoProfilo
                 })
             });
 
@@ -261,7 +263,7 @@ const CreaUtente = () => {
                     accept="image/*"
                     className={"formEditText"}
                     onChange={aggiornaFotoProfilo}
-                    required={true}
+                    required={false}
                 />
 
 
