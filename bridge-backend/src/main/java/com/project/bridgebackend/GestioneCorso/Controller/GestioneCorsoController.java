@@ -27,7 +27,7 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("/api/corsi")
-@CrossOrigin(origins = "http://localhost:5173", allowedHeaders = "*")
+@CrossOrigin(origins = "http://localhost:5174", allowedHeaders = "*")
 public class GestioneCorsoController {
 
     private static final Logger log = LoggerFactory.getLogger(GestioneCorsoController.class);
@@ -64,7 +64,7 @@ public class GestioneCorsoController {
     }
 
     @PostMapping("/upload")
-    @CrossOrigin(origins = "http://localhost:5173", allowedHeaders = "*")
+    @CrossOrigin(origins = "http://localhost:5174", allowedHeaders = "*")
     public ResponseEntity<String> uploadPDF(@RequestParam("nome") String name, @RequestParam("pdf") MultipartFile file) {
         try {
             PDFDoc pdf = pdfService.savePdf(name, file);
