@@ -1,4 +1,5 @@
 import { useState } from "react";
+import "../css/formAlloggioStyle.css";
 
 const Servizi = {
     WIFI: "WiFi",
@@ -40,7 +41,7 @@ const CreaAlloggio = () => {
             descrizione,
             maxPersone,
             metratura,
-            emailProprietario: "gedi@gedi.it",
+            emailProprietario: "jedi@jedi.it",
             servizi,
         };
 
