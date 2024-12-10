@@ -233,9 +233,9 @@ const CreaUtente = () => {
                     required={true}
                 >
                     <option value="">Seleziona Titolo di Studio</option>
-                    {Object.values(TitolodiStudio).map((titolodistudio) => (
-                        <option key={titolodistudio} value={titolodistudio}>
-                            {titolodistudio}
+                    {Object.entries(TitolodiStudio).map(([value, label]) => (
+                        <option key={value} value={value}>
+                            {label}
                         </option>
                     ))}
                 </select>
