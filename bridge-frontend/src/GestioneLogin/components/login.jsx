@@ -1,18 +1,13 @@
-import {useEffect, useState} from "react";
+import { useState} from "react";
 import {useNavigate} from "react-router";
 import "../../GestioneLogin/css/loginStyle.css";
+
 
 const Login = () => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const nav = useNavigate();
 
-    useEffect(() => {
-        const token = localStorage.getItem('token');
-        if (token) {
-            nav("/App");
-        }
-    }, [nav]);
 
     const aggiornaEmail = (event) => {
         setEmail(event.target.value);
@@ -51,14 +46,38 @@ const Login = () => {
     }
 
     const sendToRegistrazione = () => {
-        nav("/CreaUtente")
+        nav("/crea-utente");
     }
 
 
     return (
         <div className="login-container">
-            <input type="text" placeholder=" E-mail" className="formEditText" onChange={aggiornaEmail}/>
-            <input type="password" placeholder=" Password" className="formEditText" onChange={aggiornaPassword}/>
+            <h2>Login</h2>
+            <hr/>
+            <div className="formGroup">
+                <label htmlFor="email" className="formLabel">Email</label>
+                <input
+                    type="text"
+                    id="email"
+                    placeholder="Inserisci la tua email"
+                    className="formEditText"
+                    value={email}
+                    onChange={aggiornaEmail}
+                    required
+                />
+            </div>
+            <div className="formGroup">
+                <label htmlFor="password" className="formLabel">Password</label>
+                <input
+                    type="password"
+                    id="password"
+                    placeholder="Inserisci la tua password"
+                    className="formEditText"
+                    value={password}
+                    onChange={aggiornaPassword}
+                    required
+                />
+            </div>
             <span className="errore" id="spanErrore">Controlla i dati inseriti</span>
             <button className="formButton" onClick={handleSubmit}>Accedi</button>
             <span onClick={sendToRegistrazione}
