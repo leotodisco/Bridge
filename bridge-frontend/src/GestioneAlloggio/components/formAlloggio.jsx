@@ -10,13 +10,7 @@ const CreaAlloggio = () => {
     const [metratura, setMetratura] = useState("");
     const [maxPersone, setMaxPersone] = useState("");
     const [descrizione, setDescrizione] = useState("");
-    const [servizi, setServizi] = useState("");
-    //const [fotoUtente, setFotoUtente] = useState([]);
-
-    // Gestione upload foto
-   // const handleFileUpload = (event) => {
-        //setFotoUtente(Array.from(event.target.files));
-    //};
+    const [servizi, setServizi] = useState([]);
 
     const handleSubmit = async (event) => {
         event.preventDefault();
@@ -41,29 +35,29 @@ const CreaAlloggio = () => {
             return;
         }
 
-        const formData = new FormData();
-        formData.append("descrizione", descrizione);
-        formData.append("maxPersone", maxPersone);
-        formData.append("metratura", metratura);
-        formData.append("emailProprietario", "prova@example.com");
-        formData.append("servizi", servizi);
-
-        // Aggiungi le foto al formData
-       // fotoUtente.forEach((file) => {
-           // formData.append("fotoUtente", file);
-        //});
+        // Crea l'oggetto da inviare
+        const data = {
+            descrizione,
+            maxPersone,
+            metratura,
+            emailProprietario: "gedi@gedi.it",
+            servizi,
+        };
 
         try {
             const response = await fetch("http://localhost:8080/alloggi/aggiungi", {
                 method: "POST",
-                body: formData,
+                headers: {
+                    "Content-Type": "application/json", // Indica il tipo di dati
+                },
+                body: JSON.stringify(data), // Converte l'oggetto in JSON
             });
 
             if (!response.ok) {
                 throw new Error(`Errore HTTP: ${response.status}`);
             }
 
-            const result = await response.json();
+            const result = await response.text();
             alert("Alloggio creato con successo!");
             console.log(result);
         } catch (error) {
@@ -108,12 +102,12 @@ const CreaAlloggio = () => {
                     className="servizi"
                     value={servizi}
                     onChange={(event) => setServizi(event.target.value)}
-                    required
+                    required={true}
                 >
                     <option value="">Seleziona i servizi dell alloggio</option>
-                    {Object.values(Servizi).map((servizio) => (
-                        <option key={servizio} value={servizio}>
-                            {servizio}
+                    {Object.entries(Servizi).map(([value, label]) => (
+                        <option key={value} value={value}>
+                            {label}
                         </option>
                     ))}
                 </select>
