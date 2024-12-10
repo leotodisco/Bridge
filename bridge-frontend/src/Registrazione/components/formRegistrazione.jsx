@@ -34,7 +34,7 @@ const CreaUtente = () => {
     const [skill, setSkill] = useState("");
     const [lingueParlate, setLingue] = useState("");
     const [dataDiNascita, setDataDiNascita] = useState("");
-    //const [fotoProfilo, setFotoProfilo] = useState([]);
+    const [fotoProfilo, setFotoProfilo] = useState([]);
 
     const aggiornaNome = (event) => {
         setNome(event.target.value);
@@ -54,25 +54,7 @@ const CreaUtente = () => {
 
     const aggiornaNazionalita = (event) => {
         setNazionalita(event.target.value);
-    };
-
-    /*const aggiornaTitoloDiStudio = (event) => {
-        const options = event.target.selectedOptions;
-        const values = Array.from(options).map(option => option.value);
-        setTitolodistudio(values);
-    };*/
-
-    /*const aggiornaGenere = (event) => {
-        const options = event.target.selectedOptions;
-        const values = Array.from(options).map(option => option.value);
-        setGenere(values);
-    };*/
-
-    /*const aggiornaRuolo = (event) => {
-        const options = event.target.selectedOptions;
-        const values = Array.from(options).map(option => option.value);
-        setRuolo(values);
-    };*/
+    }
 
     const aggiornaSkill = (event) => {
         setSkill(event.target.value);
@@ -86,7 +68,7 @@ const CreaUtente = () => {
         setDataDiNascita(event.target.value);
     };
 
-    /*const aggiornaFotoProfilo = (event) => {
+    const aggiornaFotoProfilo = (event) => {
         const file = event.target.files[0];
         if (file) {
             const reader = new FileReader();
@@ -95,7 +77,7 @@ const CreaUtente = () => {
             };
             reader.readAsDataURL(file);
         }
-    };*/
+    };
 
 
     const gestisciSubmit = async (event) => {
@@ -142,15 +124,14 @@ const CreaUtente = () => {
 
             if (response.ok) {
                 const data = await response.text();
-                console.log("Login avvenuto con successo:", data);
-                alert("Login avvenuto con successo!");
-                // Puoi salvare il token o l'utente autenticato nello stato o in localStorage
+                console.log("Registrazione avvenuta con successo:", data);
+                alert("Registrazione avvenuta con successo");
             } else {
-                console.error("Errore durante il login");
-                alert("Email o password errati.");
+                console.error("Errore durante la registrazione");
+                alert("Errore, riprova!");
             }
         } catch (error) {
-            console.error("Errore nella richiesta di login:", error);
+            console.error("Errore nella richiesta di registrazione:", error);
             alert("Errore nel collegamento al server.");
         }
     };
@@ -193,9 +174,9 @@ const CreaUtente = () => {
                     required={true}
                 >
                     <option value="">Seleziona Genere</option>
-                    {Object.values(Genere).map((genere) => (
-                        <option key={genere} value={genere}>
-                            {genere}
+                    {Object.entries(Genere).map(([value, label]) => (
+                        <option key={value} value={value}>
+                            {label}
                         </option>
                     ))}
                 </select>
@@ -233,9 +214,9 @@ const CreaUtente = () => {
                     required={true}
                 >
                     <option value="">Seleziona Titolo di Studio</option>
-                    {Object.values(TitolodiStudio).map((titolodistudio) => (
-                        <option key={titolodistudio} value={titolodistudio}>
-                            {titolodistudio}
+                    {Object.entries(TitolodiStudio).map(([value, label]) => (
+                        <option key={value} value={value}>
+                            {label}
                         </option>
                     ))}
                 </select>
@@ -247,9 +228,9 @@ const CreaUtente = () => {
                     required={true}
                 >
                     <option value="">Seleziona Ruolo</option>
-                    {Object.values(Ruolo).map((ruolo) => (
-                        <option key={ruolo} value={ruolo}>
-                            {ruolo}
+                    {Object.entries(Ruolo).map(([value, label]) => (
+                        <option key={value} value={value}>
+                            {label}
                         </option>
                     ))}
                 </select>
@@ -270,6 +251,15 @@ const CreaUtente = () => {
                     className={"formEditText"}
                     value={password}
                     onChange={aggiornaPassword}
+                    required={true}
+                />
+
+                <input
+                    type="file"
+                    accept="image/*"
+                    className={"formEditText"}
+                    value={fotoProfilo}
+                    onChange={aggiornaFotoProfilo}
                     required={true}
                 />
 
