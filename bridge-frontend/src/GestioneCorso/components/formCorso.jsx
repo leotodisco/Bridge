@@ -1,4 +1,6 @@
 import { useState } from "react";
+import '../../GestioneCorso/css/formCorsoStyle.css';
+// Import the CSS file
 
 const LINGUA = {
     ITALIANO: "ITALIANO",
@@ -34,7 +36,7 @@ const CreaCorso = () => {
     const aggiornaLingua = (e) => setLingua(e.target.value);
     const aggiornaPdfFile = (e) => setPdfFile(e.target.files[0]);
 
-    const validateForm = () => {
+   /* const validateForm = () => {
         if (!titolo || !descrizione || !categoria || !lingua) {
             alert("Compila tutti i campi obbligatori!");
             return false;
@@ -44,7 +46,66 @@ const CreaCorso = () => {
             return false;
         }
         return true;
-    };
+    };*/
+
+    const [titoloError, setTitoloError] = useState("");
+    const [descrizioneError, setDescrizioneError] = useState("");
+    const [categoriaError, setCategoriaError] = useState("");
+    const [linguaError, setLinguaError] = useState("");
+    const [pdfFileError, setPdfFileError] = useState("");
+
+    const validateTitolo = () => {
+        const titoloRegex = /^[A-Za-z0-9À-ÿ .,'-]{3,100}$/;
+        if (!titoloRegex.test(titolo)) {
+            setTitoloError("Il titolo deve contenere da 3 a 100 caratteri alfanumerici");
+            return false;
+        }
+        setTitoloError("");
+        return true;
+    }
+
+    const validateDescrizione = () => {
+        const descrizioneRegex = /^[A-Za-z0-9À-ÿ .,'-]{3,500}$/;
+        if (!descrizioneRegex.test(descrizione)) {
+            setDescrizioneError("La descrizione deve contenere da 3 a 50 caratteri alfanumerici");
+            return false;
+        }
+        setDescrizioneError("");
+        return true;
+    }
+
+    const validateCategoria = () => {
+        const categoriaRegex = /^[A-Za-zÀ-ÿ' -]{3,50}$/;
+        if (!categoriaRegex.test(categoria)) {
+            setCategoriaError("La categoria deve contenere da 3 a 50 caratteri alfabetici");
+            return false;
+        }
+        setCategoriaError("");
+        return true;
+    }
+
+    const validateLingua = () => {
+        if (lingua.trim() === ""){
+            setLinguaError("Seleziona una lingua");
+            return false;
+        }
+
+        setLinguaError("");
+        return true;
+    }
+
+    const validatePdfFile = () => {
+        if (!pdfFile) {
+            setPdfFileError("Nessun file selezionato");
+            return false;
+        }
+        if (pdfFile.type !== "application/pdf") {
+            setPdfFileError("Il file deve essere un PDF valido");
+            return false;
+        }
+        setPdfFileError("");
+        return true;
+    }
 
     const handlePdfUpload = async (file) => {
         const formData = new FormData();
@@ -72,9 +133,24 @@ const CreaCorso = () => {
             throw error;
         }
     };
+
     const handleSubmit = async (event) => {
         event.preventDefault();
-        if (!validateForm()) return;
+       //if (!validateForm()) return;
+
+        const isTitoloValid = validateTitolo();
+        const isDescrizioneValid = validateDescrizione();
+        const isCategoriaValid = validateCategoria();
+        const isLinguaValid = validateLingua();
+        const isPdfFileValid = validatePdfFile();
+
+        console.log("Validazione campi:", isTitoloValid, isDescrizioneValid, isCategoriaValid, isLinguaValid, isPdfFileValid);
+
+        if (!isTitoloValid || !isDescrizioneValid || !isCategoriaValid || !isLinguaValid || !isPdfFileValid) {
+            console.log("Campi non validi, non posso procedere con la creazione del corso");
+            return;
+        }
+
 
         setLoading(true);
         let uploadedPdfId = pdfId;
@@ -88,7 +164,6 @@ const CreaCorso = () => {
                 setLoading(false);
                 return;
             }
-
         }
 
         const corsoDTO = {
@@ -112,7 +187,7 @@ const CreaCorso = () => {
                     categoria: categoria,
                     lingua: lingua,
                     pdf: uploadedPdfId,
-                    proprietario: "FiguraSpecializzata@example.come",  // Nota: Cambiato "example.come" in "example.com"
+                    proprietario: "FiguraSpecializzata@example.com",  // Nota: Cambiato "example.come" in "example.com"
                 }),
             });
 
@@ -136,24 +211,83 @@ const CreaCorso = () => {
         <div className="formContainer">
             <h2>Crea un Corso</h2>
             <form onSubmit={handleSubmit}>
-                <input type="text" placeholder="Titolo del corso" value={titolo} onChange={aggiornaTitolo} required />
-                <textarea placeholder="Descrizione" value={descrizione} onChange={aggiornaDescrizione} required />
-                <select value={categoria} onChange={aggiornaCategoria} required>
-                    <option value="">Seleziona una categoria</option>
-                    {Object.values(CATEGORIA).map((cat) => (
-                        <option key={cat} value={cat}>{cat}</option>
-                    ))}
-                </select>
-                <select value={lingua} onChange={aggiornaLingua} required>
+                <div className={"formField"}>
+                    <input
+                        className={ 'InputField ${titoloError ? "error" : " "}'}
+                        type="text"
+                        placeholder="Titolo del corso"
+                        value={titolo}
+                        onChange={aggiornaTitolo}
+                        required
+                    />
+                    {titoloError && <p className="errorText">{titoloError}</p>}
+                </div>
+
+                <div className={"formField"}>
+                    <textarea
+                        className={`InputField ${descrizioneError ? "error" : ""}`}
+                        placeholder="Descrizione"
+                        value={descrizione}
+                        onChange={aggiornaDescrizione}
+                        required
+                    />
+                    {descrizioneError && <p className="errorText">{descrizioneError}</p>}
+                </div>
+
+                <div className={"formField"}>
+                    <select
+                        className={`InputField ${categoriaError ? "error" : ""}`}
+                        value={categoria}
+                        onChange={aggiornaCategoria}
+                        required
+                    >
+                        <option value="">Seleziona una categoria</option>
+                        {Object.values(CATEGORIA).map((cat) => (
+                            <option key={cat} value={cat}>
+                                {cat}
+                            </option>
+                        ))}
+                    </select>
+                    {categoriaError && <p className="errorText">{categoriaError}</p>}
+                </div>
+
+                <div className={"formField"}>
+                <select
+                    className={`InputField ${linguaError ? "error" : ""}`}
+                    value={lingua}
+                    onChange={aggiornaLingua}
+                    required
+                >
                     <option value="">Seleziona una lingua</option>
                     {Object.values(LINGUA).map((lang) => (
-                        <option key={lang} value={lang}>{lang}</option>
+                        <option key={lang} value={lang}>
+                            {lang}
+                        </option>
                     ))}
                 </select>
-                <input type="file" accept="application/pdf" onChange={aggiornaPdfFile} />
-                <button type="submit" disabled={loading}>
-                    {loading ? "Caricamento..." : "Crea Corso"}
-                </button>
+                </div>
+                {linguaError && <p className="errorText">{linguaError}</p>}
+
+                <div className={"formField"}>
+                        <div className="fileInputWrapper">
+                            <label className="fileButton">
+                                Seleziona un file PDF
+                                <input
+                                    type="file"
+                                    accept="application/pdf"
+                                    onChange={aggiornaPdfFile}
+                                    style={{ display: "none" }}
+                                />
+                            </label>
+                            {pdfFile && (
+                                <p className="filePreview">File selezionato: {pdfFile.name}</p>
+                            )}
+                        </div>
+                        <button className="fileButton" type="submit" disabled={loading}>
+                            {loading ? "Caricamento..." : "Crea Corso"}
+                        </button>
+                        {pdfFileError && <p className="errorText">{pdfFileError}</p>}
+                </div>
             </form>
         </div>
     );

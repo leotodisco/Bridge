@@ -32,7 +32,7 @@ public class AlloggioDTO {
     private Integer metratura;
 
     //@NotEmpty(message = "Deve essere presente almeno un'immagine")
-    private List<String> foto;
+    //private List<String> foto;
 
     @NotBlank(message = "L'email del proprietario è obbligatoria")
     @Email(message = "L'email del proprietario deve essere valida")

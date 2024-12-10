@@ -56,7 +56,7 @@ public class AlloggioServiceImplementazione implements AlloggioService {
         Alloggio alloggio = new Alloggio();
         alloggio.setDescrizione(alloggioDTO.getDescrizione());
         alloggio.setMaxPersone(alloggioDTO.getMaxPersone());
-        alloggio.setFoto(alloggioDTO.getFoto());
+        //alloggio.setFoto(alloggioDTO.getFoto());
         alloggio.setProprietario(proprietario);
         alloggio.setMetratura(alloggioDTO.getMetratura());
         alloggio.setServizi(alloggioDTO.getServizi());
