@@ -1,5 +1,6 @@
 import { useState } from "react";
 import './CreaUtente.css';
+import {useNavigate} from "react-router";
 
 const TitolodiStudio = {
     ScuolaPrimaria: "Scuola Primaria",
@@ -36,6 +37,8 @@ const CreaUtente = () => {
     const [dataDiNascita, setDataDiNascita] = useState("");
     const [fotoProfilo, setFotoProfilo] = useState(null);
     const [disponibilita, setDisponibilita] = useState("");  // Nuovo stato per la disponibilità
+
+    const navigate = useNavigate();
 
     const aggiornaNome = (event) => {
         setNome(event.target.value);
@@ -139,6 +142,7 @@ const CreaUtente = () => {
                 const data = await response.text();
                 console.log("Registrazione avvenuta con successo:", data);
                 alert("Registrazione avvenuta con successo");
+                navigate('/login');
             } else {
                 console.error("Errore durante la registrazione");
                 alert("Errore, riprova!");

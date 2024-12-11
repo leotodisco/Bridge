@@ -21,7 +21,7 @@ function App() {
                     <Link to="/crea-evento" className="nav-link">Crea Evento</Link>
                     <Link to="/crea-consulenza" className="nav-link">Crea Consulenza</Link>
                     <Link to = "/crea-corso" className = "nav-link">Crea Corso</Link>
-                    <Link to = "/crea-utente" className = "nav-link">Crea Utente</Link>
+                    <Link to = "/Registrazione" className = "nav-link">Registrazione</Link>
                     <Link to = "/login" className= "nav-link">Login</Link>
                     <Link to = "/crea-alloggio" className= "nav-link">Crea Alloggio</Link>
                 </nav>
@@ -30,7 +30,7 @@ function App() {
                     <Route path="/crea-evento" element={<CreaEvento/>}/>
                     <Route path="/crea-consulenza" element={<CreaConsulenza/>}/>
                     <Route path="/crea-corso" element={<CreaCorso/>}/>
-                    <Route path="/crea-utente" element={<CreaUtente/>}/>
+                    <Route path="/Registrazione" element={<CreaUtente/>}/>
                     <Route path="/login" element={<Login/>}/>
                     <Route path="/crea-alloggio" element={<CreaAlloggio/>}/>
                 </Routes>
