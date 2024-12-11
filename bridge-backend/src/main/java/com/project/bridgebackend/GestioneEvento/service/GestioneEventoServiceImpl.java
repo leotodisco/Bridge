@@ -2,8 +2,12 @@ package com.project.bridgebackend.GestioneEvento.service;
 
 import com.project.bridgebackend.Model.Entity.Evento;
 import com.project.bridgebackend.Model.Entity.Indirizzo;
+import com.project.bridgebackend.Model.Entity.Rifugiato;
+import com.project.bridgebackend.Model.Entity.Volontario;
 import com.project.bridgebackend.Model.dao.EventoDAO;
 import com.project.bridgebackend.Model.dao.IndirizzoDAO;
+import com.project.bridgebackend.Model.dao.RifugiatoDAO;
+import com.project.bridgebackend.Model.dao.VolontarioDAO;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,6 +37,15 @@ public class GestioneEventoServiceImpl implements GestioneEventoService {
     private IndirizzoDAO indirizzoDAO;
 
     /**
+     * DAO per la gestione dei rifugiati.
+     **/
+    @Autowired
+    private RifugiatoDAO rifugiatoDAO;
+
+    @Autowired
+    private VolontarioDAO volontarioDAO;
+
+    /**
      * Permette di creare un evento.
      * @param evento evento da creare.
      * @return evento creato.
@@ -47,68 +60,6 @@ public class GestioneEventoServiceImpl implements GestioneEventoService {
 
         //Salvataggio entità Evento
         return eventoDAO.save(evento);
-    }
-
-    /**
-     * Permette di aggiornare un evento.
-     * @param evento evento da aggiornare.
-     * @return evento aggiornato.
-     */
-    @Transactional
-    @Override
-    public Evento updateEvento(final Evento evento) {
-        //Controllo su DTO nullo o id nullo
-        if (evento == null || evento.getId() == null) {
-            throw new
-                    IllegalArgumentException("Id evento non valido");
-        }
-
-        //Verifica che l'evento esista
-        Evento existingEvento = eventoDAO.findById(evento.getId())
-                .orElseThrow(() -> new
-                        IllegalArgumentException("Evento non trovato"));
-
-        //Aggiornamento evento
-        existingEvento
-                .setNome(evento.getNome());
-        existingEvento
-                .setData(evento.getData());
-        existingEvento
-                .setOra(evento.getOra());
-        existingEvento
-                .setLinguaParlata(evento.getLinguaParlata());
-        existingEvento
-                .setDescrizione(evento.getDescrizione());
-        existingEvento
-                .setLuogo(evento.getLuogo());
-        existingEvento
-                .setOrganizzatore(evento.getOrganizzatore());
-        existingEvento
-                .setMaxPartecipanti(evento.getMaxPartecipanti());
-
-        //Salvataggio entità Evento
-        return eventoDAO.save(existingEvento);
-    }
-
-    /**
-     * Permette di eliminare un evento.
-     * @param id identificativo dell'evento da eliminare.
-     */
-    @Override
-    public void deleteEvento(final long id) {
-       //Controllo su id nullo
-        if (id <= 0) {
-           throw new
-                   IllegalArgumentException("Id evento non valido");
-       }
-
-        //Verifica che l'evento esista
-        if (eventoDAO.existsById(id)) {
-            eventoDAO.deleteById(id);
-        } else {
-            throw new IllegalArgumentException(
-                    "Evento con id " + id + " non trovato");
-        }
     }
 
     /**
@@ -152,31 +103,96 @@ public class GestioneEventoServiceImpl implements GestioneEventoService {
         return indirizzoDAO.save(indirizzo).getId();
     }
 
+
+
     /**
-     * Permette di aggiornare l'indirizzo di un evento.
-     * @param indirizzo indirizzo da aggiornare.
-     * @return indirizzo aggiornato.
+     * Permette di iscriversi a un evento.
+     * @param eventoId identificativo dell'evento.
+     * @param  partecipanteEmail email del volontario.
+     * @return evento a cui si è iscritti.
      */
     @Transactional
     @Override
-    public Indirizzo updateIndirizzoEvento(final Indirizzo indirizzo) {
-        //Controllo su Indirizzo nullo o id nullo
-        if (indirizzo == null || indirizzo.getId() == null) {
-            throw new IllegalArgumentException("Id indirizzo non valido");
+    public Evento iscrizioneEvento(long eventoId, String partecipanteEmail) {
+        //Controlla che l'evento esista
+        Evento evento = eventoDAO.findById(eventoId)
+                .orElseThrow(() -> new
+                        IllegalArgumentException("Evento non trovato"));
+
+        //Controlla che il partecipante esista
+        Rifugiato partecipante = rifugiatoDAO.findByEmail(partecipanteEmail);
+        if (partecipante == null) {
+            throw new IllegalArgumentException("Partecipante non trovato");
         }
 
-        //Verifica che l'indirizzo esista
-        Indirizzo existingIndirizzo = indirizzoDAO.findById(indirizzo.getId())
-                .orElseThrow(() -> new
-                        IllegalArgumentException("Indirizzo non trovato"));
+        //Controlla che il rifugiato non sia già iscritto
+        if(evento.getListaPartecipanti().contains(partecipante)) {
+            throw new IllegalArgumentException("Partecipante già iscritto");
+        }
 
-        //Aggiornamento indirizzo
-        existingIndirizzo.setCitta(indirizzo.getCitta());
-        existingIndirizzo.setNumCivico(indirizzo.getNumCivico());
-        existingIndirizzo.setCap(indirizzo.getCap());
-        existingIndirizzo.setProvincia(indirizzo.getProvincia());
-        existingIndirizzo.setVia(indirizzo.getVia());
+        //Controlla che l'evento non sia già pieno
+        if(evento.getListaPartecipanti().size() >= evento.getMaxPartecipanti()) {
+            throw new IllegalArgumentException("Evento pieno");
+        }
 
-        return indirizzoDAO.save(existingIndirizzo);
+        //Aggiungi il partecipante alla lista
+        evento.getListaPartecipanti().add(partecipante);
+
+        //Salva l'evento aggiornato
+        return eventoDAO.save(evento);
     }
+
+    /**
+     * Permette di disiscriversi a un evento.
+     * @param eventoId identificativo dell'evento.
+     * @param  partecipanteEmail email del volontario.
+     * @return evento a cui si è disiscritti.
+     */
+    @Transactional
+    @Override
+    public Evento disiscrizioneEvento(long eventoId, String partecipanteEmail) {
+        //Controlla che l'evento esista
+        System.out.println("Evento id: " + eventoId);
+        System.out.println("Partecipante email: " + partecipanteEmail);
+        System.out.println("Evento: " + eventoDAO.findById(eventoId));
+        Evento evento = eventoDAO.findEventoWithPartecipanti(eventoId)
+                .orElseThrow(() -> new
+                        IllegalArgumentException("Evento non trovato"));
+
+        //Controlla che il partecipante esista
+        System.out.println("Partecipante: " + rifugiatoDAO.findByEmail(partecipanteEmail));
+        Rifugiato partecipante = rifugiatoDAO.findByEmail(partecipanteEmail);
+        if (partecipante == null) {
+            throw new IllegalArgumentException("Partecipante non trovato");
+        }
+
+        //Controlla che il rifugiato sia iscritto
+        System.out.println("Lista partecipanti: " + evento.getListaPartecipanti());
+        if(!evento.getListaPartecipanti().contains(partecipante)) {
+            throw new IllegalArgumentException("Partecipante non iscritto");
+        }
+
+        //Rimuovi il partecipante dalla lista
+        System.out.println("Partecipante da rimuovere: " + partecipante);
+        evento.getListaPartecipanti().remove(partecipante);
+
+        //Salva l'evento aggiornato
+        return eventoDAO.save(evento);
+    }
+
+    /**
+     * Permette di trovare gli eventi di un volontario.
+     * @param emailOrganizzatore email del volontario.
+     * @return lista di eventi.
+     */
+    @Override
+    public List<Evento> getEventiByVolontario(String emailOrganizzatore) {
+        System.out.println("Stampami qualcosa: " + emailOrganizzatore);
+        Volontario organizzatore = volontarioDAO.findByEmail(emailOrganizzatore);
+        if (organizzatore == null) {
+            throw new IllegalArgumentException("Volontario non trovato con email: " + emailOrganizzatore);
+        }
+        return eventoDAO.findByOrganizzatore(organizzatore);
+    }
+
 }

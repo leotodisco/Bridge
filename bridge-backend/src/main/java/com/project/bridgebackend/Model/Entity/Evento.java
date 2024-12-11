@@ -2,20 +2,7 @@ package com.project.bridgebackend.Model.Entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.project.bridgebackend.Model.Entity.enumeration.Lingua;
-import jakarta.persistence.Id;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
-import jakarta.persistence.Column;
-import jakarta.persistence.ElementCollection;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.CollectionTable;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.ManyToMany;
-import jakarta.persistence.JoinTable;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -159,7 +146,7 @@ public class Evento implements Serializable {
      * è chiave esterna di Rifugiato.
      **/
     @JsonIgnore
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "evento_lista_partecipanti",
             joinColumns = @JoinColumn(name = "evento_id"),
             inverseJoinColumns = @JoinColumn(name = "rifugiato_email"))

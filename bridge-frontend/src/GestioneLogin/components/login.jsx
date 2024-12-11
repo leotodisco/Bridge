@@ -1,9 +1,10 @@
 import { useState} from "react";
 import {useNavigate} from "react-router";
 import "../../GestioneLogin/css/loginStyle.css";
+import PropTypes from 'prop-types';
 
 
-const Login = () => {
+const Login = ({ onLogin }) =>  {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const nav = useNavigate();
@@ -38,6 +39,7 @@ const Login = () => {
 
             const data = await response.json();
             localStorage.setItem('token', data.token);
+            onLogin(data.token);
             nav("/App");
         } catch (error) {
             document.getElementById("spanErrore").style.display = "block";
@@ -86,5 +88,9 @@ const Login = () => {
     );
 
 }
+
+Login.propTypes = {
+    onLogin: PropTypes.func.isRequired, // Deve essere una funzione e obbligatoria
+};
 
 export default Login;

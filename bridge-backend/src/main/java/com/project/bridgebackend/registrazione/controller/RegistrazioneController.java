@@ -30,7 +30,7 @@ import java.util.Base64;
  * Classe controller che implementa i metodi per la registrazione degli utenti.
  * */
 @RestController
-@CrossOrigin(origins = "http://localhost:5173", allowedHeaders = "*")
+@CrossOrigin(origins = "http://localhost:5174", allowedHeaders = "*")
 @RequestMapping(path = "authentication")
 public class RegistrazioneController {
     /**
@@ -185,5 +185,14 @@ public class RegistrazioneController {
         return registrazioneService.login(req);
     }
 
+    /**
+     * Metodo per il logout.
+     * @return response.
+     */
+    @PostMapping("/logout")
+    public ResponseEntity<String> logout() {
+        // Risponde al client confermando il logout.
+        return ResponseEntity.ok("Logout successful");
+    }
 
 }

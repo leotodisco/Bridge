@@ -219,7 +219,7 @@ hr {
     height: 1px; /* Spessore della linea */
     background-color: #396F85; /* Colore della linea */
     /* Spaziatura sopra e sotto */
-    margin: 10px 100px 20px;
+    margin: 10px 10px 20px;
 }
 
 /* Design responsivo */
