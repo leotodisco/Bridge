@@ -1,4 +1,5 @@
 import { useState } from "react";
+import "../css/formAlloggioStyle.css";
 
 const Servizi = {
     WIFI: "WiFi",
@@ -54,7 +55,6 @@ const CreaAlloggio = () => {
             return;
         }
 
-
         if (maxPersone < 1) {
             alert("Inserire almeno 1 persona");
             return;
@@ -81,7 +81,7 @@ const CreaAlloggio = () => {
             maxPersone,
             servizi,
             fotos, // Array di immagini in Base64
-            emailProprietario: "root@mail.it", // Modificare con l'email corretta
+            emailProprietario: "jedi@jedi.it",
         };
 
         console.log(alloggioDTO);
