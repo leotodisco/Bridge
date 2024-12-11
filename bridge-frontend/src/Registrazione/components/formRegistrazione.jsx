@@ -1,4 +1,4 @@
-import {useState} from "react";
+import { useState } from "react";
 import './CreaUtente.css';
 
 const TitolodiStudio = {
@@ -18,7 +18,6 @@ const Genere = {
 const Ruolo = {
     Volontario: "Volontario",
     Rifugiato: "Rifugiato",
-    Admin: "Admin",
     FiguraSpecializzata: "Figura Specializzata",
 };
 
@@ -27,6 +26,7 @@ const CreaUtente = () => {
     const [cognome, setCognome] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+    const [confermaPW, setConfermaPW] = useState("");
     const [nazionalita, setNazionalita] = useState("");
     const [titolodistudio, setTitolodistudio] = useState([]);
     const [genere, setGenere] = useState([]);
@@ -35,6 +35,7 @@ const CreaUtente = () => {
     const [lingueParlate, setLingue] = useState("");
     const [dataDiNascita, setDataDiNascita] = useState("");
     const [fotoProfilo, setFotoProfilo] = useState(null);
+    const [disponibilita, setDisponibilita] = useState("");  // Nuovo stato per la disponibilità
 
     const aggiornaNome = (event) => {
         setNome(event.target.value);
@@ -50,6 +51,10 @@ const CreaUtente = () => {
 
     const aggiornaPassword = (event) => {
         setPassword(event.target.value);
+    };
+
+    const aggiornaConfermaPW = (event) => {
+        setConfermaPW(event.target.value);
     };
 
     const aggiornaNazionalita = (event) => {
@@ -70,19 +75,20 @@ const CreaUtente = () => {
 
     const aggiornaFotoProfilo = (event) => {
         const file = event.target.files[0];
-        console.log(fotoProfilo);
         if (file) {
             const reader = new FileReader();
             reader.onload = () => {
-                setFotoProfilo(reader.result); // Salva la foto come base64
+                setFotoProfilo(reader.result); // Salva solo il Base64
             };
             reader.readAsDataURL(file);
-        }else{
+        } else {
             setFotoProfilo(null);
         }
     };
 
-
+    const aggiornaDisponibilita = (event) => {
+        setDisponibilita(event.target.value);
+    };
 
     const gestisciSubmit = async (event) => {
         event.preventDefault();
@@ -91,6 +97,7 @@ const CreaUtente = () => {
             cognomeUtente: cognome,
             emailUtente: email,
             passwordUtente: password,
+            confermaPWUtente: confermaPW,
             dataNascitaUtente: dataDiNascita,
             genderUtente: genere, // Singolo valore, es: "Maschio"
             titoloDiStudioUtente: titolodistudio, // Singolo valore, es: "Laurea"
@@ -98,9 +105,9 @@ const CreaUtente = () => {
             skillUtente: skill,
             nazionalitaUtente: nazionalita,
             lingueParlateUtente: lingueParlate,
-            fotoUtente: fotoProfilo
+            fotoUtente: fotoProfilo,
+            disponibilitaUtente: disponibilita  // Aggiunto campo disponibilità
         };
-
 
         console.log(utenteDTO);
         try {
@@ -115,6 +122,7 @@ const CreaUtente = () => {
                     "cognomeUtente": cognome,
                     "emailUtente": email,
                     "passwordUtente": password,
+                    "confermaPWUtente": confermaPW,
                     "dataNascitaUtente": dataDiNascita,
                     "genderUtente": genere,
                     "titoloDiStudioUtente": titolodistudio,
@@ -122,7 +130,8 @@ const CreaUtente = () => {
                     "skillUtente": skill,
                     "nazionalitaUtente": nazionalita,
                     "lingueParlateUtente": lingueParlate,
-                    "fotoUtente": fotoProfilo
+                    "fotoUtente": fotoProfilo,
+                    "disponibilitaUtente": disponibilita
                 })
             });
 
@@ -172,7 +181,7 @@ const CreaUtente = () => {
                 />
 
                 <select
-                    className={"formEditText"}
+                    className={"formEditText selectMulti"}
                     value={genere}
                     onChange={(event) => setGenere(event.target.value)}
                     required={true}
@@ -212,7 +221,7 @@ const CreaUtente = () => {
                 />
 
                 <select
-                    className={"formEditText"}
+                    className={"formEditText selectMulti"}
                     value={titolodistudio}
                     onChange={(event) => setTitolodistudio(event.target.value)}
                     required={true}
@@ -226,7 +235,7 @@ const CreaUtente = () => {
                 </select>
 
                 <select
-                    className={"formEditText"}
+                    className={"formEditText selectMulti"}
                     value={ruolo}
                     onChange={(event) => setRuolo(event.target.value)}
                     required={true}
@@ -239,6 +248,17 @@ const CreaUtente = () => {
                     ))}
                 </select>
 
+                {/* Campo Disponibilità che appare solo se il ruolo è "Figura Specializzata" */}
+                {ruolo === "FiguraSpecializzata" && (
+                    <input
+                        type="text"
+                        placeholder={"Disponibilità"}
+                        className={"formEditText"}
+                        value={disponibilita}
+                        onChange={aggiornaDisponibilita}
+                        required={true}
+                    />
+                )}
 
                 <input
                     type="text"
@@ -257,15 +277,23 @@ const CreaUtente = () => {
                     onChange={aggiornaPassword}
                     required={true}
                 />
+                <input
+                    type="text"
+                    placeholder={"Conferma Password"}
+                    className={"formEditText"}
+                    value={confermaPW}
+                    onChange={aggiornaConfermaPW}
+                    required={true}
+                />
+
 
                 <input
                     type="file"
                     accept="image/*"
-                    className={"formEditText"}
+                    className="formEditText"
                     onChange={aggiornaFotoProfilo}
                     required={false}
                 />
-
 
                 <button type="submit" className="formButton">
                     Invio
@@ -274,14 +302,5 @@ const CreaUtente = () => {
         </div>
     );
 };
-/*
-<input
-    type="file"
-    accept="image/*"
-    className={"formEditText"}
-    value={fotoProfilo}
-    onChange={aggiornaFotoProfilo}
-    required={true}
-/>*/
 
 export default CreaUtente;

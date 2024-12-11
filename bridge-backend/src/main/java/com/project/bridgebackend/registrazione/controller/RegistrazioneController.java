@@ -41,16 +41,7 @@ public class RegistrazioneController {
 
     @Autowired
     private FotoProfiloService fotoser;
-    /**
-     * Metodo per la cifratura della password.
-     * @param password
-     * @return la password cifrata come stringa.
-     * */
-    public String safePassword(final String password) {
-        BCryptPasswordEncoder pwEncoder = new BCryptPasswordEncoder();
-        String pwCifrata = pwEncoder.encode(password);
-        return pwCifrata;
-    }
+
 
     /**
      * Metodo per la registrazione di un utente in base al ruolo.
@@ -60,7 +51,7 @@ public class RegistrazioneController {
     public ResponseEntity<String> registrazioneUtente(@RequestBody final UtenteDTO utente)
             throws Exception {
         try{
-        System.out.println("Ricevuto DTO: " + utente.toString());
+        //System.out.println("Ricevuto DTO: " + utente.toString());
         String nome = utente.getNomeUtente();
         String cognome = utente.getCognomeUtente();
         String email = utente.getEmailUtente();
@@ -74,8 +65,8 @@ public class RegistrazioneController {
             throw new Exception("La password non rispetta "
                     + "l'espressione regolare");
         }
-        String password = safePassword(utente.getPasswordUtente());
-        utente.setPasswordUtente(password);
+        String password = utente.getPasswordUtente();
+        String confermaPW = utente.getConfermaPWUtente();
         String nazionalita = utente.getNazionalitaUtente();
         String lingueParlate = utente.getLingueParlateUtente();
         Gender genere = utente.getGenderUtente();
@@ -116,7 +107,7 @@ public class RegistrazioneController {
                         nazionalita,
                         password);
                 registrazioneService
-                        .registraAdmin(a, utente.getPasswordUtente());
+                        .registraAdmin(a, confermaPW);
                 break;
 
             case FiguraSpecializzata:
@@ -135,7 +126,7 @@ public class RegistrazioneController {
                         password,
                         disponibilita);
                 registrazioneService
-                        .registraFiguraSpecializzata(fs, utente.getPasswordUtente());
+                        .registraFiguraSpecializzata(fs, confermaPW);
                 break;
 
             case Volontario:
@@ -153,7 +144,7 @@ public class RegistrazioneController {
                         password);
 
                 registrazioneService
-                        .registraVolontario(v, utente.getPasswordUtente());
+                        .registraVolontario(v, confermaPW);
                 break;
 
             case Rifugiato:
@@ -170,7 +161,7 @@ public class RegistrazioneController {
                         nazionalita,
                         password);
                 registrazioneService
-                        .registraRifugiato(r, utente.getPasswordUtente());
+                        .registraRifugiato(r, confermaPW);
                 break;
         }
 

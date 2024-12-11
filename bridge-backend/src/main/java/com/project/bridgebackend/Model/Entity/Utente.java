@@ -138,7 +138,7 @@ public class Utente implements Serializable, UserDetails {
      */
     @Column(name = "lingueParlate")
     @NotNull
-    @Pattern(regexp = "^[a-zA-Z]{5,30}$",
+    @Pattern(regexp = "^[a-zA-Z ,]{5,30}$",
             message = "regexp per le lingue parlate non rispettate")
     private String lingueParlate;
 

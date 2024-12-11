@@ -30,6 +30,14 @@
     color: #000;
 }
 
+.error{
+    color:red;
+}
+
+select.selectMulti {
+    margin-bottom: 20px; /* Solo per campi con questa classe */
+}
+
 /* Focus sugli input */
 .formEditText:focus {
     border-color: #007bff;
@@ -114,3 +122,17 @@ label {
         font-size: 1em;
     }
 }
+
+input[type="date"]::-webkit-calendar-picker-indicator {
+    background-color: #00BF62;  /* Colore di sfondo per l'icona del calendario */
+    border-radius: 50%;
+    padding: 5px;
+    cursor: pointer;
+}
+
+input[type="date"] {
+    padding-right: 20px;  /* Spazio per l'icona */
+}
+
+
+

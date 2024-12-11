@@ -15,6 +15,7 @@ import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 /**
@@ -52,6 +53,17 @@ public class RegistrazioneServiceImpl implements RegistrazioneService {
     private JwtService jwtService;
 
     /**
+     * Metodo per la cifratura della password.
+     * @param password
+     * @return la password cifrata come stringa.
+     * */
+    public String safePassword(final String password) {
+        BCryptPasswordEncoder pwEncoder = new BCryptPasswordEncoder();
+        String pwCifrata = pwEncoder.encode(password);
+        return pwCifrata;
+    }
+
+    /**
      *Implementazione metodo di registrazione di un volontario.
      * @param volontario
      * @param confermaPW
@@ -69,7 +81,7 @@ public class RegistrazioneServiceImpl implements RegistrazioneService {
             throw new
                     IllegalArgumentException("Le due password non combaciano");
         }
-        volontario.setPassword(confermaPW);
+        volontario.setPassword(safePassword(volontario.getPassword()));
         volontarioDAO.save(volontario);
     }
 
@@ -92,7 +104,7 @@ public class RegistrazioneServiceImpl implements RegistrazioneService {
             throw new
                     IllegalArgumentException("Le due password non combaciano");
         }
-        rifugiato.setPassword(confermaPW);
+        rifugiato.setPassword(safePassword(rifugiato.getPassword()));
         rifugiatoDAO.save(rifugiato);
     }
 
@@ -115,7 +127,7 @@ public class RegistrazioneServiceImpl implements RegistrazioneService {
             throw new
                     IllegalArgumentException("Le due password non combaciano");
         }
-        admin.setPassword(confermaPW);
+        admin.setPassword(safePassword(admin.getPassword()));
         adminDAO.save(admin);
     }
 
@@ -141,7 +153,7 @@ public class RegistrazioneServiceImpl implements RegistrazioneService {
             throw new
                     IllegalArgumentException("Le due password non combaciano");
         }
-        figspec.setPassword(confermaPW);
+        figspec.setPassword(safePassword(figspec.getPassword()));
         figSpecDAO.save(figspec);
     }
 
