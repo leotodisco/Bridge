@@ -11,6 +11,7 @@ import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * @author Alessia De Filippo.
@@ -64,4 +65,11 @@ public interface EventoDAO extends JpaRepository<Evento, Long> {
     @Query("SELECT e FROM Evento e WHERE "
             + "SIZE(e.listaPartecipanti) < e.maxPartecipanti")
     List<Evento> findEventiConSpazioDisponibile();
+
+    /**
+     *
+     */
+    @Query("SELECT e FROM Evento e JOIN FETCH e.listaPartecipanti WHERE e.id = :eventoId")
+    Optional<Evento> findEventoWithPartecipanti(long eventoId);
+
 }

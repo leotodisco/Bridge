@@ -277,7 +277,7 @@ const CreaEvento = () => {
 
         try {
             // Richiesta POST per creare l'evento
-            const response = await fetch("http://localhost:8080/eventi/crea", {
+            const response = await fetch("http://localhost:8080/api/eventi/crea", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
