@@ -9,6 +9,7 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -31,8 +32,7 @@ public class AlloggioDTO {
     @Positive(message = "Il numero della metratura deve essere un valore positivo")
     private Integer metratura;
 
-    //@NotEmpty(message = "Deve essere presente almeno un'immagine")
-    //private List<String> foto;
+    private List<String> fotos;
 
     @NotBlank(message = "L'email del proprietario è obbligatoria")
     @Email(message = "L'email del proprietario deve essere valida")

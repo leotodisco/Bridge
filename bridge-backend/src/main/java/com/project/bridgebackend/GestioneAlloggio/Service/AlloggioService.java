@@ -12,7 +12,7 @@ public interface AlloggioService {
      * @Param alloggio alloggio da inserire nel sistema
      * rimuovere
      */
-    public boolean addAlloggio(AlloggioDTO alloggio);
+    public boolean addAlloggio(AlloggioDTO alloggio, List<String> fotoIds);
 
     /**
      *Firma del metodo che invia una email al Rifugiato

@@ -188,4 +188,7 @@ public class GestioneAnnuncioController {
 
         return new ResponseEntity<>(nuovoLavoro, HttpStatus.CREATED);
     }
+
+
+
 }

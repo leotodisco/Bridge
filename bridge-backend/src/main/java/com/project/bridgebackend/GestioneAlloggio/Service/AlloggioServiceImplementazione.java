@@ -41,7 +41,7 @@ public class AlloggioServiceImplementazione implements AlloggioService {
      * PostCondizione l'alloggio sarà caricato nel sistema
      */
     @Override
-    public boolean addAlloggio(AlloggioDTO alloggioDTO) {
+    public boolean addAlloggio(AlloggioDTO alloggioDTO, List<String> fotoIds) {
         if (alloggioDTO == null) {
             throw new IllegalArgumentException("Il DTO dell'alloggio non può essere nullo");
         }
@@ -56,7 +56,7 @@ public class AlloggioServiceImplementazione implements AlloggioService {
         Alloggio alloggio = new Alloggio();
         alloggio.setDescrizione(alloggioDTO.getDescrizione());
         alloggio.setMaxPersone(alloggioDTO.getMaxPersone());
-        //alloggio.setFoto(alloggioDTO.getFoto());
+        alloggio.setFoto(fotoIds);
         alloggio.setProprietario(proprietario);
         alloggio.setMetratura(alloggioDTO.getMetratura());
         alloggio.setServizi(alloggioDTO.getServizi());

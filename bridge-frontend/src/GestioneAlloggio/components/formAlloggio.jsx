@@ -11,6 +11,40 @@ const CreaAlloggio = () => {
     const [maxPersone, setMaxPersone] = useState("");
     const [descrizione, setDescrizione] = useState("");
     const [servizi, setServizi] = useState([]);
+    const[fotos, setFotos] = useState([]);
+
+    const aggiornaDescrizione = (event) => {
+        setDescrizione(event.target.value);
+    };
+
+    const aggiornaMetratura = (event) => {
+        setMetratura(event.target.value);
+    };
+
+    const aggiornaMaxPersone = (event) => {
+        setMaxPersone(event.target.value);
+    };
+
+    const aggiornaFotoAlloggio = (event) => {
+        const files = Array.from(event.target.files);
+
+        if (files.length < 1 || files.length > 3) {
+            alert("Devi caricare almeno 1 foto e un massimo di 3 foto.");
+            return;
+        }
+
+        const readers = files.map((file) => {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onload = () => resolve(reader.result);
+                reader.onerror = (error) => reject(error);
+                reader.readAsDataURL(file);
+            });
+        });
+        Promise.all(readers)
+            .then((base64Images) => setFotos(base64Images))
+            .catch((error) => console.error("Errore nella lettura delle immagini:", error));
+    };
 
     const handleSubmit = async (event) => {
         event.preventDefault();
@@ -19,6 +53,7 @@ const CreaAlloggio = () => {
             alert("Il numero dei metri quadri deve essere almeno di 15");
             return;
         }
+
 
         if (maxPersone < 1) {
             alert("Inserire almeno 1 persona");
@@ -35,14 +70,21 @@ const CreaAlloggio = () => {
             return;
         }
 
+        if (fotos.length === 0) {
+            alert("Devi caricare almeno una foto");
+            return;
+        }
         // Crea l'oggetto da inviare
-        const data = {
+        const alloggioDTO = {
             descrizione,
-            maxPersone,
             metratura,
-            emailProprietario: "gedi@gedi.it",
+            maxPersone,
             servizi,
+            fotos, // Array di immagini in Base64
+            emailProprietario: "root@mail.it", // Modificare con l'email corretta
         };
+
+        console.log(alloggioDTO);
 
         try {
             const response = await fetch("http://localhost:8080/alloggi/aggiungi", {
@@ -50,7 +92,14 @@ const CreaAlloggio = () => {
                 headers: {
                     "Content-Type": "application/json", // Indica il tipo di dati
                 },
-                body: JSON.stringify(data), // Converte l'oggetto in JSON
+                body: JSON.stringify({
+                    "descrizione": descrizione,
+                    "metratura": metratura,
+                    "maxPersone": maxPersone,
+                    "servizi": servizi,
+                    "fotos": fotos,
+                    "emailProprietario": "root@mail.it",
+                }), // Converte l'oggetto in JSON
             });
 
             if (!response.ok) {
@@ -74,7 +123,7 @@ const CreaAlloggio = () => {
                     placeholder="Inserisci una descrizione"
                     className="formDescrizione"
                     value={descrizione}
-                    onChange={(event) => setDescrizione(event.target.value)}
+                    onChange={aggiornaDescrizione}
                     required
                 />
 
@@ -83,7 +132,7 @@ const CreaAlloggio = () => {
                     placeholder="Numero massimo di persone"
                     className="formMaxPersone"
                     value={maxPersone}
-                    onChange={(event) => setMaxPersone(event.target.value)}
+                    onChange={aggiornaMaxPersone}
                     min="1"
                     required
                 />
@@ -93,7 +142,7 @@ const CreaAlloggio = () => {
                     placeholder="Metratura (min 15 mq)"
                     className="formMetratura"
                     value={metratura}
-                    onChange={(event) => setMetratura(event.target.value)}
+                    onChange={aggiornaMetratura}
                     min="15"
                     required
                 />
@@ -102,15 +151,25 @@ const CreaAlloggio = () => {
                     className="servizi"
                     value={servizi}
                     onChange={(event) => setServizi(event.target.value)}
-                    required={true}
+                    required
                 >
-                    <option value="">Seleziona i servizi dell alloggio</option>
+                    <option value="" disabled>
+                        Seleziona i servizi dell alloggio
+                    </option>
                     {Object.entries(Servizi).map(([value, label]) => (
                         <option key={value} value={value}>
                             {label}
                         </option>
                     ))}
                 </select>
+
+                <input
+                    type="file"
+                    multiple
+                    accept="image/*"
+                    onChange={aggiornaFotoAlloggio}
+                    required
+                />
 
                 <button type="submit" className="formButtonAlloggio">
                     Crea Alloggio
