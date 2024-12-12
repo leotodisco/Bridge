@@ -17,6 +17,7 @@ import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+import org.hibernate.validator.constraints.UniqueElements;
 
 
 @Data
@@ -27,12 +28,11 @@ public class Alloggio {
     /**
      * Annotazione per identificare il campo 'id' come chiave primaria.
      */
-    @Id
     /**
      *  Genera automaticamente il valore della chiave primaria (ad esempio, un ID incrementale).
      */
+    @Id
     @GeneratedValue()
-    @Column(nullable = false)
     private long id;
 
     /**
@@ -71,7 +71,7 @@ public class Alloggio {
     /**
      *  Lista di rifugiati candidati per l'alloggio.
      */
-    @Column(nullable = false)
+    @Column()
     @OneToMany()
     private List<Rifugiato> listaCandidati;
 
@@ -91,6 +91,13 @@ public class Alloggio {
     //@NotNull
     //@Size(min = 1, max = 3, message = "Devi fornire almeno 1 foto e massimo 3.")
     private List<String> foto;
+
+    @Column(nullable = false, unique = true)
+    private String titolo;
+
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "indirizzo", referencedColumnName = "id", nullable = false)
+    private Indirizzo indirizzo;
 
     /**
      *  Costruttore predefinito (senza argomenti) per inizializzare l'oggetto.

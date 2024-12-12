@@ -1,5 +1,6 @@
 package com.project.bridgebackend.Model.dto;
 
+import com.project.bridgebackend.Model.Entity.Indirizzo;
 import com.project.bridgebackend.Model.Entity.Volontario;
 import com.project.bridgebackend.Model.Entity.enumeration.Servizi;
 import jakarta.validation.constraints.Email;
@@ -18,8 +19,6 @@ import java.util.List;
  */
 @Data
 public class AlloggioDTO {
-
-    private Long id; // Identificativo univoco dell'alloggio (opzionale per la creazione)
 
     @Size(max = 500, message = "La descrizione non può superare i 500 caratteri")
     private String descrizione;
@@ -40,6 +39,15 @@ public class AlloggioDTO {
 
     @NotNull(message = "Servizi obbligatori")
     private Servizi servizi;
+
+    @NotNull(message = "Il titolo non può essere vuoto")
+    private String titolo;
+
+    @NotNull(message = "l'indirizzo non può essere nullo")
+    private Indirizzo indirizzo;
+
+    public AlloggioDTO() {
+    }
 
     // Getters e Setters
 }

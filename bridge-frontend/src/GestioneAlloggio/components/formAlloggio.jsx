@@ -1,31 +1,34 @@
 import { useState } from "react";
-import "../css/formAlloggioStyle.css";
+
 
 const Servizi = {
-    WIFI: "WiFi",
-    RISCALDAMENTO: "Riscaldamento",
-    ARIACONDIZIONATA: "Aria Condizionata",
-};
+    WIFI : "WIFI",
+    ARIACONDIZIONATA : "ARIACONDIZIONATA",
+    RISCALDAMENTO : "RISCALDAMENTO"
+}
 
 const CreaAlloggio = () => {
+    const [descrizione , setDescrizione] = useState("");
+    const [maxPersone, setMaxPersone] = useState(1);
     const [metratura, setMetratura] = useState("");
-    const [maxPersone, setMaxPersone] = useState("");
-    const [descrizione, setDescrizione] = useState("");
-    const [servizi, setServizi] = useState([]);
-    const[fotos, setFotos] = useState([]);
+    const [fotos, setFotos] = useState([]);
+    const [servizi, setServizi] = useState("");
+    const [titolo, setTitolo] = useState("");
+    const [indirizzo , setIndirizzo] = useState({
+        via: "",
+        cap: "",
+        numCivico : "",
+        provincia : "",
+        citta : ""
+    });
 
-    const aggiornaDescrizione = (event) => {
-        setDescrizione(event.target.value);
-    };
+    const aggiornaDescrizione = (event) => setDescrizione(event.target.value);
+    const aggiornaMaxPeersone = (event) => setMaxPersone(event.target.value);
+    const aggiornaMetratura = (event) => setMetratura(event.target.value);
+    const aggiornaServizi = (event) => setServizi(event.target.value);
+    const aggiornaTitolo = (event) => setTitolo(event.target.value);
 
-    const aggiornaMetratura = (event) => {
-        setMetratura(event.target.value);
-    };
-
-    const aggiornaMaxPersone = (event) => {
-        setMaxPersone(event.target.value);
-    };
-
+    // Funzione per aggiornare le foto
     const aggiornaFotoAlloggio = (event) => {
         const files = Array.from(event.target.files);
 
@@ -47,133 +50,240 @@ const CreaAlloggio = () => {
             .catch((error) => console.error("Errore nella lettura delle immagini:", error));
     };
 
+    const aggiornaVia = (event) => {
+        setIndirizzo({
+            ...indirizzo,
+            via : event.target.value
+        });
+    }
+
+    const aggiornaNumCivico = (event) => {
+        setIndirizzo({
+            ...indirizzo,
+            numCivico : event.target.value
+        });
+    }
+    const aggiornaCitta = (event) => {
+        setIndirizzo({
+            ...indirizzo,
+            citta : event.target.value
+        });
+    }
+    const aggiornaProvincia = (event) => {
+        setIndirizzo({
+            ...indirizzo,
+            provincia : event.target.value
+        });
+    }
+    const aggiornaCap = (event) => {
+        setIndirizzo({
+            ...indirizzo,
+            cap : event.target.value
+        });
+    }
+
+
     const handleSubmit = async (event) => {
         event.preventDefault();
 
-        if (metratura < 15) {
-            alert("Il numero dei metri quadri deve essere almeno di 15");
-            return;
-        }
 
-        if (maxPersone < 1) {
-            alert("Inserire almeno 1 persona");
-            return;
-        }
-
-        if (!descrizione.trim()) {
-            alert("Inserire una descrizione");
-            return;
-        }
-
-        if (!servizi) {
-            alert("Selezionare almeno un servizio");
-            return;
-        }
-
-        if (fotos.length === 0) {
-            alert("Devi caricare almeno una foto");
-            return;
-        }
-        // Crea l'oggetto da inviare
         const alloggioDTO = {
-            descrizione,
-            metratura,
-            maxPersone,
-            servizi,
-            fotos, // Array di immagini in Base64
-            emailProprietario: "jedi@jedi.it",
+            titolo : titolo, // Inviato insieme agli altri dati
+            descrizione : descrizione,
+            metratura : metratura,
+            maxPersone : maxPersone,
+            servizi : servizi,
+            foto : fotos,
+            emailProprietario: "jedi@jedi.com",
+            indirizzo : indirizzo
         };
 
-        console.log(alloggioDTO);
+        console.log("Alloggio da creare ", alloggioDTO);
 
         try {
             const response = await fetch("http://localhost:8080/alloggi/aggiungi", {
                 method: "POST",
                 headers: {
-                    "Content-Type": "application/json", // Indica il tipo di dati
+                    "Content-Type": "application/json",
+                    "Accept": "application/json"
                 },
                 body: JSON.stringify({
-                    "descrizione": descrizione,
-                    "metratura": metratura,
-                    "maxPersone": maxPersone,
-                    "servizi": servizi,
-                    "fotos": fotos,
-                    "emailProprietario": "root@mail.it",
-                }), // Converte l'oggetto in JSON
+                    titolo: titolo,
+                    descrizione: descrizione,
+                    metratura: metratura,
+                    maxPersone: maxPersone,
+                    servizi: servizi,
+                    foto: fotos,
+                    emailProprietario: "jedy@jedy.com",
+                    indirizzo: {
+                        via: indirizzo.via,
+                        numCivico: indirizzo.numCivico,
+                        citta: indirizzo.citta,
+                        cap: indirizzo.cap,
+                        provincia: indirizzo.provincia
+                    },
+                })
             });
 
+            console.log("Risposta del server:", response);  // Log della risposta del server
+
             if (!response.ok) {
-                throw new Error(`Errore HTTP: ${response.status}`);
+                throw new Error(`Errore http: ${response.status}`);
             }
 
             const result = await response.text();
-            alert("Alloggio creato con successo!");
-            console.log(result);
+            console.log("Successo: ", result)
+            alert("Mi sento una tvoria ", result);
         } catch (error) {
-            console.error("Errore durante la creazione dell'alloggio", error);
-            alert(`Errore durante la creazione dell'alloggio: ${error.message}`);
+            console.error("Errore creazione alloggio: ", error);
+            alert("Errore durante la creazione dell'alloggio. Dettagli: " + error.message);
         }
     };
 
     return (
-        <div className="formContainerAlloggio">
+        // Form per la creazione dell'evento
+        <div className="formContainer">
             <h2>Crea un nuovo alloggio</h2>
+            <hr/>
+
             <form onSubmit={handleSubmit}>
-                <textarea
-                    placeholder="Inserisci una descrizione"
-                    className="formDescrizione"
-                    value={descrizione}
-                    onChange={aggiornaDescrizione}
-                    required
-                />
+                <h3>Informazioni Principali:</h3>
+                <hr/>
+                <div className="formField">
+                    <input
+                        type="text"
+                        placeholder="Titolo alloggio"
+                        title="Digita il titolo"
+                        //className={`formEditText ${nomeErrore ? "erroreInput" : ""}`}
+                        value={titolo}
+                        onChange={aggiornaTitolo}
+                        required
+                    />
+                </div>
 
-                <input
-                    type="number"
-                    placeholder="Numero massimo di persone"
-                    className="formMaxPersone"
-                    value={maxPersone}
-                    onChange={aggiornaMaxPersone}
-                    min="1"
-                    required
-                />
+                <div className="formField">
+                    <textarea
+                        placeholder="Descrizione"
+                        title="Digita la descrizione dell'evento"
+                        //className={`formEditText ${descrizioneErrore ? "erroreInput" : ""}`}
+                        value={descrizione}
+                        onChange={aggiornaDescrizione}
+                        required
+                    />
+                </div>
 
-                <input
-                    type="number"
-                    placeholder="Metratura (min 15 mq)"
-                    className="formMetratura"
-                    value={metratura}
-                    onChange={aggiornaMetratura}
-                    min="15"
-                    required
-                />
-
-                <select
-                    className="servizi"
-                    value={servizi}
-                    onChange={(event) => setServizi(event.target.value)}
-                    required
-                >
-                    <option value="" disabled>
-                        Seleziona i servizi dell alloggio
-                    </option>
-                    {Object.entries(Servizi).map(([value, label]) => (
-                        <option key={value} value={value}>
-                            {label}
+                <div className="formField">
+                    <select
+                        //className={`formEditText ${linguaParlataErrore ? "erroreInput" : ""}`}
+                        value={servizi}
+                        title="Seleziona un servizio"
+                        onChange={aggiornaServizi}
+                        required
+                    >
+                        <option value="" disabled>
+                            Seleziona un servizio
                         </option>
-                    ))}
-                </select>
+                        {Object.values(Servizi).map((lang) => (
+                            <option key={lang} value={lang}>
+                                {lang}
+                            </option>
+                        ))}
+                    </select>
+                </div>
+
+                <div className="formField">
+                    <input
+                        type="number"
+                        placeholder="Max persone"
+                        title="Seleziona il numero massimo di partecipanti"
+                        //className={`formEditText ${maxPartecipantiErrore ? "erroreInput" : ""}`}
+                        value={maxPersone}
+                        onChange={aggiornaMaxPeersone}
+                        required
+                    />
+                </div>
+
+                <div className="formField">
+                    <input
+                        type="number"
+                        placeholder="Metratura"
+                        title=" Metratura camera"
+                        //className={`formEditText ${maxPartecipantiErrore ? "erroreInput" : ""}`}
+                        value={metratura}
+                        onChange={aggiornaMetratura}
+                        required
+                    />
+                </div>
+
+                <h3>Luogo</h3>
+                <hr/>
+                <div className="inlineAddress">
+                    <input
+                        type="text"
+                        placeholder="Via"
+                        title="Inserisci la via del luogo dell'evento"
+                        //className={`formEditText ${viaErrore ? "erroreInput" : ""}`}
+                        value={indirizzo.via}
+                        onChange={aggiornaVia}
+                        required
+                    />
+
+                    <input
+                        type="text"
+                        placeholder="Numero Civico"
+                        title="Inserisci il numero civico del luogo dell'evento"
+                        //className={`formEditText ${numCivicoErrore ? "erroreInput" : ""}`}
+                        value={indirizzo.numCivico}
+                        onChange={aggiornaNumCivico}
+                        required
+                    />
+                </div>
+
+                <div className="inlineCityDetails">
+                    <div>
+                        <input
+                            type="text"
+                            placeholder="Città"
+                            title="Inserisci la città del luogo dell'evento"
+                            //className={`formEditText ${cittaErrore ? "erroreInput" : ""}`}
+                            value={indirizzo.citta}
+                            onChange={aggiornaCitta}
+                            required
+                        />
+                    </div>
+
+                    <div>
+                        <input
+                            type="text"
+                            placeholder="CAP"
+                            title="Inserisci il CAP del luogo dell'evento"
+                            //className={`formEditText ${capErrore ? "erroreInput" : ""}`}
+                            value={indirizzo.cap}
+                            onChange={aggiornaCap}
+                            required
+                        />
+                    </div>
+
+                    <div>
+                        <input
+                            type="text"
+                            placeholder="Provincia"
+                            title="Inserisci la provincia del luogo dell'evento"
+                            value={indirizzo.provincia}
+                            onChange={aggiornaProvincia}
+                            required
+                        />
+                    </div>
+                </div>
 
                 <input
-                    type="file"
+                    type= "file"
                     multiple
-                    accept="image/*"
+                    accept= "image/*"
                     onChange={aggiornaFotoAlloggio}
                     required
                 />
-
-                <button type="submit" className="formButtonAlloggio">
-                    Crea Alloggio
-                </button>
+                <button id="creaEventoButton" type="submit">Crea Alloggio</button>
             </form>
         </div>
     );
