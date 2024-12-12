@@ -45,7 +45,7 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable()) // Disabilita CSRF esplicitamente
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/authentication/login", "/authentication/registrazioneUtente",
-                                "/eventi/crea", "/api/corsi/crea", "/api/annunci/creaConsulenza",
+                                "/api/eventi/crea", "/api/corsi/crea", "/api/annunci/creaConsulenza",
                                 "/api/corsi/upload", "/alloggi/aggiungi", "/api/annunci/creaLavoro",
                                 "/api/annunci/view_consulenze", "/api/annunci/view_consulenze/proprietario/{id}",
                                 "/api/eventi/all", "/api/eventi/retrieve/{id}", "/api/eventi/{id}/iscrivi",

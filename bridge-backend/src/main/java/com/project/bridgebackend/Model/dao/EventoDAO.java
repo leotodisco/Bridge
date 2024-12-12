@@ -72,4 +72,6 @@ public interface EventoDAO extends JpaRepository<Evento, Long> {
     @Query("SELECT e FROM Evento e JOIN FETCH e.listaPartecipanti WHERE e.id = :eventoId")
     Optional<Evento> findEventoWithPartecipanti(long eventoId);
 
+    @Query("SELECT e FROM Evento e JOIN Fetch e.organizzatore")
+    List<Evento> findAllWithOrganizzatore();
 }

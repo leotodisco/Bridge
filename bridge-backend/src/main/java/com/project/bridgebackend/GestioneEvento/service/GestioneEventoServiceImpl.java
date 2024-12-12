@@ -68,7 +68,7 @@ public class GestioneEventoServiceImpl implements GestioneEventoService {
      */
     @Override
     public List<Evento> getAllEventi() {
-        return eventoDAO.findAll();
+        return eventoDAO.findAllWithOrganizzatore();
     }
 
     /**
