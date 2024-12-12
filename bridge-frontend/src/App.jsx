@@ -2,6 +2,7 @@ import './App.css';
 import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
 import CreaEvento from './GestioneEvento/components/formEvento.jsx';
 import CreaConsulenza from './GestioneAnnuncio/components/formConsulenza.jsx';
+
 import CreaCorso from './GestioneCorso/components/formCorso.jsx';
 import CreaUtente from "./Registrazione/components/formRegistrazione.jsx";
 import Login from "./GestioneLogin/components/login.jsx";
@@ -44,6 +45,7 @@ function App() {
                             <Link to="/" className="nav-link">Home</Link>
                             <Link to="/crea-evento" className="nav-link">Crea Evento</Link>
                             <Link to="/crea-consulenza" className="nav-link">Crea Consulenza</Link>
+                            <Link to="/crea-lavoro" className="nav-link">Crea Annuncio di Lavoro</Link>
                             <Link to="/crea-corso" className="nav-link">Crea Corso</Link>
                             <Link to="/crea-alloggio" className="nav-link">Crea Alloggio</Link>
                             <LogoutButton onLogout={handleLogout}/>
@@ -54,6 +56,7 @@ function App() {
                             <Route path="/" element={<p>Benvenuto nel sistema di gestione!</p>}/>
                             <Route path="/crea-evento" element={<CreaEvento/>}/>
                             <Route path="/crea-consulenza" element={<CreaConsulenza/>}/>
+                            <Route path="/crea-lavoro" element={<CreaLavoro/>}/>
                             <Route path="/crea-corso" element={<CreaCorso/>}/>
                             <Route path="/crea-utente" element={<CreaUtente/>}/>
                             <Route path="/login" element={<Login onLogin={handleLogin} />} />
