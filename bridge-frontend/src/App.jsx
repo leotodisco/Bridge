@@ -2,12 +2,11 @@ import './App.css';
 import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
 import CreaEvento from './GestioneEvento/components/formEvento.jsx';
 import CreaConsulenza from './GestioneAnnuncio/components/formConsulenza.jsx';
-
 import CreaCorso from './GestioneCorso/components/formCorso.jsx';
 import CreaUtente from "./Registrazione/components/formRegistrazione.jsx";
 import Login from "./GestioneLogin/components/login.jsx";
 import CreaAlloggio from "./GestioneAlloggio/components/formAlloggio.jsx";
-
+import CreaLavoro from './GestioneAnnuncio/components/formLavoro.jsx';
 import logo from './assets/IMG_1580.PNG';
 import ViewConsulenza from "./GestioneAnnuncio/components/viewConsulenza.jsx";
 import LogoutButton from "./GestioneLogout/components/logout.jsx";
