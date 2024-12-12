@@ -226,20 +226,26 @@ const CreaEvento = () => {
 
     // Funzione per validare il campo luogo
     const validaLuogo = () => {
-        const viaValida = /^[A-Za-z ]{2, 100}$/.test(luogo.via);
-        const numCivicoValido = /^[0-9]{1,3}$/.test(luogo.numCivico);
-        const cittaValida = /^[A-Za-z ]{1,100}$/.test(luogo.citta);
-        const capValido = /^[0-9]{5}$/.test(luogo.cap);
-        const provinciaValida = /^[A-Za-z]{2}$/.test(luogo.provincia);
+        let errore = "";
+        if (!/^[A-Za-z0-9àèéìòùÀÈÉÌÒÙ ]{2,100}$/.test(luogo.via)) {
+            errore = "La via deve avere almeno 2 caratteri.";
+        } else if (!/^\d{1,5}$/.test(luogo.numCivico)) {
+            errore = "Il numero civico deve essere valido.";
+        } else if (!/^[A-Za-z ]{2,100}$/.test(luogo.citta)) {
+            errore = "La città deve avere almeno 2 caratteri.";
+        } else if (!/^\d{5}$/.test(luogo.cap)) {
+            errore = "Il CAP deve essere di 5 cifre.";
+        } else if (!/^[A-Za-z]{2,10}$/.test(luogo.provincia)) {
+            errore = "La provincia deve avere tra 2 e 10 caratteri.";
+        }
 
-        if (!viaValida || !numCivicoValido || !cittaValida || !capValido || !provinciaValida) {
-            setLuogoErrore("Tutti i campi del luogo devono essere validi.");
+        if (errore) {
+            setLuogoErrore(errore);
             return false;
         }
         setLuogoErrore("");
         return true;
     };
-
 
     // Funzione per gestire la creazione dell'evento
     const handleSubmit = async (event) => {
@@ -276,6 +282,8 @@ const CreaEvento = () => {
         console.log("Evento da creare: ", eventoDTO);
 
         try {
+
+
             // Richiesta POST per creare l'evento
             const response = await fetch("http://localhost:8080/api/eventi/crea", {
                 method: "POST",
@@ -298,7 +306,7 @@ const CreaEvento = () => {
                         provincia: luogo.provincia
                     },
                     organizzatore: {
-                        "email": "volontario@example.com" //todo: prendere l'email dell'utente loggato
+                        "email": "defilippo@gmail.com" //todo: prendere l'email dell'utente loggato
                     },
                     maxPartecipanti: maxPartecipanti
                 })

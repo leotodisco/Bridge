@@ -12,6 +12,8 @@ import ViewConsulenza from "./GestioneAnnuncio/components/viewConsulenza.jsx";
 import LogoutButton from "./GestioneLogout/components/logout.jsx";
 import {useEffect, useState} from "react";
 import AreaPersonale from "./GestioneUtente/components/AreaPersonale.jsx";
+import AllEventsView from "./GestioneEvento/components/ViewAllEventi.jsx";
+import EventView from "./GestioneEvento/components/EventoRetrieveView.jsx";
 
 function App() {
 
@@ -50,6 +52,7 @@ function App() {
                             <LogoutButton onLogout={handleLogout}/>
                             <Link to ="/area-personale" className ="nav-link">Area Personale</Link>
                             <Link to ="/view-consulenza" className ="nav-link">View Consulenze</Link>
+                            <Link to={"/view-eventi"} className="nav-link">View Eventi</Link>
                         </nav>
                         <Routes>
                             <Route path="/" element={<p>Benvenuto nel sistema di gestione!</p>}/>
@@ -62,6 +65,8 @@ function App() {
                             <Route path="/crea-alloggio" element={<CreaAlloggio/>}/>
                             <Route path="/view-consulenza" element={<ViewConsulenza/>}/>
                             <Route path="/area-personale" element={<AreaPersonale/>}/>
+                            <Route path="/view-eventi" element={<AllEventsView />}/>
+                            <Route path="/eventi/retrieve/:id" element={<EventView />} />
                         </Routes>
                     </> ) : (
                         <>

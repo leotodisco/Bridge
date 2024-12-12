@@ -1,0 +1,130 @@
+/* Sfondo semi-trasparente per il popup */
+.popup-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.8); /* Sfondo nero più opaco */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+/* Contenitore principale del popup */
+.popup-container {
+    background-color: #f9f9f9; /* Sfondo chiaro */
+    border: 2px solid #336a7e; /* Bordo con il colore primario */
+    border-radius: 15px; /* Angoli arrotondati */
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3); /* Ombra più evidente */
+    width: 85%;
+    max-width: 700px;
+    padding: 30px;
+    animation: scaleUp 0.3s ease-in-out;
+    font-family: 'Roboto', Arial, sans-serif;
+    position: relative;
+    overflow-y: auto;
+    max-height: 90%;
+}
+
+/* Animazione di ingresso */
+@keyframes scaleUp {
+    from {
+        transform: scale(0.9);
+        opacity: 0;
+    }
+    to {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+/* Pulsante di chiusura */
+.popup-close {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background: none;
+    border: none;
+    font-size: 24px;
+    font-weight: bold;
+    color: #336a7e; /* Colore coerente */
+    cursor: pointer;
+    transition: color 0.3s ease;
+}
+
+.popup-close:hover {
+    color: #224f63; /* Tonalità più scura */
+}
+
+/* Titolo principale */
+.popup-container h1 {
+    font-size: 26px;
+    font-weight: bold;
+    color: #336a7e; /* Colore principale */
+    margin-bottom: 20px;
+    text-align: center;
+    border-bottom: 3px solid #ddd; /* Linea decorativa */
+    padding-bottom: 10px;
+}
+
+/* Sezioni con sottotitoli */
+.popup-container h3 {
+    font-size: 20px;
+    color: #224f63; /* Tonalità leggermente diversa */
+    margin-top: 30px;
+    margin-bottom: 15px;
+    border-bottom: 2px solid #ddd;
+    padding-bottom: 5px;
+}
+
+/* Contenuti generali */
+.popup-container p {
+    font-size: 16px;
+    color: #555;
+    line-height: 1.6;
+    margin: 8px 0;
+}
+
+/* Evidenziazione di etichette */
+.popup-container strong {
+    color: #336a7e;
+}
+
+/* Sezioni con i dettagli */
+.popup-details {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 15px;
+}
+
+.popup-details p {
+    width: calc(50% - 10px);
+    font-size: 15px;
+}
+
+/* Stile per dispositivi mobili */
+@media (max-width: 768px) {
+    .popup-container {
+        padding: 20px;
+        max-width: 95%;
+    }
+
+    .popup-container h1 {
+        font-size: 22px;
+    }
+
+    .popup-container p {
+        font-size: 14px;
+    }
+
+    .popup-details p {
+        width: 100%; /* Dettagli in colonna */
+    }
+
+    .popup-close {
+        font-size: 20px;
+    }
+}
