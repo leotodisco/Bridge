@@ -11,6 +11,7 @@ import logo from './assets/IMG_1580.PNG';
 import ViewConsulenza from "./GestioneAnnuncio/components/viewConsulenza.jsx";
 import LogoutButton from "./GestioneLogout/components/logout.jsx";
 import {useEffect, useState} from "react";
+import AreaPersonale from "./GestioneUtente/components/AreaPersonale.jsx";
 
 function App() {
 
@@ -46,6 +47,7 @@ function App() {
                             <Link to="/crea-corso" className="nav-link">Crea Corso</Link>
                             <Link to="/crea-alloggio" className="nav-link">Crea Alloggio</Link>
                             <LogoutButton onLogout={handleLogout}/>
+                            <Link to ="/area-personale" className ="nav-link">Area Personale</Link>
                             <Link to ="/view-consulenza" className ="nav-link">View Consulenze</Link>
                         </nav>
                         <Routes>
@@ -57,6 +59,7 @@ function App() {
                             <Route path="/login" element={<Login onLogin={handleLogin} />} />
                             <Route path="/crea-alloggio" element={<CreaAlloggio/>}/>
                             <Route path="/view-consulenza" element={<ViewConsulenza/>}/>
+                            <Route path="/area-personale" element={<AreaPersonale/>}/>
                         </Routes>
                     </> ) : (
                         <>

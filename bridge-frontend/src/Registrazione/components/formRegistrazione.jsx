@@ -252,7 +252,7 @@ const CreaUtente = () => {
                     ))}
                 </select>
 
-                {/* Campo Disponibilità che appare solo se il ruolo è "Figura Specializzata" */}
+
                 {ruolo === "FiguraSpecializzata" && (
                     <input
                         type="text"
