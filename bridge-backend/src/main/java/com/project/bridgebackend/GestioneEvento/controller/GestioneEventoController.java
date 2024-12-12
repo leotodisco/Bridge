@@ -111,7 +111,7 @@ public class GestioneEventoController {
     /**
      * Metodo per il fetch di un evento
      */
-    @GetMapping("/{id}")
+    @GetMapping("/retrieve/{id}")
     public ResponseEntity<EventoDTO> getEventoById(@PathVariable long id) {
         Optional<Evento> evento = gestioneEventoService.getEventoById(id);
         if(evento.isPresent()) {
@@ -195,6 +195,10 @@ public class GestioneEventoController {
     }
 
 
+    /**
+     * Metodo per il fetch di tutti gli eventi.
+     * @return
+     */
     @GetMapping("/all")
     public ResponseEntity<List<Evento>> getAllEventi() {
         List<Evento> eventi = gestioneEventoService.getAllEventi();

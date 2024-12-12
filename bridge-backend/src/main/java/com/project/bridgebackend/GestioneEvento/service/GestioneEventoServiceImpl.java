@@ -52,7 +52,7 @@ public class GestioneEventoServiceImpl implements GestioneEventoService {
      **/
     @Transactional
     @Override
-    public Evento insertEvento(@Valid final Evento evento) {
+    public Evento insertEvento(final Evento evento) {
         //Controllo su DTO nullo o id nullo
         if (evento == null) {
             throw new IllegalArgumentException("Evento non valido.");
