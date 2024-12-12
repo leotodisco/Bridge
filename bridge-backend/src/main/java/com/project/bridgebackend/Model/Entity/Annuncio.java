@@ -1,6 +1,7 @@
 package com.project.bridgebackend.Model.Entity;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Column;
 import jakarta.persistence.MappedSuperclass;
 import jakarta.persistence.Id;
@@ -53,6 +54,7 @@ public class Annuncio {
      */
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "proprietario_email", referencedColumnName = "email", nullable = false)
+    @JsonIgnore
     private Utente proprietario;
 
     /**

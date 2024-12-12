@@ -1,4 +1,3 @@
-import { useEffect, useState } from 'react';
 import './App.css';
 import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
 import CreaEvento from './GestioneEvento/components/formEvento.jsx';
@@ -9,7 +8,9 @@ import Login from "./GestioneLogin/components/login.jsx";
 import CreaAlloggio from "./GestioneAlloggio/components/formAlloggio.jsx";
 
 import logo from './assets/IMG_1580.PNG';
+import ViewConsulenza from "./GestioneAnnuncio/components/viewConsulenza.jsx";
 import LogoutButton from "./GestioneLogout/components/logout.jsx";
+import {useEffect, useState} from "react";
 
 function App() {
 
@@ -45,6 +46,7 @@ function App() {
                             <Link to="/crea-corso" className="nav-link">Crea Corso</Link>
                             <Link to="/crea-alloggio" className="nav-link">Crea Alloggio</Link>
                             <LogoutButton onLogout={handleLogout}/>
+                            <Link to ="/view-consulenza" className ="nav-link">View Consulenze</Link>
                         </nav>
                         <Routes>
                             <Route path="/" element={<p>Benvenuto nel sistema di gestione!</p>}/>
@@ -54,6 +56,7 @@ function App() {
                             <Route path="/crea-utente" element={<CreaUtente/>}/>
                             <Route path="/login" element={<Login onLogin={handleLogin} />} />
                             <Route path="/crea-alloggio" element={<CreaAlloggio/>}/>
+                            <Route path="/view-consulenza" element={<ViewConsulenza/>}/>
                         </Routes>
                     </> ) : (
                         <>

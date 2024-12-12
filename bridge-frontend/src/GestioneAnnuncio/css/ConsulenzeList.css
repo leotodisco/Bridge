@@ -1,0 +1,73 @@
+.container {
+    padding: 20px;
+    font-family: Arial, sans-serif;
+}
+
+.search-bar {
+    margin-bottom: 20px;
+}
+
+.search-bar input {
+    padding: 10px;
+    width: 300px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+}
+
+.search-bar button {
+    padding: 10px 20px;
+    margin-left: 10px;
+    background-color: #396F85;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.search-bar button:hover {
+    background-color: #2f5d6f;
+}
+
+.grid-container {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr); /* 4 colonne */
+    gap: 20px;
+}
+
+.container .grid-container .card {
+    background: white;
+    border-radius: 15px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+}
+
+.container .grid-container .card-title {
+    background-color: #396F85;
+    color: white;
+    padding: 10px;
+    border-radius: 10px;
+    text-align: center;
+    font-size: 1.2em;
+    margin-bottom: 15px;
+}
+
+.container .grid-container .card-info {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.9em;
+    color: #555;
+}
+
+.container .grid-container .card-info tr {
+    border-bottom: 1px solid #ccc;
+}
+
+.container .grid-container .card-info td {
+    padding: 8px 5px;
+}
+
+.container .grid-container .card-info tr:last-child {
+    border-bottom: none;
+}

@@ -78,7 +78,7 @@ const CreaConsulenza = () => {
                 provincia: indirizzo.provincia
             },
             disponibilita: true,
-            proprietario: "paolo.fino@example.com"
+            proprietario: "negracciospecializzato@gmail.it"
         };
 
         console.log("Dati della consulenza: ", consulenzaDTO);

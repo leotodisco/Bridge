@@ -1,10 +1,9 @@
 package com.project.bridgebackend.GestioneAnnuncio.Service;
 
-import com.project.bridgebackend.Model.Entity.Consulenza;
-import com.project.bridgebackend.Model.Entity.Indirizzo;
-import com.project.bridgebackend.Model.Entity.Lavoro;
+import com.project.bridgebackend.Model.Entity.*;
 
 import java.util.HashMap;
+import java.util.List;
 
 /**
  * Servizio per la gestione degli annunci di lavoro e consulenza.
@@ -67,4 +66,9 @@ public interface GestioneAnnuncioService {
      * @param idAnnuncio l'identificativo dell'annuncio da eliminare.
      */
     void eliminaAnnuncioLavoro(long idAnnuncio);
+
+    List<Consulenza> getAllConsulenze();
+
+    List<Consulenza> getConsulenzeByProprietario(Utente proprietario);
+
 }

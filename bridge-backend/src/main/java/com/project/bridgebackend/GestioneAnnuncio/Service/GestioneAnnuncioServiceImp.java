@@ -1,9 +1,7 @@
 package com.project.bridgebackend.GestioneAnnuncio.Service;
 
+import com.project.bridgebackend.Model.Entity.*;
 import com.project.bridgebackend.Model.Entity.enumeration.TipoContratto;
-import com.project.bridgebackend.Model.Entity.Consulenza;
-import com.project.bridgebackend.Model.Entity.Indirizzo;
-import com.project.bridgebackend.Model.Entity.Lavoro;
 import com.project.bridgebackend.Model.dao.ConsulenzaDAO;
 import com.project.bridgebackend.Model.dao.IndirizzoDAO;
 import com.project.bridgebackend.Model.dao.LavoroDAO;
@@ -157,5 +155,16 @@ public class GestioneAnnuncioServiceImp implements GestioneAnnuncioService {
             throw new IllegalArgumentException("Annuncio di lavoro non trovato.");
         }
         lavoroDAO.deleteById(idAnnuncio);
+    }
+
+
+    @Override
+    public List<Consulenza> getAllConsulenze(){
+        return consulenzaDAO.findAll();
+    }
+
+    @Override
+    public List<Consulenza> getConsulenzeByProprietario(Utente proprietario) {
+        return consulenzaDAO.findByProprietario(proprietario);
     }
 }

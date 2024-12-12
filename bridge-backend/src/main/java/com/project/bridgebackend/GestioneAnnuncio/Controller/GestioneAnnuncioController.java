@@ -17,12 +17,11 @@ import com.project.bridgebackend.Model.dto.LavoroDTO;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.http.HttpStatus;
 import jakarta.validation.Valid;
+
+import java.util.List;
 
 
 /**
@@ -69,6 +68,8 @@ public class GestioneAnnuncioController {
     @Autowired
     private IndirizzoDAO indirizzoDAO;
 
+
+
     /**
      * Metodo per creare una nuova consulenza.
      * Questo metodo riceve un oggetto DTO contenente i dati della consulenza,
@@ -81,7 +82,7 @@ public class GestioneAnnuncioController {
      * @return ResponseEntity contenente l'entità `Consulenza` appena creata.
      *         Oppure un errore se le operazioni non vanno a buon fine.
      */
-    @PostMapping
+    @PostMapping("/creaConsulenza")
     public ResponseEntity<Consulenza> creaConsulenza(@Valid @RequestBody final ConsulenzaDTO consulenzaDTO) {
 
         /*
@@ -189,6 +190,32 @@ public class GestioneAnnuncioController {
         return new ResponseEntity<>(nuovoLavoro, HttpStatus.CREATED);
     }
 
+    /**
+     * Metodo per ottenere tutte le consulenze presenti nel database.
+     *
+     * @return ResponseEntity contenente la lista di tutte le consulenze.
+     */
+    @PostMapping("/view_consulenze")
+    public ResponseEntity<List<Consulenza>> getAllConsulenze() {
+        List<Consulenza> consulenze = gestioneAnnuncioService.getAllConsulenze();
+        return ResponseEntity.ok(consulenze);
+    }
 
+    /**
+     * Metodo per ottenere tutte le consulenze di un proprietario specifico.
+     *
+     * @param proprietarioId ID del proprietario delle consulenze.
+     * @return ResponseEntity contenente la lista delle consulenze del proprietario specificato.
+     */
+    @PostMapping("/view_consulenze/proprietario/{id}")
+    public ResponseEntity<List<Consulenza>> getConsulenzeByProprietario(@PathVariable("id") String proprietarioId) {
+        // Retrieve the FiguraSpecializzata (which is a subtype of Utente)
+        Utente proprietario = figuraSpecializzataDAO.findByEmail(proprietarioId);
+
+        // Retrieve all Consulenza entities for the specific proprietario
+        List<Consulenza> consulenze = gestioneAnnuncioService.getConsulenzeByProprietario(proprietario);
+
+        return ResponseEntity.ok(consulenze);
+    }
 
 }
