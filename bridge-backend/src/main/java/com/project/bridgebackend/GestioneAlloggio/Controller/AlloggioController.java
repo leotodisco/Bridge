@@ -3,8 +3,11 @@ package com.project.bridgebackend.GestioneAlloggio.Controller;
 import com.project.bridgebackend.GestioneAlloggio.FotoAlloggio.FotoAlloggioService;
 import com.project.bridgebackend.GestioneAlloggio.Service.AlloggioService;
 import com.project.bridgebackend.Model.Entity.Alloggio;
+import com.project.bridgebackend.Model.Entity.Indirizzo;
 import com.project.bridgebackend.Model.Entity.Rifugiato;
 import com.project.bridgebackend.Model.Entity.Volontario;
+import com.project.bridgebackend.Model.dao.IndirizzoDAO;
+import com.project.bridgebackend.Model.dao.VolontarioDAO;
 import com.project.bridgebackend.Model.dto.AlloggioDTO;
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
@@ -34,6 +37,11 @@ public class AlloggioController {
     private FotoAlloggioService fotoAlloggioService;
 
     private static final Logger logger = LoggerFactory.getLogger(AlloggioController.class);
+    @Autowired
+    private VolontarioDAO volontarioDAO;
+
+    @Autowired
+    private IndirizzoDAO indirizzoDAO;
 
     /**
      * Aggiungi un nuovo alloggio nel sistema
@@ -43,7 +51,7 @@ public class AlloggioController {
      */
 
     @PostMapping("/aggiungi")
-    public ResponseEntity<String> addAlloggio(@RequestBody @Valid AlloggioDTO alloggio) {
+    public ResponseEntity<String> addAlloggio(@RequestBody AlloggioDTO alloggio) {
         try {
             /**
              *Verifico prima se sia un volontoria, in caso positivo può aggiungere l'alloggio, in caso negativo non fa nulla
@@ -66,11 +74,41 @@ public class AlloggioController {
                 }
             }
 
+            //indirizzo
+            Indirizzo indirizzo = new Indirizzo();
+            indirizzo.setCitta(alloggio.getIndirizzo().getCitta());
+            indirizzo.setCap(alloggio.getIndirizzo().getCap());
+            indirizzo.setVia(alloggio.getIndirizzo().getVia());
+            indirizzo.setNumCivico(alloggio.getIndirizzo().getNumCivico());
+            indirizzo.setProvincia(alloggio.getIndirizzo().getProvincia());
+
+            long checkIndirizzo = alloggioService.salvaIndirizzoAlloggio(indirizzo);
+
+            /*if (checkIndirizzo) {
+                throw new RuntimeException("Indirizzo non trovato");
+            }*/
+
+            Volontario proprietario = volontarioDAO.findByEmail(alloggio.getEmailProprietario());
+            if (proprietario == null) {
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+            }
+
+            //alloggio
+            Alloggio newalloggio = new Alloggio();
+            newalloggio.setDescrizione(alloggio.getDescrizione());
+            newalloggio.setMaxPersone(alloggio.getMaxPersone());
+            newalloggio.setFoto(fotoIds);
+            newalloggio.setProprietario(proprietario);
+            newalloggio.setMetratura(alloggio.getMetratura());
+            newalloggio.setServizi(alloggio.getServizi());
+            newalloggio.setTitolo(alloggio.getTitolo());
+            newalloggio.setIndirizzo(indirizzoDAO.getReferenceById(checkIndirizzo));
+            System.out.println("alLOGGIO CREATO: " + newalloggio);
+
+
             // Rimuoviamo le foto dalla DTO, non ci servono più per il salvataggio dell'alloggio
-            alloggio.setFotos(null);
-            logger.info("Ricevuto DTO alloggio: {}", alloggio);
-                boolean result = alloggioService.addAlloggio(alloggio, fotoIds);
-                if (result) {
+                Alloggio createdAlloggio = alloggioService.addAlloggio(newalloggio);
+                if (createdAlloggio != null) {
                     return new ResponseEntity<>("Alloggio aggiunto con successo", HttpStatus.CREATED);
                 } else {
                     return new ResponseEntity<>("Errore nell'aggiunta dell'alloggio", HttpStatus.BAD_REQUEST);
@@ -82,7 +120,4 @@ public class AlloggioController {
             return new ResponseEntity<>("Errore interno del server: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-
-
-
 }

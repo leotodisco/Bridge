@@ -1,6 +1,7 @@
 package com.project.bridgebackend.GestioneAlloggio.Service;
 
 import com.project.bridgebackend.Model.Entity.Alloggio;
+import com.project.bridgebackend.Model.Entity.Indirizzo;
 import com.project.bridgebackend.Model.Entity.Rifugiato;
 import com.project.bridgebackend.Model.dto.AlloggioDTO;
 
@@ -10,9 +11,10 @@ public interface AlloggioService {
     /**
      *Firma del metodo che aggiunge un nuovo alloggio
      * @Param alloggio alloggio da inserire nel sistema
+     * @Param titolo titolo dell'alloggio
      * rimuovere
      */
-    public boolean addAlloggio(AlloggioDTO alloggio, List<String> fotoIds);
+    public Alloggio addAlloggio(Alloggio alloggio);
 
     /**
      *Firma del metodo che invia una email al Rifugiato
@@ -46,4 +48,13 @@ public interface AlloggioService {
      *Firma del metodo che mostra tutti gli alloggi presenti nel sistema
      */
     public List<Alloggio> getAllAlloggio();
+
+    /**
+     * Firma del metodo per salvare l'indirizzo dell'alloggio
+     * @param indirizzo indirizzo dell'alloggio con tutte le caratteristiche
+     * @return l'indirizzo salvato
+     */
+    long salvaIndirizzoAlloggio(Indirizzo indirizzo);
+
+    long getIdIndirizzo(Indirizzo indirizzo);
 }
