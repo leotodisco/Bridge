@@ -66,7 +66,7 @@ function App() {
                             <Route path="/view-consulenza" element={<ViewConsulenza/>}/>
                             <Route path="/area-personale" element={<AreaPersonale/>}/>
                             <Route path="/view-eventi" element={<AllEventsView />}/>
-                            <Route path="/eventi/retrieve/:id" element={<EventView />} />
+                            <Route path="/eventi/retrieve/:id" element={<EventView />}/>
                         </Routes>
                     </> ) : (
                         <>

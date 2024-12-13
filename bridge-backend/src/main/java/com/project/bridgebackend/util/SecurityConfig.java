@@ -49,8 +49,9 @@ public class SecurityConfig {
                                 "/api/corsi/upload", "/alloggi/aggiungi", "/api/annunci/creaLavoro",
                                 "/api/annunci/view_consulenze", "/api/annunci/view_consulenze/proprietario/{id}",
                                 "/api/eventi/all", "/api/eventi/retrieve/{id}", "/api/eventi/{id}/iscrivi",
-                                "/api/eventi/{id}/disiscrivi", "/api/eventi/pubblicati", "/areaPersonale/{email}",
-                                "/areaPersonale/DatiUtente/{email}").permitAll()
+                                "/api/eventi/{id}/disiscrivi", "/api/eventi/pubblicati", "/areaPersonale/{email},",
+                                "/api/eventi/{id}/iscrizione", "/api/corsi/cerca/{id}", "/api/corsi/modifica",
+                                "/api/corsi/listaCorsi","/areaPersonale/DatiUtente/{email}").permitAll()
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))

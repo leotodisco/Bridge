@@ -54,6 +54,7 @@ public final class Indirizzo implements Serializable {
     @NotNull
     @Column(name = "cap")
     private int cap;
+    //todo cambiare il cap in stringa
 
     /**
      * Stringa che rappresenta la provincia dell'indirizzo.

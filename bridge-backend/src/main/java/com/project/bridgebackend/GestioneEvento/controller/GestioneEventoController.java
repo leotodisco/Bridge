@@ -232,4 +232,23 @@ public class GestioneEventoController {
         }
         return new ResponseEntity<>(eventi, HttpStatus.OK);
     }
+
+    @GetMapping("/{id}/iscrizione")
+    public ResponseEntity<Boolean> verificaIscrizione(
+            @PathVariable long id,
+            @RequestParam String emailPartecipante) {
+
+        try {
+            Evento evento = gestioneEventoService.trovaEventoConPartecipanti(id);
+            Rifugiato partecipante = rifugiatoDAO.findByEmail(emailPartecipante);
+            if (partecipante == null) {
+                return new ResponseEntity<>(false, HttpStatus.NOT_FOUND);
+            }
+
+            boolean isIscritto = evento.getListaPartecipanti().contains(partecipante);
+            return new ResponseEntity<>(isIscritto, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(false, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 }

@@ -64,8 +64,24 @@ public class GestioneCorsoServiceImpl implements GestioneCorsoService {
      */
     @Override
     public Corso modificaCorso(final Corso corso) {
-        // Implementazione per modificare un corso
-        return null; // Placeholder return statement
+        if (corso == null || corso.getTitolo() == null || corso.getProprietario() == null) {
+            throw new IllegalArgumentException("Il corso o i dettagli richiesti non sono validi");
+        }
+
+        Corso existingCorso = corsoDAO.findById(corso.getId())
+                .orElseThrow(() -> new IllegalArgumentException("Corso non trovato"));
+        if (existingCorso == null) {
+            throw new IllegalArgumentException("Corso non trovato");
+        }
+
+        // Aggiorna i campi del corso esistente
+        existingCorso.setId(corso.getId());
+        existingCorso.setTitolo(corso.getTitolo());
+        existingCorso.setDescrizione(corso.getDescrizione());
+        existingCorso.setCategoriaCorso(corso.getCategoriaCorso());
+        existingCorso.setLingua(corso.getLingua());
+        existingCorso.setPdf(corso.getPdf());
+        return corsoDAO.save(existingCorso);
     }
 
     /**

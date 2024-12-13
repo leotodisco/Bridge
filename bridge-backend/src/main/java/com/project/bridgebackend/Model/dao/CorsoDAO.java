@@ -17,12 +17,6 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface CorsoDAO extends JpaRepository<Corso, Long> {
-    /**
-     * Questo metodo permette di trovare un corso tramite il suo id.
-     * @param id id del corso da trovare.
-     * @return il corso trovato.
-     */
-    Corso findById(long id);
 
     /**
      * Questo metodo permette di trovare un corso tramite il suo titolo.

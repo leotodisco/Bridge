@@ -5,7 +5,7 @@
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.8); /* Sfondo nero più opaco */
+    background-color: rgba(0, 0, 0, 0.8); /* Sfondo nero semi-trasparente */
     display: flex;
     justify-content: center;
     align-items: center;
@@ -14,117 +14,148 @@
 
 /* Contenitore principale del popup */
 .popup-container {
-    background-color: #f9f9f9; /* Sfondo chiaro */
-    border: 2px solid #336a7e; /* Bordo con il colore primario */
-    border-radius: 15px; /* Angoli arrotondati */
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3); /* Ombra più evidente */
-    width: 85%;
-    max-width: 700px;
-    padding: 30px;
-    animation: scaleUp 0.3s ease-in-out;
+    background-color: #fff; /* Sfondo bianco */
+    border-radius: 12px; /* Angoli arrotondati */
+    width: 90%;
+    max-width: 600px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2); /* Ombra leggera */
+    padding: 20px;
     font-family: 'Roboto', Arial, sans-serif;
     position: relative;
-    overflow-y: auto;
-    max-height: 90%;
+    animation: fadeIn 0.3s ease-in-out;
 }
 
 /* Animazione di ingresso */
-@keyframes scaleUp {
+@keyframes fadeIn {
     from {
-        transform: scale(0.9);
         opacity: 0;
+        transform: translateY(-20px);
     }
     to {
-        transform: scale(1);
         opacity: 1;
+        transform: translateY(0);
     }
 }
 
 /* Pulsante di chiusura */
 .popup-close {
     position: absolute;
-    top: 20px;
-    right: 20px;
+    top: 15px;
+    right: 15px;
     background: none;
     border: none;
-    font-size: 24px;
-    font-weight: bold;
-    color: #336a7e; /* Colore coerente */
+    font-size: 20px;
+    color: #666;
     cursor: pointer;
-    transition: color 0.3s ease;
+    transition: color 0.3s;
 }
 
 .popup-close:hover {
-    color: #224f63; /* Tonalità più scura */
+    color: #000;
 }
 
-/* Titolo principale */
-.popup-container h1 {
-    font-size: 26px;
-    font-weight: bold;
-    color: #336a7e; /* Colore principale */
-    margin-bottom: 20px;
+/* Header del popup */
+.popup-header {
     text-align: center;
-    border-bottom: 3px solid #ddd; /* Linea decorativa */
+    border-bottom: 1px solid gray;
     padding-bottom: 10px;
+    margin: 20px;
 }
 
-/* Sezioni con sottotitoli */
-.popup-container h3 {
-    font-size: 20px;
-    color: #224f63; /* Tonalità leggermente diversa */
-    margin-top: 30px;
-    margin-bottom: 15px;
-    border-bottom: 2px solid #ddd;
-    padding-bottom: 5px;
+.popup-title {
+    font-size: 28px;
+    font-weight: bold;
+    color: #00BF62;
+    margin: 0;
 }
 
-/* Contenuti generali */
-.popup-container p {
-    font-size: 16px;
-    color: #555;
-    line-height: 1.6;
-    margin: 8px 0;
+.popup-subtitle {
+    font-size: 14px;
+    color: #666;
+    margin-top: 5px;
 }
 
-/* Evidenziazione di etichette */
-.popup-container strong {
-    color: #336a7e;
+/* Corpo del popup */
+.popup-body {
+    margin: 20px;
 }
 
-/* Sezioni con i dettagli */
+.popup-body h3 {
+    font-size: 23px;
+    color: #00BF62;
+    margin: 20px;
+}
+
 .popup-details {
     display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
-    gap: 15px;
+    flex-direction: column;
+    gap: 10px;
 }
 
-.popup-details p {
-    width: calc(50% - 10px);
-    font-size: 15px;
+.popup-row {
+    display: flex;
+    justify-content: space-between;
 }
+
+.popup-label {
+    font-weight: bold;
+    color: #333;
+}
+
+.popup-value {
+    color: #555;
+}
+
+/* Luogo */
+.popup-location {
+    font-size: 16px;
+    color: #444;
+    margin-top: 10px;
+    background: #f7f7f7;
+    padding: 10px;
+    border-radius: 6px;
+    text-align: center;
+}
+
+/* Sezione azioni */
+.popup-actions {
+    margin-top: 20px;
+    text-align: center;
+}
+
+/* Pulsante "Iscriviti" */
+.popup-button {
+    background-color: #336a7e;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.popup-button:hover {
+    background-color: #224f63;
+    transform: scale(1.05);
+}
+
+.popup-button:active {
+    transform: scale(0.95);
+}
+
 
 /* Stile per dispositivi mobili */
 @media (max-width: 768px) {
     .popup-container {
-        padding: 20px;
-        max-width: 95%;
+        width: 95%;
     }
 
-    .popup-container h1 {
+    .popup-title {
         font-size: 22px;
     }
 
-    .popup-container p {
-        font-size: 14px;
-    }
-
-    .popup-details p {
-        width: 100%; /* Dettagli in colonna */
-    }
-
-    .popup-close {
-        font-size: 20px;
+    .popup-body h3 {
+        font-size: 16px;
     }
 }
