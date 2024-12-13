@@ -32,6 +32,8 @@ function App() {
 
     const handleLogout = () => {
         setIsAuthenticated(false); // Imposta lo stato su false
+        localStorage.clear(); // Rimuove tutti i dati salvati
+        sessionStorage.clear();
     };
 
     return (
@@ -64,7 +66,7 @@ function App() {
                             <Route path="/login" element={<Login onLogin={handleLogin} />} />
                             <Route path="/crea-alloggio" element={<CreaAlloggio/>}/>
                             <Route path="/view-consulenza" element={<ViewConsulenza/>}/>
-                            <Route path="/area-personale" element={<AreaPersonale/>}/>
+                            <Route path="/area-personale" element={<AreaPersonale onLogout={handleLogout}/>}/>
                             <Route path="/view-eventi" element={<AllEventsView />}/>
                             <Route path="/eventi/retrieve/:id" element={<EventView />}/>
                         </Routes>

@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-const AreaPersonale = () => {
+// eslint-disable-next-line react/prop-types
+const AreaPersonale = ({ onLogout }) => {
     const [userData, setUserData] = useState(null); // Stato per i dati utente
     const nav = useNavigate();
 
@@ -59,8 +60,21 @@ const AreaPersonale = () => {
                 }
 
                 alert("Account eliminato con successo.");
-                localStorage.clear(); // Rimuove i dati dal localStorage
-                nav('/'); // Reindirizza alla homepage
+                // Effettua il logout
+                await fetch('/authentication/logout', {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                    },
+                });
+
+                // Rimuove i dati dal client
+                localStorage.clear();
+                sessionStorage.clear();
+
+                onLogout();
+                // Reindirizza alla pagina di login
+                nav('/login');
             } catch (error) {
                 console.error("Errore durante l'eliminazione dell'account:", error);
                 alert("Errore durante l'eliminazione dell'account.");
