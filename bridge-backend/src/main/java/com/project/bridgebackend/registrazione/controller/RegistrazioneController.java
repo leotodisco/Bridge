@@ -1,27 +1,21 @@
 package com.project.bridgebackend.registrazione.controller;
 
-import com.project.bridgebackend.GestioneCorso.pdf.PDFDoc;
 import com.project.bridgebackend.Model.Entity.*;
 import com.project.bridgebackend.Model.Entity.enumeration.Gender;
 import com.project.bridgebackend.Model.Entity.enumeration.Ruolo;
 import com.project.bridgebackend.Model.Entity.enumeration.TitoloDiStudio;
 import com.project.bridgebackend.Model.dto.UtenteDTO;
-import com.project.bridgebackend.registrazione.fotoProfilo.FotoProfilo;
-import com.project.bridgebackend.registrazione.fotoProfilo.FotoProfiloService;
+import com.project.bridgebackend.fotoProfilo.FotoProfiloService;
 import com.project.bridgebackend.registrazione.service.RegistrazioneService;
 import com.project.bridgebackend.util.AuthenticationRequest;
 import com.project.bridgebackend.util.AuthenticationResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
 
-import java.io.IOException;
 import java.time.LocalDate;
-import java.util.Arrays;
 import java.util.Base64;
 
 /**

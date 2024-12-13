@@ -77,8 +77,6 @@ public class UtenteDTO {
      */
     private Ruolo ruoloUtente;
 
-
-
     /**
      * Parametro lingue parlate dell'Utente.
      */
