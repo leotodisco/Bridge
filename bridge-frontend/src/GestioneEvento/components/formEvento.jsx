@@ -261,6 +261,7 @@ const CreaEvento = () => {
         const isMaxPartecipantiValido = validaMaxPartecipanti();
         const isLuogoValido = validaLuogo();
 
+        console.log("Validazione CAP: ", luogo.cap);
         console.log("Validazione campi: ", isNomeValido, isDataValida, isOraValida, isLinguaParlataValida, isDescrizioneValida, isMaxPartecipantiValido, isLuogoValido);
 
         if(!isNomeValido || !isDataValida || !isOraValida || !isLinguaParlataValida || !isDescrizioneValida || !isMaxPartecipantiValido || !isLuogoValido) {
