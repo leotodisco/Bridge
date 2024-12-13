@@ -195,4 +195,10 @@ public class GestioneEventoServiceImpl implements GestioneEventoService {
         return eventoDAO.findByOrganizzatore(organizzatore);
     }
 
+    @Override
+    public Evento trovaEventoConPartecipanti(long eventoId) {
+        return eventoDAO.findEventoWithPartecipanti(eventoId)
+                .orElseThrow(() -> new IllegalArgumentException("Evento non trovato"));
+    }
+
 }

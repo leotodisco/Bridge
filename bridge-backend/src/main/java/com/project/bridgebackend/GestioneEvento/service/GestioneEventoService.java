@@ -63,4 +63,10 @@ public interface GestioneEventoService {
      */
     List<Evento> getEventiByVolontario(String email);
 
+    /**
+     * Permette di trovare i partecipanti di un evento.
+     * @param eventoId identificativo dell'evento.
+     * @return evento con partecipanti.
+     */
+    Evento trovaEventoConPartecipanti(long eventoId);
 }
