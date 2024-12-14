@@ -1,6 +1,7 @@
 package com.project.bridgebackend.GestioneAnnuncio.Controller;
 
 import com.project.bridgebackend.GestioneAnnuncio.Service.GestioneAnnuncioService;
+import com.project.bridgebackend.GestioneCorso.Controller.GestioneCorsoController;
 import com.project.bridgebackend.Model.Entity.Consulenza;
 import com.project.bridgebackend.Model.Entity.Lavoro;
 import com.project.bridgebackend.Model.Entity.FiguraSpecializzata;
@@ -8,19 +9,19 @@ import com.project.bridgebackend.Model.Entity.Volontario;
 import com.project.bridgebackend.Model.Entity.Indirizzo;
 import com.project.bridgebackend.Model.Entity.Utente;
 
-import com.project.bridgebackend.Model.dao.FiguraSpecializzataDAO;
-import com.project.bridgebackend.Model.dao.VolontarioDAO;
-import com.project.bridgebackend.Model.dao.IndirizzoDAO;
-import com.project.bridgebackend.Model.dao.UtenteDAO;
+import com.project.bridgebackend.Model.dao.*;
 import com.project.bridgebackend.Model.dto.ConsulenzaDTO;
 import com.project.bridgebackend.Model.dto.LavoroDTO;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.http.HttpStatus;
 import jakarta.validation.Valid;
 
+import java.util.HashMap;
 import java.util.List;
 
 
@@ -36,6 +37,11 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/annunci")
 public class GestioneAnnuncioController {
+
+    /**
+    * logger per la stampa di warning o errori
+     */
+    private static final Logger log = LoggerFactory.getLogger(GestioneCorsoController.class);
 
     /**
      * DAO per accedere ai dati dell' utente.
@@ -67,7 +73,8 @@ public class GestioneAnnuncioController {
      */
     @Autowired
     private IndirizzoDAO indirizzoDAO;
-
+    @Autowired
+    private ConsulenzaDAO consulenzaDAO;
 
 
     /**
@@ -195,10 +202,23 @@ public class GestioneAnnuncioController {
      *
      * @return ResponseEntity contenente la lista di tutte le consulenze.
      */
-    @PostMapping("/view_consulenze")
+    @GetMapping("/view_consulenze")
     public ResponseEntity<List<Consulenza>> getAllConsulenze() {
         List<Consulenza> consulenze = gestioneAnnuncioService.getAllConsulenze();
+        System.out.println(consulenze);
         return ResponseEntity.ok(consulenze);
+    }
+
+    /**
+     * Metodo per ottenere una consulenza specifica dal DB
+     *
+     * @return ResponseEntity contenente la consulenza
+     */
+    @GetMapping("/view_consulenze/retrive/{id}")
+    public ResponseEntity<Consulenza> getConsulenzaById(@PathVariable long id) {
+        Consulenza consulenza = gestioneAnnuncioService.getConsulenze(id);
+        System.out.println(consulenza);
+        return ResponseEntity.ok(consulenza);
     }
 
     /**
@@ -218,4 +238,28 @@ public class GestioneAnnuncioController {
         return ResponseEntity.ok(consulenze);
     }
 
+
+    @PostMapping("/modifica_consulenza/{idConsulenza}")
+    public ResponseEntity<?> modificaConsulenza(@PathVariable long idConsulenza,
+                                                @RequestBody HashMap<String, Object> aggiornamenti) {
+        try {
+            // Invoca il metodo del servizio per modificare la consulenza
+            Consulenza consulenzaAggiornata = gestioneAnnuncioService.modificaAnnuncioConsulenza(idConsulenza, aggiornamenti);
+
+            // Restituisce la consulenza aggiornata con codice HTTP 200
+            return ResponseEntity.ok(consulenzaAggiornata);
+
+        } catch (IllegalArgumentException e) {
+            // Gestisce errori come consulenza non trovata o campi non validi
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+
+        } catch (Exception e) {
+            // Gestisce errori generici
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Errore durante l'aggiornamento della consulenza: " + e.getMessage());
+        }
+    }
+
 }
+
+

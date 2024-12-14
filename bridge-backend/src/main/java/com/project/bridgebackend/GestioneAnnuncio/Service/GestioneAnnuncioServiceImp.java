@@ -1,10 +1,12 @@
 package com.project.bridgebackend.GestioneAnnuncio.Service;
 
 import com.project.bridgebackend.Model.Entity.*;
+import com.project.bridgebackend.Model.Entity.enumeration.TipoConsulenza;
 import com.project.bridgebackend.Model.Entity.enumeration.TipoContratto;
 import com.project.bridgebackend.Model.dao.ConsulenzaDAO;
 import com.project.bridgebackend.Model.dao.IndirizzoDAO;
 import com.project.bridgebackend.Model.dao.LavoroDAO;
+import com.project.bridgebackend.util.Indirizzo.service.IndirizzoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -43,6 +45,12 @@ public class GestioneAnnuncioServiceImp implements GestioneAnnuncioService {
      */
     @Autowired
     private LavoroDAO lavoroDAO;
+
+    /**
+    * Servizi per la gestione degli indirizzi.
+     */
+    @Autowired
+    private IndirizzoService indirizzoService;
 
     // Implementazioni dei metodi per Consulenza
 
@@ -164,7 +172,100 @@ public class GestioneAnnuncioServiceImp implements GestioneAnnuncioService {
     }
 
     @Override
+    public Consulenza getConsulenze( long id){
+        return consulenzaDAO.findById(id).get();
+    }
+
+
+    @Override
     public List<Consulenza> getConsulenzeByProprietario(Utente proprietario) {
         return consulenzaDAO.findByProprietario(proprietario);
     }
+
+    /**
+     * Modifica una consulenza esistente nel database.
+     *
+     * @param idConsulenza l'ID della consulenza da modificare.
+     * @param aggiornamenti mappa contenente i campi da aggiornare e i relativi valori.
+     * @return la consulenza aggiornata.
+     */
+    @Override
+    public Consulenza modificaAnnuncioConsulenza(final long idConsulenza,
+                                                 final HashMap<String, Object> aggiornamenti) {
+        Optional<Consulenza> consulenzaOptional = consulenzaDAO.findById(idConsulenza);
+        if (consulenzaOptional.isEmpty()) {
+            throw new IllegalArgumentException("Consulenza non trovata.");
+        }
+
+        Consulenza consulenza = consulenzaOptional.get();
+
+        aggiornamenti.forEach((campo, valore) -> {
+            switch (campo) {
+                case "titolo":
+                    consulenza.setTitolo((String) valore);
+                    break;
+                case "descrizione":
+                    consulenza.setDescrizione((String) valore);
+                    break;
+                case "orariDisponibili":
+                    consulenza.setOrariDisponibili((String) valore);
+                    break;
+                case "maxCandidature":
+                    int maxCandidature = (Integer) valore;
+                    if (maxCandidature < 1) {
+                        throw new IllegalArgumentException("Il numero " +
+                                "massimo di candidature deve essere almeno 1.");
+                    }
+                    consulenza.setMaxCandidature(maxCandidature);
+                    break;
+                case "indirizzo":
+                    if (valore instanceof HashMap) {
+                        HashMap<String, Object> indirizzoData = (HashMap<String, Object>) valore;
+
+                        Indirizzo indirizzo = consulenza.getIndirizzo(); // L'indirizzo deve già esistere
+
+                        // Aggiorna i campi dell'indirizzo utilizzando un metodo di servizio
+                        indirizzoService.aggiornaIndirizzo(indirizzo.getId(), indirizzoData);
+
+                    } else {
+                        throw new IllegalArgumentException("Formato indirizzo non valido.");
+                    }
+                    break;
+                case "candidati":
+                    if (valore instanceof List) {
+                        List<String> nuoviCandidati = (List<String>) valore;
+                        consulenza.setCandidati(nuoviCandidati);
+                    } else {
+                        throw new IllegalArgumentException("Formato candidati non valido.");
+                    }
+                    break;
+                case "numero":
+                    consulenza.setNumero((String) valore);
+                    break;
+                case "tipo":
+                    //obbligatorio questo check dato che dall'object si
+                    //riesce a castare l'enum direttamente
+                    if (valore instanceof String) {
+                        try {
+                            TipoConsulenza tipoConsulenza = TipoConsulenza.valueOf((String) valore);
+                            consulenza.setTipo(tipoConsulenza);
+                        } catch (IllegalArgumentException e) {
+                            throw new IllegalArgumentException("TipoConsulenza non valido: " + valore);
+                        }
+                    } else {
+                        throw new IllegalArgumentException("Il valore per 'tipo' deve essere una stringa.");
+                    }
+                    break;
+                case "disponibilita":
+                    consulenza.setDisponibilita((Boolean) valore);
+                    break;
+                default:
+                    throw new IllegalArgumentException("Campo non valido " +
+                            "per la modifica: " + campo);
+            }
+        });
+
+        return consulenzaDAO.save(consulenza);
+    }
+
 }

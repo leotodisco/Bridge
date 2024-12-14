@@ -54,7 +54,7 @@ public interface GestioneAnnuncioService {
     /**
      * Modifica un annuncio di lavoro esistente.
      *
-     * @param idAnnuncio l'identificativo dell'annuncio da modificare.
+     * @param idAnnuncio    l'identificativo dell'annuncio da modificare.
      * @param aggiornamenti mappa contenente i campi da aggiornare e i relativi valori.
      * @return l'annuncio di lavoro aggiornato.
      */
@@ -71,4 +71,8 @@ public interface GestioneAnnuncioService {
 
     List<Consulenza> getConsulenzeByProprietario(Utente proprietario);
 
+    Consulenza getConsulenze( long id);
+
+    Consulenza modificaAnnuncioConsulenza(final long idConsulenza,
+                                          final HashMap<String, Object> aggiornamenti);
 }
