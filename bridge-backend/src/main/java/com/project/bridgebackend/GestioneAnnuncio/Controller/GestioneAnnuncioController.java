@@ -13,6 +13,7 @@ import com.project.bridgebackend.Model.dao.*;
 import com.project.bridgebackend.Model.dto.ConsulenzaDTO;
 import com.project.bridgebackend.Model.dto.LavoroDTO;
 
+import com.project.bridgebackend.util.JwtService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -75,6 +76,9 @@ public class GestioneAnnuncioController {
     private IndirizzoDAO indirizzoDAO;
     @Autowired
     private ConsulenzaDAO consulenzaDAO;
+
+    @Autowired
+    private JwtService jwtService;
 
 
     /**
@@ -241,8 +245,21 @@ public class GestioneAnnuncioController {
 
     @PostMapping("/modifica_consulenza/{idConsulenza}")
     public ResponseEntity<?> modificaConsulenza(@PathVariable long idConsulenza,
-                                                @RequestBody HashMap<String, Object> aggiornamenti) {
+                                                @RequestBody HashMap<String, Object> aggiornamenti,
+    @RequestHeader("Authorization") String authorizationHeader) {
         try {
+            // Estrai il token JWT dall'header Authorization
+            String token = authorizationHeader.replace("Bearer ", "");
+            //per estrarre l'email dal token
+            String emailUtenteLoggato = jwtService.extractUsername(token);
+
+            // Verifica se l'utente è il proprietario dell'annuncio
+            Consulenza consulenzaEsistente = gestioneAnnuncioService.getConsulenze(idConsulenza);
+            if (!consulenzaEsistente.getProprietario().getEmail().equals(emailUtenteLoggato)) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                        .body("Non sei autorizzato a modificare questa consulenza.");
+            }
+
             // Invoca il metodo del servizio per modificare la consulenza
             Consulenza consulenzaAggiornata = gestioneAnnuncioService.modificaAnnuncioConsulenza(idConsulenza, aggiornamenti);
 
