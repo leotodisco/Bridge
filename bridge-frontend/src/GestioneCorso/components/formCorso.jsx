@@ -1,4 +1,6 @@
 import { useState } from "react";
+import "../../GestioneCorso/css/formCorsoStyle.css";
+
 
 const LINGUA = {
     ITALIANO: "ITALIANO",
@@ -186,7 +188,7 @@ const CreaCorso = () => {
                     categoria: categoria,
                     lingua: lingua,
                     pdf: uploadedPdfId,
-                    proprietario: "negraccio@gedi.it",  // Nota: Cambiato "example.come" in "example.com"
+                    proprietario: "Monella@example.com",  // Nota: Cambiato "example.come" in "example.com"
                 }),
             });
 

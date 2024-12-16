@@ -1,0 +1,161 @@
+/* Sfondo semi-trasparente per il popup */
+.popup-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.8); /* Sfondo nero semi-trasparente */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+/* Contenitore principale del popup */
+.popup-container {
+    background-color: #fff; /* Sfondo bianco */
+    border-radius: 12px; /* Angoli arrotondati */
+    width: 90%;
+    max-width: 600px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2); /* Ombra leggera */
+    padding: 20px;
+    font-family: 'Roboto', Arial, sans-serif;
+    position: relative;
+    animation: fadeIn 0.3s ease-in-out;
+}
+
+/* Animazione di ingresso */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Pulsante di chiusura */
+.popup-close {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    background: none;
+    border: none;
+    font-size: 20px;
+    color: #666;
+    cursor: pointer;
+    transition: color 0.3s;
+}
+
+.popup-close:hover {
+    color: #000;
+}
+
+/* Header del popup */
+.popup-header {
+    text-align: center;
+    border-bottom: 1px solid gray;
+    padding-bottom: 10px;
+    margin: 20px;
+}
+
+.popup-title {
+    font-size: 28px;
+    font-weight: bold;
+    color: #00BF62;
+    margin: 0;
+}
+
+.popup-subtitle {
+    font-size: 14px;
+    color: #666;
+    margin-top: 5px;
+}
+
+/* Corpo del popup */
+.popup-body {
+    margin: 20px;
+}
+
+.popup-body h3 {
+    font-size: 23px;
+    color: #00BF62;
+    margin: 20px;
+}
+
+.popup-details {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.popup-row {
+    display: flex;
+    justify-content: space-between;
+}
+
+.popup-label {
+    font-weight: bold;
+    color: #333;
+}
+
+.popup-value {
+    color: #555;
+}
+
+/* Luogo */
+.popup-location {
+    font-size: 16px;
+    color: #444;
+    margin-top: 10px;
+    background: #f7f7f7;
+    padding: 10px;
+    border-radius: 6px;
+    text-align: center;
+}
+
+/* Sezione azioni */
+.popup-actions {
+    margin-top: 20px;
+    text-align: center;
+}
+
+/* Pulsante "Iscriviti" */
+.popup-button {
+    background-color: #336a7e;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.popup-button:hover {
+    background-color: #224f63;
+    transform: scale(1.05);
+}
+
+.popup-button:active {
+    transform: scale(0.95);
+}
+
+
+/* Stile per dispositivi mobili */
+@media (max-width: 768px) {
+    .popup-container {
+        width: 95%;
+    }
+
+    .popup-title {
+        font-size: 22px;
+    }
+
+    .popup-body h3 {
+        font-size: 16px;
+    }
+}
