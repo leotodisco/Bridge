@@ -4,4 +4,4 @@
  * di consulenze e/o di lavori.
  */
 
-package com.project.bridgebackend.GetioneAnnuncio;
+package com.project.bridgebackend.GestioneAnnuncio;

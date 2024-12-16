@@ -1,41 +1,53 @@
 package com.project.bridgebackend.Model.dto;
 
-import com.project.bridgebackend.Model.Entity.Alloggio;
-import com.project.bridgebackend.Model.Entity.Rifugiato;
-import lombok.*;
-import lombok.experimental.SuperBuilder;
+import com.project.bridgebackend.Model.Entity.Indirizzo;
+import com.project.bridgebackend.Model.Entity.Volontario;
+import com.project.bridgebackend.Model.Entity.enumeration.Servizi;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.Size;
+import lombok.Data;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
-@Getter
-@Setter
-@AllArgsConstructor
-@NoArgsConstructor
-@SuperBuilder
+/**
+ * Data Transfer Object per la gestione degli alloggi, con validazione
+ */
+@Data
 public class AlloggioDTO {
 
-    /**
-     *Parametro metratura della casa
-     */
-    private int metratura;
-
-    /**
-     *Parametro massimo persone possibili nell'alloggio
-     */
-    private int maxPersone;
-
-    /**
-     *Parametro descrizione della casa
-     */
+    @Size(max = 500, message = "La descrizione non può superare i 500 caratteri")
     private String descrizione;
 
-    /**
-     *Parametro lista di rifugiati che si candidano per un alloggio
-     */
-    private List<Rifugiato> listaCandidati;
+    @NotNull(message = "Il numero di posti è obbligatorio")
+    @Positive(message = "Il numero di posti deve essere un valore positivo")
+    private Integer maxPersone;
 
-    /**
-     *Parametro per le foto
-     */
-    private List<Byte> byteList;
+    @NotNull(message = "La metratura è obbligatoria")
+    @Positive(message = "Il numero della metratura deve essere un valore positivo")
+    private Integer metratura;
+
+    private List<String> fotos;
+
+    @NotBlank(message = "L'email del proprietario è obbligatoria")
+    @Email(message = "L'email del proprietario deve essere valida")
+    private String emailProprietario;
+
+    @NotNull(message = "Servizi obbligatori")
+    private Servizi servizi;
+
+    @NotNull(message = "Il titolo non può essere vuoto")
+    private String titolo;
+
+    @NotNull(message = "l'indirizzo non può essere nullo")
+    private Indirizzo indirizzo;
+
+    public AlloggioDTO() {
+    }
+
+    // Getters e Setters
 }

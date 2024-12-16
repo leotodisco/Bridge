@@ -1,0 +1,166 @@
+/* Contenitore principale del form */
+.form-container {
+    width: 100%;
+    max-width: 800px;
+    padding: 2rem;
+    margin: 0 auto;
+    border-radius: 10px;
+    background: #ffffff;
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+}
+
+/* Titolo principale */
+.form-container h3 {
+    font-size: 2rem;
+    color: #00BF62;
+    margin-bottom: 1.5rem;
+    text-align: center;
+}
+
+/* Stile generale del gruppo del form */
+.form-group {
+    margin-bottom: 1.5rem; /* Spazio tra i gruppi */
+}
+
+/* Label per Disponibilità */
+.form-group label {
+    display: block;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 0.5rem;
+    font-size: 1rem;
+}
+
+/* Contenitore per checkbox e testo */
+.checkbox-container {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem; /* Spazio tra la checkbox e il testo */
+    padding: 0.5rem;
+    border: 1px solid #ccc;
+    border: 1px solid #00BF62;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+    transition: background-color 0.3s, box-shadow 0.3s;
+}
+
+/* Effetto hover per la checkbox */
+.checkbox-container:hover {
+    background-color: #eaeaea;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+/* Checkbox */
+.checkbox-container input[type="checkbox"] {
+    width: 20px;
+    height: 20px;
+    accent-color: #00BF62;
+    cursor: pointer;
+}
+
+/* Testo accanto alla checkbox */
+.checkbox-container span {
+    font-size: 0.9rem;
+    color: #555;
+    line-height: 1.5;
+    cursor: pointer;
+}
+
+
+/* Label */
+.form-group label {
+    display: block;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 0.5rem;
+    text-align: left;
+}
+
+/* Input e textarea */
+.form-group input,
+.form-group textarea,
+.form-group select {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid #00BF62;
+    border-radius: 5px;
+    font-size: 1rem;
+    color: #333;
+    background: #f9f9f9;
+    transition: border-color 0.3s, background-color 0.3s;
+}
+
+/* Placeholder e focus */
+.form-group input::placeholder,
+.form-group textarea::placeholder {
+    color: #aaa;
+}
+
+.form-group input:focus,
+.form-group textarea:focus,
+.form-group select:focus {
+    border-color: #0056b3;
+    background: #fff;
+    outline: none;
+    box-shadow: 0 0 5px rgba(0, 91, 179, 0.3);
+}
+
+/* Checkbox */
+.checkbox-container {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 1rem;
+    color: #333;
+}
+
+/* Fieldset e legend */
+.form-group fieldset {
+    border: 1px solid #007bff;
+    border-radius: 5px;
+    padding: 1rem;
+    margin-top: 1rem;
+}
+
+.form-group legend {
+    font-weight: bold;
+    color: #00BF62;
+    padding: 0 10px;
+}
+
+/* Pulsante di invio */
+button[type="submit"] {
+    width: 100%;
+    padding: 0.75rem;
+    font-size: 1.125rem;
+    font-weight: bold;
+    color: #ffffff;
+    background-color: #00BF62;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.2s;
+}
+
+button[type="submit"]:hover {
+    background-color: #05552d;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(0, 91, 179, 0.3);
+}
+
+button[type="submit"]:active {
+    transform: translateY(0);
+    box-shadow: none;
+}
+
+/* Design responsivo */
+@media (max-width: 600px) {
+    .form-container {
+        padding: 1.5rem;
+    }
+
+    button[type="submit"] {
+        font-size: 1rem;
+        padding: 0.65rem;
+    }
+}

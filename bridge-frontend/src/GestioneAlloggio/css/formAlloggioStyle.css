@@ -1,0 +1,167 @@
+/* Reset di base */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Montserrat', sans-serif;
+}
+
+/* Stile per lo scrolling fluido */
+html {
+    scroll-behavior: smooth;
+}
+
+/* Corpo principale */
+body {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    background: #f4f4f9;
+    padding: 1rem;
+}
+
+/* Contenitore principale del form */
+.formContainerAlloggio {
+    width: 100%;
+    max-width: 600px;
+    padding: 2rem;
+    border-radius: 10px;
+    background: #fff;
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+}
+
+/* Titoli */
+.formContainerAlloggio h2 {
+    text-align: center;
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: #0C3444;
+}
+
+/* Campo di input per la descrizione */
+.formDescrizione {
+    width: 100%;
+    padding: 0.75rem;
+    margin-bottom: 1rem;
+    border: 1px solid #00BF62;
+    border-radius: 6px;
+    background-color: white;
+    font-size: 1rem;
+    color: #2c3e50;
+    transition: border-color 0.3s, background-color 0.3s;
+    resize: vertical; /* Permette di ridimensionare solo in verticale */
+}
+
+/* Campo di input per numero massimo di persone */
+.formMaxPersone {
+    width: 100%;
+    padding: 0.75rem;
+    margin-bottom: 1rem;
+    border: 1px solid #00BF62;
+    border-radius: 6px;
+    background-color: white;
+    font-size: 1rem;
+    color: #2c3e50;
+    transition: border-color 0.3s, background-color 0.3s;
+}
+
+/* Campo di input per la metratura */
+.formMetratura {
+    width: 100%;
+    padding: 0.75rem;
+    margin-bottom: 1rem;
+    border: 1px solid #00BF62;
+    border-radius: 6px;
+    background-color: white;
+    font-size: 1rem;
+    color: #2c3e50;
+    transition: border-color 0.3s, background-color 0.3s;
+}
+
+/* Selezione dei servizi */
+.servizi {
+    width: 100%;
+    padding: 0.75rem;
+    margin-bottom: 1rem;
+    border: 1px solid #00BF62;
+    border-radius: 6px;
+    background-color: white;
+    font-size: 1rem;
+    color: #2c3e50;
+    transition: border-color 0.3s, background-color 0.3s;
+}
+
+/* Stile per input, textarea e select su hover o focus */
+.formDescrizione:hover,
+.formMaxPersone:hover,
+.formMetratura:hover,
+.servizi:hover {
+    background-color: #f9f9f9;
+}
+
+.formDescrizione:focus,
+.formMaxPersone:focus,
+.formMetratura:focus,
+.servizi:focus {
+    border-color: #00BF62;
+    outline: none;
+    box-shadow: 0 0 5px rgba(0, 191, 98, 0.2);
+}
+
+/* Pulsante di invio */
+.formButtonAlloggio {
+    width: 100%;
+    padding: 0.75rem;
+    border: none;
+    border-radius: 6px;
+    background: #00BF62;
+    color: #fff;
+    font-size: 1.125rem;
+    font-weight: 600;
+    cursor: pointer;
+    margin-top: 1rem;
+    transition: background 0.3s, transform 0.2s, box-shadow 0.3s;
+}
+
+.formButtonAlloggio:hover {
+    background: #008f4b;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(0, 143, 75, 0.3);
+}
+
+.formButtonAlloggio:active {
+    transform: translateY(0);
+    box-shadow: none;
+}
+
+/* Autofill per campi di input */
+input:-webkit-autofill {
+    -webkit-box-shadow: 0 0 0px 1000px #fafafa inset !important;
+    -webkit-text-fill-color: #2c3e50 !important;
+    transition: background-color 5000s ease-in-out 0s;
+}
+
+input:-webkit-autofill:focus {
+    -webkit-box-shadow: 0 0 0px 1000px #ffffff inset !important;
+    -webkit-text-fill-color: #2c3e50 !important;
+}
+
+/* Linea orizzontale */
+hr {
+    height: 1px;
+    background-color: #396F85;
+    margin: 10px 100px 20px;
+}
+
+/* Design responsivo */
+@media (max-width: 600px) {
+    .formContainerAlloggio {
+        padding: 1.5rem;
+    }
+
+    .formButtonAlloggio {
+        font-size: 1rem;
+        padding: 0.65rem;
+    }
+}

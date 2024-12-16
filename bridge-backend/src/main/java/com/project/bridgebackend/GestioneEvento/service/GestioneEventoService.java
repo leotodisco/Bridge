@@ -21,19 +21,6 @@ public interface GestioneEventoService {
     Evento insertEvento(Evento evento);
 
     /**
-     * Permette di aggiornare un evento.
-     * @param evento evento da aggiornare.
-     * @return evento aggiornato.
-     **/
-    Evento updateEvento(Evento evento);
-
-    /**
-     * Permette di eliminare un evento.
-     * @param id identificativo dell'evento da eliminare.
-     **/
-    void deleteEvento(long id);
-
-    /**
      * Permette di avere tutti gli eventi.
      * @return lista di eventi.
      */
@@ -54,9 +41,32 @@ public interface GestioneEventoService {
     long salvaIndirizzoEvento(Indirizzo indirizzo);
 
     /**
-     * Permette di aggiornare l'inidirzzo di un evento.
-     * @param indirizzo indirizzo da aggiornare.
-     * @return indirizzo aggiornato.
+     * Permette di iscriversi a un evento.
+     * @param eventoId identificativo dell'evento.
+     * @param  partecipanteEmail email del volontario.
+     * @return evento a cui si è iscritti.
      */
-    Indirizzo updateIndirizzoEvento(Indirizzo indirizzo);
+    Evento iscrizioneEvento(long eventoId, String partecipanteEmail);
+
+    /**
+     * Permette di disiscriversi da un evento.
+     * @param eventoId identificativo dell'evento.
+     * @param partecipanteEmail email del volontario.
+     * @return evento da cui ci si è disiscritti.
+     */
+    Evento disiscrizioneEvento(long eventoId, String partecipanteEmail);
+
+    /**
+     * Permette di trovare gli eventi di un volontario.
+     * @param email email del volontario.
+     * @return lista di eventi.
+     */
+    List<Evento> getEventiByVolontario(String email);
+
+    /**
+     * Permette di trovare i partecipanti di un evento.
+     * @param eventoId identificativo dell'evento.
+     * @return evento con partecipanti.
+     */
+    Evento trovaEventoConPartecipanti(long eventoId);
 }

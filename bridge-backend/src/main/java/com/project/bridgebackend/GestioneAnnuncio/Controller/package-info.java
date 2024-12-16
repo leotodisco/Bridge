@@ -11,4 +11,4 @@
  *
  */
 
-package com.project.bridgebackend.GetioneAnnuncio.Controller;
+package com.project.bridgebackend.GestioneAnnuncio.Controller;

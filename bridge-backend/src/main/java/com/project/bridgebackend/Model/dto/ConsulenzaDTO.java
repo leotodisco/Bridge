@@ -53,14 +53,6 @@ public class ConsulenzaDTO {
     private Boolean disponibilita;
 
     /**
-     * Tipologia dell'annuncio.
-     * True per indicare una consulenza, false per indicare un lavoro.
-     * todo: Questo campo potrebbe non essere necessario, da valutare.
-     */
-    @NotNull(message = "La tipologia è obbligatoria (true o false)")
-    private Boolean tipologia;
-
-    /**
      * Indirizzo di riferimento per la consulenza.
      * Campo obbligatorio e validato.
      */
@@ -116,7 +108,7 @@ public class ConsulenzaDTO {
      * Deve essere una stringa non vuota con lunghezza massima di 500 caratteri.
      */
     @NotBlank(message = "La descrizione non può essere vuota")
-    @Min(2)
+    //@Min(2)
     @Size(max = 500, message = "la descrizione non può superare i 500 caratteri")
     private String descrizione;
 

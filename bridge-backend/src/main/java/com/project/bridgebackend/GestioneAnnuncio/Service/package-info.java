@@ -11,4 +11,4 @@
  * </ul>
  */
 
-package com.project.bridgebackend.GetioneAnnuncio.Service;
+package com.project.bridgebackend.GestioneAnnuncio.Service;

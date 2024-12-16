@@ -1,0 +1,39 @@
+.fileInputWrapper {
+    display: flex; /* Usa Flexbox per gestire layout */
+    align-items: center; /* Centra verticalmente il contenuto */
+    width: 100%;
+    margin-bottom: 1rem; /* Margine uniforme con gli altri campi */
+    box-sizing: border-box;
+}
+
+.fileButton {
+    display: inline-block;
+    background: #fff;
+    color: #2c3e50;
+    border: 1px solid #00BF62;
+    padding: 0.5rem 0.5rem; /* Uniforma il padding con gli altri campi */
+    text-align: center;
+    border-radius: 4px;
+    font-weight: normal;
+    cursor: pointer;
+    width: 40%; /* Stessa larghezza degli altri campi */
+    box-sizing: border-box; /* Include padding e bordi nella larghezza */
+    margin-top: 20px; /* Rimuovi margini extra */
+    transition: background 0.3s, color 0.3s, border-color 0.3s; /* Aggiunge una transizione fluida */
+}
+
+.filePreview {
+    font-size: 0.9rem;
+    color: #0C3444;
+    margin-top: 0.5rem;
+    margin-left: 50px;
+    word-wrap: break-word;
+}
+
+p.errorText{
+    color: red;
+    font-size: 0.9rem;
+    display: block;
+    margin-top: 0.3rem;
+    text-align: start;
+}

@@ -49,6 +49,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     /**
      * user.
      */
+    @Autowired
     private UserDetailsService userDetailsService;
 
     /**

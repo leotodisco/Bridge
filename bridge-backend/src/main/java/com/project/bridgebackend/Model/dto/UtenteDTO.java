@@ -53,6 +53,11 @@ public class UtenteDTO {
     private String passwordUtente;
 
     /**
+     * Parametro conferma password dell'Utente.
+     */
+    private String confermaPWUtente;
+
+    /**
      * Parametro competenze dell'Utente.
      */
     private String skillUtente;
@@ -60,7 +65,7 @@ public class UtenteDTO {
     /**
      * Parametro foto dell'Utente.
      */
-    private byte[] fotoUtente;
+    private String fotoUtente;
 
     /**
      * Parametro disponibilità dell'Utente.

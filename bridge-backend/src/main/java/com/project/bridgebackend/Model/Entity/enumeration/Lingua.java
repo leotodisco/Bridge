@@ -14,5 +14,10 @@ public enum Lingua {
     ITALIANO,
     INGLESE,
     FRANCESE,
-    SPAGNOLO
+    SPAGNOLO,
+    RUSSO,
+    CINESE,
+    UCRAINO,
+    PORTOGHESE,
+    ARABO
 }

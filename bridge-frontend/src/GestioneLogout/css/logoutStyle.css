@@ -1,0 +1,26 @@
+.logoutButton {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 50px; /* Impostiamo una larghezza specifica per il bottone */
+    height: 50px; /* Impostiamo una altezza specifica per il bottone */
+    border: none;
+    border-radius: 50%; /* Rende il bottone circolare */
+    background: transparent; /* Rimuoviamo qualsiasi colore di sfondo */
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+
+.logoutButton i {
+    font-size: 1.5rem; /* Dimensione dell'icona */
+    color: #000; /* Colore dell'icona di default (nero) */
+    transition: color 0.3s; /* Transizione del colore */
+}
+
+.logoutButton:hover i {
+    color: #00BF62; /* Colore verde al passaggio del mouse */
+}
+
+.logoutButton:hover {
+    transform: scale(1.1); /* Leggero ingrandimento del bottone al passaggio del mouse */
+}

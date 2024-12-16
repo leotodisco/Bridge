@@ -1,15 +1,17 @@
 package com.project.bridgebackend.GestioneAlloggio.Service;
 
 import com.project.bridgebackend.Model.Entity.Alloggio;
+import com.project.bridgebackend.Model.Entity.Indirizzo;
 import com.project.bridgebackend.Model.Entity.Rifugiato;
-import com.project.bridgebackend.Model.Entity.Utente;
-import com.project.bridgebackend.Model.Entity.Volontario;
-import com.project.bridgebackend.Model.dao.AlloggioDAO;
-import com.project.bridgebackend.Model.dao.VolontarioDAO;
+import com.project.bridgebackend.Model.dao.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.RequestBody;
 
+import javax.swing.text.html.Option;
 import java.util.List;
 import java.util.Optional;
 
@@ -24,58 +26,143 @@ public class AlloggioServiceImplementazione implements AlloggioService {
 
     @Autowired
     private VolontarioDAO volontarioDAO;
+    @Autowired
+    RifugiatoDAO rifugiatoDAO;
+    @Autowired
     private AlloggioDAO alloggioDAO;
+    @Autowired
+    private IndirizzoDAO indirizzoDAO;
+
+
 
     /**
      * Metodo per l'aggiunta di un nuovo alloggio nel sistema
-     * Precondizione l'alloggio non deve essere nullo
+     * Precondizione: l'alloggio non deve essere nullo
+     *
      * @Param alloggio l'alloggio che si desidera caricare
      * @Param idAlloggio l'identificativo dell'alloggio
-     *
      * @Return true o false
      * PostCondizione l'alloggio sarà caricato nel sistema
      */
     @Override
-    public boolean addAlloggio(Alloggio alloggio, int idAlloggio) {
+    public Alloggio addAlloggio(Alloggio alloggio) {
+        if (alloggio == null) {
+            throw new IllegalArgumentException("L'alloggio non può essere nullo");
+        }
+        return alloggioDAO.save(alloggio);
+    }
 
-        if(alloggio == null){
-            return false;
+    @Override
+    public void sendEmailRifugiato(String message, String emailRifugiato) {
+
+    }
+
+
+    /**
+     * Metodo per la manifestazione di interesse da parte di un rifugiato ad un alloggio
+     * Precondizione: l'alloggio non deve essere nullo
+     * Precondizione: il rifugiato non deve essere nullo
+     *
+     * @Param rifugiato, ovvero, colui che mostra interesse per un alloggio
+     * @Param alloggio, ovvero, l'alloggio al quale un rifugiato mostra interesse
+     * @Return void
+     * <p>
+     * PostCondizione: Il rifugiato mostra interesse per un alloggio
+     */
+
+    @Override
+    public boolean manifestazioneInteresse(Rifugiato rifugiato, Alloggio alloggio) {
+
+        if (alloggio == null) {
+            throw new IllegalArgumentException("L'allogio non può essere nullo");
         }
 
-        Volontario volontario = volontarioDAO.findByEmail(alloggio.getProprietario().getEmail());
-
-        if(volontario == null){
-            return false;
+        if (rifugiato == null) {
+            throw new IllegalArgumentException("Il rifugiato non può essere nullo");
         }
 
-        alloggio.setProprietario((Volontario) volontario);
+        Optional<Alloggio> interesseHelper = alloggioDAO.findByTitolo(alloggio.getTitolo());
 
-        alloggioDAO.save(alloggio);
-        return true;
+        if (interesseHelper.isEmpty()) {
+            throw new IllegalArgumentException("Alloggio non trovato");
+        }
+
+        Alloggio interesse = interesseHelper.get();
+
+        if (!interesse.getListaCandidati().contains(rifugiato)) {
+            interesse.getListaCandidati().add(rifugiato);
+            alloggioDAO.save(interesse);
+            return true;
+        } else {
+            throw new IllegalArgumentException("Il rifugiato già ha mostrato interesse per questo alloggio");
+        }
+    }
+
+
+    @Override
+    public Alloggio assegnazioneAlloggio(String titolo, String emailRifugiato) {
+
+        Optional<Alloggio> alloggioOptional = alloggioDAO.findByTitolo(titolo);
+
+        if (alloggioOptional == null || !alloggioOptional.isPresent()) {
+            throw new IllegalArgumentException("Alloggio non trovato");
+        }
+
+        Rifugiato rifugiato = rifugiatoDAO.findByEmail(emailRifugiato);
+
+        if (rifugiato == null) {
+            throw new IllegalArgumentException("Il rifugiato non trovato");
+        }
+
+        Alloggio alloggio = alloggioOptional.get();
+
+        //Se non ha mostrato interesse per l'alloggio
+        if (!manifestazioneInteresse(rifugiato, alloggio)) {
+            throw new IllegalArgumentException("Il rifugiato non ha mostrato interesse per questo alloggio");
+        } else { // se ha mostrato interesse per l'alloggio
+            alloggio.getListaCandidati().clear();
+            alloggio.getListaCandidati().add(rifugiato);
+
+            alloggioDAO.save(alloggio);
+            return alloggio;
+            //throw new IllegalArgumentException("Già mostrato interesse");
+        }
     }
 
     @Override
-    public void sendEmailRifugiato(String message, int idRifugiato) {
+    public void sendEmailVolontario(String message, String emailVolontario) {
 
     }
 
     @Override
-    public void manifestazioneInteresse(Rifugiato rifugiato, com.project.bridgebackend.Model.Entity.Alloggio alloggio) {
-
+    public List<Alloggio> getAllAlloggio() {
+        return alloggioDAO.findAllAlloggiWithProprietario();
     }
 
     @Override
-    public com.project.bridgebackend.Model.Entity.Alloggio assegnazioneAlloggio(int idAlloggio, int idRifugiato) {
-        return null;
+    public long salvaIndirizzoAlloggio(Indirizzo indirizzo) {
+        indirizzoDAO.save(indirizzo);
+        return indirizzo.getId();
     }
 
     @Override
-    public void sendEmailVolontario(String message, int idVolontario) {
+    public long getIdIndirizzo(Indirizzo indirizzo) {
+        if (indirizzo == null) {
+            throw new IllegalArgumentException("Indirizzo nullo");
+        }
 
+        return indirizzo.getId();
     }
 
     @Override
-    public List<com.project.bridgebackend.Model.Entity.Alloggio> getAllAlloggio() {
-        return List.of();
+    public Alloggio getAlloggioByTitolo(@RequestBody String titolo) {
+
+      Alloggio alloggio = alloggioDAO.findAlloggioByTitolo(titolo).get();
+        System.out.println(alloggio);
+      if (alloggio == null) {
+          throw new IllegalArgumentException("Alloggio non trovato");
+      }
+        System.out.println(alloggio);
+      return alloggio;
     }
 }

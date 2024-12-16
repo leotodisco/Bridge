@@ -1,0 +1,123 @@
+/* Reset di base */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Montserrat', sans-serif;
+}
+
+/* Layout della pagina */
+body {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    background: #f4f4f9;
+    padding: 1rem;
+}
+
+/* Stile per l'elemento h2 */
+.login-container h2 {
+    color: #2c3e50; /* Set the desired color */
+    font-size: 1.5rem; /* Adjust the font size if needed */
+}
+
+/* Contenitore principale */
+.login-container {
+    max-width: 400px;
+    width: 100%;
+    padding: 2rem;
+    border-radius: 10px;
+    background: #fff;
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Raggruppare input ed etichette */
+.formGroup {
+    text-align: left;
+    margin-bottom: 0rem;
+}
+
+/* Stile per le etichette */
+.formLabel {
+    display: block;
+    font-size: 1rem;
+    color: #333;
+}
+
+/* Input migliorato */
+.formEditText {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid #00BF62;
+    margin: 0;
+    border-radius: 6px;
+    font-size: 1rem;
+    color: #2c3e50;
+    background-color: white;
+    transition: border-color 0.3s, background-color 0.3s;
+}
+
+.formEditText:focus {
+    border-color: #00BF62;
+    outline: none;
+    box-shadow: 0 0 5px rgba(0, 191, 98, 0.2);
+}
+
+/* Messaggio di errore */
+.errore {
+    display: none;
+    font-size: 0.9rem;
+    color: red;
+    text-align: center;
+}
+
+/* Pulsante di invio */
+.formButton {
+    width: 100%;
+    padding: 0.75rem;
+    border: none;
+    border-radius: 6px;
+    background: #00BF62;
+    color: #fff;
+    font-size: 1.125rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.3s, transform 0.2s, box-shadow 0.3s;
+    margin-bottom: 1rem;
+}
+
+.formButton:hover {
+    background: #008f4b;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 10px rgba(0, 143, 75, 0.3);
+}
+
+.formButton:active {
+    transform: translateY(0);
+    box-shadow: none;
+}
+
+/* Link per la registrazione */
+.formLink {
+    color: #00BF62;
+    text-decoration: none;
+    font-size: 0.9rem;
+    font-weight: bold;
+    cursor: pointer;
+    text-align: center;
+}
+
+.formLink:hover {
+    text-decoration: underline;
+}
+
+/* Centrare il contenuto */
+.centerFlexItem {
+    display: block;
+    margin: 0 auto;
+    text-align: center;
+}

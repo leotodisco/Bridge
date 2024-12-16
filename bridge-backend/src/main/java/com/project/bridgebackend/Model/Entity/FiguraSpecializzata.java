@@ -45,7 +45,7 @@ public class FiguraSpecializzata extends Utente {
                                final String nome,
                                final String cognome,
                                final String lingueParlate,
-                               final byte[] fotoProfilo,
+                               final String fotoProfilo,
                                final String skill,
                                final LocalDate dataNascita,
                                final TitoloDiStudio titoloDiStudio,

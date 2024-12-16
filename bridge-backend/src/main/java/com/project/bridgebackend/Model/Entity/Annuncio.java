@@ -1,6 +1,7 @@
 package com.project.bridgebackend.Model.Entity;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Column;
 import jakarta.persistence.MappedSuperclass;
 import jakarta.persistence.Id;
@@ -42,7 +43,7 @@ public class Annuncio {
      */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private long id;
 
     /**
      * Riferimento all'utente proprietario dell'annuncio.
@@ -51,7 +52,7 @@ public class Annuncio {
      * immediatamente appena l'entità principale viene caricata, ma solo quando,
      * richiesti nel codice.
      */
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "proprietario_email", referencedColumnName = "email", nullable = false)
     private Utente proprietario;
 

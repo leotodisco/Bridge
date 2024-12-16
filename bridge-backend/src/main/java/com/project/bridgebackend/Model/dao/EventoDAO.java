@@ -11,6 +11,7 @@ import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * @author Alessia De Filippo.
@@ -26,7 +27,7 @@ public interface EventoDAO extends JpaRepository<Evento, Long> {
      * @param lingua lista di lingue dell'evento.
      * @return lista di eventi.
      */
-    List<Evento> findByLingueParlate(List<Lingua> lingua);
+    List<Evento> findByLinguaParlata(Lingua lingua);
 
 
     /**
@@ -64,4 +65,13 @@ public interface EventoDAO extends JpaRepository<Evento, Long> {
     @Query("SELECT e FROM Evento e WHERE "
             + "SIZE(e.listaPartecipanti) < e.maxPartecipanti")
     List<Evento> findEventiConSpazioDisponibile();
+
+    /**
+     *
+     */
+    @Query("SELECT e FROM Evento e JOIN FETCH e.listaPartecipanti WHERE e.id = :eventoId")
+    Optional<Evento> findEventoWithPartecipanti(long eventoId);
+
+    @Query("SELECT e FROM Evento e JOIN Fetch e.organizzatore")
+    List<Evento> findAllWithOrganizzatore();
 }

@@ -1,7 +1,9 @@
 package com.project.bridgebackend.GestioneCorso.Service;
 
 
+import com.project.bridgebackend.Model.Entity.Corso;
 import com.project.bridgebackend.Model.dto.CorsoDTO;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -14,28 +16,27 @@ public interface GestioneCorsoService {
 
     /**
      * Crea un nuovo corso.
-     * @param corsoDTO il DTO del corso contenente i dettagli del corso.
+     * @param corso il DTO del corso contenente i dettagli del corso.
      * @return il corso creato come CorsoDTO.
      */
-    CorsoDTO creaCorso(CorsoDTO corsoDTO);
-
+    Corso creaCorso(final Corso corso);
     /**
      * Modifica un corso esistente.
-     * @param corsoDTO il DTO del corso contenente
+     * @param corso il DTO del corso contenente
      * i dettagli aggiornati del corso.
      * @return il corso modificato come CorsoDTO.
      */
-    CorsoDTO modificaCorso(CorsoDTO corsoDTO);
+    Corso modificaCorso(Corso corso);
 
     /**
      * Elimina un corso esistente.
-     * @param corsoDTO il DTO del corso da eliminare
+     * @param corso il DTO del corso da eliminare
      */
-    void eliminaCorso(CorsoDTO corsoDTO);
+    void eliminaCorso(final Corso corso);
 
     /**
      * Trova tutti i corsi.
      * @return una lista di tutti i corsi come CorsoDTO.
      */
-    List<CorsoDTO> findAll();
+    List<Corso> findAll();
 }

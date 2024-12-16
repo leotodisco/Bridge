@@ -44,7 +44,17 @@ public class SecurityConfig {
                 .cors(cors -> cors.configurationSource(corsConfigurationSource())) // Configurazione CORS esplicita
                 .csrf(csrf -> csrf.disable()) // Disabilita CSRF esplicitamente
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/authentication/login", "/authentication/registrazioneVolontario", "/eventi/crea").permitAll()
+                        .requestMatchers("/authentication/login", "/authentication/registrazioneUtente",
+                                "/api/eventi/crea", "/api/corsi/crea", "/api/annunci/creaConsulenza",
+                                "/api/corsi/upload", "/alloggi/aggiungi", "/api/annunci/creaLavoro", "/api/annunci/view_lavori",
+                                "api/annunci/view_lavori/proprietario/{id}", "/api/annunci/view_lavori/retrieve/{id}",
+                                "/api/annunci/modifica_lavoro/${id}", "/api/annunci/elimina_lavoro/{id}",
+                                "/api/annunci/view_consulenze", "/api/annunci/view_consulenze/proprietario/{id}",
+                                "/api/eventi/all", "/api/eventi/retrieve/{id}", "/api/eventi/{id}/iscrivi",
+                                "/api/eventi/{id}/disiscrivi", "/api/eventi/pubblicati", "/areaPersonale/elimina/{email},",
+                                "/api/annunci/view_consulenze/retrieve/{id}","/api/annunci/modifica_consulenza/{idConsulenza}",
+                                "/api/eventi/{id}/iscrizione","/alloggi/mostra","/alloggi/SingoloAlloggio/{titolo}", "/api/corsi/cerca/{id}", "/api/corsi/modifica/{id}",
+                                "/api/corsi/listaCorsi","/areaPersonale/DatiUtente/{email}").permitAll()
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
@@ -56,7 +66,7 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(List.of("http://localhost:5174", "https://your-production-domain.com"));
+        configuration.setAllowedOrigins(List.of("http://localhost:5174", "http://localhost:5173", "https://your-production-domain.com", "http://localhost:5173"));
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"));
         configuration.setAllowedHeaders(List.of("Authorization", "Content-Type"));
         configuration.setExposedHeaders(List.of("Authorization"));

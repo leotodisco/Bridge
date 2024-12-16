@@ -8,6 +8,7 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.Id;
 import jakarta.persistence.Column;
 import jakarta.persistence.EnumType;
+import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Past;
 import lombok.Data;
@@ -51,8 +52,7 @@ public class Utente implements Serializable, UserDetails {
     @Id
     @Column(name = "email")
     @NotNull
-    @Pattern(regexp = "/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,10}$/",
-            message = "regexp per l'email non rispettata")
+    @Email
     protected String email;
 
     /**
@@ -60,7 +60,7 @@ public class Utente implements Serializable, UserDetails {
      * */
     @Column(name = "nome")
     @NotNull
-    @Pattern(regexp = "/^[A-Za-zÀ-ÖØ-öø-ÿ' -]{2,30}$/",
+    @Pattern(regexp = "^[A-Za-zÀ-ÖØ-öø-ÿ' -]{2,30}$",
             message = "regexp per il nome non rispettata")
     private String nome;
 
@@ -69,7 +69,7 @@ public class Utente implements Serializable, UserDetails {
      * */
     @Column(name = "cognome")
     @NotNull
-    @Pattern(regexp = "/^[A-Za-zÀ-ÖØ-öø-ÿ' -]{2,30}$/",
+    @Pattern(regexp = "^[A-Za-zÀ-ÖØ-öø-ÿ' -]{2,30}$",
             message = "regexp per il cognome non rispettata")
     private String cognome;
 
@@ -78,8 +78,6 @@ public class Utente implements Serializable, UserDetails {
      * */
     @Column(name = "password")
     @NotNull
-    @Pattern(regexp = "/^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)[A-Za-z\\d]{8,20}$",
-            message = "regexp per la password non rispettata")
     protected String password;
 
     /**
@@ -87,7 +85,7 @@ public class Utente implements Serializable, UserDetails {
      * */
     @Column(name = "nazionalita")
     @NotNull
-    @Pattern(regexp = "/^[a-zA-Z\\s]{5,30}$/\n", message = "regexp per la nazionalità non rispettata")
+    @Pattern(regexp = "^[a-zA-Z\s]{5,30}$", message = "regexp per la nazionalità non rispettata")
     private String nazionalita;
 
 
@@ -133,15 +131,14 @@ public class Utente implements Serializable, UserDetails {
      * Foto profilo dell'utente (in formato Byte[]).
      * */
     @Column(name = "fotoProfilo")
-    @NotNull
-    private byte[] fotoProfilo;
+    private String fotoProfilo;
 
     /**
      * Lingue parlate dall'utente.
      */
     @Column(name = "lingueParlate")
     @NotNull
-    @Pattern(regexp = "/^[a-zA-Z\\s]{5,30}$/\n",
+    @Pattern(regexp = "^[a-zA-Z ,]{5,30}$",
             message = "regexp per le lingue parlate non rispettate")
     private String lingueParlate;
 
@@ -170,7 +167,7 @@ public class Utente implements Serializable, UserDetails {
                   final String nome,
                   final String cognome,
                   final String lingueParlate,
-                  final byte[] fotoProfilo, String skill,
+                  final String fotoProfilo, String skill,
                   final LocalDate dataNascita,
                   final TitoloDiStudio titoloDiStudio,
                   final Ruolo role,
@@ -189,6 +186,7 @@ public class Utente implements Serializable, UserDetails {
         this.gender = gender;
         this.nazionalita = nazionalita;
         this.password = password;
+
     }
 
     /**

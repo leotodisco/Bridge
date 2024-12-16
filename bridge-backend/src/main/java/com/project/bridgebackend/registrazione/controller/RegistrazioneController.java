@@ -1,26 +1,22 @@
 package com.project.bridgebackend.registrazione.controller;
 
-import com.project.bridgebackend.Model.Entity.Admin;
-import com.project.bridgebackend.Model.Entity.FiguraSpecializzata;
-import com.project.bridgebackend.Model.Entity.Rifugiato;
-import com.project.bridgebackend.Model.Entity.Volontario;
+import com.project.bridgebackend.Model.Entity.*;
 import com.project.bridgebackend.Model.Entity.enumeration.Gender;
 import com.project.bridgebackend.Model.Entity.enumeration.Ruolo;
 import com.project.bridgebackend.Model.Entity.enumeration.TitoloDiStudio;
 import com.project.bridgebackend.Model.dto.UtenteDTO;
+import com.project.bridgebackend.fotoProfilo.FotoProfiloService;
 import com.project.bridgebackend.registrazione.service.RegistrazioneService;
 import com.project.bridgebackend.util.AuthenticationRequest;
 import com.project.bridgebackend.util.AuthenticationResponse;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 
 import java.time.LocalDate;
+import java.util.Base64;
 
 /**
  * @author Antonio Ceruso.
@@ -28,7 +24,7 @@ import java.time.LocalDate;
  * Classe controller che implementa i metodi per la registrazione degli utenti.
  * */
 @RestController
-@CrossOrigin
+@CrossOrigin(origins = "http://localhost:5174", allowedHeaders = "*")
 @RequestMapping(path = "authentication")
 public class RegistrazioneController {
     /**
@@ -37,170 +33,139 @@ public class RegistrazioneController {
     @Autowired
     private RegistrazioneService registrazioneService;
 
-    /**
-     * Metodo per la cifratura della password.
-     * @param password
-     * @return la password cifrata come stringa.
-     * */
-    public String safePassword(final String password) {
-        BCryptPasswordEncoder pwEncoder = new BCryptPasswordEncoder();
-        String pwCifrata = pwEncoder.encode(password);
-        return pwCifrata;
-    }
+    @Autowired
+    private FotoProfiloService fotoser;
+
 
     /**
-     * Metodo per la registrazione di un Volontario.
-     * @param volontario
+     * Metodo per la registrazione di un utente in base al ruolo.
+     * @param utente
      * */
-    @PostMapping(value = "/registrazioneVolontario")
-    public void registrazione(@RequestBody final UtenteDTO volontario)
+    @PostMapping(value = "/registrazioneUtente")
+    public ResponseEntity<String> registrazioneUtente(@RequestBody final UtenteDTO utente)
             throws Exception {
-        String nome = volontario.getNomeUtente();
-        String cognome = volontario.getCognomeUtente();
-        String email = volontario.getEmailUtente();
-        String password = safePassword(volontario.getPasswordUtente());
-        volontario.setPasswordUtente(password);
-        String nazionalita = volontario.getNazionalitaUtente();
-        String lingueParlate = volontario.getLingueParlateUtente();
-        Gender genere = volontario.getGenderUtente();
-        Ruolo ruolo = volontario.getRuoloUtente();
-        LocalDate dataNascita = volontario.getDataNascitaUtente();
-        String Skill = volontario.getSkillUtente();
-        TitoloDiStudio titoloDiStudio =
-                volontario.getTitoloDiStudioUtente();
-        byte[] fotoProfilo = volontario.getFotoUtente();
+        try{
+        //System.out.println("Ricevuto DTO: " + utente.toString());
+        String nome = utente.getNomeUtente();
+        String cognome = utente.getCognomeUtente();
+        String email = utente.getEmailUtente();
+        String pass = utente.getPasswordUtente();
 
-        Volontario v = new Volontario(email,
-                nome,
-                cognome,
-                lingueParlate,
-                fotoProfilo,
-                Skill,
-                dataNascita,
-                titoloDiStudio,
-                ruolo,
-                genere,
-                nazionalita,
-                password);
+        String regexpPassword =
+                "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])"
+                        + "[A-Za-z\\d@$!%*?&]{8,16}$";
 
-        registrazioneService
-                .registraVolontario(v, volontario.getPasswordUtente());
-    }
-
-    /**
-     * Metodo per la registrazione di un Rifugiato.
-     * @param rifugiato
-     * */
-    @PostMapping(value = "/registrazioneRifugiato")
-    public void registrazioneRifugiato(@RequestBody final UtenteDTO rifugiato)
-            throws Exception {
-        String nome = rifugiato.getNomeUtente();
-        String cognome = rifugiato.getCognomeUtente();
-        String email = rifugiato.getEmailUtente();
-        String password = safePassword(rifugiato.getPasswordUtente());
-        rifugiato.setPasswordUtente(password);
-        String nazionalita = rifugiato.getNazionalitaUtente();
-        String lingueParlate = rifugiato.getLingueParlateUtente();
-        Gender genere = rifugiato.getGenderUtente();
-        Ruolo ruolo = rifugiato.getRuoloUtente();
-        LocalDate dataNascita = rifugiato.getDataNascitaUtente();
-        String Skill = rifugiato.getSkillUtente();
-        TitoloDiStudio titoloDiStudio = rifugiato
+        if (!pass.matches(regexpPassword)) {
+            throw new Exception("La password non rispetta "
+                    + "l'espressione regolare");
+        }
+        String password = utente.getPasswordUtente();
+        String confermaPW = utente.getConfermaPWUtente();
+        String nazionalita = utente.getNazionalitaUtente();
+        String lingueParlate = utente.getLingueParlateUtente();
+        Gender genere = utente.getGenderUtente();
+        Ruolo ruolo = utente.getRuoloUtente();
+        LocalDate dataNascita = utente.getDataNascitaUtente();
+        String Skill = utente.getSkillUtente();
+        TitoloDiStudio titoloDiStudio = utente
                 .getTitoloDiStudioUtente();
-        byte[] fotoProfilo = rifugiato.getFotoUtente();
 
-        Rifugiato r = new Rifugiato(email,
-                nome,
-                cognome,
-                lingueParlate,
-                fotoProfilo,
-                Skill,
-                dataNascita,
-                titoloDiStudio,
-                ruolo,
-                genere,
-                nazionalita,
-                password);
-        registrazioneService
-                .registraRifugiato(r, rifugiato.getPasswordUtente());
-    }
+            // Gestione della foto del profilo (Base64 -> byte[])
+            String fotoProfiloId = null;
 
-    /**
-     * Metodo per la registrazione di una Figura Specializzata.
-     * @param figspec
-     * */
-    @PostMapping(value = "/registrazioneFiguraSpecializzata")
-    public void registrazioneFiguraSpecializzata(@RequestBody
-                                                 final UtenteDTO figspec)
-            throws Exception {
-        String nome = figspec.getNomeUtente();
-        String cognome = figspec.getCognomeUtente();
-        String email = figspec.getEmailUtente();
-        String password = safePassword(figspec.getPasswordUtente());
-        figspec.setPasswordUtente(password);
-        String nazionalita = figspec.getNazionalitaUtente();
-        String lingueParlate = figspec.getLingueParlateUtente();
-        Gender genere = figspec.getGenderUtente();
-        Ruolo ruolo = figspec.getRuoloUtente();
-        LocalDate dataNascita = figspec.getDataNascitaUtente();
-        String Skill = figspec.getSkillUtente();
-        TitoloDiStudio titoloDiStudio = figspec
-                .getTitoloDiStudioUtente();
-        byte[] fotoProfilo = figspec.getFotoUtente();
-        String disponibilita = figspec.getDisponibilitaUtente();
-        FiguraSpecializzata fs = new FiguraSpecializzata(email,
-                nome,
-                cognome,
-                lingueParlate,
-                fotoProfilo,
-                Skill,
-                dataNascita,
-                titoloDiStudio,
-                ruolo,
-                genere,
-                nazionalita,
-                password,
-                disponibilita);
-        registrazioneService
-                .registraFiguraSpecializzata(fs, figspec.getPasswordUtente());
-    }
+            if (utente.getFotoUtente() != null && !utente.getFotoUtente().isEmpty()) {
+                String base64Image = utente.getFotoUtente();
 
-    /**
-     * Metodo per la registrazione di un admin.
-     * @param admin
-     * */
-    @PostMapping(value = "/registrazioneAdmin")
-    public void registrazioneAdmin(@RequestBody final UtenteDTO admin)
-            throws Exception {
-        String nome = admin.getNomeUtente();
-        String cognome = admin.getCognomeUtente();
-        String email = admin.getEmailUtente();
-        String password = safePassword(admin.getPasswordUtente());
-        admin.setPasswordUtente(password);
-        String nazionalita = admin.getNazionalitaUtente();
-        String lingueParlate = admin.getLingueParlateUtente();
-        Gender genere = admin.getGenderUtente();
-        Ruolo ruolo = admin.getRuoloUtente();
-        LocalDate dataNascita = admin.getDataNascitaUtente();
-        String Skill = admin.getSkillUtente();
-        TitoloDiStudio titoloDiStudio = admin
-                .getTitoloDiStudioUtente();
-        byte[] fotoProfilo = admin.getFotoUtente();
-        Admin a = new Admin(email,
-                nome,
-                cognome,
-                lingueParlate,
-                fotoProfilo,
-                Skill,
-                dataNascita,
-                titoloDiStudio,
-                ruolo,
-                genere,
-                nazionalita,
-                password);
-        registrazioneService
-                .registraAdmin(a, admin.getPasswordUtente());
+                // Verifica se contiene il prefisso 'data:image/jpeg;base64,' e rimuovilo
+                if (base64Image.startsWith("data:image/jpeg;base64,")) {
+                    base64Image = base64Image.split(",")[1]; // Estrai solo la parte Base64 dopo la virgola
+                    byte[] fotoData = Base64.getDecoder().decode(base64Image);
+                    fotoProfiloId = fotoser.saveIMG(nome, fotoData);
+
+                } else {
+                    System.err.println("Formato immagine non valido: la stringa Base64 non contiene il prefisso corretto.");
+                }
+            }
+            switch (ruolo){
+            case Admin:
+                     Admin a = new Admin(email,
+                        nome,
+                        cognome,
+                        lingueParlate,
+                        fotoProfiloId,
+                        Skill,
+                        dataNascita,
+                        titoloDiStudio,
+                        ruolo,
+                        genere,
+                        nazionalita,
+                        password);
+                registrazioneService
+                        .registraAdmin(a, confermaPW);
+                break;
+
+            case FiguraSpecializzata:
+                String disponibilita = utente.getDisponibilitaUtente();
+                FiguraSpecializzata fs = new FiguraSpecializzata(email,
+                        nome,
+                        cognome,
+                        lingueParlate,
+                        fotoProfiloId,
+                        Skill,
+                        dataNascita,
+                        titoloDiStudio,
+                        ruolo,
+                        genere,
+                        nazionalita,
+                        password,
+                        disponibilita);
+                registrazioneService
+                        .registraFiguraSpecializzata(fs, confermaPW);
+                break;
+
+            case Volontario:
+                Volontario v = new Volontario(email,
+                        nome,
+                        cognome,
+                        lingueParlate,
+                        fotoProfiloId,
+                        Skill,
+                        dataNascita,
+                        titoloDiStudio,
+                        ruolo,
+                        genere,
+                        nazionalita,
+                        password);
+
+                registrazioneService
+                        .registraVolontario(v, confermaPW);
+                break;
+
+            case Rifugiato:
+                Rifugiato r = new Rifugiato(email,
+                        nome,
+                        cognome,
+                        lingueParlate,
+                        fotoProfiloId,
+                        Skill,
+                        dataNascita,
+                        titoloDiStudio,
+                        ruolo,
+                        genere,
+                        nazionalita,
+                        password);
+                registrazioneService
+                        .registraRifugiato(r, confermaPW);
+                break;
+        }
+
+        return ResponseEntity.ok("Registrazione avvenuta con successo.");
+    } catch (Exception e) {
+        System.err.println("Errore durante la registrazione: " + e.getMessage());
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Errore durante la registrazione: " + e.getMessage());
     }
+}
+
 
     /**
      * Metodo per il login.
@@ -213,4 +178,15 @@ public class RegistrazioneController {
             throws Exception {
         return registrazioneService.login(req);
     }
+
+    /**
+     * Metodo per il logout.
+     * @return response.
+     */
+    @PostMapping("/logout")
+    public ResponseEntity<String> logout() {
+        // Risponde al client confermando il logout.
+        return ResponseEntity.ok("Logout successful");
+    }
+
 }

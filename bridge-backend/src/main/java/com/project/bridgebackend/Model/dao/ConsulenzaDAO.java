@@ -1,10 +1,14 @@
 package com.project.bridgebackend.Model.dao;
 
 import com.project.bridgebackend.Model.Entity.Consulenza;
+import com.project.bridgebackend.Model.Entity.FiguraSpecializzata;
+import com.project.bridgebackend.Model.Entity.Utente;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-/*
+import java.util.List;
+
+/**
  * @author Geraldine Montella.
  * Creato il: 03/12/2024.
  * Questa Java Persistence Entity per un annuncio,
@@ -13,5 +17,5 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 public interface ConsulenzaDAO extends JpaRepository<Consulenza, Long> {
-
+       List<Consulenza> findByProprietario(Utente proprietario);
 }

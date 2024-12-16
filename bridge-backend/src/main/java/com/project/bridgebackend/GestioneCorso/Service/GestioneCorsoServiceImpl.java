@@ -1,13 +1,18 @@
 package com.project.bridgebackend.GestioneCorso.Service;
 
+import com.project.bridgebackend.GestioneCorso.pdf.PDFDoc;
+import com.project.bridgebackend.GestioneCorso.pdf.PDFService;
 import com.project.bridgebackend.Model.Entity.Corso;
 import com.project.bridgebackend.Model.Entity.enumeration.Lingua;
 import com.project.bridgebackend.Model.dao.CorsoDAO;
 import com.project.bridgebackend.Model.dto.CorsoDTO;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -32,79 +37,74 @@ public class GestioneCorsoServiceImpl implements GestioneCorsoService {
     private final CorsoDAO corsoDAO;
 
     /**
+     * Iniezione logica di gestione per i pdf
+     */
+    @Autowired
+    private final PDFService pdfService;
+    /**
      * Crea un nuovo corso.
-     * @param corsoDTO il DTO del corso contenente i dettagli del corso.
+     * @param corso il DTO del corso contenente i dettagli del corso.
      * @return il corso creato come CorsoDTO.
      */
+
     @Override
-    public CorsoDTO creaCorso(final CorsoDTO corsoDTO) {
-        // Crea una nuova entità Corso e imposta le sue proprietà dal CorsoDTO
-        Corso corso = new Corso();
-        corso.setDescrizione(corsoDTO.getDescrizione());
-        corso.setCategoriaCorso(corsoDTO.getCategoriaCorso());
-        corso.setTitolo(corsoDTO.getTitolo());
-        corso.setPdf(corsoDTO.getPdf());
-        corso.setLingua(Lingua.valueOf(corsoDTO.getLingua()));
+    public Corso creaCorso(final Corso corso) {
+        if (corso == null) {
+            throw new IllegalArgumentException("Corso non valido");
+        }
 
-        // Salva l'entità Corso nel database
-        Corso savedCorso = corsoDAO.save(corso);
-
-        // Crea un nuovo CorsoDTO e imposta le sue
-        // proprietà dall'entità Corso salvata
-        CorsoDTO result = new CorsoDTO();
-        result.setDescrizione(savedCorso.getDescrizione());
-        result.setCategoriaCorso(savedCorso.getCategoriaCorso());
-        result.setTitolo(savedCorso.getTitolo());
-        result.setPdf(savedCorso.getPdf());
-        result.setLingua(savedCorso.getLingua().name());
-
-        // Ritorna il CorsoDTO creato
-        return result;
+        return corsoDAO.save(corso);
     }
-
     /**
      * Modifica un corso esistente.
-     * @param corsoDTO il DTO del corso contenente
+     * todo: inserire possibilità modifica pdf
+     * @param corso il DTO del corso contenente
      * i dettagli aggiornati del corso.
      * @return il corso modificato come CorsoDTO.
      */
     @Override
-    public CorsoDTO modificaCorso(final CorsoDTO corsoDTO) {
-        // Implementazione per modificare un corso
-        return null; // Placeholder return statement
+    public Corso modificaCorso(final Corso corso) {
+        if (corso == null || corso.getTitolo() == null || corso.getProprietario() == null) {
+            throw new IllegalArgumentException("Il corso o i dettagli richiesti non sono validi");
+        }
+
+        Corso existingCorso = corsoDAO.findById(corso.getId())
+                .orElseThrow(() -> new IllegalArgumentException("Corso non trovato"));
+        if (existingCorso == null) {
+            throw new IllegalArgumentException("Corso non trovato");
+        }
+
+        // Aggiorna i campi del corso esistente
+        existingCorso.setId(corso.getId());
+        existingCorso.setTitolo(corso.getTitolo());
+        existingCorso.setDescrizione(corso.getDescrizione());
+        existingCorso.setCategoriaCorso(corso.getCategoriaCorso());
+        existingCorso.setLingua(corso.getLingua());
+        existingCorso.setPdf(corso.getPdf());
+        return corsoDAO.save(existingCorso);
     }
 
     /**
      * Elimina un corso esistente.
-     * @param corsoDTO il DTO del corso contenente
+     * @param corso il DTO del corso contenente
      * i dettagli del corso da eliminare.
      */
     @Override
-    public void eliminaCorso(final CorsoDTO corsoDTO) {
-        // Recupera tutte le entità Corso dal database
-        List<Corso> corsi = corsoDAO.findAll();
-        Corso corsoToDelete = null;
-
-        // Itera attraverso la lista per trovare un corso che
-        // corrisponde ai dettagli nel CorsoDTO
-        for (Corso corso : corsi) {
-            if (corso.getDescrizione().equals(corsoDTO.getDescrizione())
-                    && corso.getCategoriaCorso().equals(corsoDTO.getCategoriaCorso())
-                    && corso.getTitolo().equals(corsoDTO.getTitolo())
-                    && corso.getPdf().equals(corsoDTO.getPdf())
-                    && corso.getLingua().name().equals(corsoDTO.getLingua())) {
-                corsoToDelete = corso;
-                break;
-            }
+    @Transactional
+    public void eliminaCorso(final Corso corso) {
+        if (corso.getId() == null) {
+            throw new IllegalArgumentException("ID del corso non valido");
         }
 
-        // Se non viene trovato nessun corso corrispondente, lancia un'eccezione
-        if (corsoToDelete == null) {
-            throw new IllegalArgumentException("Corso non trovato");
+        Corso existingCorso = corsoDAO.findById(corso.getId())
+                .orElseThrow(() -> new IllegalArgumentException("Corso non trovato"));
+
+        // Elimina il PDF associato
+        if (existingCorso.getPdf() != null) {
+            pdfService.deletePdf(existingCorso.getPdf());
         }
 
-        // Elimina il corso trovato dal database
-        corsoDAO.delete(corsoToDelete);
+        corsoDAO.delete(existingCorso);
     }
 
     /**
@@ -112,25 +112,7 @@ public class GestioneCorsoServiceImpl implements GestioneCorsoService {
      * @return una lista di tutti i corsi come CorsoDTO.
      */
     @Override
-    public List<CorsoDTO> findAll() {
-        // Recupera tutte le entità Corso dal database
-        List<Corso> corsi = corsoDAO.findAll();
-
-        // Crea una lista per contenere i CorsoDTO
-        List<CorsoDTO> corsoDTOList = new ArrayList<>();
-
-        // Converte ogni entità Corso in un CorsoDTO e lo aggiunge alla lista
-        for (Corso corso : corsi) {
-            CorsoDTO corsoDTO = new CorsoDTO();
-            corsoDTO.setDescrizione(corso.getDescrizione());
-            corsoDTO.setCategoriaCorso(corso.getCategoriaCorso());
-            corsoDTO.setTitolo(corso.getTitolo());
-            corsoDTO.setPdf(corso.getPdf());
-            corsoDTO.setLingua(corso.getLingua().name());
-            corsoDTOList.add(corsoDTO);
-        }
-
-        // Ritorna la lista di CorsoDTO
-        return corsoDTOList;
+    public List<Corso> findAll() {
+        return corsoDAO.findAll();
     }
 }
