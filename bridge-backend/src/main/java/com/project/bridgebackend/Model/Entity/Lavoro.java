@@ -7,6 +7,8 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.Inheritance;
 import jakarta.persistence.InheritanceType;
 import jakarta.persistence.Table;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import org.springframework.format.annotation.NumberFormat;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -65,17 +67,16 @@ public class Lavoro extends Annuncio {
     @Enumerated(EnumType.STRING)
     @Column(name = "tipo_contratto", nullable = false, length = 50)
     @NotNull(message = "Il tipo di contratto è obbligatorio")
-    @Pattern(regexp = "^[A-zÀ-ù0-9 ‘]{2,50}$", message = "Formato tipo di contratto non valido ")
-    @Size(max = 50, message = "Il tipo di contratto non può superare i 50 caratteri ")
     private TipoContratto tipoContratto;
+
 
     /**
      * La retribuzione offerta per la posizione.
      */
     @Column(name = "retribuzione", nullable = false)
-    @DecimalMin(value = "0.0", inclusive = false, message = "La retribuzione deve essere positiva")
-    @Pattern(regexp = "^\\d{1,8}(\\.\\d{2})?$", message = "Formato retribuzione non valido ")
-    private double retribuzione;
+    @DecimalMin(value = "0.01", inclusive = true, message = "La retribuzione deve essere positiva e maggiore di 0")
+    @NotNull(message = "La retribuzione è obbligatoria")
+    private Double retribuzione;
 
     /**
      * Il nome della sede di lavoro.

@@ -2,7 +2,10 @@ package com.project.bridgebackend.Model.dao;
 
 import com.project.bridgebackend.Model.Entity.Lavoro;
 import org.springframework.data.jpa.repository.JpaRepository;
+import com.project.bridgebackend.Model.Entity.Volontario;
 import org.springframework.stereotype.Repository;
+import com.project.bridgebackend.Model.Entity.Utente;
+import java.util.List;
 
 /*
  * @author Vito Vernellati.
@@ -14,5 +17,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface LavoroDAO extends JpaRepository<Lavoro, Long> {
-
+    List<Lavoro> findByProprietario(Utente proprietario);
 }

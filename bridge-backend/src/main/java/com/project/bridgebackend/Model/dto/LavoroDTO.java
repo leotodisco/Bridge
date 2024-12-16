@@ -57,14 +57,6 @@ public class LavoroDTO {
     private Boolean disponibilita;
 
     /**
-     * Tipologia dell'annuncio.
-     * True per indicare una consulenza, false per indicare un lavoro.
-     * <p>Nota: Questo campo potrebbe non essere necessario, da valutare.</p>
-     */
-    @NotNull(message = "La tipologia è obbligatoria (true o false)")
-    private Boolean tipologia;
-
-    /**
      * Indirizzo di riferimento per l'annuncio.
      * Campo obbligatorio e validato.
      */
@@ -136,7 +128,7 @@ public class LavoroDTO {
      * Deve essere un valore positivo.
      */
     @NotNull(message = "La retribuzione è obbligatoria")
-    @DecimalMin(value = "0.0", inclusive = false, message = "La retribuzione deve essere positiva")
+    @DecimalMin(value = "0.01", inclusive = true, message = "La retribuzione deve essere positiva e maggiore di 0")
     private Double retribuzione;
 
     /**
