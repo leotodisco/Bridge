@@ -4,7 +4,11 @@ import com.project.bridgebackend.Model.Entity.Utente;
 import com.project.bridgebackend.Model.dao.UtenteDAO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
+/**
+ * @author Antonio Ceruso
+ * Data creazione: 12/12/2024
+ * Classe che implemeta il service per l'utente
+ * */
 @Service
 public class UtenteServiceImpl implements UtenteService {
 

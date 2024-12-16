@@ -1,7 +1,6 @@
-package com.project.bridgebackend.registrazione.fotoProfilo;
+package com.project.bridgebackend.fotoProfilo;
 
 import org.springframework.data.mongodb.repository.MongoRepository;
-import org.springframework.data.repository.CrudRepository;
 
 public interface FotoProfiloRepository extends MongoRepository<FotoProfilo, String> {
 }

@@ -1,4 +1,4 @@
-package com.project.bridgebackend.registrazione.fotoProfilo;
+package com.project.bridgebackend.fotoProfilo;
 
 import lombok.Data;
 import org.springframework.data.annotation.Id;

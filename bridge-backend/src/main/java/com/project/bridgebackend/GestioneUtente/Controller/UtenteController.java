@@ -4,12 +4,17 @@ import com.project.bridgebackend.GestioneUtente.Service.UtenteService;
 import com.project.bridgebackend.Model.Entity.FiguraSpecializzata;
 import com.project.bridgebackend.Model.Entity.Utente;
 import com.project.bridgebackend.Model.dto.UtenteDTO;
-import com.project.bridgebackend.registrazione.fotoProfilo.FotoProfiloService;
+import com.project.bridgebackend.fotoProfilo.FotoProfiloService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+/**
+ * @author Antonio Ceruso
+ * Data creazione: 12/12/2024
+ * Classe controller che implementa i metodi per l'area personale utente
+ * */
 @RestController
 @CrossOrigin(origins = "http://localhost:5174", allowedHeaders = "*")
 @RequestMapping(path = "areaPersonale")

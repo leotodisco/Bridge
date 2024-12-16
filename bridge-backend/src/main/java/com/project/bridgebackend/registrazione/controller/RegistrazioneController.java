@@ -5,7 +5,7 @@ import com.project.bridgebackend.Model.Entity.enumeration.Gender;
 import com.project.bridgebackend.Model.Entity.enumeration.Ruolo;
 import com.project.bridgebackend.Model.Entity.enumeration.TitoloDiStudio;
 import com.project.bridgebackend.Model.dto.UtenteDTO;
-import com.project.bridgebackend.registrazione.fotoProfilo.FotoProfiloService;
+import com.project.bridgebackend.fotoProfilo.FotoProfiloService;
 import com.project.bridgebackend.registrazione.service.RegistrazioneService;
 import com.project.bridgebackend.util.AuthenticationRequest;
 import com.project.bridgebackend.util.AuthenticationResponse;

@@ -1,6 +1,5 @@
 package com.project.bridgebackend.GestioneAlloggio.FotoAlloggio;
 
-import com.project.bridgebackend.registrazione.fotoProfilo.FotoProfilo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
