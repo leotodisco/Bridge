@@ -169,8 +169,8 @@ public class GestioneAnnuncioController {
         Long indirizzoId = gestioneAnnuncioService.salvaIndirizzoLavoro(indirizzo);
 
         // Recupero del proprietario dell'annuncio come Utente.
-        Utente proprietario = utenteDAO.findByEmail(lavoroDTO.getProprietario());
-        if (proprietario == null) {
+        Volontario volontario = volontarioDAO.findByEmail(lavoroDTO.getProprietario());
+        if (volontario == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         }
 
@@ -178,10 +178,10 @@ public class GestioneAnnuncioController {
         Lavoro lavoro = new Lavoro();
         lavoro.setTitolo(lavoroDTO.getTitolo());
         lavoro.setDisponibilita(lavoroDTO.getDisponibilita());
-        lavoro.setTipologia(lavoroDTO.getTipologia());
         lavoro.setIndirizzo(indirizzoDAO.getReferenceById(indirizzoId));
         lavoro.setMaxCandidature(lavoroDTO.getMaxCandidature());
         lavoro.setCandidati(lavoroDTO.getCandidati());
+        lavoro.setTipologia(true);
 
         // Impostazione dei campi specifici di Lavoro.
         lavoro.setPosizioneLavorativa(lavoroDTO.getPosizioneLavorativa());
@@ -193,7 +193,7 @@ public class GestioneAnnuncioController {
         lavoro.setInfoUtili(lavoroDTO.getInfoUtili());
 
         // Impostazione del proprietario.
-        lavoro.setProprietario(proprietario);
+        lavoro.setProprietario(volontario);
 
         // Salvataggio del lavoro nel database.
         Lavoro nuovoLavoro = gestioneAnnuncioService.inserimentoLavoro(lavoro);
@@ -277,6 +277,78 @@ public class GestioneAnnuncioController {
         }
     }
 
+
+    /**
+     * Metodo per ottenere tutti gli annunci di lavoro presenti nel database.
+     *
+     * @return ResponseEntity contenente la lista di tutti gli annunci di lavoro.
+     */
+    @GetMapping("/view_lavori")
+    public ResponseEntity<List<Lavoro>> getAllLavori() {
+        List<Lavoro> lavori = gestioneAnnuncioService.getAllLavori();
+        System.out.println(lavori);
+        return ResponseEntity.ok(lavori); // Ritorna lista vuota con HTTP 200
+    }
+
+
+    /**
+     * Metodo per ottenere un annuncio di lavoro specifico dal DB tramite il suo ID.
+     *
+     * @param id ID dell'annuncio di lavoro.
+     * @return ResponseEntity contenente l'annuncio di lavoro specificato.
+     */
+    @GetMapping("/view_lavori/retrieve/{id}")
+    public ResponseEntity<Lavoro> getLavoroById(@PathVariable long id) {
+        Lavoro lavoro = gestioneAnnuncioService.getLavori(id);
+        System.out.println(lavoro);
+        return ResponseEntity.ok(lavoro);
+    }
+
+    /**
+     * Metodo per ottenere tutte gli annunci di lavoro di uno specifico volontario.
+     *
+     * @param proprietarioId ID del proprietario degli annunci di lavoro.
+     * @return ResponseEntity contenente la lista degli annunci di lavoro del proprietario specificato.
+     */
+    @PostMapping("/view_lavori/proprietario/{id}")
+    public ResponseEntity<List<Lavoro>> getLavoriByProprietario(@PathVariable("id") String proprietarioId) {
+        Utente proprietario = volontarioDAO.findByEmail(proprietarioId);
+        List<Lavoro> lavori = gestioneAnnuncioService.getLavoriByProprietario(proprietario);
+        return ResponseEntity.ok(lavori);
+    }
+
+    @PostMapping("/modifica_lavoro/{id}")
+    public ResponseEntity<?> modificaLavoro(@PathVariable long id,
+                                           @RequestBody HashMap<String, Object> aggiornamenti,
+                                           @RequestHeader("Authorization") String authorizationHeader) {
+        try {
+            // Estrai il token JWT dall'header Authorization
+            String token = authorizationHeader.replace("Bearer ", "");
+            //per estrarre l'email dal token
+            String emailUtenteLoggato = jwtService.extractUsername(token);
+
+            // Verifica se l'utente è il proprietario dell'annuncio
+            Lavoro lavoroEsistente = gestioneAnnuncioService.getLavori(id);
+            if (!lavoroEsistente.getProprietario().getEmail().equals(emailUtenteLoggato)) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                        .body("Non sei autorizzato a modificare questo annuncio di lavoro.");
+            }
+
+            // Invoca il metodo del servizio per modificare il lavoro
+            Lavoro lavoroAggiornato = gestioneAnnuncioService.modificaAnnuncioLavoro(id, aggiornamenti);
+
+            // Restituisce il lavoro aggiornato con codice HTTP 200
+            return ResponseEntity.ok(lavoroAggiornato);
+
+        } catch (IllegalArgumentException e) {
+            // Gestisce errori come lavoro non trovato o campi non validi
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+
+        } catch (Exception e) {
+            // Gestisce errori generici
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Errore durante l'aggiornamento del lavoro: " + e.getMessage());
+        }
+    }
+
 }
-
-

@@ -15,7 +15,7 @@ import java.util.List;
  */
 public interface GestioneAnnuncioService {
 
-    // Metodi per Consulenza
+    //      **Metodi per Consulenza**
 
     /**
      * Inserisce una nuova consulenza nel database.
@@ -33,7 +33,16 @@ public interface GestioneAnnuncioService {
      */
     long salvaIndirizzoConsulenza(Indirizzo indirizzo);
 
-    // Metodi per Lavoro
+    List<Consulenza> getAllConsulenze();
+
+    List<Consulenza> getConsulenzeByProprietario(Utente proprietario);
+
+    Consulenza getConsulenze( long id);
+
+    Consulenza modificaAnnuncioConsulenza(final long idConsulenza,
+                                          final HashMap<String, Object> aggiornamenti);
+
+    //      **Metodi per Lavoro**
 
     /**
      * Inserisce un nuovo annuncio di lavoro nel database.
@@ -52,27 +61,46 @@ public interface GestioneAnnuncioService {
     long salvaIndirizzoLavoro(Indirizzo indirizzo);
 
     /**
-     * Modifica un annuncio di lavoro esistente.
+     * Recupera tutti gli annunci di lavoro presenti nel database.
      *
-     * @param idAnnuncio    l'identificativo dell'annuncio da modificare.
-     * @param aggiornamenti mappa contenente i campi da aggiornare e i relativi valori.
-     * @return l'annuncio di lavoro aggiornato.
+     * @return Una lista di oggetti `Lavoro` contenenti tutti gli annunci di lavoro.
      */
-    Lavoro modificaAnnuncioLavoro(long idAnnuncio, HashMap<String, Object> aggiornamenti);
+    List<Lavoro> getAllLavori();
 
     /**
-     * Elimina un annuncio di lavoro dal database.
+     * Recupera tutti gli annunci di lavoro associati a un proprietario specifico.
      *
-     * @param idAnnuncio l'identificativo dell'annuncio da eliminare.
+     * @param proprietario L'oggetto `Utente` che rappresenta il proprietario degli annunci di lavoro.
+     * @return Una lista di oggetti `Lavoro` associati al proprietario specificato.
+     */
+    List<Lavoro> getLavoriByProprietario(Utente proprietario);
+
+    /**
+     * Recupera un singolo annuncio di lavoro specifico tramite il suo ID.
+     *
+     * @param id L'identificativo unico dell'annuncio di lavoro da recuperare.
+     * @return L'oggetto `Lavoro` corrispondente all'ID fornito.
+     * @throws IllegalArgumentException se l'annuncio non viene trovato.
+     */
+    Lavoro getLavori(long id);
+
+    /**
+     * Modifica un annuncio di lavoro esistente.
+     *
+     * @param idAnnuncio L'identificativo unico dell'annuncio di lavoro da modificare.
+     * @param aggiornamenti Una mappa contenente i campi da aggiornare e i relativi nuovi valori.
+     * @return L'oggetto `Lavoro` aggiornato.
+     * @throws IllegalArgumentException se l'annuncio non viene trovato o i dati forniti non sono validi.
+     */
+    Lavoro modificaAnnuncioLavoro(final long idAnnuncio,
+                                  final HashMap<String, Object> aggiornamenti);
+
+    /**
+     * Elimina un annuncio di lavoro specifico.
+     *
+     * @param idAnnuncio L'identificativo unico dell'annuncio di lavoro da eliminare.
+     * @throws IllegalArgumentException se l'annuncio non viene trovato.
      */
     void eliminaAnnuncioLavoro(long idAnnuncio);
 
-    List<Consulenza> getAllConsulenze();
-
-    List<Consulenza> getConsulenzeByProprietario(Utente proprietario);
-
-    Consulenza getConsulenze( long id);
-
-    Consulenza modificaAnnuncioConsulenza(final long idConsulenza,
-                                          final HashMap<String, Object> aggiornamenti);
 }

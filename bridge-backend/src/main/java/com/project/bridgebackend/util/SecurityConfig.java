@@ -46,7 +46,9 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/authentication/login", "/authentication/registrazioneUtente",
                                 "/api/eventi/crea", "/api/corsi/crea", "/api/annunci/creaConsulenza",
-                                "/api/corsi/upload", "/alloggi/aggiungi", "/api/annunci/creaLavoro",
+                                "/api/corsi/upload", "/alloggi/aggiungi", "/api/annunci/creaLavoro", "/api/annunci/view_lavori",
+                                "api/annunci/view_lavori/proprietario/{id}", "/api/annunci/view_lavori/retrieve/{id}",
+                                "/api/annunci/modifica_lavoro/${id}", "/api/annunci/elimina_lavoro/{id}",
                                 "/api/annunci/view_consulenze", "/api/annunci/view_consulenze/proprietario/{id}",
                                 "/api/eventi/all", "/api/eventi/retrieve/{id}", "/api/eventi/{id}/iscrivi",
                                 "/api/eventi/{id}/disiscrivi", "/api/eventi/pubblicati", "/areaPersonale/elimina/{email},",

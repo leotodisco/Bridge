@@ -81,7 +81,7 @@ public class GestioneAnnuncioServiceImp implements GestioneAnnuncioService {
         return indirizzo.getId();
     }
 
-    // Implementazioni dei metodi per Lavoro
+    //      **Implementazioni dei metodi per Lavoro**
 
     /**
      * Inserisce un nuovo annuncio di lavoro nel database.
@@ -108,6 +108,21 @@ public class GestioneAnnuncioServiceImp implements GestioneAnnuncioService {
     public long salvaIndirizzoLavoro(final Indirizzo indirizzo) {
         indirizzoDAO.save(indirizzo);
         return indirizzo.getId();
+    }
+
+    @Override
+    public List<Lavoro> getAllLavori(){
+        return lavoroDAO.findAll();
+    }
+
+    @Override
+    public Lavoro getLavori(long id){
+        return lavoroDAO.findById(id).get();
+    }
+
+    @Override
+    public List<Lavoro> getLavoriByProprietario(Utente proprietario) {
+        return lavoroDAO.findByProprietario(proprietario);
     }
 
     /**
@@ -158,13 +173,15 @@ public class GestioneAnnuncioServiceImp implements GestioneAnnuncioService {
     }
 
     @Override
-    public void eliminaAnnuncioLavoro(final long idAnnuncio) {
+    public void eliminaAnnuncioLavoro(long idAnnuncio) {
         if (!lavoroDAO.existsById(idAnnuncio)) {
             throw new IllegalArgumentException("Annuncio di lavoro non trovato.");
         }
         lavoroDAO.deleteById(idAnnuncio);
     }
 
+
+    //      **Implementazioni dei metodi per Consulenza**
 
     @Override
     public List<Consulenza> getAllConsulenze(){
