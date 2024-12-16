@@ -4,6 +4,8 @@ import com.project.bridgebackend.Model.Entity.Alloggio;
 import com.project.bridgebackend.Model.Entity.Indirizzo;
 import com.project.bridgebackend.Model.Entity.Rifugiato;
 import com.project.bridgebackend.Model.dto.AlloggioDTO;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.List;
 
@@ -35,7 +37,7 @@ public interface AlloggioService {
      * @Param idAlloggio l'alloggio che è sato assegnato al rifugiato
      * @Param idRifugiato l'identificativo del rifugiato a cui è stato assegnato un alloggio
      */
-    public Alloggio assegnazioneAlloggio(long idAlloggio, String emailRifugiato);
+    public Alloggio assegnazioneAlloggio(String titolo, String emailRifugiato);
 
     /**
      *Firma del metodo che notifica il volontario nel caso in cui ci sia una nuova manifestazione di interesse per il suo annuncio
@@ -55,6 +57,8 @@ public interface AlloggioService {
      * @return l'indirizzo salvato
      */
     long salvaIndirizzoAlloggio(Indirizzo indirizzo);
+    Alloggio getAlloggioByTitolo(@RequestBody String titolo);
 
     long getIdIndirizzo(Indirizzo indirizzo);
+
 }

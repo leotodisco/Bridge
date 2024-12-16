@@ -120,4 +120,75 @@ public class AlloggioController {
             return new ResponseEntity<>("Errore interno del server: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
+    @PostMapping("/assegnazione")
+    public ResponseEntity<String> assegnazioneAlloggio(@RequestParam String titolo, @RequestParam String emailRifugiato) {
+        try {
+            // Recuperiamo l'alloggio in base al titolo
+            Alloggio alloggio = alloggioService.assegnazioneAlloggio(titolo, emailRifugiato);
+
+            // Verifica che il rifugiato scelto faccia parte della lista dei candidati
+            List<Rifugiato> candidati = alloggio.getListaCandidati();
+            boolean rifugiatoScelto = candidati.stream().anyMatch(r -> r.getEmail().equals(emailRifugiato));
+
+            if (!rifugiatoScelto) {
+                return new ResponseEntity<>("Il rifugiato scelto non ha manifestato interesse per questo alloggio.", HttpStatus.BAD_REQUEST);
+            }
+
+            // Se il rifugiato ha manifestato interesse, viene assegnato l'alloggio
+            alloggio.getListaCandidati().clear();  // Rimuoviamo gli altri candidati
+            alloggio.getListaCandidati().add(candidati.stream().filter(r -> r.getEmail().equals(emailRifugiato)).findFirst().get()); // Aggiungiamo solo il rifugiato scelto
+
+            alloggioService.addAlloggio(alloggio); // Salviamo l'alloggio aggiornato
+            return new ResponseEntity<>("Alloggio assegnato correttamente a " + emailRifugiato, HttpStatus.OK);
+        } catch (IllegalArgumentException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @PostMapping("/manifestazione-interesse")
+    public ResponseEntity<String> manifestazioneInteresse(@RequestBody Rifugiato rifugiato, @RequestBody Alloggio alloggio) {
+        try {
+            boolean risultato = alloggioService.manifestazioneInteresse(rifugiato, alloggio);
+            if (risultato) {
+                return new ResponseEntity<>("Manifestazione di interesse avvenuta con successo.", HttpStatus.OK);
+            } else {
+                return new ResponseEntity<>("Errore durante la manifestazione di interesse.", HttpStatus.BAD_REQUEST);
+            }
+        } catch (IllegalArgumentException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @GetMapping("/mostra")
+    public ResponseEntity<List<Alloggio>> getAllAlloggi() {
+        logger.info("Richiesta ricevuta per mostrare gli alloggi");
+        try {
+            // Otteniamo tutti gli alloggi dal servizio
+            List<Alloggio> alloggi = alloggioService.getAllAlloggio();
+
+            // Restituiamo la lista con lo stato OK
+            return new ResponseEntity<>(alloggi, HttpStatus.OK);
+        } catch (Exception e) {
+            // In caso di errore, restituiamo uno stato di errore con il messaggio
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    /**
+     * Endpoint per ottenere i dettagli di un alloggio tramite il titolo
+     * @param titolo titolo dell'alloggio da cercare
+     * @return i dettagli dell'alloggio o un errore se non trovato
+     */
+
+    @GetMapping("/SingoloAlloggio/{titolo}")
+    public Alloggio getAlloggioByTitolo(@PathVariable String titolo) {
+        Alloggio alloggio = alloggioService.getAlloggioByTitolo(titolo);
+        if (alloggio == null) {
+            //return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            return null;
+        }
+        // return new ResponseEntity<>(alloggio, HttpStatus.OK);
+        return alloggio;
+    }
 }

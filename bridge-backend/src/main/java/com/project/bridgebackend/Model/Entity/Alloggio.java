@@ -11,6 +11,7 @@ import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NonNull;
 
+import java.io.Serializable;
 import java.util.*;
 
 import jakarta.validation.constraints.Max;
@@ -23,7 +24,7 @@ import org.hibernate.validator.constraints.UniqueElements;
 @Data
 @Entity
 @Table(name = "alloggio")
-public class Alloggio {
+public class Alloggio implements Serializable {
 
     /**
      * Annotazione per identificare il campo 'id' come chiave primaria.
@@ -65,7 +66,7 @@ public class Alloggio {
      */
 
     @JoinColumn(name = "proprietario", referencedColumnName = "email", nullable = false)
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne()
     private Utente proprietario;
 
     /**
@@ -95,7 +96,7 @@ public class Alloggio {
     @Column(nullable = false, unique = true)
     private String titolo;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne()
     @JoinColumn(name = "indirizzo", referencedColumnName = "id", nullable = false)
     private Indirizzo indirizzo;
 

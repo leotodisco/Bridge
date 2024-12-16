@@ -17,6 +17,8 @@ import {useEffect, useState} from "react";
 import AreaPersonale from "./GestioneUtente/components/AreaPersonale.jsx";
 import AllEventsView from "./GestioneEvento/components/ViewAllEventi.jsx";
 import EventView from "./GestioneEvento/components/EventoRetrieveView.jsx";
+import MostraAlloggi from "./GestioneAlloggio/components/MostraAlloggi.jsx";
+import DettaglioAlloggio from "./GestioneAlloggio/components/Alloggio.jsx";
 import CorsoView from "./GestioneCorso/components/corsoView.jsx";
 
 function App() {
@@ -61,6 +63,7 @@ function App() {
                             <Link to ="/view-consulenza" className ="nav-link">View Consulenze</Link>
                             <Link to ="/view-lavoro" className ="nav-link">Visualizza Annunci di Lavoro</Link>
                             <Link to={"/view-eventi"} className="nav-link">View Eventi</Link>
+                            <Link to="/mostraAlloggi" className= "nav-link"> view Alloggi</Link>
                             <LogoutButton onLogout={handleLogout}/>
                         </nav>
                         <Routes>
@@ -80,6 +83,8 @@ function App() {
                             <Route path="/eventi/retrieve/:id" element={<EventView />} />
                             <Route path="/corso/view-corso/:id" element={<CorsoView/>}/>
                             <Route path="/eventi/retrieve/:id" element={<EventView />}/>
+                            <Route path ="/mostraAlloggi" element={<MostraAlloggi/>}/>
+                            <Route path="/alloggi/SingoloAlloggio/:titolo" element={<DettaglioAlloggio />} />
                         </Routes>
                     </> ) : (
                         <>
