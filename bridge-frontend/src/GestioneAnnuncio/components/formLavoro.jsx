@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import { useState } from "react";
+import "../css/formLavoro.css";
 
 const TipoContratto = {
     FULL_TIME: "Full Time",
@@ -8,25 +9,19 @@ const TipoContratto = {
     PROGETTO: "Contratto a Progetto",
     COLLABORAZIONE: "Collaborazione",
     COOPERATIVA: "Cooperativa",
-    ALTRO: "Altro"
-};
-
-const Tipologia = {
-    LAVORO: "LAVORO",
-    CONSULENZA: "CONSULENZA"
+    ALTRO: "Altro",
 };
 
 const CreaLavoro = () => {
     const [titolo, setTitolo] = useState("");
     const [disponibilita, setDisponibilita] = useState(false);
-    const [tipologia, setTipologia] = useState(Tipologia.LAVORO); // Impostato a Lavoro
     const [maxCandidature, setMaxCandidature] = useState(1);
     const [candidati, setCandidati] = useState([]);
     const [posizioneLavorativa, setPosizioneLavorativa] = useState("");
     const [nomeAzienda, setNomeAzienda] = useState("");
     const [orarioLavoro, setOrarioLavoro] = useState("");
     const [tipoContratto, setTipoContratto] = useState("");
-    const [retribuzione, setRetribuzione] = useState("");
+    const [retribuzione, setRetribuzione] = useState(""); // Gestito come stringa
     const [nomeSede, setNomeSede] = useState("");
     const [infoUtili, setInfoUtili] = useState("");
     const [indirizzo, setIndirizzo] = useState({
@@ -34,24 +29,89 @@ const CreaLavoro = () => {
         numCivico: "",
         citta: "",
         cap: "",
-        provincia: ""
+        provincia: "",
     });
 
     const aggiornaCampo = (setter) => (event) => {
         setter(event.target.value);
     };
 
+    const aggiornaRetribuzione = (event) => {
+        const valore = event.target.value.replace(",", "."); // Sostituisce la virgola con il punto
+        setRetribuzione(valore);
+    };
+
     const aggiornaIndirizzo = (campo) => (event) => {
         setIndirizzo({
             ...indirizzo,
-            [campo]: event.target.value
+            [campo]: event.target.value,
         });
+    };
+
+    const handleSubmit = async (event) => {
+        event.preventDefault();
+
+        // Validazione locale aggiuntiva per il CAP
+        if (indirizzo.cap && !/^\d{5}$/.test(indirizzo.cap)) {
+            alert("Il CAP deve contenere esattamente 5 cifre.");
+            return;
+        }
+
+        // Convertire la retribuzione con la virgola in un numero
+        const retribuzioneNumerica = parseFloat(retribuzione.replace(",", "."));
+
+        if (isNaN(retribuzioneNumerica) || retribuzioneNumerica <= 0) {
+            alert("La retribuzione deve essere un numero valido e positivo.");
+            return;
+        }
+
+        const lavoroDTO = {
+            titolo,
+            disponibilita,
+            maxCandidature: parseInt(maxCandidature, 10),
+            candidati: candidati.filter((email) => email.trim() !== ""),
+            posizioneLavorativa,
+            nomeAzienda,
+            orarioLavoro,
+            tipoContratto,
+            retribuzione: retribuzioneNumerica, // Inviare il valore numerico al backend
+            nomeSede,
+            infoUtili,
+            indirizzo,
+            proprietario: "mario.verdi@example.com",
+        };
+
+        console.log("Dati dell'annuncio di lavoro: ", lavoroDTO);
+
+        try {
+            const response = await fetch("http://localhost:8080/api/annunci/creaLavoro", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    Accept: "application/json",
+                },
+                body: JSON.stringify(lavoroDTO),
+            });
+
+            console.log("Risposta del server: ", response);
+
+            if (!response.ok) {
+                throw new Error(`Errore durante la creazione del lavoro: ${response.status}`);
+            }
+
+            const result = await response.json();
+            console.log("Annuncio di lavoro creato con successo!", result);
+            alert("Annuncio di lavoro creato con successo!");
+            resetForm();
+        } catch (error) {
+            console.error("Errore durante la creazione del lavoro: ", error);
+            alert("Errore durante la creazione del lavoro: " + error.message);
+        }
     };
 
     const resetForm = () => {
         setTitolo("");
         setDisponibilita(false);
-        setTipologia(Tipologia.LAVORO);
         setMaxCandidature(1);
         setCandidati([]);
         setPosizioneLavorativa("");
@@ -66,152 +126,195 @@ const CreaLavoro = () => {
             numCivico: "",
             citta: "",
             cap: "",
-            provincia: ""
+            provincia: "",
         });
     };
 
-    const handleSubmit = async (event) => {
-        event.preventDefault();
-
-        if (indirizzo.cap && !/^\d{5}$/.test(indirizzo.cap)) {
-            alert("Il CAP deve contenere esattamente 5 cifre.");
-            return;
-        }
-
-        const lavoroDTO = {
-            titolo,
-            disponibilita,
-            tipologia,
-            maxCandidature: parseInt(maxCandidature, 10),
-            candidati: candidati.filter((email) => email.trim() !== ""),
-            posizioneLavorativa,
-            nomeAzienda,
-            orarioLavoro,
-            tipoContratto,
-            retribuzione: parseFloat(retribuzione),
-            nomeSede,
-            infoUtili,
-            indirizzo
-        };
-
-        try {
-            const response = await fetch("http://localhost:8080/api/lavori/creaLavoro", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    Accept: "application/json"
-                },
-                body: JSON.stringify(lavoroDTO)
-            });
-
-            if (!response.ok) {
-                const errorData = await response.json();
-                throw new Error(`Errore: ${errorData.message || response.status}`);
-            }
-
-            alert("Annuncio di lavoro creato con successo!");
-            resetForm();
-        } catch (error) {
-            console.error("Errore durante la creazione del lavoro: ", error);
-            alert("Errore: " + error.message);
-        }
-    };
-
     return (
-        <div className="formContainer">
-            <h2>Crea un Annuncio di Lavoro</h2>
-            <form onSubmit={handleSubmit}>
-                <input type="text" placeholder="Titolo" value={titolo} onChange={aggiornaCampo(setTitolo)} required />
-                <label>
-                    Disponibilità:
-                    <input type="checkbox" checked={disponibilita} onChange={(e) => setDisponibilita(e.target.checked)} />
-                </label>
-                <input type="hidden" value={tipologia} />
-                <input
-                    type="number"
-                    placeholder="Massimo candidature"
-                    value={maxCandidature}
-                    onChange={aggiornaCampo(setMaxCandidature)}
-                    min="1"
-                    required
-                />
-                <input
-                    type="text"
-                    placeholder="Posizione Lavorativa"
-                    value={posizioneLavorativa}
-                    onChange={aggiornaCampo(setPosizioneLavorativa)}
-                    required
-                />
-                <input
-                    type="text"
-                    placeholder="Nome Azienda"
-                    value={nomeAzienda}
-                    onChange={aggiornaCampo(setNomeAzienda)}
-                    required
-                />
-                <input
-                    type="text"
-                    placeholder="Orario Lavoro"
-                    value={orarioLavoro}
-                    onChange={aggiornaCampo(setOrarioLavoro)}
-                    required
-                />
-                <select value={tipoContratto} onChange={aggiornaCampo(setTipoContratto)} required>
-                    <option value="">Seleziona Tipo Contratto</option>
-                    {Object.entries(TipoContratto).map(([key, value]) => (
-                        <option key={key} value={key}>
-                            {value}
-                        </option>
-                    ))}
-                </select>
-                <input
-                    type="number"
-                    step="0.01"
-                    placeholder="Retribuzione"
-                    value={retribuzione}
-                    onChange={aggiornaCampo(setRetribuzione)}
-                    min="0.01"
-                    required
-                />
-                <input type="text" placeholder="Nome Sede" value={nomeSede} onChange={aggiornaCampo(setNomeSede)} required />
-                <textarea placeholder="Informazioni Utili" value={infoUtili} onChange={aggiornaCampo(setInfoUtili)} required />
-                <h3>Indirizzo</h3>
-                <input
-                    type="text"
-                    placeholder="Via"
-                    value={indirizzo.via}
-                    onChange={aggiornaIndirizzo("via")}
-                    required
-                />
-                <input
-                    type="text"
-                    placeholder="Numero Civico"
-                    value={indirizzo.numCivico}
-                    onChange={aggiornaIndirizzo("numCivico")}
-                    required
-                />
-                <input
-                    type="text"
-                    placeholder="Città"
-                    value={indirizzo.citta}
-                    onChange={aggiornaIndirizzo("citta")}
-                    required
-                />
-                <input
-                    type="text"
-                    placeholder="CAP"
-                    value={indirizzo.cap}
-                    onChange={aggiornaIndirizzo("cap")}
-                    required
-                />
-                <input
-                    type="text"
-                    placeholder="Provincia"
-                    value={indirizzo.provincia}
-                    onChange={aggiornaIndirizzo("provincia")}
-                    required
-                />
-                <button type="submit">Crea Annuncio di Lavoro</button>
+        <div className="form-container">
+            <h3>Crea un Annuncio di Lavoro</h3>
+            <form className="form-card" onSubmit={handleSubmit}>
+                {/* Titolo */}
+                <div className="form-group">
+                    <label htmlFor="titolo">Titolo</label>
+                    <input
+                        id="titolo"
+                        type="text"
+                        value={titolo}
+                        onChange={aggiornaCampo(setTitolo)}
+                        placeholder="Inserisci il titolo"
+                        required
+                    />
+                </div>
+
+                {/* Disponibilità */}
+                <div className="form-group">
+                    <label htmlFor="disponibilita">Disponibilità</label>
+                    <div className="checkbox-container">
+                        <input
+                            type="checkbox"
+                            id="disponibilita"
+                            checked={disponibilita}
+                            onChange={(e) => setDisponibilita(e.target.checked)}
+                        />
+                        <span>Annuncio Disponibile</span>
+                    </div>
+                </div>
+
+                {/* Max Candidature */}
+                <div className="form-group">
+                    <label htmlFor="maxCandidature">Numero massimo di Candidature</label>
+                    <input
+                        id="maxCandidature"
+                        type="number"
+                        value={maxCandidature}
+                        onChange={aggiornaCampo(setMaxCandidature)}
+                        min="1"
+                        required
+                    />
+                </div>
+
+                {/* Posizione Lavorativa */}
+                <div className="form-group">
+                    <label htmlFor="posizione">Posizione Lavorativa</label>
+                    <input
+                        id="posizione"
+                        type="text"
+                        value={posizioneLavorativa}
+                        onChange={aggiornaCampo(setPosizioneLavorativa)}
+                        placeholder="Inserisci la posizione"
+                        required
+                    />
+                </div>
+
+                {/* Nome Azienda */}
+                <div className="form-group">
+                    <label htmlFor="nomeAzienda">Nome Azienda</label>
+                    <input
+                        id="nomeAzienda"
+                        type="text"
+                        value={nomeAzienda}
+                        onChange={aggiornaCampo(setNomeAzienda)}
+                        placeholder="Inserisci il nome dell'azienda"
+                        required
+                    />
+                </div>
+
+                {/* Orario Lavoro */}
+                <div className="form-group">
+                    <label htmlFor="orarioLavoro">Orario di Lavoro</label>
+                    <input
+                        id="orarioLavoro"
+                        type="text"
+                        value={orarioLavoro}
+                        onChange={aggiornaCampo(setOrarioLavoro)}
+                        placeholder="Formato: 09:00-18:00"
+                        required
+                    />
+                </div>
+
+                {/* Tipo Contratto */}
+                <div className="form-group">
+                    <label htmlFor="tipoContratto">Tipo Contratto</label>
+                    <select
+                        id="tipoContratto"
+                        value={tipoContratto}
+                        onChange={aggiornaCampo(setTipoContratto)}
+                        required
+                    >
+                        <option value="">Seleziona</option>
+                        {Object.entries(TipoContratto).map(([key, value]) => (
+                            <option key={key} value={key}>
+                                {value}
+                            </option>
+                        ))}
+                    </select>
+                </div>
+
+                {/* Retribuzione */}
+                <div className="form-group">
+                    <label htmlFor="retribuzione">Retribuzione (€)</label>
+                    <input
+                        id="retribuzione"
+                        type="text"
+                        value={retribuzione || ""}
+                        onChange={aggiornaRetribuzione}
+                        placeholder="Es: 1500.00"
+                        required
+                    />
+                </div>
+
+                {/* Nome Sede */}
+                <div className="form-group">
+                    <label htmlFor="nomeSede">Nome Sede</label>
+                    <input
+                        id="nomeSede"
+                        type="text"
+                        value={nomeSede}
+                        onChange={aggiornaCampo(setNomeSede)}
+                        placeholder="Inserisci il nome della sede"
+                        required
+                    />
+                </div>
+
+                {/* Info Utili */}
+                <div className="form-group">
+                    <label htmlFor="infoUtili">Informazioni Utili</label>
+                    <textarea
+                        id="infoUtili"
+                        value={infoUtili}
+                        onChange={aggiornaCampo(setInfoUtili)}
+                        placeholder="Inserisci informazioni aggiuntive"
+                        required
+                    ></textarea>
+                </div>
+
+                {/* Indirizzo */}
+                <fieldset className="form-group">
+                    <legend>Indirizzo</legend>
+                    <label>Via</label>
+                    <input
+                        type="text"
+                        value={indirizzo.via}
+                        onChange={aggiornaIndirizzo("via")}
+                        placeholder="Inserisci la via"
+                        required
+                    />
+                    <label>Numero Civico</label>
+                    <input
+                        type="text"
+                        value={indirizzo.numCivico}
+                        onChange={aggiornaIndirizzo("numCivico")}
+                        placeholder="Inserisci il numero civico"
+                        required
+                    />
+                    <label>Città</label>
+                    <input
+                        type="text"
+                        value={indirizzo.citta}
+                        onChange={aggiornaIndirizzo("citta")}
+                        placeholder="Inserisci la città"
+                        required
+                    />
+                    <label>CAP</label>
+                    <input
+                        type="text"
+                        value={indirizzo.cap}
+                        onChange={aggiornaIndirizzo("cap")}
+                        placeholder="Inserisci il CAP"
+                        required
+                    />
+                    <label>Provincia</label>
+                    <input
+                        type="text"
+                        value={indirizzo.provincia}
+                        onChange={aggiornaIndirizzo("provincia")}
+                        placeholder="Inserisci la provincia"
+                        required
+                    />
+                </fieldset>
+
+                <button type="submit">Conferma</button>
             </form>
         </div>
     );

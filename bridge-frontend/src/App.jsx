@@ -9,6 +9,7 @@ import CreaAlloggio from "./GestioneAlloggio/components/formAlloggio.jsx";
 import CreaLavoro from './GestioneAnnuncio/components/formLavoro.jsx';
 import logo from './assets/IMG_1580.PNG';
 import ViewConsulenza from "./GestioneAnnuncio/components/viewConsulenza.jsx";
+import ViewLavoro from "./GestioneAnnuncio/components/viewLavoro.jsx";
 import LogoutButton from "./GestioneLogout/components/logout.jsx";
 import {useEffect, useState} from "react";
 import AreaPersonale from "./GestioneUtente/components/AreaPersonale.jsx";
@@ -51,10 +52,11 @@ function App() {
                             <Link to="/crea-lavoro" className="nav-link">Crea Annuncio di Lavoro</Link>
                             <Link to="/crea-corso" className="nav-link">Crea Corso</Link>
                             <Link to="/crea-alloggio" className="nav-link">Crea Alloggio</Link>
-                            <LogoutButton onLogout={handleLogout}/>
                             <Link to ="/area-personale" className ="nav-link">Area Personale</Link>
                             <Link to ="/view-consulenza" className ="nav-link">View Consulenze</Link>
+                            <Link to ="/view-lavoro" className ="nav-link">Visualizza Annunci di Lavoro</Link>
                             <Link to={"/view-eventi"} className="nav-link">View Eventi</Link>
+                            <LogoutButton onLogout={handleLogout}/>
                         </nav>
                         <Routes>
                             <Route path="/" element={<p>Benvenuto nel sistema di gestione!</p>}/>
@@ -66,6 +68,7 @@ function App() {
                             <Route path="/login" element={<Login onLogin={handleLogin} />} />
                             <Route path="/crea-alloggio" element={<CreaAlloggio/>}/>
                             <Route path="/view-consulenza" element={<ViewConsulenza/>}/>
+                            <Route path="/view-lavoro" element={<ViewLavoro/>}/>
                             <Route path="/area-personale" element={<AreaPersonale onLogout={handleLogout}/>}/>
                             <Route path="/view-eventi" element={<AllEventsView />}/>
                             <Route path="/eventi/retrieve/:id" element={<EventView />}/>
