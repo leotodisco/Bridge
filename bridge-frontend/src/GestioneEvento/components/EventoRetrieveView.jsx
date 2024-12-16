@@ -20,7 +20,9 @@ const EventView = ({ id, onClose }) => {
     const [error, setError] = useState(null);
     const [isSubscribed, setIsSubscribed] = useState(false);
 
-    const emailPartecipante = "abdul@rifugiato.com"; // Email temporanea
+    // Recupera l'email dell'utente loggato dal localStorage
+    const emailPartecipante = localStorage.getItem("email");
+    const token = localStorage.getItem("token");
 
     const fetchEvent = async (id) => {
         try {
@@ -57,7 +59,8 @@ const EventView = ({ id, onClose }) => {
             const response = await fetch(`http://localhost:8080/api/eventi/${id}/iscrivi?emailPartecipante=${encodeURIComponent(emailPartecipante)}`, {
                 method: "POST",
                 headers: {
-                    "Content-Type": "application/json",
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${token}`
                 },
             });
             if (!response.ok) {
@@ -158,17 +161,20 @@ const EventView = ({ id, onClose }) => {
                                 className="popup-value">{eventData.organizzatore.nome} {eventData.organizzatore.cognome}</span>
                         </div>
                     </div>
-                    <div className="popup-actions">
-                        {isSubscribed ? (
-                            <button className="popup-button" onClick={handleUnsubscription}>
-                                Disiscriviti
-                            </button>
-                        ) : (
-                            <button className="popup-button" onClick={handleSubscription}>
-                                Iscriviti
-                            </button>
-                        )}
-                    </div>
+                    {/* Controlla che l'utente loggato non sia il proprietario dell'evento */}
+                    {emailPartecipante !== eventData.organizzatore.email && (
+                        <div className="popup-actions">
+                            {isSubscribed ? (
+                                <button className="popup-button" onClick={handleUnsubscription}>
+                                    Disiscriviti
+                                </button>
+                            ) : (
+                                <button className="popup-button" onClick={handleSubscription}>
+                                    Iscriviti
+                                </button>
+                            )}
+                        </div>
+                    )}
                 </div>
             </div>
         </div>

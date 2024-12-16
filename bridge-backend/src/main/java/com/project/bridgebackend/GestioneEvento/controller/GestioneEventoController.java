@@ -28,7 +28,7 @@ import org.springframework.web.server.ResponseStatusException;
  * Controller per la gestione degli eventi.
  */
 @RestController
-@CrossOrigin(origins = "http://localhost:5174", allowedHeaders = "*")
+@CrossOrigin(origins = "http://localhost:5173", allowedHeaders = "*")
 @RequestMapping("api/eventi")
 public class GestioneEventoController {
 
