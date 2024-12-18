@@ -6,41 +6,54 @@ import '@fortawesome/fontawesome-free/css/all.min.css';
 // eslint-disable-next-line react/prop-types
 const AreaPersonale = ({ onLogout }) => {
     const [userData, setUserData] = useState(null); // Stato per i dati utente
+    const [imgData, setImgData] = useState(null);
     const nav = useNavigate();
 
     useEffect(() => {
         const fetchUserData = async () => {
             try {
-                const email = localStorage.getItem('email'); // Email salvata nel localStorage
-                const token = localStorage.getItem('token'); // Token JWT
+                const email = localStorage.getItem('email');
+                const token = localStorage.getItem('token');
 
                 if (!email || !token) {
                     alert("Non sei autenticato. Effettua il login.");
-                    nav('/login'); // Reindirizza al login se dati mancanti
+                    nav('/login');
                     return;
                 }
 
-                const response = await fetch(`http://localhost:8080/areaPersonale/DatiUtente/${email}`, {
-                    method: 'GET',
-                    headers: {
-                        'Authorization': `Bearer ${token}`, // Autenticazione JWT
-                        'Content-Type': 'application/json',
-                    },
-                });
+                const [userResponse, imgResponse] = await Promise.all([
+                    fetch(`http://localhost:8080/areaPersonale/DatiUtente/${email}`, {
+                        method: 'GET',
+                        headers: {
+                            'Authorization': `Bearer ${token}`,
+                            'Content-Type': 'application/json',
+                        },
+                    }),
+                    fetch(`http://localhost:8080/areaPersonale/DatiFotoUtente/${email}`, {
+                        method: 'GET',
+                        headers: {
+                            'Authorization': `Bearer ${token}`,
+                            'Content-Type': 'application/json',
+                        },
+                    }),
+                ]);
 
-                if (!response.ok) {
-                    throw new Error(`Errore HTTP: ${response.status}`);
+                if (!userResponse.ok || !imgResponse.ok) {
+                    throw new Error(`Errore HTTP: ${userResponse.status} o ${imgResponse.status}`);
                 }
 
-                const data = await response.json();
-                setUserData(data);
+                const userData = await userResponse.json();
+                const imgBase64 = await imgResponse.text(); // Usa `.text()` per leggere direttamente la stringa Base64
+
+                setUserData(userData);
+                setImgData(imgBase64);
             } catch (error) {
-                console.error("Errore durante il recupero dei dati personali:", error);
-                alert("Errore durante il caricamento dei dati personali.");
+                console.error("Errore durante il recupero dei dati personali o immagine:", error);
+                alert("Errore durante il caricamento dei dati.");
             }
         };
 
-        fetchUserData(); // Richiama la funzione al caricamento del componente
+        fetchUserData();
     }, [nav]);
 
     const eliminaAccount = async () => {
@@ -83,7 +96,6 @@ const AreaPersonale = ({ onLogout }) => {
             }
         }
     };
-
     return (
         <div className="area-personale-container">
             {userData ? (
@@ -92,7 +104,12 @@ const AreaPersonale = ({ onLogout }) => {
                     <div className="sinistra">
                         <div className="profile-section">
                             {/* Foto Profilo */}
-                            <img src="/" alt="" className="profile-picture"/>
+                            <img
+                                src={imgData ? `data:image/jpeg;base64,${imgData}` : '/default-profile.png'}
+                                alt="Foto Profilo"
+                                className="profile-picture"
+                            />
+
 
                             {/* Pulsanti */}
                             <div className="action-buttons">

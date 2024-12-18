@@ -4,11 +4,15 @@ import com.project.bridgebackend.GestioneUtente.Service.UtenteService;
 import com.project.bridgebackend.Model.Entity.FiguraSpecializzata;
 import com.project.bridgebackend.Model.Entity.Utente;
 import com.project.bridgebackend.Model.dto.UtenteDTO;
+import com.project.bridgebackend.fotoProfilo.FotoProfilo;
 import com.project.bridgebackend.fotoProfilo.FotoProfiloService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.io.IOException;
+import java.util.Base64;
 
 /**
  * @author Antonio Ceruso
@@ -60,6 +64,17 @@ public class UtenteController {
             return dto;
         } catch (Exception e) {
             throw new RuntimeException(e);
+        }
+    }
+
+    @GetMapping("/DatiFotoUtente/{email}")
+    public String retrieveFotoUtente(@PathVariable("email") String email) throws IOException {
+        Utente u = utenteService.getUtente(email);
+        FotoProfilo fp = utenteService.getFotoUtente(u.getEmail());
+        if (fp != null && fp.getData() != null) {
+            return Base64.getEncoder().encodeToString(fp.getData());
+        } else {
+            throw new IOException("Foto non trovata per l'utente: " + email);
         }
     }
 }
