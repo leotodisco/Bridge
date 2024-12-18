@@ -1,6 +1,7 @@
 import './Sidebar.css'; // Import dello stile della sidebar
 import logo from '../../assets/IMG_1581.PNG'; // Logo
 import { Link } from 'react-router-dom';
+// per installare react-icons: npm install react-icons
 import { FaHome, FaHeart, FaList, FaSignOutAlt, FaChevronDown, FaChevronUp } from "react-icons/fa";
 import PropTypes from 'prop-types';
 import { useState } from 'react';
