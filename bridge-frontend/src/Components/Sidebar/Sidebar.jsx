@@ -16,12 +16,6 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
         setIsServicesExpanded(!isServicesExpanded);
     };
 
-    const handleLogout = () => {
-        setIsAuthenticated(false);
-        localStorage.clear();
-        sessionStorage.clear();
-    };
-
     return (
         <>
             {/* Linguetta per aprire la Sidebar */}
