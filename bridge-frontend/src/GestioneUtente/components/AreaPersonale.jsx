@@ -1,5 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import "../css/AreaPersonaleStyle.css";
+import '@fortawesome/fontawesome-free/css/all.min.css';
 
 // eslint-disable-next-line react/prop-types
 const AreaPersonale = ({ onLogout }) => {
@@ -84,29 +86,88 @@ const AreaPersonale = ({ onLogout }) => {
 
     return (
         <div className="area-personale-container">
-            <h1>Area Personale</h1>
             {userData ? (
-                <div>
-                    <p><strong>Nome:</strong> {userData.nomeUtente}</p>
-                    <p><strong>Cognome:</strong> {userData.cognomeUtente}</p>
-                    <p><strong>Email:</strong> {userData.emailUtente}</p>
-                    <p><strong>Nazionalità:</strong> {userData.nazionalitaUtente}</p>
-                    <p><strong>Data di nascita:</strong> {userData.dataNascitaUtente}</p>
-                    <p><strong>Genere:</strong> {userData.genderUtente}</p>
-                    <p><strong>Titolo di Studio:</strong> {userData.titoloDiStudioUtente}</p>
-                    <p><strong>Skill:</strong> {userData.skillUtente}</p>
-                    {userData.ruoloUtente === "FiguraSpecializzata" && (
-                        <p><strong>Disponibilità:</strong> {userData.disponibilitaUtente}</p>
-                    )}
-                    <p><strong>Ruolo:</strong> {userData.ruoloUtente}</p>
-                    <p><strong>Lingue Parlate:</strong> {userData.lingueParlateUtente}</p>
-                </div>
+                <>
+                    {/* Sezione sinistra */}
+                    <div className="sinistra">
+                        <div className="profile-section">
+                            {/* Foto Profilo */}
+                            <img src="/" alt="" className="profile-picture"/>
+
+                            {/* Pulsanti */}
+                            <div className="action-buttons">
+                                {/* Pulsante Logout */}
+                                <button onClick={onLogout} className="logoutButton">
+                                    <i className="fas fa-sign-out-alt"></i>
+                                    <span>Log Out</span>
+                                </button>
+
+                                {/* Pulsante Delete Account */}
+                                <button onClick={eliminaAccount} className="deleteButton">
+                                    <i className="fas fa-trash-alt"></i>
+                                    <span>Delete Account</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Divisore */}
+                    <div className="divisore"></div>
+
+                    {/* Sezione destra */}
+                    <div className="destra">
+                        <h1>Dati Personali</h1>
+                        {userData ? (
+                            <>
+                                <div className="data-row">
+                                <span className="data-label">Nome:</span>
+                                    <span className="data-value">{userData.nomeUtente}</span>
+                                </div>
+                                <div className="data-row">
+                                    <span className="data-label">Cognome:</span>
+                                    <span className="data-value">{userData.cognomeUtente}</span>
+                                </div>
+                                <div className="data-row">
+                                    <span className="data-label">Email:</span>
+                                    <span className="data-value">{userData.emailUtente}</span>
+                                </div>
+                                <div className="data-row">
+                                    <span className="data-label">Nazionalità:</span>
+                                    <span className="data-value">{userData.nazionalitaUtente}</span>
+                                </div>
+                                <div className="data-row">
+                                    <span className="data-label">Data di nascita:</span>
+                                    <span className="data-value">{userData.dataNascitaUtente}</span>
+                                </div>
+                                <div className="data-row">
+                                    <span className="data-label">Genere:</span>
+                                    <span className="data-value">{userData.genderUtente}</span>
+                                </div>
+                                <div className="data-row">
+                                    <span className="data-label">Titolo di Studio:</span>
+                                    <span className="data-value">{userData.titoloDiStudioUtente}</span>
+                                </div>
+                                <div className="data-row">
+                                    <span className="data-label">Skill:</span>
+                                    <span className="data-value">{userData.skillUtente}</span>
+                                </div>
+                                <div className="data-row">
+                                    <span className="data-label">Ruolo:</span>
+                                    <span className="data-value">{userData.ruoloUtente}</span>
+                                </div>
+                                <div className="data-row">
+                                    <span className="data-label">Lingue Parlate:</span>
+                                    <span className="data-value">{userData.lingueParlateUtente}</span>
+                                </div>
+                            </>
+                        ) : (
+                            <p>Caricamento dei dati personali...</p>
+                        )}
+                    </div>
+                </>
             ) : (
                 <p>Caricamento dei dati personali...</p>
             )}
-            <button onClick={eliminaAccount} className="delete-account-button">
-                Elimina Account
-            </button>
         </div>
     );
 };
