@@ -1,0 +1,203 @@
+/* Linguetta per agire la Sidebar */
+.sidebar-toggle-btn {
+    position: fixed;
+    top: 20px;
+    left: 0;
+    width: 50px;
+    height: 50px;
+    background-color: #002b36;
+    color: white;
+    border: none;
+    cursor: pointer;
+    font-size: 18px;
+    border-bottom-right-radius: 15px;
+    border-top-right-radius: 15px;
+    z-index: 1001;
+    transition: transform 0.3s ease, opacity 0.3s ease; /* Movimento fluido e scomparsa */
+    box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.2); /* Ombra per la linguetta */
+}
+
+/* Nasconde la linguetta quando la Sidebar è aperta */
+.sidebar.open ~ .sidebar-toggle-btn {
+    display: none;
+}
+
+/* Stile per il logo */
+.logo img {
+    max-width: 50%;
+    margin: 70px 40px;
+    height: auto;
+    transition: margin-top 0.3s ease; /* Transizione fluida per lo spostamento */
+}
+
+/* Stile per il pulsante "Log out" */
+.log-out {
+    transition: margin-top 0.9s ease; /* Transizione per spostamento fluido */
+}
+
+.log-out.shifted-down {
+    margin-top: -10px; /* Sposta Log out verso il basso */
+}
+
+/* Contenitore della Sidebar */
+.sidebar {
+    position: fixed;
+    top: 20px;
+    bottom: 20px;
+    left: 0;
+    width: 250px; /* Larghezza della Sidebar */
+    border-bottom-right-radius: 15px;
+    border-top-right-radius: 15px;
+    background-color: #002b36; /* Colore di sfondo */
+    color: white;
+    transform: translateX(-100%); /* Nasconde la Sidebar inizialmente */
+    transition: transform 0.3s ease; /* Transizione fluida */
+    z-index: 1000;
+    overflow: hidden; /* Nasconde l'overflow */
+    display: flex;
+    flex-direction: column; /* Posiziona i contenuti in colonna */
+    justify-content: flex-start; /* Allinea i contenuti verso l'alto */
+    box-shadow: 4px 0px 15px rgba(0, 0, 0, 0.3); /* Ombra laterale della Sidebar */
+}
+
+/* Mostra la Sidebar quando è aperta */
+.sidebar.open {
+    transform: translateX(0); /* Mostra la Sidebar */
+}
+
+/* Pulsante per chiudere la Sidebar */
+.close-btn {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    background: none;
+    border: none;
+    color: white;
+    font-size: 30px;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+}
+
+.close-btn:hover {
+    transform: scale(1.2); /* Effetto di ingrandimento */
+}
+
+/* Contenitore del menu */
+.menu {
+    list-style: none;
+    padding: 0;
+    margin: 20px 0 0 0; /* Margine superiore per il menu */
+    transition: margin-top 0.9s ease; /* Transizione per spostamento fluido */
+}
+
+/* Sposta il menu verso l'alto quando il sotto-menu è espanso */
+.menu.shifted-up {
+    margin-top: -90px; /* Sposta il menu verso l'alto */
+}
+
+/* Elementi del menu */
+.menu li {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 15px 20px;
+    cursor: pointer;
+    transition: background-color 0.2s ease, padding-left 0.3s ease;
+}
+
+.menu li a {
+    text-decoration: none; /* Rimuove la sottolineatura */
+    color: white; /* Inherit dal colore dell'elemento */
+    font-weight: bold;
+    font-size: 20px;
+    text-align: start;
+}
+
+
+/* Stile per il passaggio del mouse sugli elementi del menu */
+.menu li:hover {
+    background-color: #004b66; /* Sfondo al passaggio del mouse */
+    padding-left: 30px; /* Sposta leggermente a destra l'elemento */
+}
+
+.menu li:hover .icon {
+    color: #d4d4d4; /* Cambia il colore delle icone al passaggio del mouse */
+}
+
+.menu li span {
+    font-size: 20px;
+    font-weight: bold;
+    color: #ffffff;
+    transition: color 0.2s ease;
+}
+
+/* Sotto-menu (submenu) */
+.submenu {
+    list-style: none;
+    padding: 0;
+    margin: 10px 0 0 20px; /* Margine per indentare rispetto alla voce principale */
+    overflow: hidden;
+    transition: margin-top 0.9s ease; /* Transizione per spostamento fluido */
+}
+
+/* Elementi del sotto-menu */
+.submenu li {
+    display: flex; /* Uniforma lo stile con gli elementi principali */
+    align-items: center; /* Allinea verticalmente */
+    text-align: left; /* Allinea il testo a sinistra */
+    padding: 10px 0; /* Spaziatura tra gli elementi */
+    color: #ffffff; /* Colore del testo */
+    cursor: pointer;
+    transition: background-color 0.2s ease, padding-left 0.3s ease;
+}
+
+/* Link nel sotto-menu */
+.submenu li a {
+    text-decoration: none; /* Rimuove la sottolineatura */
+    color: white; /* Inherit dal colore dell'elemento */
+    width: 100%; /* Espande il link per coprire tutto il contenitore */
+    padding: 5px 10px; /* Padding interno */
+    font-weight: bold;
+    font-size: 16px;
+}
+
+/* Stile per il passaggio del mouse sugli elementi del sotto-menu */
+.submenu li:hover {
+    background-color: #004b66; /* Sfondo al passaggio del mouse */
+}
+
+/* Icona per espandere o comprimere il menu */
+.menu-item {
+    display: flex;
+    align-items: center; /* Allinea testo e icona verticalmente */
+    padding: 15px 20px; /* Padding uniforme */
+    cursor: pointer;
+    gap: 15px; /* Spaziatura tra l'icona principale e il testo */
+    transition: background-color 0.2s ease, padding-left 0.3s ease, color 0.2s ease; /* Transizioni fluide */
+}
+
+.expand-icon {
+    font-size: 14px;
+    color: #ffffff;
+}
+
+/* Log out */
+.log-out {
+    transition: margin-top 0.3s ease; /* Transizione per spostamento fluido */
+}
+
+/* Contenuto principale */
+.page-content {
+    flex: 1;
+    margin-left: 0;
+    padding: 20px;
+    transition: margin-left 0.3s ease; /* Transizione per spostamento */
+    text-align: center; /* Allinea il testo centrato */
+}
+
+/* Quando la Sidebar è aperta */
+.page-content.shifted {
+    margin-left: 270px; /* Sposta il contenuto a destra */
+    transition: margin-left 0.3s ease; /* Transizione per fluidità */
+}
+

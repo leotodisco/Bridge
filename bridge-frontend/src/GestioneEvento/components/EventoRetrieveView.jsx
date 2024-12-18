@@ -24,9 +24,11 @@ const EventView = ({ id, onClose }) => {
     const emailPartecipante = localStorage.getItem("email");
     const token = localStorage.getItem("token");
 
+    console.log("Email corrente: ", emailPartecipante);
+
     const fetchEvent = async (id) => {
         try {
-            const response = await fetch(`http://localhost:8080/api/eventi/retrieve/${id}`);
+            const response = await fetch(`http://localhost:8080/api/eventi/retrieve/${id}?emailPartecipante=${encodeURIComponent(emailPartecipante)}`);
             if (!response.ok) {
                 throw new Error("Evento non trovato");
             }
@@ -41,17 +43,26 @@ const EventView = ({ id, onClose }) => {
 
     // Funzione per verificare l'iscrizione
     const checkSubscription = async () => {
+        if (!emailPartecipante) {
+            console.error("Email non presente nel localStorage.");
+            return;
+        }
         try {
-            const response = await fetch(`http://localhost:8080/api/eventi/${id}/iscrizione?emailPartecipante=${encodeURIComponent(emailPartecipante)}`);
+            const url = `http://localhost:8080/api/eventi/${id}/iscrizione?emailPartecipante=${encodeURIComponent(emailPartecipante)}`;
+            console.log("URL richiesta:", url);
+
+            const response = await fetch(url);
             if (!response.ok) {
-                throw new Error("Errore durante la verifica dell'iscrizione");
+                throw new Error(`Errore nella richiesta: ${response.status} - ${response.statusText}`);
             }
             const isIscritto = await response.json();
+            console.log("Risultato iscrizione:", isIscritto);
             setIsSubscribed(isIscritto);
         } catch (error) {
-            console.error(error);
+            console.error("Errore durante la verifica dell'iscrizione:", error.message);
         }
     };
+
 
     const handleSubscription = async () => {
         try {

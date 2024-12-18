@@ -32,6 +32,7 @@ const AllEventsView = () => {
     const [error, setError] = useState(null);
     const [selectedEventId, setSelectedEventId] = useState(null); // Stato per il popup
 
+
     const fetchEvents = async () => {
         try {
             const response = await fetch("http://localhost:8080/api/eventi/all");
@@ -99,7 +100,6 @@ const AllEventsView = () => {
             {selectedEventId && (
                 <EventView id={selectedEventId} onClose={closePopup} />
             )}
-
         </div>
     );
 };
