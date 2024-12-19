@@ -2,8 +2,10 @@ package com.project.bridgebackend.GestioneUtente.Service;
 
 import com.project.bridgebackend.Model.Entity.Utente;
 import com.project.bridgebackend.fotoProfilo.FotoProfilo;
+import jakarta.validation.Valid;
 
 import java.io.IOException;
+import java.util.HashMap;
 
 /**
  * @author Antonio Ceruso
@@ -14,4 +16,7 @@ public interface UtenteService {
     FotoProfilo getFotoUtente(String email) throws IOException;
     void eliminaUtente(String email) throws Exception;
     Utente getUtente(String email);
+    void modificaPassword(String email, String password) throws Exception;
+    void modificaFotoUtente(String email, String base64Image) throws IOException;
+    Utente modificaUtente(String email, HashMap<String, Object> aggiornamenti) throws IOException;
 }

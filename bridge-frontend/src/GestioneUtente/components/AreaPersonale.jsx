@@ -6,8 +6,12 @@ import '@fortawesome/fontawesome-free/css/all.min.css';
 // eslint-disable-next-line react/prop-types
 const AreaPersonale = ({ onLogout }) => {
     const [userData, setUserData] = useState(null); // Stato per i dati utente
-    const [imgData, setImgData] = useState(null);
+    const [imgData, setImgData] = useState(null); // Stato per l'immagine profilo
+    const [fotoProfilo, setFotoProfilo] = useState(null);  // Stato per la foto caricata nel frontend
+    const [errorMessages, setErrorMessages] = useState({});
     const nav = useNavigate();
+    const [showImageForm, setShowImageForm] = useState(false);  // Stato per la visibilità del form
+    const [imageFile, setImageFile] = useState(null);  // Stato per il file immagine selezionato
 
     useEffect(() => {
         const fetchUserData = async () => {
@@ -96,6 +100,72 @@ const AreaPersonale = ({ onLogout }) => {
             }
         }
     };
+
+    // Funzione per gestire il cambiamento dell'immagine (già presente)
+    const aggiornaFotoProfilo = (event) => {
+        const file = event.target.files[0];
+        if (file && (file.type === "image/jpeg" || file.type === "image/jpg")) {
+            const reader = new FileReader();
+            reader.onload = () => {
+                setFotoProfilo(reader.result); // Visualizza la preview dell'immagine
+                setImageFile(file); // Salva il file selezionato
+            };
+            reader.readAsDataURL(file);
+            setErrorMessages((prev) => {
+                const updatedErrors = { ...prev };
+                delete updatedErrors.fotoProfilo;
+                return updatedErrors;
+            });
+        } else {
+            setErrorMessages((prev) => ({
+                ...prev,
+                fotoProfilo: "Il file deve essere in formato JPG o JPEG.",
+            }));
+        }
+    };
+
+    const handleSubmitImage = async () => {
+        if (!imageFile) {
+            alert("Per favore seleziona un'immagine.");
+            return;
+        }
+
+        try {
+            const email = localStorage.getItem('email');
+            const token = localStorage.getItem('token');  // Assicurati che il token sia nel localStorage
+
+            if (!token) {
+                alert("Token non trovato. Effettua nuovamente il login.");
+                return;
+            }
+
+            const formData = new FormData();
+            formData.append('image', imageFile); // Aggiungi il file selezionato a FormData
+
+            const response = await fetch(`http://localhost:8080/areaPersonale/modificaFotoUtente/${email}`, {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${token}`, // Invia il token nell'intestazione
+                },
+                body: formData, // Invia il FormData con il file
+            });
+
+            if (!response.ok) {
+                throw new Error(`Errore HTTP: ${response.status}`);
+            }
+
+            const updatedImg = await response.text();  // Ricevi la risposta dal backend
+            setImgData(updatedImg);  // Aggiorna l'immagine del profilo nel frontend
+            alert("Foto del profilo aggiornata con successo!");
+            setShowImageForm(false);  // Nasconde il form dopo il successo
+        } catch (error) {
+            console.error("Errore durante l'aggiornamento della foto del profilo:", error);
+            alert("Errore durante l'aggiornamento della foto.");
+        }
+    };
+
+
+
     return (
         <div className="area-personale-container">
             {userData ? (
@@ -105,11 +175,29 @@ const AreaPersonale = ({ onLogout }) => {
                         <div className="profile-section">
                             {/* Foto Profilo */}
                             <img
-                                src={imgData ? `data:image/jpeg;base64,${imgData}` : '/default-profile.png'}
+                                src={fotoProfilo || (imgData ? `data:image/jpeg;base64,${imgData}` : '/default-profile.png')}
                                 alt="Foto Profilo"
                                 className="profile-picture"
                             />
 
+                            <button onClick={() => setShowImageForm(!showImageForm)} className="uploadImageButton">
+                                <i className="fas fa-camera"></i>
+                                <span>Cambia Foto</span>
+                            </button>
+
+                            {showImageForm && (
+                                <div className="uploadImageForm">
+                                    <input
+                                        type="file"
+                                        accept="image/*"
+                                        onChange={aggiornaFotoProfilo}
+                                        className="fileInput"
+                                    />
+                                    {errorMessages.fotoProfilo && <p className="error">{errorMessages.fotoProfilo}</p>}
+                                    <button onClick={handleSubmitImage} className="submitImageButton">Carica Immagine</button>
+                                    <button onClick={() => setShowImageForm(false)} className="cancelButton">Annulla</button>
+                                </div>
+                            )}
 
                             {/* Pulsanti */}
                             <div className="action-buttons">
@@ -137,7 +225,7 @@ const AreaPersonale = ({ onLogout }) => {
                         {userData ? (
                             <>
                                 <div className="data-row">
-                                <span className="data-label">Nome:</span>
+                                    <span className="data-label">Nome:</span>
                                     <span className="data-value">{userData.nomeUtente}</span>
                                 </div>
                                 <div className="data-row">

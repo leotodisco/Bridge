@@ -3,6 +3,9 @@ package com.project.bridgebackend.GestioneUtente.Controller;
 import com.project.bridgebackend.GestioneUtente.Service.UtenteService;
 import com.project.bridgebackend.Model.Entity.FiguraSpecializzata;
 import com.project.bridgebackend.Model.Entity.Utente;
+import com.project.bridgebackend.Model.Entity.enumeration.Gender;
+import com.project.bridgebackend.Model.Entity.enumeration.Ruolo;
+import com.project.bridgebackend.Model.Entity.enumeration.TitoloDiStudio;
 import com.project.bridgebackend.Model.dto.UtenteDTO;
 import com.project.bridgebackend.fotoProfilo.FotoProfilo;
 import com.project.bridgebackend.fotoProfilo.FotoProfiloService;
@@ -10,9 +13,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.time.LocalDate;
 import java.util.Base64;
+import java.util.HashMap;
 
 /**
  * @author Antonio Ceruso
@@ -75,6 +81,60 @@ public class UtenteController {
             return Base64.getEncoder().encodeToString(fp.getData());
         } else {
             throw new IOException("Foto non trovata per l'utente: " + email);
+        }
+    }
+
+    @PostMapping("/modificaFotoUtente/{email}")
+    public ResponseEntity<String> editFotoUtente(
+            @PathVariable("email") String email,
+            @RequestParam("image") MultipartFile image) throws IOException {
+
+        try {
+            // Verifica se il file è stato ricevuto correttamente
+            if (image.isEmpty()) {
+                return ResponseEntity.badRequest().body("Nessuna immagine ricevuta");
+            }
+
+            System.out.println("File ricevuto: " + image.getOriginalFilename());
+            byte[] bytes = image.getBytes();
+            String base64Image = Base64.getEncoder().encodeToString(bytes);
+            // Chiamata al servizio per modificare la foto
+            utenteService.modificaFotoUtente(email, base64Image);
+
+            return ResponseEntity.ok("Foto profilo aggiornata con successo.");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Errore durante l'aggiornamento della foto profilo: " + e.getMessage());
+        }
+    }
+
+
+    @PostMapping("modificaPassword/{email}")
+    public ResponseEntity<String> editPassword(@RequestBody String password,
+                                               @PathVariable String email) throws IOException{
+        try {
+
+            utenteService.modificaPassword(email,password);
+            return ResponseEntity.ok("Password aggiornata con successo");
+
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Errore durante l'aggiornamento dell'utente: " + e.getMessage());
+        }
+    }
+
+    @PostMapping("/modificaUtente/{email}")
+    public ResponseEntity<?> editUtente(@RequestBody HashMap<String, Object> aggiornamenti,
+                                             @PathVariable String email
+                                                ) throws IOException{
+        try {
+            System.out.println(aggiornamenti);
+            Utente u = utenteService.modificaUtente(email,aggiornamenti);
+
+            return ResponseEntity.ok(u);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Errore durante l'aggiornamento dell'utente: " + e.getMessage());
         }
     }
 }
