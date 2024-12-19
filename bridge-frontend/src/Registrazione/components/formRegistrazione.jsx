@@ -22,6 +22,17 @@ const Ruolo = {
     FiguraSpecializzata: "Figura Specializzata",
 };
 
+const regexPatterns = {
+    nome: /^[A-Za-zÀ-ÖØ-öø-ÿ' -]{2,30}$/,
+    cognome: /^[A-Za-zÀ-ÖØ-öø-ÿ' -]{2,30}$/,
+    nazionalita: /^[a-zA-Z\s]{5,30}$/,
+    lingueParlate: /^[a-zA-Z ,]{5,30}$/,
+    email: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+    disponibilita: /^[A-Za-z0-9,.:;]+$/,
+    password: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,16}$/,
+    skill: /^[^<>{}[\]]{1,255}$/,
+};
+
 const CreaUtente = () => {
     const [nome, setNome] = useState("");
     const [cognome, setCognome] = useState("");
@@ -36,64 +47,164 @@ const CreaUtente = () => {
     const [lingueParlate, setLingue] = useState("");
     const [dataDiNascita, setDataDiNascita] = useState("");
     const [fotoProfilo, setFotoProfilo] = useState(null);
-    const [disponibilita, setDisponibilita] = useState("");  // Nuovo stato per la disponibilità
-
+    const [disponibilita, setDisponibilita] = useState("");
+    const [errorMessages, setErrorMessages] = useState({});
     const navigate = useNavigate();
 
-    const aggiornaNome = (event) => {
-        setNome(event.target.value);
+    const aggiornaDataDiNascita = (event) => {
+        const value = event.target.value;
+        setDataDiNascita(value);
+        validateData("dataNascita", value);
+    };
+
+    const  validateData = (field, value) => {
+        if (field === "dataNascita" && value) {
+            const today = new Date();
+            const dateValue = new Date(value);
+            if (isNaN(dateValue.getTime())) {
+                setErrorMessages((prev) => ({
+                    ...prev,
+                    dataNascita: "La data di nascita non è valida.",
+                }));
+                return;
+            }
+
+            if (dateValue >= today) {
+                setErrorMessages((prev) => ({
+                    ...prev,
+                    dataNascita: "La data di nascita deve essere nel passato.",
+                }));
+                return;
+            } else {
+                setErrorMessages((prev) => {
+                    const updatedErrors = { ...prev };
+                    delete updatedErrors.dataNascita;
+                    return updatedErrors;
+                });
+            }
+        }
     }
 
+    const validateField = (field, value) => {
+        if (!regexPatterns[field]?.test(value)) {
+            setErrorMessages((prev) => ({
+                ...prev,
+                [field]: `Il campo ${field} non è valido.`,
+            }));
+        }else{
+            setErrorMessages((prev) => {
+                const updatedErrors = { ...prev };
+                delete updatedErrors[field];
+                return updatedErrors;
+            });
+        }
+        if(value.trim().length === 0) {
+            setErrorMessages((prev) => ({
+                ...prev,
+                [field]: `Il campo ${field} è vuoto.`,
+            }));
+        }
+    };
+
+
+
+    const aggiornaNome = (event) => {
+        const value = event.target.value;
+        setNome(value);
+        validateField("nome", value);
+    };
+
     const aggiornaCognome = (event) => {
-        setCognome(event.target.value);
+        const value = event.target.value;
+        setCognome(value);
+        validateField("cognome", value);
     };
 
     const aggiornaEmail = (event) => {
-        setEmail(event.target.value);
+        const value = event.target.value;
+        setEmail(value);
+        validateField("email", value);
     };
 
     const aggiornaPassword = (event) => {
-        setPassword(event.target.value);
+        const value = event.target.value;
+        setPassword(value);
+        validatePasswordConditions(value);
+        validateField("password", value);
     };
 
     const aggiornaConfermaPW = (event) => {
-        setConfermaPW(event.target.value);
+        const value = event.target.value;
+        setConfermaPW(value);
+        if (password !== value) {
+            setErrorMessages((prev) => ({
+                ...prev,
+                confermaPW: "Le password non corrispondono.",
+            }));
+        } else {
+            setErrorMessages((prev) => {
+                const updatedErrors = { ...prev };
+                delete updatedErrors.confermaPW;
+                return updatedErrors;
+            });
+        }
     };
 
     const aggiornaNazionalita = (event) => {
-        setNazionalita(event.target.value);
-    }
+        const value = event.target.value;
+        setNazionalita(value);
+        validateField("nazionalita", value);
+    };
 
     const aggiornaSkill = (event) => {
-        setSkill(event.target.value);
+        const value = event.target.value;
+        setSkill(value);
+        validateField("skill", value);
     };
 
     const aggiornaLingueParlate = (event) => {
-        setLingue(event.target.value);
-    };
-
-    const aggiornaDataDiNascita = (event) => {
-        setDataDiNascita(event.target.value);
+        const value = event.target.value;
+        setLingue(value);
+        validateField("lingueParlate", value);
     };
 
     const aggiornaFotoProfilo = (event) => {
         const file = event.target.files[0];
-        if (file) {
+        if (file && (file.type === "image/jpeg" || file.type === "image/jpg")) {
             const reader = new FileReader();
             reader.onload = () => {
-                setFotoProfilo(reader.result); // Salva solo il Base64
+                setFotoProfilo(reader.result);
             };
             reader.readAsDataURL(file);
+            setErrorMessages((prev) => {
+                const updatedErrors = { ...prev };
+                delete updatedErrors.fotoProfilo;
+                return updatedErrors;
+            });
         } else {
-            setFotoProfilo(null);
+            setErrorMessages((prev) => ({
+                ...prev,
+                fotoProfilo: "Il file deve essere in formato JPG o JPEG.",
+            }));
         }
     };
 
+
     const aggiornaDisponibilita = (event) => {
-        setDisponibilita(event.target.value);
+        const value = event.target.value;
+        setDisponibilita(value);
+        validateField("disponibilita", value);
+    };
+
+    const isFormValid = () => {
+        return Object.keys(errorMessages).length === 0;
     };
 
     const gestisciSubmit = async (event) => {
+            if (!isFormValid()) {
+                alert("Correggi i campi non validi prima di continuare.");
+                return;
+            }
         event.preventDefault();
         const utenteDTO = {
             nomeUtente: nome,
@@ -102,14 +213,14 @@ const CreaUtente = () => {
             passwordUtente: password,
             confermaPWUtente: confermaPW,
             dataNascitaUtente: dataDiNascita,
-            genderUtente: genere, // Singolo valore, es: "Maschio"
-            titoloDiStudioUtente: titolodistudio, // Singolo valore, es: "Laurea"
-            ruoloUtente: ruolo, // Singolo valore, es: "Volontario"
+            genderUtente: genere,
+            titoloDiStudioUtente: titolodistudio,
+            ruoloUtente: ruolo,
             skillUtente: skill,
             nazionalitaUtente: nazionalita,
             lingueParlateUtente: lingueParlate,
             fotoUtente: fotoProfilo,
-            disponibilitaUtente: disponibilita  // Aggiunto campo disponibilità
+            disponibilitaUtente: disponibilita
         };
 
         console.log(utenteDTO);
@@ -153,36 +264,82 @@ const CreaUtente = () => {
         }
     };
 
+    const [showPassword, setShowPassword] = useState(false);
+    const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
+    const togglePasswordVisibility = () => {
+        setShowPassword(!showPassword);
+    };
+
+    const toggleConfirmPasswordVisibility = () => {
+        setShowConfirmPassword(!showConfirmPassword);
+    };
+
+    const [passwordConditions, setPasswordConditions] = useState({
+        hasUpperCase: false,
+        hasLowerCase: false,
+        hasNumber: false,
+        hasSpecialChar: false,
+        isLengthValid: false
+    });
+    const [passwordError, setPasswordError] = useState("");
+    const validatePasswordConditions = (password) => {
+        const newConditions = {
+            hasUpperCase: /[A-Z]/.test(password),
+            hasLowerCase: /[a-z]/.test(password),
+            hasNumber: /\d/.test(password),
+            hasSpecialChar: /[@$!%*?&]/.test(password),
+            isLengthValid: password.length >= 8 && password.length <= 16
+        };
+        setPasswordConditions(newConditions);
+
+        if (!newConditions.hasUpperCase) {
+            setPasswordError("La password deve contenere almeno una lettera maiuscola.");
+        } else if (!newConditions.hasLowerCase) {
+            setPasswordError("La password deve contenere almeno una lettera minuscola.");
+        } else if (!newConditions.hasNumber) {
+            setPasswordError("La password deve contenere almeno un numero.");
+        } else if (!newConditions.hasSpecialChar) {
+            setPasswordError("La password deve contenere almeno un carattere speciale.");
+        } else if (!newConditions.isLengthValid) {
+            setPasswordError("La password deve essere lunga tra 8 e 16 caratteri.");
+        } else {
+            setPasswordError(""); // Se tutte le condizioni sono soddisfatte, non ci sono errori
+        }
+    };
+
     return (
-        //Contenitore del form
         <div className="formRegistrazione">
             <h2>Registrazione nuovo utente</h2>
             <form onSubmit={gestisciSubmit}>
                 <input
                     type="text"
                     placeholder={"Nome"}
-                    className={"formEditText"}
+                    className={`formEditText field ${errorMessages.nome ? 'error-field' : ''}`}
                     value={nome}
                     onChange={aggiornaNome}
                     required={true}
                 />
+                {errorMessages.nome && <p className="error">{errorMessages.nome}</p>}
 
                 <input
                     type="text"
                     placeholder={"Cognome"}
-                    className={"formEditText"}
+                    className={`formEditText field ${errorMessages.cognome ? 'error-field' : ''}`}
                     value={cognome}
                     onChange={aggiornaCognome}
                     required={true}
                 />
+                {errorMessages.cognome && <p className="error">{errorMessages.cognome}</p>}
 
                 <input
                     type="date"
-                    className={"formEditText"}
+                    className={`formEditText field ${errorMessages.dataNascita ? 'error-field' : ''}`}
                     value={dataDiNascita}
                     onChange={aggiornaDataDiNascita}
                     required={true}
                 />
+                {errorMessages.dataNascita && <p className="error">{errorMessages.dataNascita}</p>}
 
                 <select
                     className={"formEditText selectMulti"}
@@ -201,29 +358,29 @@ const CreaUtente = () => {
                 <input
                     type="text"
                     placeholder={"Nazionalità"}
-                    className={"formEditText"}
+                    className={`formEditText field ${errorMessages.nazionalita ? 'error-field' : ''}`}
                     value={nazionalita}
                     onChange={aggiornaNazionalita}
                 />
-
+                {errorMessages.nazionalita && <p className="error">{errorMessages.nazionalita}</p>}
                 <input
                     type="text"
                     placeholder={"Lingue Parlate"}
-                    className={"formEditText"}
+                    className={`formEditText field ${errorMessages.lingueParlate ? 'error-field' : ''}`}
                     value={lingueParlate}
                     onChange={aggiornaLingueParlate}
                     required={true}
                 />
-
+                {errorMessages.lingueParlate && <p className="error">{errorMessages.lingueParlate}</p>}
                 <input
                     type="text"
                     placeholder={"Skill"}
-                    className={"formEditText"}
+                    className={`formEditText field ${errorMessages.skill ? 'error-field' : ''}`}
                     value={skill}
                     onChange={aggiornaSkill}
                     required={true}
                 />
-
+                {errorMessages.skill && <p className="error">{errorMessages.skill}</p>}
                 <select
                     className={"formEditText selectMulti"}
                     value={titolodistudio}
@@ -257,47 +414,67 @@ const CreaUtente = () => {
                     <input
                         type="text"
                         placeholder={"Disponibilità"}
-                        className={"formEditText"}
+                        className={`formEditText field ${errorMessages.disponibilita ? 'error-field' : ''}`}
                         value={disponibilita}
                         onChange={aggiornaDisponibilita}
                         required={true}
                     />
                 )}
-
+                {errorMessages.disponibilita && <p className="error">{errorMessages.disponibilita}</p>}
                 <input
                     type="text"
                     placeholder={"Email"}
-                    className={"formEditText"}
+                    className={`formEditText field ${errorMessages.email ? 'error-field' : ''}`}
                     value={email}
                     onChange={aggiornaEmail}
                     required={true}
                 />
+                {errorMessages.email && <p className="error">{errorMessages.email}</p>}
 
-                <input
-                    type="text"
-                    placeholder={"Password"}
-                    className={"formEditText"}
-                    value={password}
-                    onChange={aggiornaPassword}
-                    required={true}
-                />
-                <input
-                    type="text"
-                    placeholder={"Conferma Password"}
-                    className={"formEditText"}
-                    value={confermaPW}
-                    onChange={aggiornaConfermaPW}
-                    required={true}
-                />
+
+                <div className="password-field">
+                    <input
+                        type={showPassword ? "text" : "password"}
+                        placeholder="Password"
+                        className={`formEditText field ${passwordError || errorMessages.password ? 'error-field' : ''}`}
+                        value={password}
+                        onChange={aggiornaPassword}
+                        required={true}
+                    />
+                    <button type="button" onClick={togglePasswordVisibility}>
+                        {showPassword ? "Nascondi Password" : "Mostra Password"}
+                    </button>
+                </div>
+                {(passwordError || errorMessages.password) && (
+                    <p className="error">
+                        {passwordError || errorMessages.password}
+                    </p>
+                )}
+
+                <div className="password-field">
+                    <input
+                        type={showConfirmPassword ? "text" : "password"}
+                        placeholder="Conferma Password"
+                        className={`formEditText  field ${errorMessages.confermaPW ? 'error-field' : ''}`}
+                        value={confermaPW}
+                        onChange={aggiornaConfermaPW}
+                        required={true}
+                    />
+                    <button type="button" onClick={toggleConfirmPasswordVisibility}>
+                        {showConfirmPassword ? "Nascondi Password" : "Mostra Password"}
+                    </button>
+                </div>
+                {errorMessages.confermaPW && <p className="error">{errorMessages.confermaPW}</p>}
 
 
                 <input
                     type="file"
                     accept="image/*"
-                    className="formEditText"
+                    className={`formEditText field ${errorMessages.fotoProfilo ? 'error-field' : ''}`}
                     onChange={aggiornaFotoProfilo}
                     required={false}
                 />
+                {errorMessages.fotoProfilo && <p className="error">{errorMessages.fotoProfilo}</p>}
 
                 <button type="submit" className="formButton">
                     Invio
