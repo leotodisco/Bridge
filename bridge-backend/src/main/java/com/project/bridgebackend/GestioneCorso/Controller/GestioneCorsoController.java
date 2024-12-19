@@ -8,6 +8,7 @@ import com.project.bridgebackend.Model.Entity.FiguraSpecializzata;
 import com.project.bridgebackend.Model.dao.CorsoDAO;
 import com.project.bridgebackend.Model.dao.FiguraSpecializzataDAO;
 import com.project.bridgebackend.Model.dto.CorsoDTO;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.io.OutputStream;
 import java.util.List;
 
 
@@ -170,5 +172,43 @@ public class GestioneCorsoController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
     }
+
+    @GetMapping("/download/{id}")
+    @CrossOrigin(origins = "http://localhost:5174", allowedHeaders = "*")
+    public void downloadPDF(@PathVariable Long id, HttpServletResponse response) {
+        try {
+            // Recupera il corso dal database
+            Corso corso = corsoDAO.findById(id).orElse(null);
+            if (corso == null || corso.getPdf() == null) {
+                response.sendError(HttpServletResponse.SC_NOT_FOUND, "Corso o PDF non trovato");
+                return;
+            }
+
+            // Recupera il PDF associato al corso
+            PDFDoc pdfDoc = pdfService.getPdf(corso.getPdf());
+            if (pdfDoc == null || pdfDoc.getPdf() == null) {
+                response.sendError(HttpServletResponse.SC_NOT_FOUND, "PDF non trovato");
+                return;
+            }
+
+            // Imposta i headers per il download
+            response.setContentType("application/pdf");
+            response.setHeader("Content-Disposition", "attachment; filename=" + pdfDoc.getNome_pdf());
+            response.setContentLength(pdfDoc.getPdf().length);
+
+            // Scrivi il contenuto del PDF nel response
+            try (OutputStream outputStream = response.getOutputStream()) {
+                outputStream.write(pdfDoc.getPdf());
+            }
+        } catch (Exception e) {
+            log.error("Errore durante il download del PDF", e);
+            try {
+                response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Errore durante il download del PDF");
+            } catch (IOException ex) {
+                log.error("Errore durante l'invio della risposta di errore", ex);
+            }
+        }
+    }
+
 
 }

@@ -139,19 +139,15 @@ const CorsoView = ({ id, onClose }) => {
         }
     };
 
-
     const handleSubmit = async (e) => {
         e.preventDefault();
 
         if (!validateForm()) return;
 
+        let pdfId = formData.pdf;
         if (pdfFile) {
             try {
-                const uploadedPdfId = await handlePdfUpload(pdfFile);
-                setFormData((prevData) => ({
-                    ...prevData,
-                    pdf: uploadedPdfId,
-                }));
+                pdfId = await handlePdfUpload(pdfFile);
             } catch {
                 return;
             }
@@ -161,7 +157,7 @@ const CorsoView = ({ id, onClose }) => {
             const response = await fetch(`http://localhost:8080/api/corsi/modifica/${id}`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ ...formData, proprietario: emailUtenteLoggato }),
+                body: JSON.stringify({ ...formData, pdf: pdfId, proprietario: emailUtenteLoggato }),
             });
 
             if (!response.ok) {
@@ -177,6 +173,37 @@ const CorsoView = ({ id, onClose }) => {
             setError(error.message);
         }
     };
+
+    // Funzione per scaricare il PDF del corso
+    const downloadPDF = async (courseId, courseTitle) => {
+        try {
+            const response = await fetch(`http://localhost:8080/api/corsi/download/${courseId}`, {
+                method: "GET",
+            });
+
+            if (!response.ok) {
+                throw new Error(`Errore durante il download del PDF: ${response.status} ${response.statusText}`);
+            }
+
+            const blob = await response.blob();
+            const url = window.URL.createObjectURL(blob);
+
+            // Sostituisci i caratteri non alfanumerici per evitare problemi nei nomi dei file
+            const sanitizedTitle = courseTitle.replace(/[^a-z0-9]/gi, '_').toLowerCase();
+
+            const link = document.createElement("a");
+            link.href = url;
+            link.download = `${sanitizedTitle}.pdf`;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            window.URL.revokeObjectURL(url);
+        } catch (error) {
+            console.error("Errore durante il download del PDF:", error);
+            alert(`Errore durante il download del PDF: ${error.message}`);
+        }
+    };
+
 
     useEffect(() => {
         fetchCorso();
@@ -289,13 +316,12 @@ const CorsoView = ({ id, onClose }) => {
                                         style={{display: "none"}}
                                     />
                                 </label>
-                               {pdfFile && (
+                                {pdfFile && (
                                     <p className="filePreview"> File selezionato: {pdfFile.name}</p>
                                 )}
                             </div>
                             {pdfFileError && <p className="errorText">{pdfFileError}</p>}
                         </div>
-
 
                         <div className="formActions">
                             <button className="fileButton" type="submit">
@@ -315,7 +341,7 @@ const CorsoView = ({ id, onClose }) => {
                         <h3>Dettagli</h3>
                         <div className="popup-details">
                             <div className="popup-row">
-                            <span className="popup-label">Lingua:</span>
+                                <span className="popup-label">Lingua:</span>
                                 <span className="popup-value">{corso.lingua}</span>
                             </div>
                             <div className="popup-row">
@@ -332,8 +358,14 @@ const CorsoView = ({ id, onClose }) => {
                         <h3>Azioni</h3>
                         <div className="popup-actions">
                             {isOwner(emailUtenteLoggato, corso.proprietario.email) && (
-                                <button className="popup-button" onClick={() => setEditMode(true)}>
+                                <button className="popup-button modifica-button" onClick={() => setEditMode(true)}>
                                     Modifica
+                                </button>
+                            )}
+                            {corso.pdf && (
+                                <button className="popup-button scarica-button"
+                                        onClick={() => downloadPDF(corso.id, corso.titolo)}>
+                                    Scarica PDF
                                 </button>
                             )}
                         </div>

@@ -77,3 +77,38 @@
     justify-content: space-between;
     align-items: center;
 }
+
+.popup-actions {
+    display: flex;
+    justify-content: center; /* centra orizzontalmente */
+    gap: 20px; /* spazio orizzontale tra i pulsanti */
+    margin-top: 20px;
+}
+
+.popup-button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s ease;
+    color: #fff;
+}
+
+/* Colore per il pulsante "Modifica" */
+.modifica-button {
+    background-color: #3498db; /* blu */
+}
+
+.modifica-button:hover {
+    background-color: #2980b9; /* blu scuro in hover */
+}
+
+/* Colore per il pulsante "Scarica PDF" */
+.scarica-button {
+    background-color: #e67e22; /* arancione */
+}
+
+.scarica-button:hover {
+    background-color: #d35400; /* arancione più scuro in hover */
+}
