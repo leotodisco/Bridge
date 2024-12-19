@@ -56,6 +56,8 @@ public class SecurityConfig {
                                 "/api/eventi/{id}/iscrizione","/alloggi/mostra","/alloggi/preferiti","/alloggi/isFavorito", "/alloggi/SingoloAlloggio/{titolo}",
                                 "/api/corsi/cerca/{id}", "/api/corsi/modifica/{id}",
                                 "/api/corsi/listaCorsi","/areaPersonale/DatiUtente/{email}","/api/corsi/download/{id}","/areaPersonale/DatiFotoUtente/{email}").permitAll()
+                                "/api/eventi/{id}/iscrizione","/alloggi/mostra","/alloggi/SingoloAlloggio/{titolo}", "/api/corsi/cerca/{id}", "/api/corsi/modifica/{id}",
+                                "/api/corsi/listaCorsi","/areaPersonale/DatiUtente/{email}","/api/corsi/download/{id}","/areaPersonale/DatiFotoUtente/{email}","/areaPersonale/modificaUtente/{email}","/areaPersonale/modificaPassword/{email}","/areaPersonale/modificaFotoUtente/{email}").permitAll()
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
