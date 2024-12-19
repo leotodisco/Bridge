@@ -30,7 +30,7 @@ public interface AlloggioService {
      * @Param rifugiato il rifugiato che ha manifestato interesse
      * @Parama alloggio a quale alloggio ha manifestato interesse il rifugiato
      */
-    public boolean manifestazioneInteresse(Rifugiato rifugiato, Alloggio alloggio);
+    public boolean manifestazioneInteresse(String emailRifugiato, String emailAlloggio);
 
     /**
      *Firma del metodo che assegna un alloggio ad un rifugiato

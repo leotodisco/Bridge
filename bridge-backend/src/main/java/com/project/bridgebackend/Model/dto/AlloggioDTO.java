@@ -31,7 +31,7 @@ public class AlloggioDTO {
     @Positive(message = "Il numero della metratura deve essere un valore positivo")
     private Integer metratura;
 
-    private List<String> fotos;
+    private List<String> foto;
 
     @NotBlank(message = "L'email del proprietario è obbligatoria")
     @Email(message = "L'email del proprietario deve essere valida")
