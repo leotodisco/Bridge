@@ -128,7 +128,18 @@ public class UtenteController {
                                              @PathVariable String email
                                                 ) throws IOException{
         try {
+
+
             System.out.println(aggiornamenti);
+
+            if (aggiornamenti.containsKey("disponibilitaUtente")) {
+                // Estrai il valore della disponibilità
+                String disponibilita = (String) aggiornamenti.get("disponibilitaUtente");
+
+                // Invoca il metodo specifico per aggiornare la disponibilità
+                utenteService.modificaDisp(email, disponibilita);
+                aggiornamenti.remove("disponibilitaUtente");
+            }
             Utente u = utenteService.modificaUtente(email,aggiornamenti);
 
             return ResponseEntity.ok(u);

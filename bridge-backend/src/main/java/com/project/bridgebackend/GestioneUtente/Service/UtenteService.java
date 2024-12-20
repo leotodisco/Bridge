@@ -1,5 +1,6 @@
 package com.project.bridgebackend.GestioneUtente.Service;
 
+import com.project.bridgebackend.Model.Entity.FiguraSpecializzata;
 import com.project.bridgebackend.Model.Entity.Utente;
 import com.project.bridgebackend.fotoProfilo.FotoProfilo;
 import jakarta.validation.Valid;
@@ -19,4 +20,5 @@ public interface UtenteService {
     void modificaPassword(String email, String password) throws Exception;
     void modificaFotoUtente(String email, String base64Image) throws IOException;
     Utente modificaUtente(String email, HashMap<String, Object> aggiornamenti) throws IOException;
+    void modificaDisp(final String email, final String disp) throws Exception;
 }

@@ -55,6 +55,7 @@ const AreaPersonale = ({ onLogout }) => {
 
                 setUserData(userData);
                 setImgData(imgBase64);
+                localStorage.setItem('ruolo', userData.ruoloUtente);
             } catch (error) {
                 console.error("Errore durante il recupero dei dati personali o immagine:", error);
                 alert("Errore durante il caricamento dei dati.");
@@ -184,7 +185,7 @@ const AreaPersonale = ({ onLogout }) => {
                                 className="profile-picture"
                             />
 
-                            <button onClick={() => setShowImageForm(!showImageForm)} className="uploadImageButton">
+                            <button onClick={() => setShowImageForm(!showImageForm)} className="modifyIMG">
                                 <i className="fas fa-camera"></i>
                                 <span>Cambia Foto</span>
                             </button>
@@ -196,11 +197,11 @@ const AreaPersonale = ({ onLogout }) => {
                                         type="file"
                                         accept="image/*"
                                         onChange={aggiornaFotoProfilo}
-                                        className="fileInput"
+                                        className="formEditText"
                                     />
                                     {errorMessages.fotoProfilo && <p className="error">{errorMessages.fotoProfilo}</p>}
-                                    <button onClick={handleSubmitImage} className="submitImageButton">Carica Immagine</button>
-                                    <button onClick={() => setShowImageForm(false)} className="cancelButton">Annulla</button>
+                                    <button onClick={handleSubmitImage} className="caricaIMG">Carica Immagine</button>
+                                    <button onClick={() => setShowImageForm(false)} className="caricaIMG">Annulla</button>
                                 </div>
                             )}
 

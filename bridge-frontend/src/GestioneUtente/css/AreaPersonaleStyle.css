@@ -153,6 +153,25 @@
     color: #555;
 }
 
+.caricaIMG{
+    margin-top: 10px;
+    margin-right: 5px;
+    width: 40%;
+    background-color: white;
+    border: 1px solid #00BF62;
+    border-radius: 6px;
+}
+
+.modifyIMG {
+    border: none; /* Nessun bordo */
+    background: none; /* Nessuno sfondo */
+    transition: transform 0.3s ease; /* Aggiungi una transizione fluida per l'ingrandimento */
+}
+
+.modifyIMG:hover {
+    transform: scale(1.1); /* Aumenta la dimensione dell'elemento quando ci passi sopra */
+}
+
 /* Responsività */
 @media (max-width: 768px) {
     .area-personale-container {
