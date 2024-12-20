@@ -6,7 +6,7 @@ import "../css/alloggio.css";
 
 const DettaglioAlloggio = () => {
     const { titolo } = useParams();
-    const [alloggio, setAlloggio] = useState(null);
+    const [alloggio, setAlloggio] = useState({});
     const [fotoAlloggio, setFotoAlloggio] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -16,8 +16,8 @@ const DettaglioAlloggio = () => {
     // Funzione per gestire il click sull'icona del cuore
     const handleClickCuore = async () => {
         try {
-            const emailRifugiato = sessionStorage.getItem("emailUtente");
-            const nomeAlloggio = alloggio.titolo;
+            const emailRifugiato = localStorage.getItem("email");
+            const titoloAlloggio = alloggio.titolo;
 
             const response = await fetch("http://localhost:8080/alloggi/preferiti", {
                 method: "POST",
@@ -27,31 +27,30 @@ const DettaglioAlloggio = () => {
                 },
                 body: JSON.stringify({
                     emailRifugiato: emailRifugiato,
-                    titoloAlloggio: nomeAlloggio
+                    titoloAlloggio: titoloAlloggio
                 })
             });
 
             if (response.ok) {
-                setIsFavorito(true); // Segna l'alloggio come preferito
-            } else if (response.status === 400) {
-                setIsFavorito(true); // Segna comunque l'alloggio come già preferito
-                const errorData = await response.text();
-                console.warn(errorData);
+                setIsFavorito(true);
             } else {
-                throw Error("Errore durante l'aggiunta ai preferiti");
+                const errorData = await response.text();
+                setError(`Errore durante l'aggiunta ai preferiti: ${errorData}`);
             }
         } catch (error) {
-            setError(error.message);
+            setError(`Errore: ${error.message}`);
         }
     };
+
 
 
     useEffect(() => {
         const checkFavorito = async () => {
             try {
-                const emailRifugiato = sessionStorage.getItem("emailUtente");
+                const emailRifugiato = localStorage.getItem("email");
+                const titoloAlloggio = alloggio.titolo;
 
-                const response = await fetch(`http://localhost:8080/alloggi/isFavorito?email=${emailRifugiato}&titolo=${titolo}`);
+                const response = await fetch(`http://localhost:8080/alloggi/isFavorito?email=${emailRifugiato}&titolo=${titoloAlloggio}`);
                 if (response.ok) {
                     const isFavorito = await response.json();
                     setIsFavorito(isFavorito);

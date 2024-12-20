@@ -7,10 +7,7 @@ import com.project.bridgebackend.Model.Entity.Alloggio;
 import com.project.bridgebackend.Model.Entity.Indirizzo;
 import com.project.bridgebackend.Model.Entity.Rifugiato;
 import com.project.bridgebackend.Model.Entity.Volontario;
-import com.project.bridgebackend.Model.dao.AlloggioDAO;
-import com.project.bridgebackend.Model.dao.IndirizzoDAO;
-import com.project.bridgebackend.Model.dao.UtenteDAO;
-import com.project.bridgebackend.Model.dao.VolontarioDAO;
+import com.project.bridgebackend.Model.dao.*;
 import com.project.bridgebackend.Model.dto.AlloggioDTO;
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
@@ -48,6 +45,9 @@ public class AlloggioController {
     private UtenteDAO utenteDAO;
     @Autowired
     private AlloggioDAO alloggioDAO;
+
+    @Autowired
+    private RifugiatoDAO rifugiatoDAO;
 
     /**
      * Aggiungi un nuovo alloggio nel sistema
@@ -155,16 +155,18 @@ public class AlloggioController {
 
     @PostMapping("/preferiti")
     public ResponseEntity<String> manifestazioneInteresse(@RequestBody Map<String, String> request) {
-        // Recupera l'email del rifugiato dal token JWT
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String emailRifugiato = authentication.getName(); // Email utente autenticato
-
-        // Ottieni il titolo dell'alloggio dal corpo della richiesta
-        String titoloAlloggio = request.get("titoloAlloggio");
-
         try {
-            boolean successo = alloggioService.manifestazioneInteresse(emailRifugiato, titoloAlloggio);
+            String emailRifugiato = request.get("emailRifugiato");
+            String titoloAlloggio = request.get("titoloAlloggio");
 
+            if (emailRifugiato == null) {
+                return ResponseEntity.badRequest().body("email mancata");
+            }
+            if(titoloAlloggio == null) {
+                return ResponseEntity.badRequest().body("Titolo mancanto");
+            }
+
+            boolean successo = alloggioService.manifestazioneInteresse(emailRifugiato, titoloAlloggio);
             if (successo) {
                 return ResponseEntity.ok("Manifestazione di interesse avvenuta con successo.");
             } else {
@@ -179,24 +181,35 @@ public class AlloggioController {
     }
 
 
-
     @GetMapping("/isFavorito")
     public ResponseEntity<Boolean> isFavorito(@RequestParam String email, @RequestParam String titolo) {
-        Rifugiato rifugiato = (Rifugiato) utenteDAO.findByEmail(email);
-        if (rifugiato == null) {
-            throw new IllegalArgumentException("Rifugiato non trovato con l'email specificata.");
+        try {
+            Rifugiato rifugiato = rifugiatoDAO.findByEmail(email);
+            if (rifugiato == null) {
+                throw new IllegalArgumentException("Rifugiato non trovato con l'email specificata.");
+            }
+            System.out.println("Rifugiato trovato: " + rifugiato);
+
+            Optional<Alloggio> alloggioOptional = alloggioDAO.findByTitolo(titolo);
+            if (alloggioOptional.isEmpty()) {
+                throw new IllegalArgumentException("Alloggio non trovato con il titolo specificato.");
+            }
+            Alloggio alloggio = alloggioOptional.get();
+            System.out.println("Alloggio trovato: " + alloggio);
+
+            boolean isFavorito = alloggio.getListaCandidati().contains(rifugiato);
+            System.out.println("Il rifugiato è favorito: " + isFavorito);
+
+            return ResponseEntity.ok(isFavorito);
+        } catch (IllegalArgumentException e) {
+            System.err.println("Errore: " + e.getMessage());
+            return ResponseEntity.badRequest().body(false);
+        } catch (Exception e) {
+            System.err.println("Errore imprevisto: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(false);
         }
-
-        Optional<Alloggio> alloggioOptional = alloggioDAO.findByTitolo(titolo);
-        if (alloggioOptional.isEmpty()) {
-            throw new IllegalArgumentException("Alloggio non trovato con il titolo specificato.");
-        }
-
-        Alloggio alloggio = alloggioOptional.get();
-        boolean isFavorito = alloggio.getListaCandidati().contains(rifugiato);
-
-        return ResponseEntity.ok(isFavorito);
     }
+
 
 
 

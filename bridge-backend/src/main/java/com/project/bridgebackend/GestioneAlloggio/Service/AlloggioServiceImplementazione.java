@@ -8,6 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
@@ -34,6 +36,9 @@ public class AlloggioServiceImplementazione implements AlloggioService {
     private AlloggioDAO alloggioDAO;
     @Autowired
     private IndirizzoDAO indirizzoDAO;
+
+    @Autowired
+    private JavaMailSender mailSender;
 
 
 
@@ -74,7 +79,6 @@ public class AlloggioServiceImplementazione implements AlloggioService {
 
     @Override
     public boolean manifestazioneInteresse(String emailRifugiato, String titoloAlloggio) {
-        // Validazione input
         if (emailRifugiato == null || emailRifugiato.isEmpty()) {
             throw new IllegalArgumentException("L'email del rifugiato non può essere nulla o vuota.");
         }
@@ -82,13 +86,11 @@ public class AlloggioServiceImplementazione implements AlloggioService {
             throw new IllegalArgumentException("Il titolo dell'alloggio non può essere nullo o vuoto.");
         }
 
-        // Recupera il rifugiato tramite l'email
         Rifugiato rifugiato = rifugiatoDAO.findByEmail(emailRifugiato);
         if (rifugiato == null) {
             throw new IllegalArgumentException("Rifugiato non trovato con l'email specificata.");
         }
 
-        // Recupera l'alloggio tramite il titolo
         Optional<Alloggio> alloggioOptional = alloggioDAO.findByTitolo(titoloAlloggio);
         if (alloggioOptional.isEmpty()) {
             throw new IllegalArgumentException("Alloggio non trovato con il titolo specificato.");
@@ -96,19 +98,16 @@ public class AlloggioServiceImplementazione implements AlloggioService {
 
         Alloggio alloggio = alloggioOptional.get();
 
-        // Verifica se il rifugiato ha già manifestato interesse per questo alloggio
         if (alloggio.getListaCandidati().contains(rifugiato)) {
             return false; // Interesse già manifestato
         }
 
-        // Aggiunge il rifugiato alla lista dei candidati
         alloggio.getListaCandidati().add(rifugiato);
         alloggioDAO.save(alloggio);
+        sendEmailVolontario("riuscito coglione", "provais226@gmail.com");
 
         return true; // Interesse aggiunto con successo
     }
-
-
 
 
     @Override
@@ -142,9 +141,20 @@ public class AlloggioServiceImplementazione implements AlloggioService {
     }
 
     @Override
-    public void sendEmailVolontario(String message, String emailVolontario) {
+    @Async
+    public void sendEmailVolontario(String messaggio, String emailDestinatario) {
+        try {
+            SimpleMailMessage message = new SimpleMailMessage();
+            message.setFrom("beehaveofficial@gmail.com");
+            message.setTo("mariozurolo00@gmail.com");
+            message.setSubject("PROVA");
+            message.setText(messaggio);
+            mailSender.send(message);
+            System.out.println("email inviata");
+        }catch (Exception e) {
+            System.out.println("Errore nell invio dell'email a: " + emailDestinatario + e.getMessage());
+        }
     }
-
 
     @Override
     public List<Alloggio> getAllAlloggio() {
