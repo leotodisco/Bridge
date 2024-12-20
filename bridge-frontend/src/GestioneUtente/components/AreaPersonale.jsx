@@ -1,5 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import ModificaUtente from './formModificaUtente.jsx';
+import ModificaPassword from './formModificaPassword.jsx';
 import "../css/AreaPersonaleStyle.css";
 import '@fortawesome/fontawesome-free/css/all.min.css';
 
@@ -12,6 +14,8 @@ const AreaPersonale = ({ onLogout }) => {
     const nav = useNavigate();
     const [showImageForm, setShowImageForm] = useState(false);  // Stato per la visibilità del form
     const [imageFile, setImageFile] = useState(null);  // Stato per il file immagine selezionato
+    const [showModifyForm, setShowModifyForm] = useState(false);  // Stato per la visibilità del form di modifica dati
+    const [showPasswordForm, setShowPasswordForm] = useState(false);
 
     useEffect(() => {
         const fetchUserData = async () => {
@@ -185,6 +189,7 @@ const AreaPersonale = ({ onLogout }) => {
                                 <span>Cambia Foto</span>
                             </button>
 
+
                             {showImageForm && (
                                 <div className="uploadImageForm">
                                     <input
@@ -210,8 +215,23 @@ const AreaPersonale = ({ onLogout }) => {
                                 {/* Pulsante Delete Account */}
                                 <button onClick={eliminaAccount} className="deleteButton">
                                     <i className="fas fa-trash-alt"></i>
-                                    <span>Delete Account</span>
+                                    <span>Elimina Account</span>
                                 </button>
+
+                                {/* Pulsante Modifica Dati */}
+                                <button onClick={() => setShowModifyForm(!showModifyForm)} className="editButton">
+                                    <i className="fas fa-edit"></i>
+                                    <span>Modifica Dati</span>
+                                </button>
+
+                                {/* Pulsante Modifica Password */}
+                                <button onClick={() => setShowPasswordForm(!showPasswordForm)} className="editButton">
+                                    <i className="fas fa-edit"></i>
+                                    <span>Modifica Password</span>
+                                </button>
+
+                                {showPasswordForm && <ModificaPassword userData={userData} />}
+
                             </div>
                         </div>
                     </div>
@@ -273,6 +293,8 @@ const AreaPersonale = ({ onLogout }) => {
             ) : (
                 <p>Caricamento dei dati personali...</p>
             )}
+            {/* Modifica Dati Form */}
+            {showModifyForm && <ModificaUtente userData={userData} />}
         </div>
     );
 };
