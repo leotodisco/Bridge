@@ -23,8 +23,12 @@ const LavoroView = ({ id, onClose }) => {
         provincia: ""
     });
 
+
+    // Recupera l'email dell'utente loggato dal localStorage
     const emailUtenteLoggato = localStorage.getItem("email");
 
+
+    // Funzione per ottenere i dettagli di un annuncio di lavoro
     const fetchLavoro = async (id) => {
         try {
             const response = await fetch(`http://localhost:8080/api/annunci/view_lavori/retrieve/${id}`);
@@ -56,10 +60,14 @@ const LavoroView = ({ id, onClose }) => {
         }
     };
 
+
+    // Effettua il fetch dei dettagli dell'annuncio al primo rendering
     useEffect(() => {
         fetchLavoro(id);
     }, [id]);
 
+
+    // Se il caricamento è in corso, mostra un messaggio
     if (loading) {
         return (
             <div className="popup-overlay">
@@ -70,6 +78,8 @@ const LavoroView = ({ id, onClose }) => {
         );
     }
 
+
+    // Se si è verificato un errore, mostra un messaggio
     if (error) {
         return (
             <div className="popup-overlay">
@@ -80,7 +90,8 @@ const LavoroView = ({ id, onClose }) => {
         );
     }
 
-    // Creazione Indirizzo
+
+    // Creazione stringa concatenata per l'indirizzo
     const luogoConcatenato = lavoroData
         ? `${lavoroData.indirizzo.via}, 
            ${lavoroData.indirizzo.numCivico}, 
@@ -88,6 +99,7 @@ const LavoroView = ({ id, onClose }) => {
            (${lavoroData.indirizzo.provincia}) 
            ${lavoroData.indirizzo.cap}`
         : "";
+
 
     // Funzione per la modifica dell'annuncio di lavoro
     const handleEdit = async () => {
@@ -101,6 +113,9 @@ const LavoroView = ({ id, onClose }) => {
             infoUtili,
             indirizzo
         };
+
+        console.log("Dati inviati per la modifica:", aggiornamenti);
+
         try {
             const token = localStorage.getItem("token");
             const response = await fetch(`http://localhost:8080/api/annunci/modifica_lavoro/${id}`, {
@@ -113,7 +128,7 @@ const LavoroView = ({ id, onClose }) => {
             });
 
             if (!response.ok) {
-                throw new Error("Errore durante la modifica dell'annuncio.");
+                throw new Error(`Errore HTTP: ${response.status}`);
             }
 
             const data = await response.json();
@@ -121,10 +136,39 @@ const LavoroView = ({ id, onClose }) => {
             setLavoroData(data);
             setEditing(false);
         } catch (err) {
-            console.error(err);
+            console.error("Errore durante la modifica dell'annuncio:", err);
             alert("Non è stato possibile modificare l'annuncio.");
         }
     };
+
+
+    // Funzione per l'eliminazione dell'annuncio di lavoro
+    const handleDelete = async () => {
+        if (!window.confirm("Sei sicuro di voler eliminare questo annuncio?")) {
+            return;
+        }
+
+        try {
+            const token = localStorage.getItem("token");
+            const response = await fetch(`http://localhost:8080/api/annunci/elimina_lavoro/${id}`, {
+                method: "DELETE",
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            });
+
+            if (!response.ok) {
+                throw new Error(`Errore durante l'eliminazione dell'annuncio: ${response.status}`);
+            }
+
+            alert("Annuncio eliminato con successo!");
+            onClose(); // Chiudi il popup dopo l'eliminazione
+        } catch (err) {
+            console.error("Errore durante l'eliminazione dell'annuncio:", err);
+            alert("Non è stato possibile eliminare l'annuncio.");
+        }
+    };
+
 
     return (
         <div className="popup-overlay">
@@ -168,14 +212,18 @@ const LavoroView = ({ id, onClose }) => {
                         <div className="popup-body">
                             <h3>Sede</h3>
                             <p>
-                                {indirizzo.via}, {indirizzo.numCivico}, {indirizzo.citta} ({indirizzo.provincia}) -{" "}
-                                {indirizzo.cap}
+                                {luogoConcatenato}
                             </p>
                         </div>
                         {emailUtenteLoggato === lavoroData.proprietario.email && (
-                            <button onClick={() => setEditing(true)} className="edit-button">
-                                Modifica Annuncio
-                            </button>
+                            <div className="button-group">
+                                <button onClick={() => setEditing(true)} className="edit-button">
+                                    Modifica Annuncio
+                                </button>
+                                <button onClick={handleDelete} className="delete-button">
+                                    Elimina Annuncio
+                                </button>
+                            </div>
                         )}
                     </>
                 ) : (

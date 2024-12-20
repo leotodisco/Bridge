@@ -319,36 +319,58 @@ public class GestioneAnnuncioController {
 
     @PostMapping("/modifica_lavoro/{id}")
     public ResponseEntity<?> modificaLavoro(@PathVariable long id,
-                                           @RequestBody HashMap<String, Object> aggiornamenti,
-                                           @RequestHeader("Authorization") String authorizationHeader) {
+                                            @RequestBody HashMap<String, Object> aggiornamenti,
+                                            @RequestHeader("Authorization") String authorizationHeader) {
         try {
-            // Estrai il token JWT dall'header Authorization
+            System.out.println("ID Annuncio: " + id);
+            System.out.println("Dati aggiornamenti: " + aggiornamenti);
+
+            // Estrai l'email dall'header
             String token = authorizationHeader.replace("Bearer ", "");
-            //per estrarre l'email dal token
             String emailUtenteLoggato = jwtService.extractUsername(token);
 
-            // Verifica se l'utente è il proprietario dell'annuncio
             Lavoro lavoroEsistente = gestioneAnnuncioService.getLavori(id);
             if (!lavoroEsistente.getProprietario().getEmail().equals(emailUtenteLoggato)) {
                 return ResponseEntity.status(HttpStatus.FORBIDDEN)
                         .body("Non sei autorizzato a modificare questo annuncio di lavoro.");
             }
 
-            // Invoca il metodo del servizio per modificare il lavoro
             Lavoro lavoroAggiornato = gestioneAnnuncioService.modificaAnnuncioLavoro(id, aggiornamenti);
 
-            // Restituisce il lavoro aggiornato con codice HTTP 200
             return ResponseEntity.ok(lavoroAggiornato);
 
         } catch (IllegalArgumentException e) {
-            // Gestisce errori come lavoro non trovato o campi non validi
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
-
         } catch (Exception e) {
-            // Gestisce errori generici
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body("Errore durante l'aggiornamento del lavoro: " + e.getMessage());
         }
     }
+
+    @PostMapping("/elimina_lavoro/{id}")
+    public ResponseEntity<?> eliminaLavoro(@PathVariable long id,
+                                           @RequestHeader("Authorization") String authorizationHeader) {
+        try {
+            // Estrai l'email dall'header
+            String token = authorizationHeader.replace("Bearer ", "");
+            String emailUtenteLoggato = jwtService.extractUsername(token);
+
+            Lavoro lavoroEsistente = gestioneAnnuncioService.getLavori(id);
+            if (!lavoroEsistente.getProprietario().getEmail().equals(emailUtenteLoggato)) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                        .body("Non sei autorizzato a eliminare questo annuncio di lavoro.");
+            }
+
+            gestioneAnnuncioService.eliminaLavoro(id);
+            return ResponseEntity.ok("Annuncio di lavoro eliminato con successo.");
+
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Errore durante l'eliminazione del lavoro: " + e.getMessage());
+        }
+    }
+
 
 }

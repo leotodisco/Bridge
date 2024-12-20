@@ -96,11 +96,10 @@ public interface GestioneAnnuncioService {
                                   final HashMap<String, Object> aggiornamenti);
 
     /**
-     * Elimina un annuncio di lavoro specifico.
+     * Elimina un annuncio di lavoro dal database.
      *
-     * @param idAnnuncio L'identificativo unico dell'annuncio di lavoro da eliminare.
-     * @throws IllegalArgumentException se l'annuncio non viene trovato.
+     * @param id ID dell'annuncio da eliminare.
      */
-    void eliminaAnnuncioLavoro(long idAnnuncio);
+    void eliminaAnnuncioLavoro(long id);
 
 }
