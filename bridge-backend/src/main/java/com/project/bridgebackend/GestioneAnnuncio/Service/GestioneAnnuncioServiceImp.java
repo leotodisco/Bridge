@@ -174,12 +174,8 @@ public class GestioneAnnuncioServiceImp implements GestioneAnnuncioService {
 
     @Override
     public void eliminaAnnuncioLavoro(long idAnnuncio) {
-        if (!lavoroDAO.existsById(idAnnuncio)) {
-            throw new IllegalArgumentException("Annuncio di lavoro non trovato.");
-        }
         lavoroDAO.deleteById(idAnnuncio);
     }
-
 
     //      **Implementazioni dei metodi per Consulenza**
 

@@ -348,7 +348,7 @@ public class GestioneAnnuncioController {
     }
 
     @PostMapping("/elimina_lavoro/{id}")
-    public ResponseEntity<?> eliminaLavoro(@PathVariable long id,
+    public ResponseEntity<?> eliminaAnnuncioLavoro(@PathVariable long id,
                                            @RequestHeader("Authorization") String authorizationHeader) {
         try {
             // Estrai l'email dall'header
@@ -361,7 +361,7 @@ public class GestioneAnnuncioController {
                         .body("Non sei autorizzato a eliminare questo annuncio di lavoro.");
             }
 
-            gestioneAnnuncioService.eliminaLavoro(id);
+            gestioneAnnuncioService.eliminaAnnuncioLavoro(id);
             return ResponseEntity.ok("Annuncio di lavoro eliminato con successo.");
 
         } catch (IllegalArgumentException e) {
@@ -371,6 +371,4 @@ public class GestioneAnnuncioController {
                     .body("Errore durante l'eliminazione del lavoro: " + e.getMessage());
         }
     }
-
-
 }
