@@ -28,7 +28,7 @@ const regexPatterns = {
     nazionalita: /^[a-zA-Z\s]{5,30}$/,
     lingueParlate: /^[a-zA-Z ,]{5,30}$/,
     email: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
-    disponibilita: /^[A-Za-z0-9,.:;]+$/,
+    disponibilita: /^[A-Za-z0-9 ì,.:;-]+$/,
     password: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,16}$/,
     skill: /^[^<>{}[\]]{1,255}$/,
 };
