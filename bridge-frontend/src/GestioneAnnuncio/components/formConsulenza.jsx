@@ -3,15 +3,18 @@ import { useState } from "react";
 const Tipo = {
     SANITARIA: "SANITARIA",
     LEGALE: "LEGALE",
-    COMMERCIALE: "COMMERICIALE",
+    COMMERCIALE: "COMMERCIALE",
     PSICOLOGICA: "PSICOLOGICA",
     TRADUTTORE: "TRADUTTORE"
 };
 
+const giorniSettimana = ["Lunedi", "Martedi", "Mercoledi", "Giovedi", "Venerdi", "Sabato", "Domenica"];
+
+
 const CreaConsulenza = () => {
     const [titolo, setTitolo] = useState("");
     const [descrizione, setDescrizione] = useState("");
-    const [orariDisponibili, setOrariDisponibili] = useState("");
+    const [orariDisponibili, setOrariDisponibili] = useState([]);
     const [numero, setNumero] = useState("");
     const [tipo, setTipo] = useState("");
     const [maxCandidature, setMaxCandidature] = useState(1);
@@ -22,6 +25,16 @@ const CreaConsulenza = () => {
         cap: "",
         provincia: ""
     });
+
+    //funzione per errori
+    const [errori, setErrori] = useState({
+        numero: "",
+        orariDisponibili: "",
+        cap: "",
+        titolo:"",
+    });
+
+    const emailUtenteLoggato = localStorage.getItem("email");
 
     // Funzioni di aggiornamento dei campi
     const aggiornaCampo = (setter) => (event) => {
@@ -35,38 +48,94 @@ const CreaConsulenza = () => {
         });
     };
 
+    //logica per gestire gli orari di disponibilità
+    const aggiungiOrario = () => {
+        setOrariDisponibili([...orariDisponibili, { giorno: "", start: "", end: "" }]);
+    };
+
+    const aggiornaOrario = (index, campo, valore) => {
+        const nuoviOrari = [...orariDisponibili];
+        nuoviOrari[index][campo] = valore;
+        setOrariDisponibili(nuoviOrari);
+    };
+
+    const rimuoviOrario = (index) => {
+        setOrariDisponibili(orariDisponibili.filter((_, i) => i !== index));
+    };
+
+
+    const validaCampi = () => {
+        const nuoviErrori = { numero: "", orariDisponibili: "", cap: "" };
+        let valido = true;
+
+        //validazione titolo
+        if (titolo.length<=2 && titolo.length<=100) {
+            nuoviErrori.titolo = "Il titolo deve contenere più di due caratteri";
+            valido = false;
+        }
+
+        // Validazione numero telefono
+        // Validazione numero telefono
+        if (numero && !/^((00|\+)39[. ]??)??3\d{2}[. ]??\d{6,7}$/.test(numero)) {
+            nuoviErrori.numero = "Numero di telefono non valido. Deve seguire il formato italiano (+39 o 0039 opzionali).";
+            valido = false;
+        }
+
+        // Validazione orari disponibili
+        if (orariDisponibili.length === 0) {
+            nuoviErrori.orariDisponibili = "Devi inserire almeno un orario disponibile.";
+            valido = false;
+        } else if (orariDisponibili.some(orario => !orario.giorno || !orario.start || !orario.end)) {
+            nuoviErrori.orariDisponibili = "Completa tutti i campi degli orari disponibili.";
+            valido = false;
+        }
+
+        // Validazione formato orari disponibili
+        //const orariPattern = /^(\w+\s+\d{2}:\d{2}-\d{2}:\d{2})(,\s*\w+\s+\d{2}:\d{2}-\d{2}:\d{2})*$/;
+        //if (orariDisponibili && !orariPattern.test(orariDisponibili)) {
+        //    nuoviErrori.orariDisponibili = "Formato errato: 'Giorno hh:mm-hh:mm'.";
+        //    valido = false;
+        //}
+
+        // Validazione CAP
+        if (indirizzo.cap && !/^\d{5}$/.test(indirizzo.cap)) {
+            nuoviErrori.cap = "Il CAP deve contenere esattamente 5 cifre.";
+            valido = false;
+        }
+
+
+
+        setErrori(nuoviErrori);
+        return valido;
+    };
+
     const handleSubmit = async (event) => {
         event.preventDefault();
 
-        // Convalida del numero di telefono (deve essere composto da 10 cifre)
-        if (numero && !/^\d{10}$/.test(numero)) {
-            alert("Il numero di telefono deve contenere 10 cifre.");
+        if (!emailUtenteLoggato) {
+            alert("Sessione scaduta. Esegui di nuovo il login.");
             return;
         }
 
-        //Convalida per la scrittura degli orari disponibili
-        const orariPattern = /^(\w+\s+\d{2}:\d{2}-\d{2}:\d{2})(,\s*\w+\s+\d{2}:\d{2}-\d{2}:\d{2})*$/;
-        if (!orariDisponibili.match(orariPattern)) {
-            alert("Il formato degli orari deve essere 'Giorno hh:mm-hh:mm'.");
-            return;
+        if (!validaCampi()) {
+            return; // Non procedere se ci sono errori
         }
 
-        // Convalida del CAP (deve contenere esattamente 5 cifre)
-        if (indirizzo.cap && !/^\d{5}$/.test(indirizzo.cap)) {
-            alert("Il CAP deve contenere esattamente 5 cifre.");
-            return;
-        }
 
-        // Verifica che il tipo di consulenza sia selezionato
-        if (!tipo) {
-            alert("Seleziona un tipo di consulenza.");
-            return;
-        }
+        //costruisco la stringa per gli orari di disponibilità
+        const orariStringa = orariDisponibili
+            .map(orario => `${orario.giorno} ${orario.start}-${orario.end}`)
+            .join(", ")
+            .replace(/\s*,\s*/g, ',')
+            .trim();
+
+
+        console.log("orario generato " + orariStringa);
 
         const consulenzaDTO = {
             titolo,
             descrizione,
-            orariDisponibili,
+            orariDisponibili:orariStringa,
             numero,
             tipo,
             maxCandidature,
@@ -78,7 +147,7 @@ const CreaConsulenza = () => {
                 provincia: indirizzo.provincia
             },
             disponibilita: true,
-            proprietario: "negracciospecializzato@gmail.it"
+            proprietario: emailUtenteLoggato
         };
 
         console.log("Dati della consulenza: ", consulenzaDTO);
@@ -109,7 +178,21 @@ const CreaConsulenza = () => {
     return (
         <div className="formContainer">
             <h2>Crea una Consulenza</h2>
+            <hr/>
+            <p className="introText">
+                Segui questi passaggi per creare un nuova consulenza:
+            </p>
+            <ul className="introList">
+                <li>Compila i campi sottostanti con i dettagli per la tua consulenza.</li>
+                <li>Assicurati di riempire tutti i campi richiesti.</li>
+                <li>Quando hai completato, clicca sul pulsante <a href="#creaConsulenzaButton"
+                                                                  className="scrollLink"><strong>Crea
+                    Consulenza</strong></a> per pubblicare.
+                </li>
+            </ul>
             <form onSubmit={handleSubmit}>
+                <h3>Informazioni Principali:</h3>
+                <hr/>
                 <input
                     type="text"
                     placeholder="Titolo"
@@ -118,6 +201,7 @@ const CreaConsulenza = () => {
                     onChange={aggiornaCampo(setTitolo)}
                     required
                 />
+                {errori.titolo && <p className="error">{errori.titolo}</p>}
 
                 <textarea
                     placeholder="Descrizione"
@@ -127,13 +211,28 @@ const CreaConsulenza = () => {
                     required
                 />
 
-                <input
-                    type="text"
-                    placeholder="Orari Disponibili"
-                    className="formEditText"
-                    value={orariDisponibili}
-                    onChange={aggiornaCampo(setOrariDisponibili)}
-                />
+                <h3>Orari Disponibili</h3>
+                {orariDisponibili.map((orario, index) => (
+                    <div key={index}>
+                        <div className="inlineCityDetails">
+                            <select value={orario.giorno}
+                                    onChange={(e) => aggiornaOrario(index, "giorno", e.target.value)}>
+                                <option value="">Seleziona Giorno</option>
+                                {giorniSettimana.map(giorno => (
+                                    <option key={giorno} value={giorno}>{giorno}</option>
+                                ))}
+                            </select>
+                            <input type="time" value={orario.start}
+                                   onChange={(e) => aggiornaOrario(index, "start", e.target.value)}/>
+                            <input type="time" value={orario.end}
+                                   onChange={(e) => aggiornaOrario(index, "end", e.target.value)}/>
+                        </div>
+
+                        <button type="button" onClick={() => rimuoviOrario(index)}>Rimuovi</button>
+                    </div>
+                ))}
+                <button type="button" onClick={aggiungiOrario}>Aggiungi Orario</button>
+                {errori.orariDisponibili && <p className="error">{errori.orariDisponibili}</p>}
 
                 <input
                     type="text"
@@ -142,6 +241,7 @@ const CreaConsulenza = () => {
                     value={numero}
                     onChange={aggiornaCampo(setNumero)}
                 />
+                {errori.numero && <p className="error">{errori.numero}</p>}
 
                 <select
                     className="formEditText"
@@ -157,59 +257,70 @@ const CreaConsulenza = () => {
                     ))}
                 </select>
 
-                <input
-                    type="number"
-                    placeholder="Massimo candidature"
-                    className="formEditText"
-                    value={maxCandidature}
-                    onChange={aggiornaCampo(setMaxCandidature)}
-                    min="1"
-                    required
-                />
+                <div className="inlineCityDetails">
+                    <input
+                        type="number"
+                        placeholder="Massimo candidature"
+                        className="formEditText candidatureInput"
+                        value={maxCandidature}
+                        onChange={aggiornaCampo(setMaxCandidature)}
+                        min="1"
+                        required
+                    />
+                </div>
 
                 <h3>Indirizzo</h3>
-                <input
-                    type="text"
-                    placeholder="Via"
-                    className="formEditText"
-                    value={indirizzo.via}
-                    onChange={aggiornaIndirizzo("via")}
-                    required
-                />
-                <input
-                    type="text"
-                    placeholder="Numero Civico"
-                    className="formEditText"
-                    value={indirizzo.numCivico}
-                    onChange={aggiornaIndirizzo("numCivico")}
-                    required
-                />
-                <input
-                    type="text"
-                    placeholder="Città"
-                    className="formEditText"
-                    value={indirizzo.citta}
-                    onChange={aggiornaIndirizzo("citta")}
-                    required
-                />
-                <input
-                    type="text"
-                    placeholder="CAP"
-                    className="formEditText"
-                    value={indirizzo.cap}
-                    onChange={aggiornaIndirizzo("cap")}
-                    required
-                />
-                <input
-                    type="text"
-                    placeholder="Provincia"
-                    className="formEditText"
-                    value={indirizzo.provincia}
-                    onChange={aggiornaIndirizzo("provincia")}
-                    required
-                />
+                <hr />
+                <div className="inlineCityDetails">
+                    <input
+                        type="text"
+                        placeholder="Via"
+                        className="formEditText"
+                        value={indirizzo.via}
+                        onChange={aggiornaIndirizzo("via")}
+                        required
+                    />
+                    <input
+                        type="text"
+                        placeholder="Numero Civico"
+                        className="formEditText"
+                        value={indirizzo.numCivico}
+                        onChange={aggiornaIndirizzo("numCivico")}
+                        required
+                    />
+                </div>
 
-                <button type="submit" className="formButton">
+                <div className="inlineCityDetails">
+                    <input
+                        type="text"
+                        placeholder="Città"
+                        className="formEditText"
+                        value={indirizzo.citta}
+                        onChange={aggiornaIndirizzo("citta")}
+                        required
+                    />
+                    <input
+                        type="text"
+                        placeholder="CAP"
+                        className="formEditText"
+                        value={indirizzo.cap}
+                        onChange={aggiornaIndirizzo("cap")}
+                        required
+                    />
+
+                    <input
+                        type="text"
+                        placeholder="Provincia"
+                        className="formEditText"
+                        value={indirizzo.provincia}
+                        onChange={aggiornaIndirizzo("provincia")}
+                        required
+                    />
+                </div>
+                {errori.cap && <p className="error">{errori.cap}</p>}
+
+
+                <button id="creaConsulenzaButton" type="submit" className="formButton">
                     Crea Consulenza
                 </button>
             </form>

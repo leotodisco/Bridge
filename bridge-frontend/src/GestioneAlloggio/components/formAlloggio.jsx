@@ -94,7 +94,7 @@ const CreaAlloggio = () => {
             maxPersone : maxPersone,
             servizi : servizi,
             foto : fotos,
-            emailProprietario: "jedi@jedi.com",
+            emailProprietario: "root@mail.it",
             indirizzo : indirizzo
         };
 
@@ -114,7 +114,7 @@ const CreaAlloggio = () => {
                     maxPersone: maxPersone,
                     servizi: servizi,
                     foto: fotos,
-                    emailProprietario: "jedy@jedy.com",
+                    emailProprietario: "root@mail.it",
                     indirizzo: {
                         via: indirizzo.via,
                         numCivico: indirizzo.numCivico,

@@ -32,7 +32,6 @@ import java.util.List;
 @EnableWebSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
-
     @Autowired
     private final JwtAuthenticationFilter authFilter;
 
@@ -76,6 +75,7 @@ public class SecurityConfig {
                 "/api/annunci/view_consulenze/proprietario/{id}",
                 "/api/annunci/view_consulenze/retrieve/{id}",
                 "/api/annunci/modifica_consulenza/{idConsulenza}",
+                "/api/annunci/eliminaConsulenza/{id}",
                 "/api/annunci/creaLavoro",
                 "/api/annunci/view_lavori",
                 "/api/annunci/view_lavori/proprietario/{id}",
@@ -125,4 +125,5 @@ public class SecurityConfig {
         source.registerCorsConfiguration("/**", configuration);
         return source;
     }
+
 }

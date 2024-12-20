@@ -37,19 +37,14 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/annunci")
+@CrossOrigin(origins = "http://localhost:5173", allowedHeaders = "*")
 public class GestioneAnnuncioController {
 
     /**
-    * logger per la stampa di warning o errori
+    * logger per la stampa di warning o errori.
      */
     private static final Logger log = LoggerFactory.getLogger(GestioneCorsoController.class);
 
-    /**
-     * DAO per accedere ai dati dell' utente.
-     */
-
-    @Autowired
-    private UtenteDAO utenteDAO;
 
     /**
      * Service per la logica di gestione degli annunci.
@@ -74,9 +69,10 @@ public class GestioneAnnuncioController {
      */
     @Autowired
     private IndirizzoDAO indirizzoDAO;
-    @Autowired
-    private ConsulenzaDAO consulenzaDAO;
 
+    /**
+     * servizi per l'estrazione delle informazioni dal token
+     */
     @Autowired
     private JwtService jwtService;
 
@@ -241,12 +237,25 @@ public class GestioneAnnuncioController {
 
         return ResponseEntity.ok(consulenze);
     }
-
+    /**
+     * Metodo per attuare modifiche su una specifica consulenza.
+     * @param idConsulenza è l'id della modifica che si vuole effettuare.
+     * @param aggiornamenti è un hashmap di stinga oggetto per il,
+     *                      passaggio delle informazioni modificate,
+     *                      nella consulenza e degli oggetti,
+     *                      relativamente coinvolti (es. indirizzo).
+     * @param authorizationHeader Stringa idi autorizzazione,
+     *                            in modo da poter verificare,
+     *                            se l'utente attualmente loggato,
+     *                            può effettivamente attuare modifiche.
+     *
+     * @return ResponseEntity contenente la consulenza modificata
+     */
 
     @PostMapping("/modifica_consulenza/{idConsulenza}")
     public ResponseEntity<?> modificaConsulenza(@PathVariable long idConsulenza,
                                                 @RequestBody HashMap<String, Object> aggiornamenti,
-    @RequestHeader("Authorization") String authorizationHeader) {
+                                                @RequestHeader("Authorization") String authorizationHeader) {
         try {
             // Estrai il token JWT dall'header Authorization
             String token = authorizationHeader.replace("Bearer ", "");
@@ -277,6 +286,35 @@ public class GestioneAnnuncioController {
         }
     }
 
+    @DeleteMapping("/eliminaConsulenza/{id}")
+    public ResponseEntity<String> eliminaConsulenza(@PathVariable Long id,
+                                                    @RequestHeader("Authorization") String authorizationHeader) {
+        try {
+            // Estrai il token JWT dall'header Authorization
+            String token = authorizationHeader.replace("Bearer ", "");
+            // Estrai l'email dell'utente loggato dal token
+            String emailUtenteLoggato = jwtService.extractUsername(token);
+
+            // Recupera la consulenza esistente
+            Consulenza consulenzaEsistente = gestioneAnnuncioService.getConsulenze(id);
+
+            // Verifica che l'utente loggato sia il proprietario della consulenza
+            if (!consulenzaEsistente.getProprietario().getEmail().equals(emailUtenteLoggato)) {
+                // Se l'utente non è il proprietario, restituisci un errore 403
+                return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                        .body("Non sei autorizzato a eliminare questa consulenza.");
+            }
+
+            // Se l'utente è il proprietario, procedi con l'eliminazione
+            gestioneAnnuncioService.eliminaConsulenza(id);
+
+            return ResponseEntity.ok("Consulenza eliminata con successo.");
+
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Errore durante l'eliminazione della consulenza: " + e.getMessage());
+        }
+    }
 
     /**
      * Metodo per ottenere tutti gli annunci di lavoro presenti nel database.

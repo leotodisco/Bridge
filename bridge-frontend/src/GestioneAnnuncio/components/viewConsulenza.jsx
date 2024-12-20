@@ -46,6 +46,24 @@ const AllConsulenzaView = () => {
         setSelectedConsulenzaId(null);
     };
 
+
+    //Funzione per aggiornare le card in caso in cui si effettua
+    //una modifica
+    const handleUpdateConsulenza = (updatedConsulenza, isDeleted = false) => {
+        //nel caso si tratti di un update dovuto da una eliminazione
+        if (isDeleted) {
+            setConsulenze((prevConsulenze) =>
+                prevConsulenze.filter((consulenza) => consulenza.id !== updatedConsulenza.id)
+            );
+        } else {
+            setConsulenze((prevConsulenze) =>
+                prevConsulenze.map((consulenza) =>
+                    consulenza.id === updatedConsulenza.id ? updatedConsulenza : consulenza
+                )
+            );
+        }
+    };
+
     // Funzione per ottenere le consulenze di un proprietario specifico
     useEffect(() => {
         fetchConsulenze();
@@ -96,6 +114,9 @@ const AllConsulenzaView = () => {
                 <ConsulenzaView
                     id={selectedConsulenzaId}
                     onClose={closePopup}
+                    onUpdate={handleUpdateConsulenza}
+                    //serve per aggiornare la pagina delle card
+                    //se si effettuano modifiche agli annunci
                 />
             )}
         </div>

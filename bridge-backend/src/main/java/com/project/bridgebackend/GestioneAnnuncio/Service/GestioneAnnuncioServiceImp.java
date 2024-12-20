@@ -192,16 +192,33 @@ public class GestioneAnnuncioServiceImp implements GestioneAnnuncioService {
 
     //      **Implementazioni dei metodi per Consulenza**
 
+    /**
+     * Prelevare tutte le consulenze sulla base dell'identificativo dato in input.
+     *
+     * @return la consulenze con l'identificativo id.
+     */
     @Override
     public List<Consulenza> getAllConsulenze(){
         return consulenzaDAO.findAll();
     }
 
+    /**
+     * Prelevare la consulenza sulla base dell'identificativo dato in input.
+     *
+     * @return la lista di tutte le consulenza presenti nel db.
+     */
     @Override
     public Consulenza getConsulenze( long id){
         return consulenzaDAO.findById(id).get();
     }
 
+    /**
+     * Prelevare gli annunci di una consulenza.
+     *
+     * @param proprietario l'utente proprietario delle consulenze.
+     *
+     * @return le consulenze di cui l'utente risulta proprietario.
+     */
 
     @Override
     public List<Consulenza> getConsulenzeByProprietario(Utente proprietario) {
@@ -292,6 +309,14 @@ public class GestioneAnnuncioServiceImp implements GestioneAnnuncioService {
         });
 
         return consulenzaDAO.save(consulenza);
+    }
+
+    @Override
+    public void eliminaConsulenza(long idConsulenza) {
+        if (!consulenzaDAO.existsById(idConsulenza)) {
+            throw new IllegalArgumentException("Nessun riscontro con di consulenze con id " + idConsulenza);
+        }
+        consulenzaDAO.deleteById(idConsulenza);
     }
 
 }

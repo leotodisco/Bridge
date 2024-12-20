@@ -5,17 +5,19 @@
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.8); /* Sfondo nero semi-trasparente */
+    background-color: rgba(0, 0, 0, 0.5); /* Sfondo nero semi-trasparente */
     display: flex;
     justify-content: center;
     align-items: center;
     z-index: 1000;
 }
 
+
 /* Contenitore principale del popup */
 .popup-container {
     background-color: #fff; /* Sfondo bianco */
     border-radius: 12px; /* Angoli arrotondati */
+
     width: 90%;
     max-width: 600px;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2); /* Ombra leggera */
@@ -23,6 +25,30 @@
     font-family: 'Roboto', Arial, sans-serif;
     position: relative;
     animation: fadeIn 0.3s ease-in-out;
+    max-height: 90vh;
+    margin: 0 auto;
+    overflow-y: auto;
+    box-sizing: border-box;
+}
+
+/* Scrollbar personalizzata */
+.popup-container::-webkit-scrollbar {
+    width: 8px; /* Larghezza della scrollbar */
+}
+
+.popup-container::-webkit-scrollbar-thumb {
+    background-color: #ccc; /* Colore della scrollbar */
+    border-radius: 4px; /* Arrotonda gli angoli della scrollbar */
+}
+
+.popup-container::-webkit-scrollbar-thumb:hover {
+    background-color: #aaa; /* Colore al passaggio del mouse */
+}
+
+.popup-container::-webkit-scrollbar-track {
+    background: transparent; /* Sfondo del binario della scrollbar */
+    margin-top:8px;
+    margin-bottom:8px;
 }
 
 /* Animazione di ingresso */
@@ -144,6 +170,146 @@
     transform: scale(0.95);
 }
 
+.popup-container {
+    max-width: 600px; /* Limita la larghezza massima del popup */
+    width: 90%; /* Adatta il popup al 90% della larghezza dello schermo */
+    margin: 0 auto; /* Centra il popup orizzontalmente */
+    overflow-y: auto; /* Aggiunge lo scroll se il contenuto è troppo alto */
+    max-height: 90vh; /* Limita l'altezza massima al 90% della finestra */
+    padding: 20px;
+    box-sizing: border-box; /* Include il padding nel calcolo delle dimensioni */
+    background-color: #fff; /* Sfondo bianco */
+    border-radius: 8px; /* Angoli arrotondati */
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column; /* Allinea i campi verticalmente */
+    margin-bottom: 15px; /* Spazio tra i campi */
+}
+
+.formEditText,
+textarea,
+input {
+    width: 100%; /* I campi occupano tutta la larghezza del contenitore */
+    padding: 8px;
+    font-size: 14px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box; /* Include padding e border nelle dimensioni */
+}
+
+textarea {
+    resize: vertical; /* Permette il ridimensionamento verticale */
+}
+
+.edit-button,
+.save-button,
+.cancel-button {
+    padding: 10px 15px;
+    font-size: 14px;
+    cursor: pointer;
+    border: none;
+    border-radius: 4px;
+    margin: 5px;
+    background-color: #00BF62; /* Colore di default per il bottone */
+    color: white;
+    transition: background-color 0.2s ease;
+}
+
+.edit-button:hover,
+.save-button:hover {
+    background-color: #15412e;
+}
+
+.cancel-button {
+    background-color: #dc3545;
+}
+
+.cancel-button:hover {
+    background-color: #c82333;
+}
+
+.delete-button {
+    background-color: #e74c3c;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    margin-left: 10px;
+    cursor: pointer;
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+.delete-button:hover {
+    background-color: #c0392b;
+}
+
+
+@media screen and (max-width: 768px) {
+    .popup-container {
+        width: 95%;
+        max-height: 85vh; /* Adatta il contenitore su schermi più piccoli */
+    }
+    input,
+    textarea {
+        font-size: 12px; /* Riduci leggermente il font su schermi piccoli */
+    }
+}
+
+/* Stile per il container del popup */
+.confirm-delete-container {
+    background: #fff; /* Sfondo bianco */
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.25); /* Ombra */
+    text-align: center;
+    width: 300px; /* Larghezza fissa */
+    max-width: 90%; /* Adattabile su schermi piccoli */
+}
+
+
+/* Stile per il testo nel popup */
+.confirm-delete-container p {
+    margin: 0 0 20px;
+    font-size: 16px;
+    color: #333;
+}
+
+/* Stile per i pulsanti */
+.confirm-delete-actions {
+    display: flex;
+    justify-content: space-between;
+}
+
+.confirm-delete-actions .confirm-button {
+    background-color: #d9534f; /* Rosso */
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.confirm-delete-actions .confirm-button:hover {
+    background-color: #c9302c;
+}
+
+.confirm-delete-actions .cancel-button {
+    background-color: #5bc0de; /* Azzurro */
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.confirm-delete-actions .cancel-button:hover {
+    background-color: #31b0d5;
+}
+
 
 /* Stile per dispositivi mobili */
 @media (max-width: 768px) {
@@ -159,3 +325,5 @@
         font-size: 16px;
     }
 }
+
+
