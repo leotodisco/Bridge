@@ -30,6 +30,4 @@ public interface AlloggioDAO extends JpaRepository<Alloggio, Long> {
     Alloggio findAllAlloggiWithTitolo(@Param("titolo") String titolo);
 
     Optional<Alloggio>  findAlloggioByTitolo(String titolo);
-
-    //Alloggio getAlloggiosByTitolo(String titolo);
 }
