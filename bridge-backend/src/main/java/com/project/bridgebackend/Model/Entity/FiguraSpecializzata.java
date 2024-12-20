@@ -19,7 +19,7 @@ public class FiguraSpecializzata extends Utente {
     /**
      * Disponibilità orarie della Figura Specializzata.
      * */
-    @Pattern(regexp = "^[A-Za-z0-9,.:;]+$\n", message = "Regexp per la disponibilita' non rispettata")
+    @Pattern(regexp = "^[A-Za-z0-9 ,.:;-]+$", message = "Regexp per la disponibilita' non rispettata")
     private String disponibilita;
     /**
      * costruttore vuoto.
