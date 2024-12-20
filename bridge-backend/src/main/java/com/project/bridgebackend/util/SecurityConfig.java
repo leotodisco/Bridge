@@ -44,18 +44,17 @@ public class SecurityConfig {
                 .cors(cors -> cors.configurationSource(corsConfigurationSource())) // Configurazione CORS esplicita
                 .csrf(csrf -> csrf.disable()) // Disabilita CSRF esplicitamente
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers(
-                                "/api/corsi/crea","/api/corsi/upload","/api/corsi/cerca/{id}", "/api/corsi/modifica/{id}","/api/corsi/listaCorsi","/api/corsi/download/{id}",
-
-                                "/api/eventi/crea","/api/eventi/all", "/api/eventi/retrieve/{id}", "/api/eventi/{id}/iscrivi",  "/api/eventi/{id}/disiscrivi", "/api/eventi/pubblicati","/api/eventi/{id}/iscrizione",
-
-                                "/api/annunci/creaConsulenza","/api/annunci/creaLavoro", "/api/annunci/view_lavori","api/annunci/view_lavori/proprietario/{id}", "/api/annunci/view_lavori/retrieve/{id}",
-                                "/api/annunci/modifica_lavoro/${id}", "/api/annunci/elimina_lavoro/{id}", "/api/annunci/view_consulenze", "/api/annunci/view_consulenze/proprietario/{id}",
+                        .requestMatchers("/authentication/login", "/authentication/registrazioneUtente",
+                                "/api/eventi/crea", "/api/corsi/crea", "/api/annunci/creaConsulenza",
+                                "/api/corsi/upload", "/alloggi/aggiungi", "/api/annunci/creaLavoro", "/api/annunci/view_lavori",
+                                "api/annunci/view_lavori/proprietario/{id}", "/api/annunci/view_lavori/retrieve/{id}",
+                                "/api/annunci/modifica_lavoro/${id}", "/api/annunci/elimina_lavoro/{id}",
+                                "/api/annunci/view_consulenze", "/api/annunci/view_consulenze/proprietario/{id}",
+                                "/api/eventi/all", "/api/eventi/retrieve/{id}", "/api/eventi/{id}/iscrivi",
+                                "/api/eventi/{id}/disiscrivi", "/api/eventi/pubblicati", "/areaPersonale/elimina/{email},",
                                 "/api/annunci/view_consulenze/retrieve/{id}","/api/annunci/modifica_consulenza/{idConsulenza}",
-
-                                "/alloggi/aggiungi","/alloggi/mostra","/alloggi/SingoloAlloggio/{titolo}",
-                                "/authentication/login", "/authentication/registrazioneUtente",
-                                "/areaPersonale/elimina/{email},", "/areaPersonale/DatiUtente/{email}","/areaPersonale/DatiFotoUtente/{email}").permitAll()
+                                "/api/eventi/{id}/iscrizione","/alloggi/mostra","/alloggi/SingoloAlloggio/{titolo}", "/api/corsi/cerca/{id}", "/api/corsi/modifica/{id}",
+                                "/api/corsi/listaCorsi","/areaPersonale/DatiUtente/{email}","/api/corsi/download/{id}","/areaPersonale/DatiFotoUtente/{email}").permitAll()
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
