@@ -13,7 +13,6 @@ import CreaLavoro from './GestioneAnnuncio/components/formLavoro.jsx';
 import logo from './assets/IMG_1580.PNG';
 import ViewConsulenza from "./GestioneAnnuncio/components/viewConsulenza.jsx";
 import ViewLavoro from "./GestioneAnnuncio/components/viewLavoro.jsx";
-import LogoutButton from "./GestioneLogout/components/logout.jsx";
 import AreaPersonale from "./GestioneUtente/components/AreaPersonale.jsx";
 import AllEventsView from "./GestioneEvento/components/ViewAllEventi.jsx";
 import EventView from "./GestioneEvento/components/EventoRetrieveView.jsx";
