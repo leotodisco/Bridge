@@ -48,15 +48,20 @@ public class SecurityConfig {
                                 "/api/eventi/crea", "/api/corsi/crea", "/api/annunci/creaConsulenza",
                                 "/api/corsi/upload", "/alloggi/aggiungi", "/api/annunci/creaLavoro", "/api/annunci/view_lavori",
                                 "api/annunci/view_lavori/proprietario/{id}", "/api/annunci/view_lavori/retrieve/{id}",
-                                "/api/annunci/modifica_lavoro/${id}", "/api/annunci/elimina_lavoro/{id}",
+                                "/api/annunci/modifica_lavoro/{id}", "/api/annunci/elimina_lavoro/{id}",
                                 "/api/annunci/view_consulenze", "/api/annunci/view_consulenze/proprietario/{id}",
                                 "/api/eventi/all", "/api/eventi/retrieve/{id}", "/api/eventi/{id}/iscrivi",
                                 "/api/eventi/{id}/disiscrivi", "/api/eventi/pubblicati", "/areaPersonale/elimina/{email},",
                                 "/api/annunci/view_consulenze/retrieve/{id}","/api/annunci/modifica_consulenza/{idConsulenza}",
                                 "/api/eventi/{id}/iscrizione", "/api/corsi/cerca/{id}", "/api/corsi/modifica/{id}",
-                                "/api/corsi/listaCorsi","/areaPersonale/DatiUtente/{email}","/alloggi/mostra","/alloggi/preferiti","/alloggi/isFavorito", "/alloggi/SingoloAlloggio/{titolo}", "/api/corsi/download/{id}","/areaPersonale/DatiFotoUtente/{email}",
-                                "/api/eventi/{id}/iscrizione","/alloggi/mostra","/alloggi/SingoloAlloggio/{titolo}", "/api/corsi/cerca/{id}", "/api/corsi/modifica/{id}",
-                                "/api/corsi/listaCorsi","/areaPersonale/DatiUtente/{email}","/api/corsi/download/{id}","/areaPersonale/DatiFotoUtente/{email}","/areaPersonale/modificaUtente/{email}","/areaPersonale/modificaPassword/{email}","/areaPersonale/modificaFotoUtente/{email}").permitAll()
+                                "/api/corsi/listaCorsi","/areaPersonale/DatiUtente/{email}","/alloggi/mostra","/alloggi/preferiti","/alloggi/isFavorito",
+                                "/alloggi/SingoloAlloggio/{titolo}",
+                                "/api/corsi/download/{id}","/areaPersonale/DatiFotoUtente/{email}",
+                                "/api/eventi/{id}/iscrizione","/alloggi/mostra","/alloggi/SingoloAlloggio/{titolo}", "/api/corsi/cerca/{id}",
+                                "/api/corsi/modifica/{id}",
+                                "/api/corsi/listaCorsi","/areaPersonale/DatiUtente/{email}","/api/corsi/download/{id}",
+                                "/areaPersonale/DatiFotoUtente/{email}","/areaPersonale/modificaUtente/{email}",
+                                "/areaPersonale/modificaPassword/{email}","/areaPersonale/modificaFotoUtente/{email}").permitAll()
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))

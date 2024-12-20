@@ -10,7 +10,7 @@ const LavoroView = ({ id, onClose }) => {
 
     const [titolo, setTitolo] = useState("");
     const [posizioneLavorativa, setPosizioneLavorativa] = useState("");
-    const [retribuzione, setRetribuzione] = useState("");
+    const [retribuzione, setRetribuzione] = useState(0);
     const [nomeSede, setNomeSede] = useState("");
     const [nomeAzienda, setNomeAzienda] = useState("");
     const [orarioLavoro, setOrarioLavoro] = useState("");
@@ -103,6 +103,12 @@ const LavoroView = ({ id, onClose }) => {
 
     // Funzione per la modifica dell'annuncio di lavoro
     const handleEdit = async () => {
+        if (!id) {
+            console.error("ID dell'annuncio non trovato.");
+            alert("Errore: ID dell'annuncio non trovato.");
+            return;
+        }
+
         const aggiornamenti = {
             titolo,
             posizioneLavorativa,
@@ -118,6 +124,12 @@ const LavoroView = ({ id, onClose }) => {
 
         try {
             const token = localStorage.getItem("token");
+            if (!token) {
+                console.error("Token non trovato. Effettua nuovamente il login.");
+                alert("Token non trovato. Effettua nuovamente il login.");
+                return;
+            }
+
             const response = await fetch(`http://localhost:8080/api/annunci/modifica_lavoro/${id}`, {
                 method: "POST",
                 headers: {
@@ -137,10 +149,9 @@ const LavoroView = ({ id, onClose }) => {
             setEditing(false);
         } catch (err) {
             console.error("Errore durante la modifica dell'annuncio:", err);
-            alert("Non è stato possibile modificare l'annuncio.");
+            alert(`Non è stato possibile modificare l'annuncio. Dettagli: ${err.message}`);
         }
     };
-
 
     // Funzione per l'eliminazione dell'annuncio di lavoro
     const handleDelete = async () => {
@@ -148,27 +159,48 @@ const LavoroView = ({ id, onClose }) => {
             return;
         }
 
+        const token = localStorage.getItem("token");
+        if (!token) {
+            console.error("Token non trovato. Effettua nuovamente il login.");
+            alert("Token non trovato. Effettua nuovamente il login.");
+            return;
+        }
+
+        const id = lavoroData?.id;
+        if (!id) {
+            console.error("Errore: L'ID dell'annuncio è null o undefined.");
+            alert("Errore: L'ID dell'annuncio non è valido.");
+            return;
+        }
+
         try {
-            const token = localStorage.getItem("token");
+            console.log(`Tentativo di eliminare l'annuncio con ID: ${id}`);
+
             const response = await fetch(`http://localhost:8080/api/annunci/elimina_lavoro/${id}`, {
                 method: "DELETE",
                 headers: {
-                    Authorization: `Bearer ${token}`
-                }
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${token}`,
+                },
             });
 
             if (!response.ok) {
-                throw new Error(`Errore durante l'eliminazione dell'annuncio: ${response.status}`);
+                if (response.status === 403) {
+                    alert("Non sei autorizzato a eliminare questo annuncio.");
+                } else {
+                    alert(`Errore durante l'eliminazione dell'annuncio. Codice: ${response.status}`);
+                }
+                return;
             }
 
             alert("Annuncio eliminato con successo!");
             onClose(); // Chiudi il popup dopo l'eliminazione
+            fetchLavori(); // Aggiorna la lista degli annunci
         } catch (err) {
             console.error("Errore durante l'eliminazione dell'annuncio:", err);
-            alert("Non è stato possibile eliminare l'annuncio.");
+            alert(`Non è stato possibile eliminare l'annuncio. Dettagli: ${err.message}`);
         }
     };
-
 
     return (
         <div className="popup-overlay">

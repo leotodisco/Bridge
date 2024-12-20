@@ -125,15 +125,8 @@ public class GestioneAnnuncioServiceImp implements GestioneAnnuncioService {
         return lavoroDAO.findByProprietario(proprietario);
     }
 
-    /**
-     * Modifica un annuncio di lavoro esistente nel database.
-     *
-     * @param idAnnuncio l'ID dell'annuncio da modificare.
-     * @param aggiornamenti mappa contenente i campi da aggiornare e i relativi valori.
-     * @return l'annuncio di lavoro aggiornato.
-     */
     @Override
-    public Lavoro modificaAnnuncioLavoro(final long idAnnuncio, final HashMap<String, Object> aggiornamenti) {
+    public Lavoro modificaAnnuncioLavoro(long idAnnuncio, HashMap<String, Object> aggiornamenti) {
         Optional<Lavoro> lavoroOptional = lavoroDAO.findById(idAnnuncio);
         if (lavoroOptional.isEmpty()) {
             throw new IllegalArgumentException("Annuncio di lavoro non trovato.");
@@ -143,6 +136,9 @@ public class GestioneAnnuncioServiceImp implements GestioneAnnuncioService {
 
         aggiornamenti.forEach((campo, valore) -> {
             switch (campo) {
+                case "titolo":
+                    lavoro.setTitolo((String) valore);
+                    break;
                 case "posizioneLavorativa":
                     lavoro.setPosizioneLavorativa((String) valore);
                     break;
@@ -156,13 +152,27 @@ public class GestioneAnnuncioServiceImp implements GestioneAnnuncioService {
                     lavoro.setTipoContratto((TipoContratto) valore);
                     break;
                 case "retribuzione":
-                    lavoro.setRetribuzione((Double) valore);
+                    double parsed_value = Double.parseDouble(valore.toString());
+                    lavoro.setRetribuzione(parsed_value);
                     break;
                 case "nomeSede":
                     lavoro.setNomeSede((String) valore);
                     break;
                 case "infoUtili":
                     lavoro.setInfoUtili((String) valore);
+                    break;
+                case "indirizzo":
+                    if (valore instanceof HashMap) {
+                        HashMap<String, Object> indirizzoData = (HashMap<String, Object>) valore;
+
+                        Indirizzo indirizzo = lavoro.getIndirizzo(); // L'indirizzo deve già esistere
+
+                        // Aggiorna i campi dell'indirizzo utilizzando un metodo di servizio
+                        indirizzoService.aggiornaIndirizzo(indirizzo.getId(), indirizzoData);
+
+                    } else {
+                        throw new IllegalArgumentException("Formato indirizzo non valido.");
+                    }
                     break;
                 default:
                     throw new IllegalArgumentException("Campo non valido per la modifica: " + campo);
@@ -174,6 +184,9 @@ public class GestioneAnnuncioServiceImp implements GestioneAnnuncioService {
 
     @Override
     public void eliminaAnnuncioLavoro(long idAnnuncio) {
+        if (!lavoroDAO.existsById(idAnnuncio)) {
+            throw new IllegalArgumentException("Annuncio di lavoro non trovato.");
+        }
         lavoroDAO.deleteById(idAnnuncio);
     }
 
