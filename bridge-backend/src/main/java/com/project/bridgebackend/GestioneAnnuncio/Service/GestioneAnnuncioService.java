@@ -90,16 +90,14 @@ public interface GestioneAnnuncioService {
      * @param idAnnuncio L'identificativo unico dell'annuncio di lavoro da modificare.
      * @param aggiornamenti Una mappa contenente i campi da aggiornare e i relativi nuovi valori.
      * @return L'oggetto `Lavoro` aggiornato.
-     * @throws IllegalArgumentException se l'annuncio non viene trovato o i dati forniti non sono validi.
      */
-    Lavoro modificaAnnuncioLavoro(final long idAnnuncio,
-                                  final HashMap<String, Object> aggiornamenti);
+    Lavoro modificaAnnuncioLavoro(long idAnnuncio, HashMap<String, Object> aggiornamenti);
 
     /**
      * Elimina un annuncio di lavoro dal database.
      *
-     * @param id ID dell'annuncio da eliminare.
+     * @param idAnnuncio L'identificativo unico dell'annuncio di lavoro da eliminare.
      */
-    void eliminaAnnuncioLavoro(long id);
+    void eliminaAnnuncioLavoro(long idAnnuncio);
 
 }
