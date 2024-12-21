@@ -30,10 +30,13 @@ public class AlloggioServiceImplementazione implements AlloggioService {
 
     @Autowired
     private VolontarioDAO volontarioDAO;
+
     @Autowired
     RifugiatoDAO rifugiatoDAO;
+
     @Autowired
     private AlloggioDAO alloggioDAO;
+
     @Autowired
     private IndirizzoDAO indirizzoDAO;
 
