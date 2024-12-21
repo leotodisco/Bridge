@@ -21,7 +21,7 @@ const AreaPersonale = ({ onLogout }) => {
         const fetchUserData = async () => {
             try {
                 const email = localStorage.getItem('email');
-                const token = localStorage.getItem('token');
+                const token = localStorage.getItem('authToken');
 
                 if (!email || !token) {
                     alert("Non sei autenticato. Effettua il login.");
@@ -69,7 +69,7 @@ const AreaPersonale = ({ onLogout }) => {
         if (window.confirm("Sei sicuro di voler eliminare il tuo account?")) {
             try {
                 const email = localStorage.getItem('email');
-                const token = localStorage.getItem('token');
+                const token = localStorage.getItem('authToken');
 
                 const response = await fetch(`http://localhost:8080/areaPersonale/elimina/${email}`, {
                     method: 'DELETE',
@@ -137,7 +137,7 @@ const AreaPersonale = ({ onLogout }) => {
 
         try {
             const email = localStorage.getItem('email');
-            const token = localStorage.getItem('token');  // Assicurati che il token sia nel localStorage
+            const token = localStorage.getItem('authToken');  // Assicurati che il token sia nel localStorage
 
             if (!token) {
                 alert("Token non trovato. Effettua nuovamente il login.");

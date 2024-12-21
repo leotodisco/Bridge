@@ -1,6 +1,6 @@
 import './App.css';
 import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
-import { useState } from 'react';
+import {useEffect, useState} from 'react';
 import Sidebar from './Components/Sidebar/Sidebar.jsx';
 import CreaEvento from './GestioneEvento/components/formEvento.jsx';
 import CreaConsulenza from './GestioneAnnuncio/components/formConsulenza.jsx';
@@ -26,10 +26,10 @@ function App() {
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
     // Controlla se il token JWT è presente al caricamento
-    //useEffect(() => {
-    //    const token = localStorage.getItem('authToken');
-    //    setIsAuthenticated(!!token);
-    //}, []);
+        useEffect(() => {
+        const token = localStorage.getItem('authToken');
+        setIsAuthenticated(!!token);
+    }, []);
 
     // Definizione di handleLogin
     const handleLogin = () => {
