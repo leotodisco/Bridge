@@ -1,6 +1,6 @@
 import './App.css';
 import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import Sidebar from './Components/Sidebar/Sidebar.jsx';
 import CreaEvento from './GestioneEvento/components/formEvento.jsx';
 import CreaConsulenza from './GestioneAnnuncio/components/formConsulenza.jsx';
@@ -68,6 +68,7 @@ function App() {
                             <Link to="/view-lavoro" className="nav-link">Visualizza Annunci di Lavoro</Link>
                             <Link to="/view-eventi" className="nav-link">View Eventi</Link>
                             <Link to="/mostraAlloggi" className="nav-link">View Alloggi</Link>
+                            <LogoutButton onLogout={handleLogout}/>
                         </nav>
                         <Routes>
                             <Route path="/" element={<p>Benvenuto nel sistema di gestione!</p>}/>
