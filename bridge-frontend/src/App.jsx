@@ -26,10 +26,10 @@ function App() {
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
     // Controlla se il token JWT è presente al caricamento
-    useEffect(() => {
-        const token = localStorage.getItem('authToken');
-        setIsAuthenticated(!!token);
-    }, []);
+    //useEffect(() => {
+    //    const token = localStorage.getItem('authToken');
+    //    setIsAuthenticated(!!token);
+    //}, []);
 
     // Definizione di handleLogin
     const handleLogin = () => {
