@@ -285,6 +285,10 @@ const AreaPersonale = ({ onLogout }) => {
                                     <span className="data-label">Lingue Parlate:</span>
                                     <span className="data-value">{userData.lingueParlateUtente}</span>
                                 </div>
+                                <div className="data-row">
+                                    <span className="data-label">Disponibilità:</span>
+                                    <span className="data-value">{userData.disponibilitaUtente}</span>
+                                </div>
                             </>
                         ) : (
                             <p>Caricamento dei dati personali...</p>
