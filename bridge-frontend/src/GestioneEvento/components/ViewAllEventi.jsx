@@ -55,6 +55,8 @@ const AllEventsView = () => {
         fetchEvents();
     }, []);
 
+
+
     if (loading) {
         return <p>Caricamento in corso...</p>;
     }
@@ -99,7 +101,6 @@ const AllEventsView = () => {
             {selectedEventId && (
                 <EventView id={selectedEventId} onClose={closePopup} />
             )}
-
         </div>
     );
 };

@@ -41,32 +41,81 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                .cors(cors -> cors.configurationSource(corsConfigurationSource())) // Configurazione CORS esplicita
-                .csrf(csrf -> csrf.disable()) // Disabilita CSRF esplicitamente
+                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+                .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/authentication/login", "/authentication/registrazioneUtente",
-                                "/api/eventi/crea", "/api/corsi/crea", "/api/annunci/creaConsulenza",
-                                "/api/corsi/upload", "/alloggi/aggiungi", "/api/annunci/creaLavoro", "/api/annunci/view_lavori",
-                                "api/annunci/view_lavori/proprietario/{id}", "/api/annunci/view_lavori/retrieve/{id}",
-                                "/api/annunci/modifica_lavoro/${id}", "/api/annunci/elimina_lavoro/{id}",
-                                "/api/annunci/view_consulenze", "/api/annunci/view_consulenze/proprietario/{id}",
-                                "/api/eventi/all", "/api/eventi/retrieve/{id}", "/api/eventi/{id}/iscrivi",
-                                "/api/eventi/{id}/disiscrivi", "/api/eventi/pubblicati", "/areaPersonale/elimina/{email},",
-                                "/api/annunci/view_consulenze/retrieve/{id}","/api/annunci/modifica_consulenza/{idConsulenza}",
-                                "/api/eventi/{id}/iscrizione","/alloggi/mostra","/alloggi/SingoloAlloggio/{titolo}", "/api/corsi/cerca/{id}", "/api/corsi/modifica/{id}",
-                                "/api/corsi/listaCorsi","/areaPersonale/DatiUtente/{email}").permitAll()
+                        .requestMatchers(getPublicEndpoints()).permitAll()
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authenticationProvider(provider)
                 .addFilterBefore(authFilter, UsernamePasswordAuthenticationFilter.class);
+
         return http.build();
+    }
+
+    private String[] getPublicEndpoints() {
+        return new String[]{
+                // AUTENTICAZIONE
+                "/authentication/login",
+                "/authentication/registrazioneUtente",
+
+                // EVENTi
+                "/api/eventi/crea",
+                "/api/eventi/all",
+                "/api/eventi/retrieve/{id}",
+                "/api/eventi/{id}/iscrivi",
+                "/api/eventi/{id}/disiscrivi",
+                "/api/eventi/pubblicati",
+                "/api/eventi/{id}/iscrizione",
+
+                // ANNUNCI (CONSULENZA E LAVORO)
+                "/api/annunci/creaConsulenza",
+                "/api/annunci/view_consulenze",
+                "/api/annunci/view_consulenze/proprietario/{id}",
+                "/api/annunci/view_consulenze/retrive/{id}",
+                "/api/annunci/modifica_consulenza/{idConsulenza}",
+                "/api/annunci/eliminaConsulenza/{id}",
+                "/api/annunci/creaLavoro",
+                "/api/annunci/view_lavori",
+                "/api/annunci/view_lavori/proprietario/{id}",
+                "/api/annunci/view_lavori/retrive/{id}",
+                "/api/annunci/modifica_lavoro/{id}",
+                "/api/annunci/elimina_lavoro/{id}",
+
+                // CORSI
+                "/api/corsi/crea",
+                "/api/corsi/upload",
+                "/api/corsi/cerca/{id}",
+                "/api/corsi/modifica/{id}",
+                "/api/corsi/listaCorsi",
+                "/api/corsi/download/{id}",
+
+                // ALLOGGI
+                "/alloggi/aggiungi",
+                "/alloggi/mostra",
+                "/alloggi/preferiti",
+                "/alloggi/isFavorito",
+                "/alloggi/SingoloAlloggio/{titolo}",
+
+                // AREA PERSONALE
+                "/areaPersonale/DatiUtente/{email}",
+                "/areaPersonale/elimina/{email}",
+                "/areaPersonale/DatiFotoUtente/{email}",
+                "/areaPersonale/modificaUtente/{email}",
+                "/areaPersonale/modificaPassword/{email}",
+                "/areaPersonale/modificaFotoUtente/{email}"
+        };
     }
 
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(List.of("http://localhost:5174", "http://localhost:5173", "https://your-production-domain.com", "http://localhost:5173"));
+        configuration.setAllowedOrigins(List.of(
+                "http://localhost:5174",
+                "http://localhost:5173",
+                "https://your-production-domain.com"
+        ));
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"));
         configuration.setAllowedHeaders(List.of("Authorization", "Content-Type"));
         configuration.setExposedHeaders(List.of("Authorization"));

@@ -4,6 +4,7 @@ import com.project.bridgebackend.Model.Entity.enumeration.Gender;
 import com.project.bridgebackend.Model.Entity.enumeration.Ruolo;
 import com.project.bridgebackend.Model.Entity.enumeration.TitoloDiStudio;
 import jakarta.persistence.Entity;
+import jakarta.validation.constraints.Pattern;
 import lombok.Data;
 
 import java.time.LocalDate;
@@ -18,6 +19,7 @@ public class FiguraSpecializzata extends Utente {
     /**
      * Disponibilità orarie della Figura Specializzata.
      * */
+    @Pattern(regexp = "^[A-Za-z0-9 ì,.:;-]+$", message = "Regexp per la disponibilita' non rispettata")
     private String disponibilita;
     /**
      * costruttore vuoto.

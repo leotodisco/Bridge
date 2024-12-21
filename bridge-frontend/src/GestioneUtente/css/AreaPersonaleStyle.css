@@ -1,0 +1,190 @@
+/* Contenitore principale */
+.area-personale-container {
+    display: flex; /* Layout orizzontale */
+    justify-content: space-between;
+    align-items: stretch; /* Allunga i figli per avere la stessa altezza */
+    padding: 20px;
+    margin: 40px auto;
+    background: #fff;
+    border-radius: 12px;
+    width: 90%;
+    font-family: 'Roboto', Arial, sans-serif;
+}
+
+/* Sezione sinistra e destra */
+.sinistra, .destra {
+    flex: 1; /* Entrambi occupano lo stesso spazio orizzontale */
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start; /* Contenuti allineati in alto */
+    gap: 20px;
+    padding: 20px;
+    background: #fff;
+    border-radius: 12px;
+}
+
+.destra h1 {
+    color: #00BF62;
+    font-size: 28px;
+    margin-bottom: 20px;
+}
+
+/* Divisore centrale */
+.divisore {
+    width: 2px; /* Larghezza della linea */
+    background-color: #ddd; /* Colore della linea */
+    height: auto; /* Si estende all'altezza del contenitore */
+    align-self: stretch; /* Assicura che occupi tutta l'altezza disponibile */
+}
+
+/* Foto profilo */
+.profile-picture {
+    width: 200px;
+    height: 200px;
+    border-radius: 50%;
+    object-fit: cover;
+    background-color: #f0f0f0;
+    border: 3px solid #00BF62;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease;
+}
+
+/* Sezione profilo */
+.profile-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    width: 100%; /* Adatta la larghezza al contenitore */
+}
+
+.profile-picture:hover {
+    transform: scale(1.05);
+}
+
+/* Contenitore principale dei pulsanti */
+.action-buttons {
+    display: flex;
+    flex-direction: column; /* Layout verticale */
+    align-items: center; /* Allinea i pulsanti al centro */
+    justify-content: center; /* Centra verticalmente i pulsanti */
+    gap: 20px; /* Spazio uniforme tra i pulsanti */
+    margin-top: 20px;
+}
+
+/* Contenitore principale dei pulsanti */
+.action-buttons {
+    display: flex;
+    flex-direction: column; /* Layout verticale */
+    align-items: center; /* Allinea i pulsanti al centro */
+    justify-content: center; /* Centra verticalmente */
+    gap: 20px; /* Spazio uniforme tra i pulsanti */
+    width: 100%;
+    margin-top: 20px;
+}
+
+/* Stile base per i pulsanti */
+.action-buttons button {
+    display: flex;
+    align-items: center; /* Allinea icona e testo verticalmente */
+    justify-content: center; /* Centra il contenuto orizzontalmente */
+    gap: 10px; /* Spazio tra icona e testo */
+    padding: 10px 15px;
+    font-size: 1rem;
+    color: #000; /* Colore di default */
+    border: none; /* Nessun bordo */
+    background: none; /* Nessuno sfondo */
+    cursor: pointer;
+    transition: transform 0.2s ease, color 0.3s ease; /* Transizione per animazioni fluide */
+    text-align: center;
+}
+
+/* Stile per le icone */
+.action-buttons button i {
+    font-size: 1.5rem; /* Dimensione uniforme dell'icona */
+    color: #000; /* Colore di default */
+    transition: color 0.3s ease; /* Stessa transizione */
+}
+
+/* Testo accanto alle icone */
+.action-buttons button span {
+    font-size: 1rem;
+    font-weight: 500;
+    color: #000;
+    transition: color 0.3s ease; /* Transizione colore */
+}
+
+/* Hover per entrambi i pulsanti */
+.action-buttons button:hover {
+    transform: scale(1.1); /* Effetto di ingrandimento */
+}
+
+/* Hover per Logout */
+.logoutButton:hover i,
+.logoutButton:hover span {
+    color: #00BF62; /* Verde */
+}
+
+/* Hover per Delete Account */
+.deleteButton:hover i,
+.deleteButton:hover span {
+    color: #d9534f; /* Rosso */
+}
+
+/* Dati personali */
+.data-row {
+    display: flex;
+    width: 100%;
+    padding: 8px 0;
+    border-bottom: 1px solid #e6e6e6;
+}
+
+.data-row:last-child {
+    border-bottom: none;
+}
+
+.data-label {
+    color: #333;
+    font-weight: bold;
+}
+
+.data-value {
+    margin-left: 5px;
+    color: #555;
+}
+
+.caricaIMG{
+    margin-top: 10px;
+    margin-right: 5px;
+    width: 40%;
+    background-color: white;
+    border: 1px solid #00BF62;
+    border-radius: 6px;
+}
+
+.modifyIMG {
+    border: none; /* Nessun bordo */
+    background: none; /* Nessuno sfondo */
+    transition: transform 0.3s ease; /* Aggiungi una transizione fluida per l'ingrandimento */
+}
+
+.modifyIMG:hover {
+    transform: scale(1.1); /* Aumenta la dimensione dell'elemento quando ci passi sopra */
+}
+
+/* Responsività */
+@media (max-width: 768px) {
+    .area-personale-container {
+        flex-direction: column;
+    }
+
+    .sinistra, .destra {
+        flex: none; /* Ripristina la larghezza */
+        width: 100%; /* Si adatta alla larghezza del dispositivo */
+        margin-bottom: 20px;
+    }
+
+    .divisore {
+        display: none; /* Nasconde il divisore su dispositivi mobili */
+    }
+}

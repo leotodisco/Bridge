@@ -1,13 +1,13 @@
 package com.project.bridgebackend.GestioneAlloggio.Controller;
 
+import com.project.bridgebackend.GestioneAlloggio.FotoAlloggio.FotoAlloggio;
 import com.project.bridgebackend.GestioneAlloggio.FotoAlloggio.FotoAlloggioService;
 import com.project.bridgebackend.GestioneAlloggio.Service.AlloggioService;
 import com.project.bridgebackend.Model.Entity.Alloggio;
 import com.project.bridgebackend.Model.Entity.Indirizzo;
 import com.project.bridgebackend.Model.Entity.Rifugiato;
 import com.project.bridgebackend.Model.Entity.Volontario;
-import com.project.bridgebackend.Model.dao.IndirizzoDAO;
-import com.project.bridgebackend.Model.dao.VolontarioDAO;
+import com.project.bridgebackend.Model.dao.*;
 import com.project.bridgebackend.Model.dto.AlloggioDTO;
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
@@ -15,14 +15,14 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.ArrayList;
-import java.util.Base64;
-import java.util.List;
+import java.io.IOException;
+import java.util.*;
 
 /**
  * Controller per la gestione degli alloggi
@@ -36,12 +36,18 @@ public class AlloggioController {
     @Autowired
     private FotoAlloggioService fotoAlloggioService;
 
-    private static final Logger logger = LoggerFactory.getLogger(AlloggioController.class);
     @Autowired
     private VolontarioDAO volontarioDAO;
 
     @Autowired
     private IndirizzoDAO indirizzoDAO;
+    @Autowired
+    private UtenteDAO utenteDAO;
+    @Autowired
+    private AlloggioDAO alloggioDAO;
+
+    @Autowired
+    private RifugiatoDAO rifugiatoDAO;
 
     /**
      * Aggiungi un nuovo alloggio nel sistema
@@ -63,8 +69,8 @@ public class AlloggioController {
             List<String> fotoIds = new ArrayList<>();
             String fotoProfiloId = null;
             // Cicliamo su tutte le foto inviate
-            if (alloggio.getFotos() != null && !alloggio.getFotos().isEmpty()) {
-                for (String foto : alloggio.getFotos()) {
+            if (alloggio.getFoto() != null && !alloggio.getFoto().isEmpty()) {
+                for (String foto : alloggio.getFoto()) {
                     if (foto.startsWith("data:image/jpeg;base64,")){
                         foto = foto.split(",")[1]; // Estrai solo la parte Base64 dopo la virgola
                         byte[] fotoData = Base64.getDecoder().decode(foto);
@@ -146,23 +152,69 @@ public class AlloggioController {
         }
     }
 
-    @PostMapping("/manifestazione-interesse")
-    public ResponseEntity<String> manifestazioneInteresse(@RequestBody Rifugiato rifugiato, @RequestBody Alloggio alloggio) {
+
+    @PostMapping("/preferiti")
+    public ResponseEntity<String> manifestazioneInteresse(@RequestBody Map<String, String> request) {
         try {
-            boolean risultato = alloggioService.manifestazioneInteresse(rifugiato, alloggio);
-            if (risultato) {
-                return new ResponseEntity<>("Manifestazione di interesse avvenuta con successo.", HttpStatus.OK);
+            String emailRifugiato = request.get("emailRifugiato");
+            String titoloAlloggio = request.get("titoloAlloggio");
+
+            if (emailRifugiato == null) {
+                return ResponseEntity.badRequest().body("email mancata");
+            }
+            if(titoloAlloggio == null) {
+                return ResponseEntity.badRequest().body("Titolo mancanto");
+            }
+
+            boolean successo = alloggioService.manifestazioneInteresse(emailRifugiato, titoloAlloggio);
+            if (successo) {
+                return ResponseEntity.ok("Manifestazione di interesse avvenuta con successo.");
             } else {
-                return new ResponseEntity<>("Errore durante la manifestazione di interesse.", HttpStatus.BAD_REQUEST);
+                return ResponseEntity.badRequest().body("Il rifugiato ha già manifestato interesse per questo alloggio.");
             }
         } catch (IllegalArgumentException e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+            return ResponseEntity.badRequest().body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Si è verificato un errore imprevisto.");
         }
     }
 
+
+    @GetMapping("/isFavorito")
+    public ResponseEntity<Boolean> isFavorito(@RequestParam String email, @RequestParam String titolo) {
+        try {
+            Rifugiato rifugiato = rifugiatoDAO.findByEmail(email);
+            if (rifugiato == null) {
+                throw new IllegalArgumentException("Rifugiato non trovato con l'email specificata.");
+            }
+            System.out.println("Rifugiato trovato: " + rifugiato);
+
+            Optional<Alloggio> alloggioOptional = alloggioDAO.findByTitolo(titolo);
+            if (alloggioOptional.isEmpty()) {
+                throw new IllegalArgumentException("Alloggio non trovato con il titolo specificato.");
+            }
+            Alloggio alloggio = alloggioOptional.get();
+            System.out.println("Alloggio trovato: " + alloggio);
+
+            boolean isFavorito = alloggio.getListaCandidati().contains(rifugiato);
+            System.out.println("Il rifugiato è favorito: " + isFavorito);
+
+            return ResponseEntity.ok(isFavorito);
+        } catch (IllegalArgumentException e) {
+            System.err.println("Errore: " + e.getMessage());
+            return ResponseEntity.badRequest().body(false);
+        } catch (Exception e) {
+            System.err.println("Errore imprevisto: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(false);
+        }
+    }
+
+
+
+
     @GetMapping("/mostra")
     public ResponseEntity<List<Alloggio>> getAllAlloggi() {
-        logger.info("Richiesta ricevuta per mostrare gli alloggi");
         try {
             // Otteniamo tutti gli alloggi dal servizio
             List<Alloggio> alloggi = alloggioService.getAllAlloggio();
@@ -182,13 +234,25 @@ public class AlloggioController {
      */
 
     @GetMapping("/SingoloAlloggio/{titolo}")
-    public Alloggio getAlloggioByTitolo(@PathVariable String titolo) {
+    public Alloggio getAlloggioByTitolo(@PathVariable String titolo) throws IOException {
         Alloggio alloggio = alloggioService.getAlloggioByTitolo(titolo);
         if (alloggio == null) {
-            //return new ResponseEntity<>(HttpStatus.NOT_FOUND);
             return null;
         }
-        // return new ResponseEntity<>(alloggio, HttpStatus.OK);
+
+        List<String> fotoBase64 = new ArrayList<>();
+        if (alloggio.getFoto() != null) {
+            for (String fotoId : alloggio.getFoto()) {
+                FotoAlloggio fotoAlloggio = fotoAlloggioService.getIMG(fotoId);
+                if (fotoAlloggio != null) {
+                    // Converti l'immagine in base64
+                    String base64Image = Base64.getEncoder().encodeToString(fotoAlloggio.getData());
+                    fotoBase64.add(base64Image);
+                }
+            }
+        }
+
+        alloggio.setFoto(fotoBase64);
         return alloggio;
     }
 }

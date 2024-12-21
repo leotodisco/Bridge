@@ -36,18 +36,6 @@ const CreaCorso = () => {
     const aggiornaLingua = (e) => setLingua(e.target.value);
     const aggiornaPdfFile = (e) => setPdfFile(e.target.files[0]);
 
-   /* const validateForm = () => {
-        if (!titolo || !descrizione || !categoria || !lingua) {
-            alert("Compila tutti i campi obbligatori!");
-            return false;
-        }
-        if (pdfFile && pdfFile.type !== "application/pdf") {
-            alert("Il file deve essere un PDF valido!");
-            return false;
-        }
-        return true;
-    };*/
-
     const [titoloError, setTitoloError] = useState("");
     const [descrizioneError, setDescrizioneError] = useState("");
     const [categoriaError, setCategoriaError] = useState("");
@@ -151,7 +139,6 @@ const CreaCorso = () => {
             return;
         }
 
-
         setLoading(true);
         let uploadedPdfId = pdfId;
 
@@ -164,7 +151,6 @@ const CreaCorso = () => {
                 setLoading(false);
                 return;
             }
-
         }
 
         const corsoDTO = {
@@ -177,7 +163,6 @@ const CreaCorso = () => {
 
 
         console.log("Corso da creare:", corsoDTO);  // Log dei dettagli del corso da creare
-
         try {
             const response = await fetch("http://localhost:8080/api/corsi/crea", {
                 method: "POST",

@@ -7,6 +7,10 @@ import com.project.bridgebackend.Model.dao.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -26,12 +30,18 @@ public class AlloggioServiceImplementazione implements AlloggioService {
 
     @Autowired
     private VolontarioDAO volontarioDAO;
+
     @Autowired
     RifugiatoDAO rifugiatoDAO;
+
     @Autowired
     private AlloggioDAO alloggioDAO;
+
     @Autowired
     private IndirizzoDAO indirizzoDAO;
+
+    @Autowired
+    private JavaMailSender mailSender;
 
 
 
@@ -71,38 +81,42 @@ public class AlloggioServiceImplementazione implements AlloggioService {
      */
 
     @Override
-    public boolean manifestazioneInteresse(Rifugiato rifugiato, Alloggio alloggio) {
-
-        if (alloggio == null) {
-            throw new IllegalArgumentException("L'allogio non può essere nullo");
+    public boolean manifestazioneInteresse(String emailRifugiato, String titoloAlloggio) {
+        if (emailRifugiato == null || emailRifugiato.isEmpty()) {
+            throw new IllegalArgumentException("L'email del rifugiato non può essere nulla o vuota.");
+        }
+        if (titoloAlloggio == null || titoloAlloggio.isEmpty()) {
+            throw new IllegalArgumentException("Il titolo dell'alloggio non può essere nullo o vuoto.");
         }
 
+        Rifugiato rifugiato = rifugiatoDAO.findByEmail(emailRifugiato);
         if (rifugiato == null) {
-            throw new IllegalArgumentException("Il rifugiato non può essere nullo");
+            throw new IllegalArgumentException("Rifugiato non trovato con l'email specificata.");
         }
 
-        Optional<Alloggio> interesseHelper = alloggioDAO.findByTitolo(alloggio.getTitolo());
-
-        if (interesseHelper.isEmpty()) {
-            throw new IllegalArgumentException("Alloggio non trovato");
+        Optional<Alloggio> alloggioOptional = alloggioDAO.findByTitolo(titoloAlloggio);
+        if (alloggioOptional.isEmpty()) {
+            throw new IllegalArgumentException("Alloggio non trovato con il titolo specificato.");
         }
 
-        Alloggio interesse = interesseHelper.get();
+        Alloggio alloggio = alloggioOptional.get();
 
-        if (!interesse.getListaCandidati().contains(rifugiato)) {
-            interesse.getListaCandidati().add(rifugiato);
-            alloggioDAO.save(interesse);
-            return true;
-        } else {
-            throw new IllegalArgumentException("Il rifugiato già ha mostrato interesse per questo alloggio");
+        if (alloggio.getListaCandidati().contains(rifugiato)) {
+            return false; // Interesse già manifestato
         }
+
+        alloggio.getListaCandidati().add(rifugiato);
+        alloggioDAO.save(alloggio);
+        sendEmailVolontario("riuscito coglione", "provais226@gmail.com");
+
+        return true; // Interesse aggiunto con successo
     }
 
 
     @Override
     public Alloggio assegnazioneAlloggio(String titolo, String emailRifugiato) {
 
-        Optional<Alloggio> alloggioOptional = alloggioDAO.findByTitolo(titolo);
+        /*Optional<Alloggio> alloggioOptional = alloggioDAO.findByTitolo(titolo);
 
         if (alloggioOptional == null || !alloggioOptional.isPresent()) {
             throw new IllegalArgumentException("Alloggio non trovato");
@@ -126,12 +140,23 @@ public class AlloggioServiceImplementazione implements AlloggioService {
             alloggioDAO.save(alloggio);
             return alloggio;
             //throw new IllegalArgumentException("Già mostrato interesse");
-        }
+        }*/return null;
     }
 
     @Override
-    public void sendEmailVolontario(String message, String emailVolontario) {
-
+    @Async
+    public void sendEmailVolontario(String messaggio, String emailDestinatario) {
+        try {
+            SimpleMailMessage message = new SimpleMailMessage();
+            message.setFrom("beehaveofficial@gmail.com");
+            message.setTo("mariozurolo00@gmail.com");
+            message.setSubject("PROVA");
+            message.setText(messaggio);
+            mailSender.send(message);
+            System.out.println("email inviata");
+        }catch (Exception e) {
+            System.out.println("Errore nell invio dell'email a: " + emailDestinatario + e.getMessage());
+        }
     }
 
     @Override

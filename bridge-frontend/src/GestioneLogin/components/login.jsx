@@ -38,7 +38,7 @@ const Login = ({ onLogin }) =>  {
             }
 
             const data = await response.json();
-            localStorage.setItem('token', data.token);
+            localStorage.setItem('authToken', data.token);
             localStorage.setItem('email', email);
             onLogin(data.token);
             nav("/App");

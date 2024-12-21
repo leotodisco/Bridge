@@ -37,6 +37,7 @@ body {
 
 /* Raggruppare input ed etichette */
 .formGroup {
+    padding: 3px;
     text-align: left;
     margin-bottom: 0rem;
 }

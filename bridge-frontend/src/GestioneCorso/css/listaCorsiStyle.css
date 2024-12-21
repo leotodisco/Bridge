@@ -1,0 +1,30 @@
+.header-container {
+    display: flex;
+    position: relative;
+    align-items: center;
+    justify-content: flex-end;
+    width: 1600px;
+}
+
+.header-container h1 {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100%;
+    text-align: center;
+    z-index: 1;
+}
+
+.btn-primary {
+    background-color: #007bff;
+    color: white;
+    border-radius: 5px;
+    padding: 10px 20px;
+    z-index: 2;
+}
+
+.btn-primary:hover {
+    background-color: #0056b3;
+}
+
+

@@ -33,15 +33,49 @@ public interface GestioneAnnuncioService {
      */
     long salvaIndirizzoConsulenza(Indirizzo indirizzo);
 
+    /**
+     * Prende tutte le consulenze presenti nel DB.
+     * @return la lista contente tutte le consulenze.
+     */
     List<Consulenza> getAllConsulenze();
 
+    /**
+     * Prende tutte le consulenze presenti nel DB di un certo utente.
+     *
+     * @param proprietario il proprietario di cui si vogliono,
+     *                     estrarre tutti gli annunci di consulenze,
+     *                     pubblicati.
+     * @return lista di annunci di consulenze pubblicati dall'utente proprietario
+     */
     List<Consulenza> getConsulenzeByProprietario(Utente proprietario);
 
+    /**
+     * Prende una consulenze specifica nel DB.
+     *
+     * @param id intero identificativo della consulenza che si vuole ottenere.
+     * @return consulenza avente nel db l'id specificato se presente.
+     */
     Consulenza getConsulenze( long id);
 
+    /**
+     * Funzione per aggiornare una certa consulenza sulla base delle informazioni passate.
+     *
+     * @param idConsulenza intero identificativo della consulenza che si vuole modificare.
+     * @param aggiornamenti nuove informazioni con cui si vuole aggiornare la consulenza.
+     *
+     * @return consulenza aggiornata con le nuove modifiche
+     */
     Consulenza modificaAnnuncioConsulenza(final long idConsulenza,
                                           final HashMap<String, Object> aggiornamenti);
 
+    /**
+     * Funzione per l'eliminazione di una consulenza sulla base,
+     * dell'identificativo passato.
+     * @param idConsulenza identificativo della consulenza che,
+     *                     si vuole eliminare.
+     */
+
+    void eliminaConsulenza(long idConsulenza);
     //      **Metodi per Lavoro**
 
     /**
@@ -90,16 +124,13 @@ public interface GestioneAnnuncioService {
      * @param idAnnuncio L'identificativo unico dell'annuncio di lavoro da modificare.
      * @param aggiornamenti Una mappa contenente i campi da aggiornare e i relativi nuovi valori.
      * @return L'oggetto `Lavoro` aggiornato.
-     * @throws IllegalArgumentException se l'annuncio non viene trovato o i dati forniti non sono validi.
      */
-    Lavoro modificaAnnuncioLavoro(final long idAnnuncio,
-                                  final HashMap<String, Object> aggiornamenti);
+    Lavoro modificaAnnuncioLavoro(long idAnnuncio, HashMap<String, Object> aggiornamenti);
 
     /**
-     * Elimina un annuncio di lavoro specifico.
+     * Elimina un annuncio di lavoro dal database.
      *
      * @param idAnnuncio L'identificativo unico dell'annuncio di lavoro da eliminare.
-     * @throws IllegalArgumentException se l'annuncio non viene trovato.
      */
     void eliminaAnnuncioLavoro(long idAnnuncio);
 

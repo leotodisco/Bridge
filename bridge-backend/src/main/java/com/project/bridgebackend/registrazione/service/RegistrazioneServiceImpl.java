@@ -170,7 +170,6 @@ public class RegistrazioneServiceImpl implements RegistrazioneService {
                         request.getEmail(),
                         request.getPassword()
                 ));
-
         String jwtToken;
         if (adminDAO.findByEmail(request.getEmail()) != null) {
             jwtToken = jwtService.generateToken(adminDAO.findByEmail(request.getEmail()));

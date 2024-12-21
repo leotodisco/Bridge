@@ -32,7 +32,7 @@ const CreaAlloggio = () => {
     const aggiornaFotoAlloggio = (event) => {
         const files = Array.from(event.target.files);
 
-        if (files.length < 1 || files.length > 3) {
+        if (files.length < 1 || files.length > 4) {
             alert("Devi caricare almeno 1 foto e un massimo di 3 foto.");
             return;
         }
@@ -94,7 +94,7 @@ const CreaAlloggio = () => {
             maxPersone : maxPersone,
             servizi : servizi,
             foto : fotos,
-            emailProprietario: "jedi@jedi.com",
+            emailProprietario: "root@mail.it",
             indirizzo : indirizzo
         };
 
@@ -114,7 +114,7 @@ const CreaAlloggio = () => {
                     maxPersone: maxPersone,
                     servizi: servizi,
                     foto: fotos,
-                    emailProprietario: "jedy@jedy.com",
+                    emailProprietario: "root@mail.it",
                     indirizzo: {
                         via: indirizzo.via,
                         numCivico: indirizzo.numCivico,

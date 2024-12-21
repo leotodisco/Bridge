@@ -222,6 +222,8 @@ hr {
     margin: 10px 10px 20px;
 }
 
+
+
 /* Design responsivo */
 @media (max-width: 600px) {
     .inlineDateTime,

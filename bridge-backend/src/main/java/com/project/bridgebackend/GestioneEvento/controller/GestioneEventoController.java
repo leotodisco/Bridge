@@ -28,7 +28,7 @@ import org.springframework.web.server.ResponseStatusException;
  * Controller per la gestione degli eventi.
  */
 @RestController
-@CrossOrigin(origins = "http://localhost:5174", allowedHeaders = "*")
+@CrossOrigin(origins = "http://localhost:5173", allowedHeaders = "*")
 @RequestMapping("api/eventi")
 public class GestioneEventoController {
 
@@ -239,12 +239,19 @@ public class GestioneEventoController {
             @RequestParam String emailPartecipante) {
 
         try {
+            // Trova l'evento con i partecipanti
             Evento evento = gestioneEventoService.trovaEventoConPartecipanti(id);
+            if(evento == null) {
+                return new ResponseEntity<>(false, HttpStatus.NOT_FOUND);
+            }
+
+            // Trova il partecipante tramite email
             Rifugiato partecipante = rifugiatoDAO.findByEmail(emailPartecipante);
             if (partecipante == null) {
                 return new ResponseEntity<>(false, HttpStatus.NOT_FOUND);
             }
 
+            // Verifica se il partecipante è iscritto all'evento
             boolean isIscritto = evento.getListaPartecipanti().contains(partecipante);
             return new ResponseEntity<>(isIscritto, HttpStatus.OK);
         } catch (Exception e) {

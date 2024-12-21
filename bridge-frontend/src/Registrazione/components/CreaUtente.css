@@ -1,7 +1,7 @@
 /* Container principale del form */
 .formRegistrazione {
     background-color: #f4f7fb;
-    max-width: 600px;
+    max-width: 800px;
     margin: 50px auto;
     padding: 30px;
     border-radius: 8px;
@@ -28,10 +28,36 @@
     box-sizing: border-box;
     background-color: #fff;
     color: #000;
+    margin-bottom: 20px;
 }
 
-.error{
-    color:red;
+.password-field {
+    position: relative;
+    width: 100%; /* Aggiunto per garantire che il contenitore occupi tutta la larghezza */
+}
+
+.password-field input {
+    padding-right: 80px;  /* Aggiungi spazio per il pulsante dentro il campo */
+}
+
+.password-field button {
+    position: absolute;
+    top: 35%;
+    right: 10px;
+    transform: translateY(-50%);
+    background: transparent;
+    border: none;
+    color: #00BF62;
+    cursor: pointer;
+    font-size: 0.9em;
+}
+
+.error {
+    color: red;
+    font-size: 0.9em;
+    margin-top: 5px; /* Riduci il margine per allinearlo meglio */
+    display: block;
+    width: 100%; /* Assicurati che il messaggio di errore occupi tutta la larghezza */
 }
 
 select.selectMulti {
@@ -75,9 +101,13 @@ select.formEditText {
     padding: 12px;
 }
 
-/* Aggiungi un po' di spazio extra tra gli input e i selettori */
-select, input[type="text"], input[type="date"], input[type="password"] {
+
+.formEditText.field{
     margin-bottom: 20px;
+}
+
+.formEditText.field.error-field {
+    margin-bottom: 0px; /* Ridurre il margine quando c'è un errore */
 }
 
 /* Aggiungi uno stile ai placeholders */
@@ -133,6 +163,4 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 input[type="date"] {
     padding-right: 20px;  /* Spazio per l'icona */
 }
-
-
 

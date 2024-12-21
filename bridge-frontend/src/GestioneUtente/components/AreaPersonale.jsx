@@ -1,51 +1,75 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import "../css/AreaPersonaleStyle.css";
+import '@fortawesome/fontawesome-free/css/all.min.css';
+import ModificaPassword from "./formModificaPassword.jsx";
+import ModificaUtente from "./formModificaUtente.jsx";
 
 // eslint-disable-next-line react/prop-types
 const AreaPersonale = ({ onLogout }) => {
     const [userData, setUserData] = useState(null); // Stato per i dati utente
+    const [imgData, setImgData] = useState(null); // Stato per l'immagine profilo
+    const [fotoProfilo, setFotoProfilo] = useState(null);  // Stato per la foto caricata nel frontend
+    const [errorMessages, setErrorMessages] = useState({});
     const nav = useNavigate();
+    const [showImageForm, setShowImageForm] = useState(false);  // Stato per la visibilità del form
+    const [imageFile, setImageFile] = useState(null);  // Stato per il file immagine selezionato
+    const [showModifyForm, setShowModifyForm] = useState(false);  // Stato per la visibilità del form di modifica dati
+    const [showPasswordForm, setShowPasswordForm] = useState(false);
 
     useEffect(() => {
         const fetchUserData = async () => {
             try {
-                const email = localStorage.getItem('email'); // Email salvata nel localStorage
-                const token = localStorage.getItem('token'); // Token JWT
+                const email = localStorage.getItem('email');
+                const token = localStorage.getItem('authToken');
 
                 if (!email || !token) {
                     alert("Non sei autenticato. Effettua il login.");
-                    nav('/login'); // Reindirizza al login se dati mancanti
+                    nav('/login');
                     return;
                 }
 
-                const response = await fetch(`http://localhost:8080/areaPersonale/DatiUtente/${email}`, {
-                    method: 'GET',
-                    headers: {
-                        'Authorization': `Bearer ${token}`, // Autenticazione JWT
-                        'Content-Type': 'application/json',
-                    },
-                });
+                const [userResponse, imgResponse] = await Promise.all([
+                    fetch(`http://localhost:8080/areaPersonale/DatiUtente/${email}`, {
+                        method: 'GET',
+                        headers: {
+                            'Authorization': `Bearer ${token}`,
+                            'Content-Type': 'application/json',
+                        },
+                    }),
+                    fetch(`http://localhost:8080/areaPersonale/DatiFotoUtente/${email}`, {
+                        method: 'GET',
+                        headers: {
+                            'Authorization': `Bearer ${token}`,
+                            'Content-Type': 'application/json',
+                        },
+                    }),
+                ]);
 
-                if (!response.ok) {
-                    throw new Error(`Errore HTTP: ${response.status}`);
+                if (!userResponse.ok || !imgResponse.ok) {
+                    throw new Error(`Errore HTTP: ${userResponse.status} o ${imgResponse.status}`);
                 }
 
-                const data = await response.json();
-                setUserData(data);
+                const userData = await userResponse.json();
+                const imgBase64 = await imgResponse.text(); // Usa `.text()` per leggere direttamente la stringa Base64
+
+                setUserData(userData);
+                setImgData(imgBase64);
+                localStorage.setItem('ruolo', userData.ruoloUtente);
             } catch (error) {
-                console.error("Errore durante il recupero dei dati personali:", error);
-                alert("Errore durante il caricamento dei dati personali.");
+                console.error("Errore durante il recupero dei dati personali o immagine:", error);
+                alert("Errore durante il caricamento dei dati.");
             }
         };
 
-        fetchUserData(); // Richiama la funzione al caricamento del componente
+        fetchUserData();
     }, [nav]);
 
     const eliminaAccount = async () => {
         if (window.confirm("Sei sicuro di voler eliminare il tuo account?")) {
             try {
                 const email = localStorage.getItem('email');
-                const token = localStorage.getItem('token');
+                const token = localStorage.getItem('authToken');
 
                 const response = await fetch(`http://localhost:8080/areaPersonale/elimina/${email}`, {
                     method: 'DELETE',
@@ -82,31 +106,200 @@ const AreaPersonale = ({ onLogout }) => {
         }
     };
 
+    // Funzione per gestire il cambiamento dell'immagine (già presente)
+    const aggiornaFotoProfilo = (event) => {
+        const file = event.target.files[0];
+        if (file && (file.type === "image/jpeg" || file.type === "image/jpg")) {
+            const reader = new FileReader();
+            reader.onload = () => {
+                setFotoProfilo(reader.result); // Visualizza la preview dell'immagine
+                setImageFile(file); // Salva il file selezionato
+            };
+            reader.readAsDataURL(file);
+            setErrorMessages((prev) => {
+                const updatedErrors = { ...prev };
+                delete updatedErrors.fotoProfilo;
+                return updatedErrors;
+            });
+        } else {
+            setErrorMessages((prev) => ({
+                ...prev,
+                fotoProfilo: "Il file deve essere in formato JPG o JPEG.",
+            }));
+        }
+    };
+
+    const handleSubmitImage = async () => {
+        if (!imageFile) {
+            alert("Per favore seleziona un'immagine.");
+            return;
+        }
+
+        try {
+            const email = localStorage.getItem('email');
+            const token = localStorage.getItem('authToken');  // Assicurati che il token sia nel localStorage
+
+            if (!token) {
+                alert("Token non trovato. Effettua nuovamente il login.");
+                return;
+            }
+
+            const formData = new FormData();
+            formData.append('image', imageFile); // Aggiungi il file selezionato a FormData
+
+            const response = await fetch(`http://localhost:8080/areaPersonale/modificaFotoUtente/${email}`, {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${token}`, // Invia il token nell'intestazione
+                },
+                body: formData, // Invia il FormData con il file
+            });
+
+            if (!response.ok) {
+                throw new Error(`Errore HTTP: ${response.status}`);
+            }
+
+            const updatedImg = await response.text();  // Ricevi la risposta dal backend
+            setImgData(updatedImg);  // Aggiorna l'immagine del profilo nel frontend
+            alert("Foto del profilo aggiornata con successo!");
+            setShowImageForm(false);  // Nasconde il form dopo il successo
+        } catch (error) {
+            console.error("Errore durante l'aggiornamento della foto del profilo:", error);
+            alert("Errore durante l'aggiornamento della foto.");
+        }
+    };
+
+
+
     return (
         <div className="area-personale-container">
-            <h1>Area Personale</h1>
             {userData ? (
-                <div>
-                    <p><strong>Nome:</strong> {userData.nomeUtente}</p>
-                    <p><strong>Cognome:</strong> {userData.cognomeUtente}</p>
-                    <p><strong>Email:</strong> {userData.emailUtente}</p>
-                    <p><strong>Nazionalità:</strong> {userData.nazionalitaUtente}</p>
-                    <p><strong>Data di nascita:</strong> {userData.dataNascitaUtente}</p>
-                    <p><strong>Genere:</strong> {userData.genderUtente}</p>
-                    <p><strong>Titolo di Studio:</strong> {userData.titoloDiStudioUtente}</p>
-                    <p><strong>Skill:</strong> {userData.skillUtente}</p>
-                    {userData.ruoloUtente === "FiguraSpecializzata" && (
-                        <p><strong>Disponibilità:</strong> {userData.disponibilitaUtente}</p>
-                    )}
-                    <p><strong>Ruolo:</strong> {userData.ruoloUtente}</p>
-                    <p><strong>Lingue Parlate:</strong> {userData.lingueParlateUtente}</p>
-                </div>
+                <>
+                    {/* Sezione sinistra */}
+                    <div className="sinistra">
+                        <div className="profile-section">
+                            {/* Foto Profilo */}
+                            <img
+                                src={fotoProfilo || (imgData ? `data:image/jpeg;base64,${imgData}` : '/default-profile.png')}
+                                alt="Foto Profilo"
+                                className="profile-picture"
+                            />
+
+                            <button onClick={() => setShowImageForm(!showImageForm)} className="modifyIMG">
+                                <i className="fas fa-camera"></i>
+                                <span>Cambia Foto</span>
+                            </button>
+
+
+                            {showImageForm && (
+                                <div className="uploadImageForm">
+                                    <input
+                                        type="file"
+                                        accept="image/*"
+                                        onChange={aggiornaFotoProfilo}
+                                        className="formEditText"
+                                    />
+                                    {errorMessages.fotoProfilo && <p className="error">{errorMessages.fotoProfilo}</p>}
+                                    <button onClick={handleSubmitImage} className="caricaIMG">Carica Immagine</button>
+                                    <button onClick={() => setShowImageForm(false)} className="caricaIMG">Annulla</button>
+                                </div>
+                            )}
+
+                            {/* Pulsanti */}
+                            <div className="action-buttons">
+                                {/* Pulsante Logout */}
+                                <button onClick={onLogout} className="logoutButton">
+                                    <i className="fas fa-sign-out-alt"></i>
+                                    <span>Log Out</span>
+                                </button>
+
+                                {/* Pulsante Delete Account */}
+                                <button onClick={eliminaAccount} className="deleteButton">
+                                    <i className="fas fa-trash-alt"></i>
+                                    <span>Elimina Account</span>
+                                </button>
+
+                                {/* Pulsante Modifica Dati */}
+                                <button onClick={() => setShowModifyForm(!showModifyForm)} className="editButton">
+                                    <i className="fas fa-edit"></i>
+                                    <span>Modifica Dati</span>
+                                </button>
+
+                                {/* Pulsante Modifica Password */}
+                                <button onClick={() => setShowPasswordForm(!showPasswordForm)} className="editButton">
+                                    <i className="fas fa-edit"></i>
+                                    <span>Modifica Password</span>
+                                </button>
+
+                                {showPasswordForm && <ModificaPassword userData={userData} />}
+
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Divisore */}
+                    <div className="divisore"></div>
+
+                    {/* Sezione destra */}
+                    <div className="destra">
+                        <h1>Dati Personali</h1>
+                        {userData ? (
+                            <>
+                                <div className="data-row">
+                                    <span className="data-label">Nome:</span>
+                                    <span className="data-value">{userData.nomeUtente}</span>
+                                </div>
+                                <div className="data-row">
+                                    <span className="data-label">Cognome:</span>
+                                    <span className="data-value">{userData.cognomeUtente}</span>
+                                </div>
+                                <div className="data-row">
+                                    <span className="data-label">Email:</span>
+                                    <span className="data-value">{userData.emailUtente}</span>
+                                </div>
+                                <div className="data-row">
+                                    <span className="data-label">Nazionalità:</span>
+                                    <span className="data-value">{userData.nazionalitaUtente}</span>
+                                </div>
+                                <div className="data-row">
+                                    <span className="data-label">Data di nascita:</span>
+                                    <span className="data-value">{userData.dataNascitaUtente}</span>
+                                </div>
+                                <div className="data-row">
+                                    <span className="data-label">Genere:</span>
+                                    <span className="data-value">{userData.genderUtente}</span>
+                                </div>
+                                <div className="data-row">
+                                    <span className="data-label">Titolo di Studio:</span>
+                                    <span className="data-value">{userData.titoloDiStudioUtente}</span>
+                                </div>
+                                <div className="data-row">
+                                    <span className="data-label">Skill:</span>
+                                    <span className="data-value">{userData.skillUtente}</span>
+                                </div>
+                                <div className="data-row">
+                                    <span className="data-label">Ruolo:</span>
+                                    <span className="data-value">{userData.ruoloUtente}</span>
+                                </div>
+                                <div className="data-row">
+                                    <span className="data-label">Lingue Parlate:</span>
+                                    <span className="data-value">{userData.lingueParlateUtente}</span>
+                                </div>
+                                <div className="data-row">
+                                    <span className="data-label">Disponibilità:</span>
+                                    <span className="data-value">{userData.disponibilitaUtente}</span>
+                                </div>
+                            </>
+                        ) : (
+                            <p>Caricamento dei dati personali...</p>
+                        )}
+                    </div>
+                </>
             ) : (
                 <p>Caricamento dei dati personali...</p>
             )}
-            <button onClick={eliminaAccount} className="delete-account-button">
-                Elimina Account
-            </button>
+            {/* Modifica Dati Form */}
+            {showModifyForm && <ModificaUtente userData={userData} />}
         </div>
     );
 };

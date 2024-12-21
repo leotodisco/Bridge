@@ -20,11 +20,15 @@ const EventView = ({ id, onClose }) => {
     const [error, setError] = useState(null);
     const [isSubscribed, setIsSubscribed] = useState(false);
 
-    const emailPartecipante = "abdul@rifugiato.com"; // Email temporanea
+    // Recupera l'email dell'utente loggato dal localStorage
+    const emailPartecipante = localStorage.getItem("email");
+    const token = localStorage.getItem("token");
+
+    console.log("Email corrente: ", emailPartecipante);
 
     const fetchEvent = async (id) => {
         try {
-            const response = await fetch(`http://localhost:8080/api/eventi/retrieve/${id}`);
+            const response = await fetch(`http://localhost:8080/api/eventi/retrieve/${id}?emailPartecipante=${encodeURIComponent(emailPartecipante)}`);
             if (!response.ok) {
                 throw new Error("Evento non trovato");
             }
@@ -39,17 +43,26 @@ const EventView = ({ id, onClose }) => {
 
     // Funzione per verificare l'iscrizione
     const checkSubscription = async () => {
+        if (!emailPartecipante) {
+            console.error("Email non presente nel localStorage.");
+            return;
+        }
         try {
-            const response = await fetch(`http://localhost:8080/api/eventi/${id}/iscrizione?emailPartecipante=${encodeURIComponent(emailPartecipante)}`);
+            const url = `http://localhost:8080/api/eventi/${id}/iscrizione?emailPartecipante=${encodeURIComponent(emailPartecipante)}`;
+            console.log("URL richiesta:", url);
+
+            const response = await fetch(url);
             if (!response.ok) {
-                throw new Error("Errore durante la verifica dell'iscrizione");
+                throw new Error(`Errore nella richiesta: ${response.status} - ${response.statusText}`);
             }
             const isIscritto = await response.json();
+            console.log("Risultato iscrizione:", isIscritto);
             setIsSubscribed(isIscritto);
         } catch (error) {
-            console.error(error);
+            console.error("Errore durante la verifica dell'iscrizione:", error.message);
         }
     };
+
 
     const handleSubscription = async () => {
         try {
@@ -57,7 +70,8 @@ const EventView = ({ id, onClose }) => {
             const response = await fetch(`http://localhost:8080/api/eventi/${id}/iscrivi?emailPartecipante=${encodeURIComponent(emailPartecipante)}`, {
                 method: "POST",
                 headers: {
-                    "Content-Type": "application/json",
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${token}`
                 },
             });
             if (!response.ok) {
@@ -158,17 +172,20 @@ const EventView = ({ id, onClose }) => {
                                 className="popup-value">{eventData.organizzatore.nome} {eventData.organizzatore.cognome}</span>
                         </div>
                     </div>
-                    <div className="popup-actions">
-                        {isSubscribed ? (
-                            <button className="popup-button" onClick={handleUnsubscription}>
-                                Disiscriviti
-                            </button>
-                        ) : (
-                            <button className="popup-button" onClick={handleSubscription}>
-                                Iscriviti
-                            </button>
-                        )}
-                    </div>
+                    {/* Controlla che l'utente loggato non sia il proprietario dell'evento */}
+                    {emailPartecipante !== eventData.organizzatore.email && (
+                        <div className="popup-actions">
+                            {isSubscribed ? (
+                                <button className="popup-button" onClick={handleUnsubscription}>
+                                    Disiscriviti
+                                </button>
+                            ) : (
+                                <button className="popup-button" onClick={handleSubscription}>
+                                    Iscriviti
+                                </button>
+                            )}
+                        </div>
+                    )}
                 </div>
             </div>
         </div>
