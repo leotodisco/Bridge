@@ -51,9 +51,10 @@ const ConsulenzaView = ({ id, onClose, onUpdate }) => {
             if (!response.ok) {
                 throw new Error("Consulenza non trovata");
             }
+
             const data = await response.json();
             setConsulenzaData(data);
-
+            console.log(data);
             // Inizializza gli stati del form con i dati ricevuti
             setTitolo(data.titolo);
             setDescrizione(data.descrizione);

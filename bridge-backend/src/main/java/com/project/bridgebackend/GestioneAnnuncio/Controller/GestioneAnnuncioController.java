@@ -37,7 +37,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/annunci")
-@CrossOrigin(origins = "http://localhost:5173", allowedHeaders = "*")
+@CrossOrigin(origins = "http://localhost:5174", allowedHeaders = "*")
 public class GestioneAnnuncioController {
 
     /**
