@@ -1,18 +1,7 @@
 package com.project.bridgebackend.Model.Entity;
 
 import com.project.bridgebackend.Model.Entity.enumeration.Servizi;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
-import jakarta.persistence.Id;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Column;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.ElementCollection;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.OneToOne;
+import jakarta.persistence.*;
 import lombok.Data;
 import java.io.Serializable;
 import java.util.List;
@@ -75,7 +64,7 @@ public class Alloggio implements Serializable {
      * La lista può contenere uno o più rifugiati.
      */
     @Column()
-    @OneToMany()
+    @OneToMany(mappedBy = "alloggio", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Rifugiato> listaCandidati;
 
     /**

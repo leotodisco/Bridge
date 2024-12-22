@@ -14,25 +14,38 @@ const DettaglioAlloggio = () => {
     const [isFavorito, setIsFavorito] = useState(false); // Stato per tracciare se l'alloggio è nei preferiti
 
     // Funzione per gestire il click sull'icona del cuore
-    const handleClickCuore = async () => {
+    const handleClickCuore2 = async () => {
         try {
             const emailRifugiato = localStorage.getItem("email");
-            const titoloAlloggio = alloggio.titolo;
+            const idAlloggio = alloggio.id;
 
-            const response = await fetch("http://localhost:8080/alloggi/preferiti", {
+            if (!emailRifugiato) {
+                setError("Email mancante.");
+                return;
+            }
+
+            if (!idAlloggio || isNaN(idAlloggio)) {
+                setError("ID alloggio non valido.");
+                return;
+            }
+
+            const response = await fetch(`http://localhost:8080/alloggi/interesse?emailRifugiato=${encodeURIComponent(emailRifugiato)}&idAlloggio=${idAlloggio}`, {
                 method: "POST",
                 headers: {
-                    "Content-Type": "application/json",
-                    "Accept": "application/json"
+                    "Accept": "application/json",
                 },
-                body: JSON.stringify({
-                    emailRifugiato: emailRifugiato,
-                    titoloAlloggio: titoloAlloggio
-                })
             });
 
             if (response.ok) {
-                setIsFavorito(true);
+                const newFavoritoState = !isFavorito; // Cambia lo stato
+                setIsFavorito(newFavoritoState);
+
+                // Salva o rimuovi lo stato nel localStorage
+                if (newFavoritoState) {
+                    localStorage.setItem(`favorito_${idAlloggio}`, "true");
+                } else {
+                    localStorage.removeItem(`favorito_${idAlloggio}`);
+                }
             } else {
                 const errorData = await response.text();
                 setError(`Errore durante l'aggiunta ai preferiti: ${errorData}`);
@@ -43,19 +56,29 @@ const DettaglioAlloggio = () => {
     };
 
 
-
     useEffect(() => {
         const checkFavorito = async () => {
             try {
                 const emailRifugiato = localStorage.getItem("email");
-                const titoloAlloggio = alloggio.titolo;
+                const idAlloggio = alloggio.id;
 
-                const response = await fetch(`http://localhost:8080/alloggi/isFavorito?email=${emailRifugiato}&titolo=${titoloAlloggio}`);
-                if (response.ok) {
-                    const isFavorito = await response.json();
-                    setIsFavorito(isFavorito);
+                // Controlla se lo stato è già salvato nel localStorage
+                const favorito = localStorage.getItem(`favorito_${idAlloggio}`);
+                if (favorito === "true") {
+                    setIsFavorito(true);
                 } else {
-                    console.warn("Errore durante il controllo dello stato dei preferiti");
+                    // Altrimenti, fai una richiesta API per verificare se è nei preferiti
+                    const response = await fetch(`http://localhost:8080/alloggi/isFavorito?email=${emailRifugiato}&idAlloggio=${idAlloggio}`);
+                    if (response.ok) {
+                        const isFavorito = await response.json();
+                        setIsFavorito(isFavorito);
+                        // Salva il risultato nel localStorage per evitare future richieste
+                        if (isFavorito) {
+                            localStorage.setItem(`favorito_${idAlloggio}`, "true");
+                        }
+                    } else {
+                        console.warn("Errore durante il controllo dello stato dei preferiti");
+                    }
                 }
             } catch (error) {
                 console.error("Errore:", error.message);
@@ -63,8 +86,7 @@ const DettaglioAlloggio = () => {
         };
 
         checkFavorito();
-    }, [titolo]);
-
+    }, [alloggio.id]); // Assicurati che alloggio.id sia disponibile prima di fare la chiamata
 
 
     useEffect(() => {
@@ -113,7 +135,7 @@ const DettaglioAlloggio = () => {
             </p>
 
             {/* Icona cuore per manifestazione interesse */}
-            <div className="cuore-container" onClick={handleClickCuore}>
+            <div className="cuore-container2" onClick={handleClickCuore2}>
                 <FontAwesomeIcon
                     icon={isFavorito ? faHeart : faHeartBroken}
                     color={isFavorito ? "red" : "gray"}

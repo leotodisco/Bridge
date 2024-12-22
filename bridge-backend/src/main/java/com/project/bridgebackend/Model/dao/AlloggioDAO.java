@@ -61,4 +61,7 @@ public interface AlloggioDAO extends JpaRepository<Alloggio, Long> {
      * @return un {@link Optional} contenente l'alloggio se trovato, altrimenti vuoto.
      */
     Optional<Alloggio>  findAlloggioByTitolo(String titolo);
+
+    @Query("SELECT a FROM Alloggio a WHERE a.id =:id")
+    Alloggio findAlloggioById(long id);
 }

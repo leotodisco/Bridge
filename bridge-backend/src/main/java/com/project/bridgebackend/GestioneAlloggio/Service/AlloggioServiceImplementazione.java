@@ -66,6 +66,50 @@ public class AlloggioServiceImplementazione implements AlloggioService {
     private JavaMailSender mailSender;
 
 
+    @Override
+    public boolean interesse(String emailRifugiato, long idAlloggio) {
+        // Validazione dei parametri
+        if (emailRifugiato == null || emailRifugiato.trim().isEmpty()) {
+            throw new IllegalArgumentException("Email vuota o nulla");
+        }
+
+        if (idAlloggio <= 0) {
+            throw new IllegalArgumentException("ID alloggio non valido");
+        }
+
+        // Recupera il rifugiato dal database
+        Rifugiato r = rifugiatoDAO.findByEmail(emailRifugiato);
+        if (r == null) {
+            throw new IllegalArgumentException("Rifugiato non trovato");
+        }
+
+        // Recupera l'alloggio dal database
+        Alloggio a = alloggioDAO.findAlloggioById(idAlloggio);
+        if (a == null) {
+            throw new IllegalArgumentException("Alloggio non trovato");
+        }
+
+        // Verifica se l'email del rifugiato è già nella lista candidati
+        if (a.getListaCandidati().stream().anyMatch(c -> c.getEmail().equals(emailRifugiato))) {
+            throw new IllegalArgumentException("Interesse già manifestato");
+        }
+
+        // Aggiungi il rifugiato alla lista dei candidati
+        a.getListaCandidati().add(r);
+
+        // Salva l'alloggio aggiornato
+        alloggioDAO.save(a);
+
+        // Invia una notifica al volontario associato all'alloggio
+        sendEmailVolontario("Riuscito con l'id", "mariozurolo00@gmail.com");
+
+        // Ritorna true per indicare successo
+        return true;
+    }
+
+
+
+
 
     /**
      * Aggiunge un nuovo alloggio nel sistema.

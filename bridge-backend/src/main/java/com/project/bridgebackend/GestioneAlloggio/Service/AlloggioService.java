@@ -31,6 +31,8 @@ public interface AlloggioService {
      */
     boolean manifestazioneInteresse(String emailRifugiato, String emailAlloggio);
 
+    public boolean interesse(String emailRifugiato, long idAlloggio);
+
     /**
      *Firma del metodo che assegna un alloggio a un rifugiato.
      * @param titolo l'alloggio che è stato assegnato al rifugiato.

@@ -193,6 +193,9 @@ public class AlloggioController {
         }
     }
 
+
+    /*@PostMapping("/preferiti")
+    public ResponseEntity<String> manifestazioneInteresse(@RequestBody Map<String, String> request) {
     /**
      * Permette a un rifugiato di manifestare interesse per un alloggio.
      *
@@ -227,44 +230,53 @@ public class AlloggioController {
         }
     }
 
+    @PostMapping("/interesse")
+    public ResponseEntity<String> manifestaInteresse(@RequestParam String emailRifugiato, @RequestParam long idAlloggio) {
+        try {
+            boolean success = alloggioService.interesse(emailRifugiato, idAlloggio);
+            if (success) {
+                return ResponseEntity.ok("Interesse manifestato con successo.");
+            } else {
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                        .body("Errore durante la manifestazione dell'interesse.");
+            }
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Si è verificato un errore imprevisto: " + e.getMessage());
+        }
+    }
+
+
     /**
      * Verifica se un rifugiato ha aggiunto un alloggio ai preferiti.
      *
      * @param email  l'email del rifugiato
-     * @param titolo il titolo dell'alloggio
+     * @param idAlloggio l'id dell'alloggio
      * @return ResponseEntity con valore booleano che indica se è favorito
      */
     @GetMapping("/isFavorito")
-    public ResponseEntity<Boolean> isFavorito(
-            @RequestParam final String email,
-            @RequestParam final String titolo) {
+    public ResponseEntity<Boolean> isFavorito(@RequestParam String email, @RequestParam long idAlloggio) {
         try {
-            Rifugiato rifugiato = rifugiatoDAO.findByEmail(email);
-            if (rifugiato == null) {
-                throw new IllegalArgumentException("Rifugiato non trovato con l'email specificata.");
+            // Verifica se l'alloggio esiste
+            Alloggio alloggio = alloggioDAO.findAlloggioById(idAlloggio);
+            if (alloggio == null) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(false); // Alloggio non trovato
             }
-            System.out.println("Rifugiato trovato: " + rifugiato);
 
-            Optional<Alloggio> alloggioOptional = alloggioDAO.findByTitolo(titolo);
-            if (alloggioOptional.isEmpty()) {
-                throw new IllegalArgumentException("Alloggio non trovato con il titolo specificato.");
-            }
-            Alloggio alloggio = alloggioOptional.get();
-            System.out.println("Alloggio trovato: " + alloggio);
+            // Verifica se l'email del rifugiato è presente nella lista dei candidati
+            boolean isFavorito = alloggio.getListaCandidati().stream()
+                    .anyMatch(candidato -> candidato.getEmail().equals(email));
 
-            boolean isFavorito = alloggio.getListaCandidati().contains(rifugiato);
-            System.out.println("Il rifugiato è favorito: " + isFavorito);
-
+            // Restituisce true se l'alloggio è nei preferiti, altrimenti false
             return ResponseEntity.ok(isFavorito);
-        } catch (IllegalArgumentException e) {
-            System.err.println("Errore: " + e.getMessage());
-            return ResponseEntity.badRequest().body(false);
         } catch (Exception e) {
-            System.err.println("Errore imprevisto: " + e.getMessage());
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(false);
+            // Gestisce eventuali eccezioni generiche
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(false);
         }
     }
-
 
 
     /**

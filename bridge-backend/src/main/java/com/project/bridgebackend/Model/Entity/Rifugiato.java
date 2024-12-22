@@ -4,6 +4,8 @@ import com.project.bridgebackend.Model.Entity.enumeration.Gender;
 import com.project.bridgebackend.Model.Entity.enumeration.Ruolo;
 import com.project.bridgebackend.Model.Entity.enumeration.TitoloDiStudio;
 import jakarta.persistence.Entity;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import lombok.Data;
 
 import java.time.LocalDate;
@@ -17,6 +19,10 @@ import java.time.LocalDate;
 @Entity
 @Data
 public class Rifugiato extends Utente {
+
+    @ManyToOne
+    @JoinColumn(name = "alloggio_id", nullable = true) // nullable=true se la relazione è opzionale
+    private Alloggio alloggio;
     /**
      * Costruttore con tutti i campi dell'utente.
      * @param email
