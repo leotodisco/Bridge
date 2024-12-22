@@ -11,6 +11,8 @@ import com.project.bridgebackend.Model.dao.VolontarioDAO;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -216,4 +218,15 @@ public class GestioneEventoServiceImpl implements GestioneEventoService {
                 .orElseThrow(() -> new IllegalArgumentException("Evento non trovato"));
     }
 
+    @Override
+    public List<Evento> getRandomEvents() {
+        // Recupera tutti gli eventi
+        List<Evento> eventi = eventoDAO.findAllWithOrganizzatore();
+
+        // Mischia la lista
+        Collections.shuffle(eventi);
+
+        //Restituisce solo 5 eventi
+        return eventi.stream().limit(5).toList();
+    }
 }

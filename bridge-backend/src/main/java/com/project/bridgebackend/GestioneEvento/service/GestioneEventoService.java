@@ -69,4 +69,10 @@ public interface GestioneEventoService {
      * @return evento con partecipanti.
      */
     Evento trovaEventoConPartecipanti(long eventoId);
+
+    /**
+     * Permette di avere eventi random.
+     * @return lista di eventi random.
+     */
+    List<Evento> getRandomEvents();
 }

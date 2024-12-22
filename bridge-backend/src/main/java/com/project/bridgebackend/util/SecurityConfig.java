@@ -88,6 +88,7 @@ public class SecurityConfig {
                 "/api/eventi/{id}/disiscrivi",
                 "/api/eventi/pubblicati",
                 "/api/eventi/{id}/iscrizione",
+                "/api/eventi/random",
 
                 // ANNUNCI (CONSULENZA E LAVORO)
                 "/api/annunci/creaConsulenza",
@@ -102,6 +103,7 @@ public class SecurityConfig {
                 "/api/annunci/view_lavori/retrive/{id}",
                 "/api/annunci/modifica_lavoro/{id}",
                 "/api/annunci/elimina_lavoro/{id}",
+                "/api/annunci/random",
 
                 // CORSI
                 "/api/corsi/crea",
@@ -117,6 +119,7 @@ public class SecurityConfig {
                 "/alloggi/preferiti",
                 "/alloggi/isFavorito",
                 "/alloggi/SingoloAlloggio/{titolo}",
+                "/api/alloggi/random",
 
                 // AREA PERSONALE
                 "/areaPersonale/DatiUtente/{email}",

@@ -14,6 +14,7 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RequestBody;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -266,5 +267,17 @@ public class AlloggioServiceImplementazione implements AlloggioService {
       }
         System.out.println(alloggio);
       return alloggio;
+    }
+
+    @Override
+    public List<Alloggio> getRandomAlloggi() {
+        // Recupera tutti gli eventi
+        List<Alloggio> alloggi = alloggioDAO.findAll();
+
+        // Mischia la lista
+        Collections.shuffle(alloggi);
+
+        //Restituisce solo 5 eventi
+        return alloggi.stream().limit(5).toList();
     }
 }

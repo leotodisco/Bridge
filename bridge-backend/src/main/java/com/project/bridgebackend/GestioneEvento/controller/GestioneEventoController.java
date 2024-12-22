@@ -21,8 +21,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.DeleteMapping;
-
-
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
@@ -40,7 +38,7 @@ import org.springframework.web.server.ResponseStatusException;
  * la modifica e la cancellazione degli eventi.
  */
 @RestController
-@CrossOrigin(origins = "http://localhost:5173", allowedHeaders = "*")
+@CrossOrigin(origins = "http://localhost:5174", allowedHeaders = "*")
 @RequestMapping("api/eventi")
 public class GestioneEventoController {
 
@@ -293,5 +291,17 @@ public class GestioneEventoController {
         } catch (Exception e) {
             return new ResponseEntity<>(false, HttpStatus.INTERNAL_SERVER_ERROR);
         }
+    }
+
+
+    /**
+     * Recupera eventi casuali per la home page.
+     *
+     * @return Lista di eventi casuali.
+     */
+    @GetMapping("/random")
+    public ResponseEntity<List<Evento>> getRandomEvents() {
+        List<Evento> eventi = gestioneEventoService.getRandomEvents();
+        return new ResponseEntity<>(eventi, HttpStatus.OK);
     }
 }

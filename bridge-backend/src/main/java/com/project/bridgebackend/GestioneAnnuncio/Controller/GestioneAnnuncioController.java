@@ -494,4 +494,18 @@ public class GestioneAnnuncioController {
                                  final Lavoro lavoroEsistente) {
         return lavoroEsistente.getProprietario().getEmail().equalsIgnoreCase(emailUtenteLoggato);
     }
+
+
+    /**
+     * Metodo per ottenere una lista di cinque lavori casuali dal database.
+     * Questo metodo è utile per visualizzare lavori casuali nella homepage dell'applicazione.
+     *
+     * @return ResponseEntity contenente la lista di lavori casuali.
+     */
+
+    @GetMapping("/random")
+    public ResponseEntity<List<Lavoro>> getRandomJobs() {
+        List<Lavoro> lavori = gestioneAnnuncioService.getRandomLavori();
+        return new ResponseEntity<>(lavori, HttpStatus.OK);
+    }
 }

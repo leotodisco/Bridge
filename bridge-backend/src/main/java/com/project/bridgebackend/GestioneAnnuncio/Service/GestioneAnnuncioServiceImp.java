@@ -13,6 +13,8 @@ import com.project.bridgebackend.util.Indirizzo.service.IndirizzoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import jakarta.validation.Valid;
+
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
@@ -319,6 +321,21 @@ public class GestioneAnnuncioServiceImp implements GestioneAnnuncioService {
             throw new IllegalArgumentException("Nessun riscontro con di consulenze con id " + idConsulenza);
         }
         consulenzaDAO.deleteById(idConsulenza);
+    }
+
+    /**
+     *
+     */
+    @Override
+    public List<Lavoro> getRandomLavori() {
+        // Recupera tutti gli eventi
+        List<Lavoro> lavori = lavoroDAO.findAll();
+
+        // Mischia la lista
+        Collections.shuffle(lavori);
+
+        // Restituisce solo 5 lavori
+        return lavori.stream().limit(5).toList();
     }
 
 }

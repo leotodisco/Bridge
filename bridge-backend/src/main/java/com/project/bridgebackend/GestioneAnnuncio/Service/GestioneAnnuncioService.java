@@ -137,4 +137,10 @@ public interface GestioneAnnuncioService {
      */
     void eliminaAnnuncioLavoro(long idAnnuncio);
 
+
+    /**
+     * Recupera in maniera casuale 5 annunci di lavoro.
+     * @return Una lista di 5 oggetti `Lavoro` contenenti annunci di lavoro casuali.
+     */
+    List<Lavoro> getRandomLavori();
 }

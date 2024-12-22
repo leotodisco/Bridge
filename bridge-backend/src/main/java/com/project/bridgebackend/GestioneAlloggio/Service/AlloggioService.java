@@ -76,4 +76,10 @@ public interface AlloggioService {
      */
     long getIdIndirizzo(Indirizzo indirizzo);
 
+
+    /**
+     * Firma del metodo per ottenere 5 alloggi casuali.
+     * @return lista di 5 alloggi casuali.
+     */
+    List<Alloggio> getRandomAlloggi();
 }
