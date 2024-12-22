@@ -29,10 +29,4 @@ public class BridgeBackendApplication {
         SpringApplication.run(BridgeBackendApplication.class, args);
     }
 
-    /**
-     * Costruttore privato per evitare istanze della classe.
-     */
-    private BridgeBackendApplication() {
-        throw new IllegalStateException("Utility class");
-    }
 }
