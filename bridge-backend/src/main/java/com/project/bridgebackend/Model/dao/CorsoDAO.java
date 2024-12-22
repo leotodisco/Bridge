@@ -2,7 +2,6 @@ package com.project.bridgebackend.Model.dao;
 
 import com.project.bridgebackend.Model.Entity.Corso;
 import com.project.bridgebackend.Model.Entity.FiguraSpecializzata;
-import com.project.bridgebackend.Model.Entity.Utente;
 import com.project.bridgebackend.Model.Entity.enumeration.Lingua;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
@@ -11,7 +10,11 @@ import org.springframework.stereotype.Repository;
 /**
  * @author Biagio Gallo.
  * Creato il 04/12/2024.
- * Questa classe rappresenta il DAO della classe Corso.
+ * Repository per la gestione degli oggetti {@link Corso}.
+ * Fornisce metodi per l'accesso e la manipolazione dei,
+ * dati relativi ai corsi.
+ * Utilizza Spring Data JPA per fornire implementazioni automatiche,
+ * delle query.
  */
 
 

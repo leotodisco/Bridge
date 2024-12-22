@@ -80,7 +80,9 @@ public class EventoDTO {
      **/
     private int maxPartecipanti;
 
-    //Costruttore vuoto
+    /**
+     * Costruttore vuoto.
+     **/
     public EventoDTO() {
     }
 }

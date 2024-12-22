@@ -8,20 +8,27 @@ import com.project.bridgebackend.Model.Entity.FiguraSpecializzata;
 import com.project.bridgebackend.Model.Entity.Volontario;
 import com.project.bridgebackend.Model.Entity.Indirizzo;
 import com.project.bridgebackend.Model.Entity.Utente;
-
-import com.project.bridgebackend.Model.dao.*;
+import com.project.bridgebackend.Model.dao.FiguraSpecializzataDAO;
+import com.project.bridgebackend.Model.dao.IndirizzoDAO;
+import com.project.bridgebackend.Model.dao.VolontarioDAO;
 import com.project.bridgebackend.Model.dto.ConsulenzaDTO;
 import com.project.bridgebackend.Model.dto.LavoroDTO;
-
 import com.project.bridgebackend.util.JwtService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
 import org.springframework.http.HttpStatus;
 import jakarta.validation.Valid;
-
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import java.util.HashMap;
 import java.util.List;
 
@@ -43,7 +50,7 @@ public class GestioneAnnuncioController {
     /**
     * logger per la stampa di warning o errori.
      */
-    private static final Logger log = LoggerFactory.getLogger(GestioneCorsoController.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(GestioneCorsoController.class);
 
 
     /**
@@ -71,7 +78,7 @@ public class GestioneAnnuncioController {
     private IndirizzoDAO indirizzoDAO;
 
     /**
-     * servizi per l'estrazione delle informazioni dal token
+     * servizi per l'estrazione delle informazioni dal token.
      */
     @Autowired
     private JwtService jwtService;
@@ -210,12 +217,13 @@ public class GestioneAnnuncioController {
     }
 
     /**
-     * Metodo per ottenere una consulenza specifica dal DB
-     *
-     * @return ResponseEntity contenente la consulenza
+     * Metodo per ottenere una consulenza specifica dal DB.
+     * @param id della consulenza che si vuole visualizzare.
+     * @return ResponseEntity contenente la consulenza.
      */
     @GetMapping("/view_consulenze/retrive/{id}")
-    public ResponseEntity<Consulenza> getConsulenzaById(@PathVariable long id) {
+    public ResponseEntity<Consulenza> getConsulenzaById(
+            @PathVariable final long id) {
         Consulenza consulenza = gestioneAnnuncioService.getConsulenze(id);
         System.out.println(consulenza);
         return ResponseEntity.ok(consulenza);
@@ -228,7 +236,8 @@ public class GestioneAnnuncioController {
      * @return ResponseEntity contenente la lista delle consulenze del proprietario specificato.
      */
     @PostMapping("/view_consulenze/proprietario/{id}")
-    public ResponseEntity<List<Consulenza>> getConsulenzeByProprietario(@PathVariable("id") String proprietarioId) {
+    public ResponseEntity<List<Consulenza>> getConsulenzeByProprietario(
+            @PathVariable("id") final String proprietarioId) {
         // Retrieve the FiguraSpecializzata (which is a subtype of Utente)
         Utente proprietario = figuraSpecializzataDAO.findByEmail(proprietarioId);
 
@@ -253,9 +262,9 @@ public class GestioneAnnuncioController {
      */
 
     @PostMapping("/modifica_consulenza/{idConsulenza}")
-    public ResponseEntity<?> modificaConsulenza(@PathVariable long idConsulenza,
-                                                @RequestBody HashMap<String, Object> aggiornamenti,
-                                                @RequestHeader("Authorization") String authorizationHeader) {
+    public ResponseEntity<?> modificaConsulenza(@PathVariable final long idConsulenza,
+                                                @RequestBody final HashMap<String, Object> aggiornamenti,
+                                                @RequestHeader("Authorization") final String authorizationHeader) {
         try {
             // Estrai il token JWT dall'header Authorization
             String token = authorizationHeader.replace("Bearer ", "");
@@ -285,10 +294,21 @@ public class GestioneAnnuncioController {
                     .body("Errore durante l'aggiornamento della consulenza: " + e.getMessage());
         }
     }
-
+    /**
+     * Metodo per attuare modifiche su una specifica consulenza.
+     * @param id è l'id della consulenza che si vuole eliminare.
+     *
+     * @param authorizationHeader Stringa di autorizzazione,
+     *                            in modo da poter verificare,
+     *                            se l'utente attualmente loggato,
+     *                            può effettivamente attuare modifiche.
+     *
+     * @return ResponseEntity contenente la stringa se l'operazione,
+     * è andata a buon fine o meno.
+     */
     @DeleteMapping("/eliminaConsulenza/{id}")
-    public ResponseEntity<String> eliminaConsulenza(@PathVariable Long id,
-                                                    @RequestHeader("Authorization") String authorizationHeader) {
+    public ResponseEntity<String> eliminaConsulenza(@PathVariable final Long id,
+                                                    @RequestHeader("Authorization") final String authorizationHeader) {
         try {
             // Estrai il token JWT dall'header Authorization
             String token = authorizationHeader.replace("Bearer ", "");
@@ -336,7 +356,7 @@ public class GestioneAnnuncioController {
      * @return ResponseEntity contenente l'annuncio di lavoro specificato.
      */
     @GetMapping("/view_lavori/retrieve/{id}")
-    public ResponseEntity<Lavoro> getLavoroById(@PathVariable long id) {
+    public ResponseEntity<Lavoro> getLavoroById(@PathVariable final long id) {
         Lavoro lavoro = gestioneAnnuncioService.getLavori(id);
         System.out.println(lavoro);
         return ResponseEntity.ok(lavoro);
@@ -349,22 +369,45 @@ public class GestioneAnnuncioController {
      * @return ResponseEntity contenente la lista degli annunci di lavoro del proprietario specificato.
      */
     @PostMapping("/view_lavori/proprietario/{id}")
-    public ResponseEntity<List<Lavoro>> getLavoriByProprietario(@PathVariable("id") String proprietarioId) {
+    public ResponseEntity<List<Lavoro>> getLavoriByProprietario(
+            @PathVariable("id") final String proprietarioId) {
         Utente proprietario = volontarioDAO.findByEmail(proprietarioId);
         List<Lavoro> lavori = gestioneAnnuncioService.getLavoriByProprietario(proprietario);
         return ResponseEntity.ok(lavori);
     }
 
+    /**
+     * Metodo per la modifica di un annuncio di lavoro esistente.
+     * Questo metodo consente di aggiornare i dettagli di un,
+     * annuncio di lavoro specificato,
+     * tramite l'ID, utilizzando una mappa di aggiornamenti e un token,
+     * di autorizzazione.
+     *
+     * @param id L'ID dell'annuncio di lavoro da modificare.
+     * @param aggiornamenti La mappa contenente i dati da aggiornare,
+     *                      nell'annuncio di lavoro.
+     *                      Le chiavi della mappa corrispondono ai campi,
+     *                      dell'annuncio di lavoro,
+     *                      e i valori sono i nuovi dati da applicare.
+     * @param authorizationHeader L'intestazione di autorizzazione che contiene,
+     *                           il token JWT per verificare l'identità dell'utente.
+     *
+     * @return Una risposta HTTP che può essere:
+     *         - 200 OK se l'annuncio di lavoro è stato modificato con successo,
+     *         - 400 BAD REQUEST se la mappa degli aggiornamenti è nulla o vuota,
+     *         - 403 FORBIDDEN se l'utente non è autorizzato a modificare l'annuncio di lavoro,
+     *         - 500 INTERNAL SERVER ERROR in caso di errore generico durante l'operazione.
+     */
     @PostMapping("/modifica_lavoro/{id}")
-    public ResponseEntity<?> modificaLavoro(@PathVariable long id,
-                                            @RequestBody HashMap<String, Object> aggiornamenti,
-                                            @RequestHeader("Authorization") String authorizationHeader) {
+    public ResponseEntity<?> modificaLavoro(@PathVariable final long id,
+                                            @RequestBody final HashMap<String, Object> aggiornamenti,
+                                            @RequestHeader("Authorization") final String authorizationHeader) {
         try {
-            log.info("Richiesta di modifica per l'annuncio ID: {}", id);
-            log.info("Dati aggiornamenti: {}", aggiornamenti);
+            LOGGER.info("Richiesta di modifica per l'annuncio ID: {}", id);
+            LOGGER.info("Dati aggiornamenti: {}", aggiornamenti);
 
             if (aggiornamenti == null || aggiornamenti.isEmpty()) {
-                log.error("La mappa degli aggiornamenti è vuota o nulla.");
+                LOGGER.error("La mappa degli aggiornamenti è vuota o nulla.");
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Nessun dato fornito per la modifica.");
             }
 
@@ -382,20 +425,36 @@ public class GestioneAnnuncioController {
             return ResponseEntity.ok(lavoroAggiornato);
 
         } catch (IllegalArgumentException e) {
-            log.error("Errore durante la modifica dell'annuncio: {}", e.getMessage());
+            LOGGER.error("Errore durante la modifica dell'annuncio: {}", e.getMessage());
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         } catch (Exception e) {
-            log.error("Errore generico durante la modifica: {}", e.getMessage());
+            LOGGER.error("Errore generico durante la modifica: {}", e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body("Errore durante l'aggiornamento del lavoro: " + e.getMessage());
         }
     }
 
+    /**
+     * Metodo per eliminare un annuncio di lavoro esistente.
+     * Questo metodo permette di eliminare un annuncio di lavoro specificato tramite l'ID,
+     * previa verifica dell'autorizzazione dell'utente tramite token JWT.
+     *
+     * @param id L'ID dell'annuncio di lavoro da eliminare.
+     * @param authorizationHeader L'intestazione di autorizzazione che contiene il token JWT
+     *                            per verificare l'identità dell'utente.
+     *
+     * @return Una risposta HTTP che può essere:
+     *         - 200 OK con un messaggio di successo se l'annuncio di lavoro è stato eliminato con successo,
+     *         - 403 FORBIDDEN se l'utente non è autorizzato a eliminare l'annuncio di lavoro,
+     *         - 400 BAD REQUEST se si verifica un errore legato ai dati forniti,
+     *         - 500 INTERNAL SERVER ERROR in caso di errore generico durante l'operazione.
+     */
+
     @DeleteMapping("/elimina_lavoro/{id}")
-    public ResponseEntity<?> eliminaLavoro(@PathVariable long id,
-                                           @RequestHeader("Authorization") String authorizationHeader) {
+    public ResponseEntity<?> eliminaLavoro(@PathVariable final long id,
+                                           @RequestHeader("Authorization") final String authorizationHeader) {
         try {
-            log.info("Richiesta di eliminazione per l'annuncio ID: {}", id);
+            LOGGER.info("Richiesta di eliminazione per l'annuncio ID: {}", id);
 
             String token = authorizationHeader.replace("Bearer ", "");
             String emailUtenteLoggato = jwtService.extractUsername(token);
@@ -411,16 +470,28 @@ public class GestioneAnnuncioController {
             return ResponseEntity.ok("Annuncio di lavoro eliminato con successo.");
 
         } catch (IllegalArgumentException e) {
-            log.error("Errore durante l'eliminazione dell'annuncio: {}", e.getMessage());
+            LOGGER.error("Errore durante l'eliminazione dell'annuncio: {}", e.getMessage());
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         } catch (Exception e) {
-            log.error("Errore generico durante l'eliminazione: {}", e.getMessage());
+            LOGGER.error("Errore generico durante l'eliminazione: {}", e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body("Errore durante l'eliminazione del lavoro: " + e.getMessage());
         }
     }
+    /**
+     * Verifica se l'utente loggato è autorizzato a modificare o eliminare un annuncio di lavoro.
+     * L'autorizzazione è basata sul fatto che l'utente loggato (identificato tramite email)
+     * deve essere il proprietario dell'annuncio di lavoro specificato.
+     *
+     * @param emailUtenteLoggato L'email dell'utente attualmente loggato nel sistema, estratta dal token JWT.
+     * @param lavoroEsistente L'annuncio di lavoro da verificare per l'autorizzazione.
+     *
+     * @return {@code true} se l'utente loggato è il proprietario dell'annuncio di lavoro,
+     *         {@code false} se l'utente non è autorizzato ad accedere all'annuncio.
+     */
 
-    private boolean isAuthorized(String emailUtenteLoggato, Lavoro lavoroEsistente) {
+    private boolean isAuthorized(final String emailUtenteLoggato,
+                                 final Lavoro lavoroEsistente) {
         return lavoroEsistente.getProprietario().getEmail().equalsIgnoreCase(emailUtenteLoggato);
     }
 }

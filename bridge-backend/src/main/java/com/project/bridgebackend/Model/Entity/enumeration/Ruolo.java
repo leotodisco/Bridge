@@ -18,7 +18,7 @@ public enum Ruolo {
      */
     Volontario,
     /**
-     * FiguraSpecializzata è riferito al ruolo .
+     * FiguraSpecializzata è riferito al ruolo,
      * della Figura Specializzata nel sistema.
      */
     FiguraSpecializzata

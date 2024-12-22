@@ -2,7 +2,6 @@ package com.project.bridgebackend.Model.dto;
 
 import com.project.bridgebackend.Model.Entity.Indirizzo;
 import com.project.bridgebackend.Model.Entity.enumeration.TipoConsulenza;
-
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
@@ -13,8 +12,6 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
-import jakarta.validation.constraints.Min;
-
 import java.util.List;
 
 /**

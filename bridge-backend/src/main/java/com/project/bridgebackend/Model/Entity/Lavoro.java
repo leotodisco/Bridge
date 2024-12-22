@@ -7,14 +7,9 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.Inheritance;
 import jakarta.persistence.InheritanceType;
 import jakarta.persistence.Table;
-import com.fasterxml.jackson.annotation.JsonFormat;
-import org.springframework.format.annotation.NumberFormat;
-
 import lombok.Getter;
 import lombok.Setter;
-
 import com.project.bridgebackend.Model.Entity.enumeration.TipoContratto;
-
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -24,9 +19,8 @@ import jakarta.validation.constraints.Size;
 /**
  * Classe che rappresenta un annuncio di lavoro, estende la classe base Annuncio.
  *
- * @author Vito Vernellati
- * @created 04/12/2024
- * @version 1.0
+ * @author Vito Vernellati.
+ * Creato il 04/12/2024.
  */
 @Entity
 @Getter

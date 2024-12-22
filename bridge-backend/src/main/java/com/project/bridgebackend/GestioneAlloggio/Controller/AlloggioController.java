@@ -7,61 +7,93 @@ import com.project.bridgebackend.Model.Entity.Alloggio;
 import com.project.bridgebackend.Model.Entity.Indirizzo;
 import com.project.bridgebackend.Model.Entity.Rifugiato;
 import com.project.bridgebackend.Model.Entity.Volontario;
-import com.project.bridgebackend.Model.dao.*;
+import com.project.bridgebackend.Model.dao.VolontarioDAO;
+import com.project.bridgebackend.Model.dao.IndirizzoDAO;
+import com.project.bridgebackend.Model.dao.UtenteDAO;
+import com.project.bridgebackend.Model.dao.AlloggioDAO;
+import com.project.bridgebackend.Model.dao.RifugiatoDAO;
 import com.project.bridgebackend.Model.dto.AlloggioDTO;
-import jakarta.validation.Valid;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
-
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Base64;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+
 
 /**
- * Controller per la gestione degli alloggi
+ * Controller per la gestione degli alloggi.
  */
 @RestController
 @RequestMapping("/alloggi")
 public class AlloggioController {
 
+    /**
+     * Service per la logica di gestione degli alloggi.
+     */
     @Autowired
     private AlloggioService alloggioService;
+
+    /**
+     * Service per la logica di gestione delle foto alloggio.
+     */
     @Autowired
     private FotoAlloggioService fotoAlloggioService;
 
+    /**
+     * Service per la logica di gestione degli utenti volontari.
+     */
     @Autowired
     private VolontarioDAO volontarioDAO;
 
+    /**
+     * Service per la logica di gestione degli indirizzi.
+     */
     @Autowired
     private IndirizzoDAO indirizzoDAO;
+
+    /**
+     * Service per la logica di gestione degli utenti.
+     */
     @Autowired
     private UtenteDAO utenteDAO;
+
+    /**
+     * DAO per la gestione degli annunci di alloggio.
+     */
     @Autowired
     private AlloggioDAO alloggioDAO;
 
+    /**
+     * DAO per la gestione degli utenti rifugiati.
+     */
     @Autowired
     private RifugiatoDAO rifugiatoDAO;
 
     /**
-     * Aggiungi un nuovo alloggio nel sistema
+     * Aggiungi un nuovo alloggio nel sistema.
      *
-     * @param alloggio   l'alloggio da aggiungere
-     * @return ResponseEntity con lo stato dell'operazione
+     * @param alloggio   l'alloggio da aggiungere.
+     * @return ResponseEntity con lo stato dell'operazione.
      */
 
     @PostMapping("/aggiungi")
-    public ResponseEntity<String> addAlloggio(@RequestBody AlloggioDTO alloggio) {
+    public ResponseEntity<String> addAlloggio(
+            @RequestBody final AlloggioDTO alloggio) {
         try {
-            /**
-             *Verifico prima se sia un volontoria, in caso positivo può aggiungere l'alloggio, in caso negativo non fa nulla
-             */
+            //Verifico prima se sia un volontario,
+            // in caso positivo può aggiungere l'alloggio, in caso negativo non fa nulla
+
             //Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
             //if (authentication != null && authentication.getAuthorities().stream()
             //.anyMatch(auth -> auth.getAuthority().equals("Volontario"))) {
@@ -71,7 +103,7 @@ public class AlloggioController {
             // Cicliamo su tutte le foto inviate
             if (alloggio.getFoto() != null && !alloggio.getFoto().isEmpty()) {
                 for (String foto : alloggio.getFoto()) {
-                    if (foto.startsWith("data:image/jpeg;base64,")){
+                    if (foto.startsWith("data:image/jpeg;base64,")) {
                         foto = foto.split(",")[1]; // Estrai solo la parte Base64 dopo la virgola
                         byte[] fotoData = Base64.getDecoder().decode(foto);
                         fotoProfiloId = fotoAlloggioService.saveIMG(foto, fotoData);
@@ -127,8 +159,17 @@ public class AlloggioController {
         }
     }
 
+    /**
+     * Assegna un alloggio a un rifugiato specifico.
+     *
+     * @param titolo         il titolo dell'alloggio
+     * @param emailRifugiato l'email del rifugiato
+     * @return ResponseEntity con lo stato dell'operazione
+     */
     @PostMapping("/assegnazione")
-    public ResponseEntity<String> assegnazioneAlloggio(@RequestParam String titolo, @RequestParam String emailRifugiato) {
+    public ResponseEntity<String> assegnazioneAlloggio(
+            @RequestParam final String titolo,
+            @RequestParam final String emailRifugiato) {
         try {
             // Recuperiamo l'alloggio in base al titolo
             Alloggio alloggio = alloggioService.assegnazioneAlloggio(titolo, emailRifugiato);
@@ -152,9 +193,15 @@ public class AlloggioController {
         }
     }
 
-
+    /**
+     * Permette a un rifugiato di manifestare interesse per un alloggio.
+     *
+     * @param request mappa contenente email del rifugiato e titolo dell'alloggio
+     * @return ResponseEntity con lo stato dell'operazione
+     */
     @PostMapping("/preferiti")
-    public ResponseEntity<String> manifestazioneInteresse(@RequestBody Map<String, String> request) {
+    public ResponseEntity<String> manifestazioneInteresse(
+            @RequestBody final Map<String, String> request) {
         try {
             String emailRifugiato = request.get("emailRifugiato");
             String titoloAlloggio = request.get("titoloAlloggio");
@@ -162,7 +209,7 @@ public class AlloggioController {
             if (emailRifugiato == null) {
                 return ResponseEntity.badRequest().body("email mancata");
             }
-            if(titoloAlloggio == null) {
+            if (titoloAlloggio == null) {
                 return ResponseEntity.badRequest().body("Titolo mancanto");
             }
 
@@ -180,9 +227,17 @@ public class AlloggioController {
         }
     }
 
-
+    /**
+     * Verifica se un rifugiato ha aggiunto un alloggio ai preferiti.
+     *
+     * @param email  l'email del rifugiato
+     * @param titolo il titolo dell'alloggio
+     * @return ResponseEntity con valore booleano che indica se è favorito
+     */
     @GetMapping("/isFavorito")
-    public ResponseEntity<Boolean> isFavorito(@RequestParam String email, @RequestParam String titolo) {
+    public ResponseEntity<Boolean> isFavorito(
+            @RequestParam final String email,
+            @RequestParam final String titolo) {
         try {
             Rifugiato rifugiato = rifugiatoDAO.findByEmail(email);
             if (rifugiato == null) {
@@ -212,7 +267,11 @@ public class AlloggioController {
 
 
 
-
+    /**
+     * Recupera tutti gli alloggi disponibili.
+     *
+     * @return ResponseEntity contenente la lista degli alloggi
+     */
     @GetMapping("/mostra")
     public ResponseEntity<List<Alloggio>> getAllAlloggi() {
         try {
@@ -228,13 +287,14 @@ public class AlloggioController {
     }
 
     /**
-     * Endpoint per ottenere i dettagli di un alloggio tramite il titolo
-     * @param titolo titolo dell'alloggio da cercare
-     * @return i dettagli dell'alloggio o un errore se non trovato
+     * Ottiene i dettagli di un alloggio specifico tramite il titolo.
+     *
+     * @param titolo il titolo dell'alloggio da cercare
+     * @return dettagli dell'alloggio o null se non trovato
+     * @throws IOException se si verifica un errore durante il recupero delle immagini
      */
-
     @GetMapping("/SingoloAlloggio/{titolo}")
-    public Alloggio getAlloggioByTitolo(@PathVariable String titolo) throws IOException {
+    public Alloggio getAlloggioByTitolo(@PathVariable final String titolo) throws IOException {
         Alloggio alloggio = alloggioService.getAlloggioByTitolo(titolo);
         if (alloggio == null) {
             return null;

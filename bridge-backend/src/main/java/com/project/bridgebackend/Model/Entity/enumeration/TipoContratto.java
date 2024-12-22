@@ -4,14 +4,10 @@
 package com.project.bridgebackend.Model.Entity.enumeration;
 
 /**
- * Classe che rappresenta un annuncio di lavoro, estende la classe base Annuncio.
- *
- * @author Vito Vernellati
- * @created 04/12/2024
- * @version 1.0
- */
-/**
  * Enumerazione per i tipi di contratto.
+ * @author Vito Vernellati
+ * Creato in data 04/12/2024
+ * @version 1.0
  */
 public enum TipoContratto {
     /**
@@ -54,6 +50,9 @@ public enum TipoContratto {
      */
     ALTRO("Altro");
 
+    /**
+     * Descrizione del tipo di contratto.
+     */
     private final String description;
 
     /**

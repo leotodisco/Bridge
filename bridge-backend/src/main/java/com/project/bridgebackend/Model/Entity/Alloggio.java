@@ -1,52 +1,52 @@
 package com.project.bridgebackend.Model.Entity;
 
-/**
- * @author: Mario Zurolo
- * created: 3/12/24
- * entity per la gestione degli alloggi
- */
-
 import com.project.bridgebackend.Model.Entity.enumeration.Servizi;
-import jakarta.persistence.*;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
+import jakarta.persistence.Id;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Column;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.ElementCollection;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.OneToOne;
 import lombok.Data;
-import lombok.NonNull;
-
 import java.io.Serializable;
-import java.util.*;
-
-import jakarta.validation.constraints.Max;
-import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
-import org.hibernate.validator.constraints.UniqueElements;
-
-
+import java.util.List;
+/**
+ * @author: Mario Zurolo.
+ * Creato in data 3/12/24.
+ * Entity per la gestione degli alloggi.
+ * Contiene tutte le informazioni relative agli alloggi gestiti.
+ */
 @Data
 @Entity
 @Table(name = "alloggio")
 public class Alloggio implements Serializable {
 
     /**
-     * Annotazione per identificare il campo 'id' come chiave primaria.
-     */
-    /**
-     *  Genera automaticamente il valore della chiave primaria (ad esempio, un ID incrementale).
+     * Identificatore unico dell'alloggio.
+     * Viene generato automaticamente.
      */
     @Id
     @GeneratedValue()
     private long id;
 
     /**
-     *  Campo per la metratura dell'alloggio (es. dimensione in metri quadrati).
+     * Metratura dell'alloggio, espressa in metri quadrati.
+     * Non può essere null e deve avere un valore positivo.
      */
-
     @Column(nullable = false)
     //@Max(value = 99999, message = "La metratura deve essere al massimo 99999")
     //@Min(value = 1, message = "La metratura deve essere almeno di 1")
     private int metratura;
 
     /**
-     *  Campo per il numero massimo di persone che l'alloggio può ospitare.
+     * Numero massimo di persone che l'alloggio può ospitare.
+     * Non può essere null e deve essere un valore positivo.
      */
     @Column(nullable = false)
     //@Min(value = 1, message = "deve esserci almeno una persona")
@@ -54,37 +54,41 @@ public class Alloggio implements Serializable {
     private int maxPersone;
 
     /**
-     *  Campo per una descrizione testuale dell'alloggio (es. caratteristiche, ubicazione, ecc.).
+     * Descrizione testuale dell'alloggio.
+     * La descrizione può contenere fino a 400 caratteri.
      */
     @Column(nullable = false, length = 400)
     //@Size(max = 400, message = "la descrizione non può superare i 400 caratteri")
     private String descrizione;
 
     /**
-     *  Campo che rappresenta il proprietario dell'alloggio.
-     *
+     * Riferimento al proprietario dell'alloggio.
+     * La chiave di riferimento è l'email dell'utente proprietario.
+     * Non può essere null.
      */
-
     @JoinColumn(name = "proprietario", referencedColumnName = "email", nullable = false)
     @ManyToOne()
     private Utente proprietario;
 
     /**
-     *  Lista di rifugiati candidati per l'alloggio.
+     * Lista dei rifugiati che sono stati candidati per l'alloggio.
+     * La lista può contenere uno o più rifugiati.
      */
     @Column()
     @OneToMany()
     private List<Rifugiato> listaCandidati;
 
     /**
-     *  Campo che rappresenta i servizi offerti dall'alloggio
+     * Servizi offerti dall'alloggio, rappresentati tramite un tipo enumerato.
+     * Il campo non può essere null.
      */
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private Servizi servizi;
 
     /**
-     *  campo per le foto dell'alloggio
+     * Foto dell'alloggio. Ogni foto è rappresentata tramite un URL.
+     * Il campo può contenere un massimo di 3 foto.
      */
     @ElementCollection
     //@CollectionTable(name = "alloggio_foto", joinColumns = @JoinColumn(name = "alloggio_id"))
@@ -93,17 +97,28 @@ public class Alloggio implements Serializable {
     //@Size(min = 1, max = 3, message = "Devi fornire almeno 1 foto e massimo 3.")
     private List<String> foto;
 
+    /**
+     * Titolo univoco dell'alloggio.
+     * Il campo deve essere unico e non può essere null.
+     */
     @Column(nullable = false, unique = true)
     private String titolo;
 
+    /**
+     * Indirizzo associato all'alloggio.
+     * L'indirizzo è una relazione uno a uno con l'entità Indirizzo.
+     * Non può essere null.
+     */
     @OneToOne()
     @JoinColumn(name = "indirizzo", referencedColumnName = "id", nullable = false)
     private Indirizzo indirizzo;
 
     /**
-     *  Costruttore predefinito (senza argomenti) per inizializzare l'oggetto.
+     * Costruttore predefinito (senza argomenti) per inizializzare,
+     * un oggetto Alloggio.
+     * Questo costruttore viene utilizzato da JPA durante il caricamento,
+     * dell'entità dal database.
      */
     public Alloggio() {
-
     }
 }

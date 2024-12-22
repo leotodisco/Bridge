@@ -1,6 +1,9 @@
 package com.project.bridgebackend.GestioneAnnuncio.Service;
 
-import com.project.bridgebackend.Model.Entity.*;
+import com.project.bridgebackend.Model.Entity.Consulenza;
+import com.project.bridgebackend.Model.Entity.Indirizzo;
+import com.project.bridgebackend.Model.Entity.Lavoro;
+import com.project.bridgebackend.Model.Entity.Utente;
 import com.project.bridgebackend.Model.Entity.enumeration.TipoConsulenza;
 import com.project.bridgebackend.Model.Entity.enumeration.TipoContratto;
 import com.project.bridgebackend.Model.dao.ConsulenzaDAO;
@@ -9,12 +12,10 @@ import com.project.bridgebackend.Model.dao.LavoroDAO;
 import com.project.bridgebackend.util.Indirizzo.service.IndirizzoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import jakarta.validation.Valid;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
-import java.util.ArrayList;
 
 /**
  * @author Geraldine Montella, Vito Vernellati.
@@ -111,22 +112,23 @@ public class GestioneAnnuncioServiceImp implements GestioneAnnuncioService {
     }
 
     @Override
-    public List<Lavoro> getAllLavori(){
+    public List<Lavoro> getAllLavori() {
         return lavoroDAO.findAll();
     }
 
     @Override
-    public Lavoro getLavori(long id){
+    public Lavoro getLavori(final long id) {
         return lavoroDAO.findById(id).get();
     }
 
     @Override
-    public List<Lavoro> getLavoriByProprietario(Utente proprietario) {
+    public List<Lavoro> getLavoriByProprietario(final Utente proprietario) {
         return lavoroDAO.findByProprietario(proprietario);
     }
 
     @Override
-    public Lavoro modificaAnnuncioLavoro(long idAnnuncio, HashMap<String, Object> aggiornamenti) {
+    public Lavoro modificaAnnuncioLavoro(final long idAnnuncio,
+                                         final HashMap<String, Object> aggiornamenti) {
         Optional<Lavoro> lavoroOptional = lavoroDAO.findById(idAnnuncio);
         if (lavoroOptional.isEmpty()) {
             throw new IllegalArgumentException("Annuncio di lavoro non trovato.");
@@ -152,8 +154,8 @@ public class GestioneAnnuncioServiceImp implements GestioneAnnuncioService {
                     lavoro.setTipoContratto((TipoContratto) valore);
                     break;
                 case "retribuzione":
-                    double parsed_value = Double.parseDouble(valore.toString());
-                    lavoro.setRetribuzione(parsed_value);
+                    double parsedValue = Double.parseDouble(valore.toString());
+                    lavoro.setRetribuzione(parsedValue);
                     break;
                 case "nomeSede":
                     lavoro.setNomeSede((String) valore);
@@ -183,7 +185,7 @@ public class GestioneAnnuncioServiceImp implements GestioneAnnuncioService {
     }
 
     @Override
-    public void eliminaAnnuncioLavoro(long idAnnuncio) {
+    public void eliminaAnnuncioLavoro(final long idAnnuncio) {
         if (!lavoroDAO.existsById(idAnnuncio)) {
             throw new IllegalArgumentException("Annuncio di lavoro non trovato.");
         }
@@ -198,7 +200,7 @@ public class GestioneAnnuncioServiceImp implements GestioneAnnuncioService {
      * @return la consulenze con l'identificativo id.
      */
     @Override
-    public List<Consulenza> getAllConsulenze(){
+    public List<Consulenza> getAllConsulenze() {
         return consulenzaDAO.findAll();
     }
 
@@ -208,7 +210,7 @@ public class GestioneAnnuncioServiceImp implements GestioneAnnuncioService {
      * @return la lista di tutte le consulenza presenti nel db.
      */
     @Override
-    public Consulenza getConsulenze( long id){
+    public Consulenza getConsulenze(final long id) {
         return consulenzaDAO.findById(id).get();
     }
 
@@ -221,7 +223,7 @@ public class GestioneAnnuncioServiceImp implements GestioneAnnuncioService {
      */
 
     @Override
-    public List<Consulenza> getConsulenzeByProprietario(Utente proprietario) {
+    public List<Consulenza> getConsulenzeByProprietario(final Utente proprietario) {
         return consulenzaDAO.findByProprietario(proprietario);
     }
 
@@ -256,8 +258,8 @@ public class GestioneAnnuncioServiceImp implements GestioneAnnuncioService {
                 case "maxCandidature":
                     int maxCandidature = (Integer) valore;
                     if (maxCandidature < 1) {
-                        throw new IllegalArgumentException("Il numero " +
-                                "massimo di candidature deve essere almeno 1.");
+                        throw new IllegalArgumentException("Il numero "
+                                + "massimo di candidature deve essere almeno 1.");
                     }
                     consulenza.setMaxCandidature(maxCandidature);
                     break;
@@ -303,8 +305,8 @@ public class GestioneAnnuncioServiceImp implements GestioneAnnuncioService {
                     consulenza.setDisponibilita((Boolean) valore);
                     break;
                 default:
-                    throw new IllegalArgumentException("Campo non valido " +
-                            "per la modifica: " + campo);
+                    throw new IllegalArgumentException("Campo non valido "
+                            + "per la modifica: " + campo);
             }
         });
 
@@ -312,7 +314,7 @@ public class GestioneAnnuncioServiceImp implements GestioneAnnuncioService {
     }
 
     @Override
-    public void eliminaConsulenza(long idConsulenza) {
+    public void eliminaConsulenza(final long idConsulenza) {
         if (!consulenzaDAO.existsById(idConsulenza)) {
             throw new IllegalArgumentException("Nessun riscontro con di consulenze con id " + idConsulenza);
         }

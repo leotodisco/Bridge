@@ -12,7 +12,16 @@ import com.project.bridgebackend.Model.dao.IndirizzoDAO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.DeleteMapping;
+
 
 import java.time.LocalDate;
 import java.util.List;
@@ -25,7 +34,10 @@ import org.springframework.web.server.ResponseStatusException;
 /**
  * @author Alessia De Filippo.
  * Creato il: 06/12/2024.
+ *
  * Controller per la gestione degli eventi.
+ * Fornisce API REST per la creazione, il recupero,
+ * la modifica e la cancellazione degli eventi.
  */
 @RestController
 @CrossOrigin(origins = "http://localhost:5173", allowedHeaders = "*")
@@ -50,22 +62,26 @@ public class GestioneEventoController {
     @Autowired
     private VolontarioDAO volontarioDAO;
 
+    /**
+     * DAO per la gestione delle operazioni sui rifugiati.
+     */
     @Autowired
     private RifugiatoDAO rifugiatoDAO;
 
     /**
-     * Metodo per la creazione di un evento.
-     * @param eventoDTO evento da creare.
-     * @return evento creato.
+     * Crea un nuovo evento.
+     *
+     * @param eventoDTO DTO che contiene i dati dell'evento da creare.
+     * @return L'evento creato, incapsulato in una risposta HTTP con codice 201 (CREATED).
      */
     @PostMapping("/crea")
     public ResponseEntity<Evento> creaEvento(
             @Valid @RequestBody final EventoDTO eventoDTO) {
 
-        /*
-         * Recupero dati dell'indirizzo dell'evento.
-         * Salvataggio in Indirizzo
-         */
+
+         // Recupero dati dell'indirizzo dell'evento.
+         // Salvataggio in Indirizzo
+
         Indirizzo indirizzo = new Indirizzo();
         indirizzo.setVia(
                 eventoDTO.getLuogo().getVia());
@@ -109,12 +125,17 @@ public class GestioneEventoController {
     }
 
     /**
-     * Metodo per il fetch di un evento
+     * Recupera un evento dato il suo ID.
+     *
+     * @param id Identificativo dell'evento da recuperare.
+     * @return DTO dell'evento recuperato, o codice 404 (NOT FOUND) se non trovato.
      */
+
     @GetMapping("/retrieve/{id}")
-    public ResponseEntity<EventoDTO> getEventoById(@PathVariable long id) {
+    public ResponseEntity<EventoDTO> getEventoById(
+            @PathVariable final long id) {
         Optional<Evento> evento = gestioneEventoService.getEventoById(id);
-        if(evento.isPresent()) {
+        if (evento.isPresent()) {
             //Converto l'entity Evento in DTO
             EventoDTO eventoDTO = new EventoDTO();
             eventoDTO.setId(
@@ -142,16 +163,18 @@ public class GestioneEventoController {
         }
     }
 
+
     /**
-     * Metodo per l'iscrizione di un partecipante a un evento.
-     * @param id
-     * @param emailPartecipante
-     * @return
+     * Iscrive un partecipante a un evento.
+     *
+     * @param id Identificativo dell'evento.
+     * @param emailPartecipante Email del partecipante da iscrivere.
+     * @return Evento aggiornato con il partecipante aggiunto, o un errore se il partecipante o l'evento non esiste.
      */
     @PostMapping("/{id}/iscrivi")
     public ResponseEntity<?> iscriviPartenope(
-            @PathVariable long id,
-            @RequestParam String emailPartecipante) {
+            @PathVariable final long id,
+            @RequestParam final String emailPartecipante) {
 
         // Verifica che l'evento esista
         Evento evento = gestioneEventoService.getEventoById(id)
@@ -159,7 +182,7 @@ public class GestioneEventoController {
 
         // Verifica che il rifugiato esista
         Rifugiato rifugiato = rifugiatoDAO.findByEmail(emailPartecipante);
-        if(rifugiato == null) {
+        if (rifugiato == null) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Rifugiato non trovato");
         }
 
@@ -171,16 +194,19 @@ public class GestioneEventoController {
 
 
     /**
-     * Metodo per la disiscrizione di un partecipante a un evento.
-     * @param id identificativo dell'evento.
-     * @param emailPartecipante email del partecipante.
-     * @return evento aggiornato.
+     * Rimuove l'iscrizione di un partecipante da un evento.
+     *
+     * @param id Identificativo dell'evento.
+     * @param emailPartecipante Email del partecipante da disiscrivere.
+     * @return L'evento aggiornato senza il partecipante, o un errore se i dati non sono validi.
      */
     @DeleteMapping("/{id}/disiscrivi")
     public ResponseEntity<Evento> disiscriviPartecipante(
-            @PathVariable long id, @RequestParam String emailPartecipante) {
+            @PathVariable final long id,
+            @RequestParam final String emailPartecipante) {
         try {
-            System.out.println("Disiscrivi partecipante: " + id + " " + emailPartecipante);
+            System.out.println("Disiscrivi partecipante: "
+                    + id + " " + emailPartecipante);
             Evento eventoAggiornato = gestioneEventoService.disiscrizioneEvento(id, emailPartecipante);
             System.out.println("Evento aggiornato: " + eventoAggiornato);
             return new ResponseEntity<>(eventoAggiornato, HttpStatus.OK);
@@ -196,8 +222,9 @@ public class GestioneEventoController {
 
 
     /**
-     * Metodo per il fetch di tutti gli eventi.
-     * @return
+     * Recupera tutti gli eventi disponibili.
+     *
+     * @return Lista di tutti gli eventi presenti nel database.
      */
     @GetMapping("/all")
     public ResponseEntity<List<Evento>> getAllEventi() {
@@ -205,20 +232,22 @@ public class GestioneEventoController {
         return new ResponseEntity<>(eventi, HttpStatus.OK);
     }
 
+
     /**
-     * Metodo per il fetch degli eventi pubblicati da un volontario.
-     * @param email email del volontario.
-     * @return evento pubblicato.
+     * Recupera tutti gli eventi pubblicati da un volontario.
+     *
+     * @param email Email del volontario.
+     * @return Lista degli eventi pubblicati dal volontario, o codice 404 (NOT FOUND) se non trovati.
      */
     @GetMapping("/pubblicati")
     public ResponseEntity<List<Evento>> getCorsiPubblicatiByVolontario(
-            @RequestParam("email") String email) {
+            @RequestParam("email") final String email) {
         System.out.println("Email ricevuta: " + email);
 
         // Recupera il volontario tramite email
         Volontario volontario = volontarioDAO.findByEmail(email);
         System.out.println("Volontario trovato: " + volontario);
-        if(volontario == null) {
+        if (volontario == null) {
             System.out.println("Volontario non trovato");
             return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
         }
@@ -226,22 +255,29 @@ public class GestioneEventoController {
         //Recupera i corsi pubblicati
         List<Evento> eventi = gestioneEventoService.getEventiByVolontario(email);
         eventi.forEach(System.out::println);
-        if(eventi.isEmpty()) {
+        if (eventi.isEmpty()) {
             System.out.println("Nessun evento trovato per questo volontario");
             return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
         }
         return new ResponseEntity<>(eventi, HttpStatus.OK);
     }
 
+    /**
+     * Verifica se un partecipante è iscritto a un evento.
+     *
+     * @param id Identificativo dell'evento.
+     * @param emailPartecipante Email del partecipante.
+     * @return `true` se il partecipante è iscritto, `false` altrimenti.
+     */
     @GetMapping("/{id}/iscrizione")
     public ResponseEntity<Boolean> verificaIscrizione(
-            @PathVariable long id,
-            @RequestParam String emailPartecipante) {
+            @PathVariable final long id,
+            @RequestParam final String emailPartecipante) {
 
         try {
             // Trova l'evento con i partecipanti
             Evento evento = gestioneEventoService.trovaEventoConPartecipanti(id);
-            if(evento == null) {
+            if (evento == null) {
                 return new ResponseEntity<>(false, HttpStatus.NOT_FOUND);
             }
 

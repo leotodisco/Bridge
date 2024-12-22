@@ -6,7 +6,11 @@ import org.springframework.stereotype.Repository;
 /**
  * @author Antonio Ceruso.
  * Data creazione: 04/12/2024.
- * Interfaccia che indica un DAO per la Figura Specializzata
+ * Repository per la gestione degli oggetti {@link FiguraSpecializzata}.
+ * Fornisce metodi per l'accesso e la manipolazione dei,
+ * dati relativi agli utenti figura specializzata.
+ * Utilizza Spring Data JPA per fornire implementazioni automatiche,
+ * delle query.
  */
 @Repository
 public interface FiguraSpecializzataDAO extends UtenteDAO {

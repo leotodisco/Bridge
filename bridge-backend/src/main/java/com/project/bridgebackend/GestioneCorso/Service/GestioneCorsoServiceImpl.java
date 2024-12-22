@@ -1,29 +1,22 @@
 package com.project.bridgebackend.GestioneCorso.Service;
 
-import com.project.bridgebackend.GestioneCorso.pdf.PDFDoc;
 import com.project.bridgebackend.GestioneCorso.pdf.PDFService;
 import com.project.bridgebackend.Model.Entity.Corso;
-import com.project.bridgebackend.Model.Entity.enumeration.Lingua;
 import com.project.bridgebackend.Model.dao.CorsoDAO;
-import com.project.bridgebackend.Model.dto.CorsoDTO;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
-
-import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
  * @author Biagio Gallo.
  * Creato il: 06/12/2024.
  * Implementazione del service per la gestione dei corsi.
- * Questa classe fornisce metodi per
+ * Questa classe fornisce metodi per,
  * creare, modificare, eliminare e trovare corsi.
  * Utilizza il CorsoDAO per interagire con il database.
- * L'annotazione @RequiredArgsConstructor di Lombok
+ * L'annotazione @RequiredArgsConstructor di Lombok,
  * viene utilizzata per generare un costruttore con gli argomenti richiesti.
  */
 @Service
@@ -37,7 +30,7 @@ public class GestioneCorsoServiceImpl implements GestioneCorsoService {
     private final CorsoDAO corsoDAO;
 
     /**
-     * Iniezione logica di gestione per i pdf
+     * Iniezione logica di gestione per i pdf.
      */
     @Autowired
     private final PDFService pdfService;
@@ -58,7 +51,7 @@ public class GestioneCorsoServiceImpl implements GestioneCorsoService {
     /**
      * Modifica un corso esistente.
      * todo: inserire possibilità modifica pdf
-     * @param corso il DTO del corso contenente
+     * @param corso il DTO del corso contenente.
      * i dettagli aggiornati del corso.
      * @return il corso modificato come CorsoDTO.
      */
@@ -86,7 +79,7 @@ public class GestioneCorsoServiceImpl implements GestioneCorsoService {
 
     /**
      * Elimina un corso esistente.
-     * @param corso il DTO del corso contenente
+     * @param corso il DTO del corso contenente.
      * i dettagli del corso da eliminare.
      */
     @Override

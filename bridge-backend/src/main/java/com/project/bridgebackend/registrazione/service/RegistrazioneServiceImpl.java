@@ -46,15 +46,23 @@ public class RegistrazioneServiceImpl implements RegistrazioneService {
     @Autowired
     private FiguraSpecializzataDAO figSpecDAO;
 
+    /**
+     * Gestore delle autenticazioni che verifica le credenziali degli utenti
+     * (email e password) e valida il processo di autenticazione.
+     */
     @Autowired
     private AuthenticationManager authenticationManager;
 
+    /**
+     * Servizio per la generazione e la gestione dei token JWT, utilizzati
+     * per l'autenticazione e l'autorizzazione degli utenti.
+     */
     @Autowired
     private JwtService jwtService;
 
     /**
      * Metodo per la cifratura della password.
-     * @param password
+     * @param password scritta dall'utente
      * @return la password cifrata come stringa.
      * */
     public String safePassword(final String password) {

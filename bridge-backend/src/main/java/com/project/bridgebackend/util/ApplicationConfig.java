@@ -18,13 +18,26 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.Properties;
 
+/**
+ * Classe di configurazione principale dell'applicazione.
+ * Contiene i bean per la gestione dell'autenticazione,
+ * della codifica delle password, e delle funzionalità di posta elettronica.
+ *
+ * @author Benedetta Colella.
+ */
 @Configuration
 @EnableAsync
 public class ApplicationConfig {
 
+    /**
+     * Servizio per l'invio di email all'interno dell'applicazione.
+     */
     @Autowired
     private JavaMailSender mailSender;
 
+    /**
+     * DAO per l'accesso ai dati degli utenti.
+     */
     @Autowired
     @Qualifier("utenteDAO")
     private UtenteDAO usrdao;
@@ -38,24 +51,61 @@ public class ApplicationConfig {
         return username -> usrdao.findByEmail(username);
     }
 
+    /**
+     * Configura un encoder per cifrare le password utilizzando
+     * l'algoritmo BCrypt.
+     *
+     * @return un'istanza di {@link PasswordEncoder}.
+     */
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
+    /**
+     * Configura un provider di autenticazione basato su DAO,
+     * utilizzando un {@link PasswordEncoder} e un,
+     * {@link UserDetailsService}.
+     *
+     * @param passwordEncoder il componente per la cifratura,
+     *                       delle password.
+     * @param userDetailsService il servizio per caricare i,
+     *                          dettagli degli utenti.
+     * @return un'istanza di {@link AuthenticationProvider}.
+     */
     @Bean
-    public AuthenticationProvider authenticationProvider(PasswordEncoder passwordEncoder, UserDetailsService userDetailsService) {
+    public AuthenticationProvider authenticationProvider(
+            final PasswordEncoder passwordEncoder,
+            final UserDetailsService userDetailsService) {
         DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
         authProvider.setPasswordEncoder(passwordEncoder);
         authProvider.setUserDetailsService(userDetailsService);
         return authProvider;
     }
 
+
+    /**
+     * Configura il gestore di autenticazione,
+     * per l'applicazione.
+     *
+     * @param authenticationConfiguration configurazione,
+     *                                   dell'autenticazione.
+     * @return un'istanza di {@link AuthenticationManager}.
+     * @throws Exception se si verifica un errore durante la configurazione.
+     */
     @Bean
-    public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
+    public AuthenticationManager authenticationManager(
+            final AuthenticationConfiguration authenticationConfiguration) throws Exception {
         return authenticationConfiguration.getAuthenticationManager();
     }
 
+    /**
+     * Configura un servizio per l'invio di email tramite,
+     * il protocollo SMTP.
+     *
+     * @return un'istanza configurata di,
+     * {@link JavaMailSender}.
+     */
     @Bean
     public static JavaMailSender getJavaMailSender() {
         JavaMailSenderImpl mailSender = new JavaMailSenderImpl();

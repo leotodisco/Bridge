@@ -1,7 +1,11 @@
 package com.project.bridgebackend.GestioneAnnuncio.Service;
 
-import com.project.bridgebackend.Model.Entity.*;
 
+
+import com.project.bridgebackend.Model.Entity.Consulenza;
+import com.project.bridgebackend.Model.Entity.Indirizzo;
+import com.project.bridgebackend.Model.Entity.Lavoro;
+import com.project.bridgebackend.Model.Entity.Utente;
 import java.util.HashMap;
 import java.util.List;
 
@@ -10,8 +14,7 @@ import java.util.List;
  * Include operazioni di inserimento, modifica, eliminazione e gestione delle preferenze.
  *
  * @author Geraldine Montella, Vito Vernellati
- * @created 04/12/2024
- * @version 1.0
+ * creato in data 04/12/2024
  */
 public interface GestioneAnnuncioService {
 
@@ -55,7 +58,7 @@ public interface GestioneAnnuncioService {
      * @param id intero identificativo della consulenza che si vuole ottenere.
      * @return consulenza avente nel db l'id specificato se presente.
      */
-    Consulenza getConsulenze( long id);
+    Consulenza getConsulenze(long id);
 
     /**
      * Funzione per aggiornare una certa consulenza sulla base delle informazioni passate.
@@ -65,8 +68,8 @@ public interface GestioneAnnuncioService {
      *
      * @return consulenza aggiornata con le nuove modifiche
      */
-    Consulenza modificaAnnuncioConsulenza(final long idConsulenza,
-                                          final HashMap<String, Object> aggiornamenti);
+    Consulenza modificaAnnuncioConsulenza(long idConsulenza,
+                                          HashMap<String, Object> aggiornamenti);
 
     /**
      * Funzione per l'eliminazione di una consulenza sulla base,

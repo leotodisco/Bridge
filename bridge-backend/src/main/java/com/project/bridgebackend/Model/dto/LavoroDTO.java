@@ -27,8 +27,7 @@ import java.util.List;
  * dei dati forniti.
  *
  * @author Vito Vernellati
- * @created 08/12/2024
- * @version 1.0
+ * @since  08/12/2024
  */
 
 @Data
@@ -38,7 +37,7 @@ import java.util.List;
 @EqualsAndHashCode
 public class LavoroDTO {
 
-    /** Campi di annuncio */
+    //campi specifici di annuncio
 
     /**
      * Titolo dell'annuncio.
@@ -87,7 +86,7 @@ public class LavoroDTO {
     @Pattern(regexp = "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$", message = "Email del candidato non valida")
             String> candidati;
 
-    /** Campi specifici di Lavoro */
+    //Campi specifici di Lavoro
 
     /**
      * Posizione lavorativa richiesta nell'annuncio.

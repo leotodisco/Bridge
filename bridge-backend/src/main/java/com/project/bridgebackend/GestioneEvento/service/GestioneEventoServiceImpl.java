@@ -9,7 +9,6 @@ import com.project.bridgebackend.Model.dao.IndirizzoDAO;
 import com.project.bridgebackend.Model.dao.RifugiatoDAO;
 import com.project.bridgebackend.Model.dao.VolontarioDAO;
 import jakarta.transaction.Transactional;
-import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.List;
@@ -42,6 +41,9 @@ public class GestioneEventoServiceImpl implements GestioneEventoService {
     @Autowired
     private RifugiatoDAO rifugiatoDAO;
 
+    /**
+     * DAO per la gestione dei volontari.
+     **/
     @Autowired
     private VolontarioDAO volontarioDAO;
 
@@ -113,7 +115,9 @@ public class GestioneEventoServiceImpl implements GestioneEventoService {
      */
     @Transactional
     @Override
-    public Evento iscrizioneEvento(long eventoId, String partecipanteEmail) {
+    public Evento iscrizioneEvento(
+            final long eventoId,
+            final String partecipanteEmail) {
         //Controlla che l'evento esista
         Evento evento = eventoDAO.findById(eventoId)
                 .orElseThrow(() -> new
@@ -126,12 +130,12 @@ public class GestioneEventoServiceImpl implements GestioneEventoService {
         }
 
         //Controlla che il rifugiato non sia già iscritto
-        if(evento.getListaPartecipanti().contains(partecipante)) {
+        if (evento.getListaPartecipanti().contains(partecipante)) {
             throw new IllegalArgumentException("Partecipante già iscritto");
         }
 
         //Controlla che l'evento non sia già pieno
-        if(evento.getListaPartecipanti().size() >= evento.getMaxPartecipanti()) {
+        if (evento.getListaPartecipanti().size() >= evento.getMaxPartecipanti()) {
             throw new IllegalArgumentException("Evento pieno");
         }
 
@@ -150,7 +154,9 @@ public class GestioneEventoServiceImpl implements GestioneEventoService {
      */
     @Transactional
     @Override
-    public Evento disiscrizioneEvento(long eventoId, String partecipanteEmail) {
+    public Evento disiscrizioneEvento(
+            final long eventoId,
+            final String partecipanteEmail) {
         //Controlla che l'evento esista
         System.out.println("Evento id: " + eventoId);
         System.out.println("Partecipante email: " + partecipanteEmail);
@@ -168,7 +174,7 @@ public class GestioneEventoServiceImpl implements GestioneEventoService {
 
         //Controlla che il rifugiato sia iscritto
         System.out.println("Lista partecipanti: " + evento.getListaPartecipanti());
-        if(!evento.getListaPartecipanti().contains(partecipante)) {
+        if (!evento.getListaPartecipanti().contains(partecipante)) {
             throw new IllegalArgumentException("Partecipante non iscritto");
         }
 
@@ -186,7 +192,8 @@ public class GestioneEventoServiceImpl implements GestioneEventoService {
      * @return lista di eventi.
      */
     @Override
-    public List<Evento> getEventiByVolontario(String emailOrganizzatore) {
+    public List<Evento> getEventiByVolontario(
+            final String emailOrganizzatore) {
         System.out.println("Stampami qualcosa: " + emailOrganizzatore);
         Volontario organizzatore = volontarioDAO.findByEmail(emailOrganizzatore);
         if (organizzatore == null) {
@@ -195,8 +202,16 @@ public class GestioneEventoServiceImpl implements GestioneEventoService {
         return eventoDAO.findByOrganizzatore(organizzatore);
     }
 
+    /**
+     * Recupera un evento specifico, inclusa la lista dei partecipanti associati.
+     *
+     * @param eventoId Identificativo univoco dell'evento da recuperare.
+     * @return L'oggetto {@link Evento} che include la lista dei partecipanti.
+     * @throws IllegalArgumentException se l'evento con l'ID specificato non viene trovato.
+     */
     @Override
-    public Evento trovaEventoConPartecipanti(long eventoId) {
+    public Evento trovaEventoConPartecipanti(
+            final long eventoId) {
         return eventoDAO.findEventoWithPartecipanti(eventoId)
                 .orElseThrow(() -> new IllegalArgumentException("Evento non trovato"));
     }

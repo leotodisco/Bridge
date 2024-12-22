@@ -15,7 +15,14 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -33,21 +40,46 @@ import java.util.List;
 @CrossOrigin(origins = "http://localhost:5174", allowedHeaders = "*")
 public class GestioneCorsoController {
 
-    private static final Logger log = LoggerFactory.getLogger(GestioneCorsoController.class);
 
+    /**
+     * logger per la stampa di warning o errori.
+     */
+    private static final Logger LOGGER = LoggerFactory.getLogger(GestioneCorsoController.class);
+
+    /**
+     * Servizi per la gestione dei corsi.
+     */
     @Autowired
     private GestioneCorsoService gestioneCorsoService;
+
+
+    /**
+     * Servizi per la gestione degli utenti figura specializzata.
+     */
     @Autowired
     private FiguraSpecializzataDAO figuraSpecializzataDAO;
+
+    /**
+     * DAO per la gestione dei corsi.
+     */
     @Autowired
     private CorsoDAO corsoDAO;
+
+    /**
+     * Service per la gestione.
+     */
     @Autowired
     private PDFService pdfService;
 
 
-    // Endpoint per creare un nuovo corso
+    /**
+     * Endpoint per creare un nuovo corso.
+     *
+     * @param corsoDTO il DTO contenente i dati del corso da creare
+     * @return ResponseEntity con il corso creato o errore
+     */
     @PostMapping("/crea")
-    public ResponseEntity<Corso> creaCorso(@RequestBody @Valid CorsoDTO corsoDTO) {
+    public ResponseEntity<Corso> creaCorso(@RequestBody @Valid final CorsoDTO corsoDTO) {
         try {
             Corso newCorso = new Corso();
             newCorso.setTitolo(corsoDTO.getTitolo());
@@ -69,41 +101,57 @@ public class GestioneCorsoController {
         }
     }
 
+    /**
+     * Endpoint per caricare un file PDF associato al corso.
+     *
+     * @param name il nome del file PDF
+     * @param file il file PDF da caricare
+     * @return ResponseEntity con il risultato dell'operazione
+     */
     @PostMapping("/upload")
     @CrossOrigin(origins = "http://localhost:5174", allowedHeaders = "*")
-    public ResponseEntity<String> uploadPDF(@RequestParam("nome") String name, @RequestParam("pdf") MultipartFile file) {
+    public ResponseEntity<String> uploadPDF(
+            @RequestParam("nome") final String name,
+            @RequestParam("pdf") final MultipartFile file) {
         try {
             PDFDoc pdf = pdfService.savePdf(name, file);
             return ResponseEntity.ok(pdf.getId());
         } catch (IOException e) {
-            log.error("Errore durante il caricamento del PDF", e);
+            LOGGER.error("Errore durante il caricamento del PDF", e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Errore durante il caricamento del PDF");
         }
     }
 
+    /**
+     * Endpoint per modificare un corso esistente.
+     *
+     * @param id l'ID del corso da modificare
+     * @param corsoDTO il DTO contenente i dati aggiornati del corso
+     * @return ResponseEntity con il corso aggiornato o errore
+     */
     @PostMapping("/modifica/{id}")
     @CrossOrigin(origins = "http://localhost:5174", allowedHeaders = "*")
     public ResponseEntity<Corso> modificaCorso(
-            @PathVariable Long id,
-            @RequestBody @Valid CorsoDTO corsoDTO) {
+            @PathVariable final Long id,
+            @RequestBody @Valid final CorsoDTO corsoDTO) {
         try {
             // Trova il corso usando l'ID passato nell'URL
             Corso corso = corsoDAO.findById(id).orElse(null);
             if (corso == null) {
-                log.warn("Corso non trovato per ID: {}", id);
+                LOGGER.warn("Corso non trovato per ID: {}", id);
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
             }
 
             // Trova il proprietario usando l'email dal DTO
             FiguraSpecializzata figuraSpecializzata = figuraSpecializzataDAO.findByEmail(corsoDTO.getProprietario());
             if (figuraSpecializzata == null) {
-                log.warn("FiguraSpecializzata non trovata per email: {}", corsoDTO.getProprietario());
+                LOGGER.warn("FiguraSpecializzata non trovata per email: {}", corsoDTO.getProprietario());
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
             }
 
             // Controlla che il proprietario attuale sia quello corretto
             if (!corso.getProprietario().getEmail().equals(figuraSpecializzata.getEmail())) {
-                log.warn("Il proprietario del corso non corrisponde. Corso: {}, FiguraSpecializzata: {}", corso.getProprietario(), figuraSpecializzata);
+                LOGGER.warn("Il proprietario del corso non corrisponde. Corso: {}, FiguraSpecializzata: {}", corso.getProprietario(), figuraSpecializzata);
                 return ResponseEntity.status(HttpStatus.FORBIDDEN).body(null);
             }
 
@@ -120,32 +168,47 @@ public class GestioneCorsoController {
 
             return new ResponseEntity<>(updatedCorso, HttpStatus.OK);
         } catch (Exception e) {
-            log.error("Errore durante la modifica del corso", e);
+            LOGGER.error("Errore durante la modifica del corso", e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null); // Gestione errori generici
         }
     }
 
+
+    /**
+     * Endpoint per eliminare un corso esistente.
+     *
+     * @param id l'ID del corso da eliminare
+     * @return ResponseEntity con il risultato dell'operazione
+     */
     @PostMapping("/elimina/{id}")
     @CrossOrigin(origins = "http://localhost:5174", allowedHeaders = "*")
-    public ResponseEntity<String> eliminaCorso(@PathVariable Long id) {
+    public ResponseEntity<String> eliminaCorso(
+            @PathVariable final Long id) {
         try {
             Corso corso = corsoDAO.findById(id).orElse(null);
             if (corso == null) {
-                log.warn("Corso non trovato per ID: {}", id);
+                LOGGER.warn("Corso non trovato per ID: {}", id);
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
             }
 
             gestioneCorsoService.eliminaCorso(corso);
             return ResponseEntity.ok("Corso eliminato con successo");
         } catch (Exception e) {
-            log.error("Errore durante l'eliminazione del corso", e);
+            LOGGER.error("Errore durante l'eliminazione del corso", e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
     }
 
+    /**
+     * Endpoint per cercare un corso esistente tramite il suo ID.
+     *
+     * @param id l'ID del corso da cercare
+     * @return ResponseEntity con il corso trovato o errore
+     */
     @GetMapping("/cerca/{id}")
     @CrossOrigin(origins = "http://localhost:5174", allowedHeaders = "*")
-    public ResponseEntity<Corso> cercaCorso(@PathVariable Long id) {
+    public ResponseEntity<Corso> cercaCorso(
+            @PathVariable final Long id) {
         try {
             Corso corso = corsoDAO.findById(id).orElse(null);
             if (corso == null) {
@@ -153,11 +216,16 @@ public class GestioneCorsoController {
             }
             return ResponseEntity.ok(corso);
         } catch (Exception e) {
-            log.error("Errore durante la ricerca del corso", e);
+            LOGGER.error("Errore durante la ricerca del corso", e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
     }
 
+    /**
+     * Endpoint per ottenere la lista di tutti i corsi disponibili.
+     *
+     * @return ResponseEntity con la lista di corsi o errore
+     */
     @GetMapping("/listaCorsi")
     @CrossOrigin(origins = "http://localhost:5174", allowedHeaders = "*")
     public ResponseEntity<List<Corso>> findAll() {
@@ -168,14 +236,22 @@ public class GestioneCorsoController {
             }
             return ResponseEntity.ok(corsi);
         } catch (Exception e) {
-            log.error("Errore durante la ricerca del corso", e);
+            LOGGER.error("Errore durante la ricerca del corso", e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
     }
 
+    /**
+     * Endpoint per il download di un file PDF associato a un corso.
+     *
+     * @param id l'ID del corso per il quale scaricare il PDF
+     * @param response l'oggetto HttpServletResponse per inviare il file PDF
+     */
     @GetMapping("/download/{id}")
     @CrossOrigin(origins = "http://localhost:5174", allowedHeaders = "*")
-    public void downloadPDF(@PathVariable Long id, HttpServletResponse response) {
+    public void downloadPDF(
+            @PathVariable final Long id,
+            final HttpServletResponse response) {
         try {
             // Recupera il corso dal database
             Corso corso = corsoDAO.findById(id).orElse(null);
@@ -193,7 +269,7 @@ public class GestioneCorsoController {
 
             // Imposta i headers per il download
             response.setContentType("application/pdf");
-            response.setHeader("Content-Disposition", "attachment; filename=" + pdfDoc.getNome_pdf());
+            response.setHeader("Content-Disposition", "attachment; filename=" + pdfDoc.getNomePdf());
             response.setContentLength(pdfDoc.getPdf().length);
 
             // Scrivi il contenuto del PDF nel response
@@ -201,11 +277,11 @@ public class GestioneCorsoController {
                 outputStream.write(pdfDoc.getPdf());
             }
         } catch (Exception e) {
-            log.error("Errore durante il download del PDF", e);
+            LOGGER.error("Errore durante il download del PDF", e);
             try {
                 response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Errore durante il download del PDF");
             } catch (IOException ex) {
-                log.error("Errore durante l'invio della risposta di errore", ex);
+                LOGGER.error("Errore durante l'invio della risposta di errore", ex);
             }
         }
     }
