@@ -1,27 +1,31 @@
-/* Contenitore principale */
 .area-personale-container {
-    display: flex; /* Layout orizzontale */
+    display: flex;
     justify-content: space-between;
-    align-items: stretch; /* Allunga i figli per avere la stessa altezza */
+    align-items: stretch;
     padding: 20px;
-    margin: 40px auto;
+    margin: 0 auto; /* Rimuove i margini laterali per occupare l'intera larghezza */
     background: #fff;
     border-radius: 12px;
-    width: 90%;
+    width: 90vw; /* Usa la larghezza dell'intero viewport */
+    max-width: 100%; /* Assicura che non superi mai la larghezza massima */
     font-family: 'Roboto', Arial, sans-serif;
+    box-sizing: border-box; /* Considera il padding e il bordo come parte della larghezza */
 }
 
-/* Sezione sinistra e destra */
+
 .sinistra, .destra {
-    flex: 1; /* Entrambi occupano lo stesso spazio orizzontale */
+    flex: 1; /* Si espandono per occupare lo spazio disponibile */
     display: flex;
     flex-direction: column;
-    justify-content: flex-start; /* Contenuti allineati in alto */
+    justify-content: flex-start;
     gap: 20px;
     padding: 20px;
     background: #fff;
     border-radius: 12px;
+    width: 100%; /* Impostato per garantire che occupino l'intero spazio */
+    box-sizing: border-box; /* Considera il padding e il bordo come parte della larghezza */
 }
+
 
 .destra h1 {
     color: #00BF62;

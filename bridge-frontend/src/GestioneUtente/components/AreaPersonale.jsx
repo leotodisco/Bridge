@@ -249,11 +249,11 @@ const AreaPersonale = ({ onLogout }) => {
                             <div className="sectionButtons">
                                 <button>I miei Eventi</button>
                                 <button>I miei Corsi</button>
-                                <button>I miei Annunci di Lavoro</button>
                                 <button>I miei Alloggi</button>
                                 {ruolo == "FiguraSpecializzata" ? (
-                                <button>Le mie Consulenze</button>
+                                    <button>Le mie Consulenze</button>
                                 ) : null}
+                                <button>I miei Annunci di Lavoro</button>
                             </div>
                         </div>
                     </div>
