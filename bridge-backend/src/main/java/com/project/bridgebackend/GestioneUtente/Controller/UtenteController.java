@@ -165,6 +165,7 @@ public class UtenteController {
     public ResponseEntity<String> editPassword(
             @RequestBody final String password,
             @PathVariable final String email) throws IOException {
+        System.out.println("yyy");
         try {
             utenteService.modificaPassword(email, password);
             return ResponseEntity.ok("Password aggiornata con successo");
@@ -189,23 +190,29 @@ public class UtenteController {
             @RequestBody final HashMap<String, Object> aggiornamenti,
             @PathVariable final String email) throws IOException {
         try {
+            // Recupera l'utente dal servizio
+            Utente u = utenteService.getUtente(email);
 
-
-            System.out.println(aggiornamenti);
-
-            if (aggiornamenti.containsKey("disponibilitaUtente")) {
-                // Estrai il valore della disponibilità
-                String disponibilita = (String) aggiornamenti.get("disponibilitaUtente");
-
-                // Invoca il metodo specifico per aggiornare la disponibilità
-                utenteService.modificaDisp(email, disponibilita);
+            if (u instanceof FiguraSpecializzata) {
+                // Se l'utente è una FiguraSpecializzata, aggiorna la disponibilità
+                if (aggiornamenti.containsKey("disponibilitaUtente")) {
+                    String disponibilita = (String) aggiornamenti.get("disponibilitaUtente");
+                    FiguraSpecializzata fs = (FiguraSpecializzata) u;
+                    fs.setDisponibilita(disponibilita);  // Aggiorna la disponibilità solo per FiguraSpecializzata
+                    aggiornamenti.remove("disponibilitaUtente");  // Rimuovi la disponibilità dalla mappa
+                }
+            } else {
+                // Se l'utente non è una FiguraSpecializzata, non aggiorniamo la disponibilità
                 aggiornamenti.remove("disponibilitaUtente");
             }
-            Utente u = utenteService.modificaUtente(email, aggiornamenti);
-            return ResponseEntity.ok(u);
+
+            // Aggiorna i restanti dati dell'utente
+            Utente updatedUser = utenteService.modificaUtente(email, aggiornamenti);
+            return ResponseEntity.ok(updatedUser);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body("Errore durante l'aggiornamento dell'utente: " + e.getMessage());
         }
     }
+
 }

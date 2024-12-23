@@ -7,6 +7,9 @@ const regexPatterns = {
 const ModificaPassword = () => {
     const [password, setPassword] = useState("");
     const [confermaPW, setConfermaPW] = useState("");
+    const [showSuccessPopup, setShowSuccessPopup] = useState(false);
+
+    const [showFailurePopup, setShowFailurePopup] = useState(false);
 
     const [errorMessages, setErrorMessages] = useState({});
 
@@ -110,7 +113,7 @@ const ModificaPassword = () => {
         }
         event.preventDefault();
 
-        const token = localStorage.getItem('token');
+        const token = localStorage.getItem('Token');
         const email = localStorage.getItem('email');
         try {
             const response = await fetch(`http://localhost:8080/areaPersonale/modificaPassword/${email}`, {
@@ -125,19 +128,24 @@ const ModificaPassword = () => {
 
             if (response.ok) {
                 const data = await response.text();
-                console.log("Registrazione avvenuta con successo:", data);
-                alert("Registrazione avvenuta con successo");
-                localStorage.removeItem('token');
-                localStorage.removeItem('email');
-                window.location.href = "/login";
+                console.log(data)
+                setShowSuccessPopup(true);  // Mostra il pop-up di successo
+                setTimeout(() => {
+                    localStorage.removeItem('token');
+                    localStorage.removeItem('email');
+                    window.location.href = "/login";
+                }, 5000);
             } else {
-                console.error("Errore durante la registrazione");
-                alert("Errore, riprova!");
+                setShowFailurePopup(true);
             }
         } catch (error) {
             console.error("Errore nella richiesta di registrazione:", error);
-            alert("Errore nel collegamento al server.");
+            setShowFailurePopup(true);
         }
+    };
+
+    const closePopup = () => {
+        setShowSuccessPopup(false);
     };
 
     return (
@@ -182,6 +190,24 @@ const ModificaPassword = () => {
                     Invio
                 </button>
             </form>
+            {/* Success Pop-up */}
+            {showSuccessPopup && (
+                <div className="popup">
+                    <div className="popup-content">
+                        <h3>Password modificata con successo!</h3>
+                        <h4>A breve verrai reindirizzato al login</h4>
+                        <button onClick={closePopup} className="close-btn">Chiudi</button>
+                    </div>
+                </div>
+            )}
+            {showFailurePopup && (
+                <div className="popup">
+                    <div className="popup-content">
+                        <h3>Errore nella modifica della Password</h3>
+                        <button onClick={closePopup} className="close-btn">Chiudi</button>
+                    </div>
+                </div>
+            )}
         </div>
     )
 };

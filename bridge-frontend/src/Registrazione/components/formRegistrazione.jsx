@@ -1,6 +1,7 @@
-import { useState } from "react";
+import {useEffect, useState} from "react";
 import './CreaUtente.css';
 import {useNavigate} from "react-router";
+
 
 const TitolodiStudio = {
     ScuolaPrimaria: "Scuola Primaria",
@@ -21,6 +22,9 @@ const Ruolo = {
     Rifugiato: "Rifugiato",
     FiguraSpecializzata: "Figura Specializzata",
 };
+
+
+const giorniSettimana = ["Lunedi", "Martedi", "Mercoledi", "Giovedi", "Venerdi", "Sabato", "Domenica"];
 
 const regexPatterns = {
     nome: /^[A-Za-zÀ-ÖØ-öø-ÿ' -]{2,30}$/,
@@ -46,9 +50,9 @@ const CreaUtente = () => {
     const [skill, setSkill] = useState("");
     const [lingueParlate, setLingue] = useState("");
     const [dataDiNascita, setDataDiNascita] = useState("");
-    const [fotoProfilo, setFotoProfilo] = useState(null);
-    const [disponibilita, setDisponibilita] = useState("");
+    const [fotoProfilo, setFotoProfilo] = useState("/immagineProfiloVuota.jpg");
     const [errorMessages, setErrorMessages] = useState({});
+    const [orariDisponibili, setOrariDisponibili] = useState([]);
     const navigate = useNavigate();
 
     const aggiornaDataDiNascita = (event) => {
@@ -168,32 +172,86 @@ const CreaUtente = () => {
         validateField("lingueParlate", value);
     };
 
+    const convertiImmagineInBase64 = (percorsoImmagine) => {
+        return new Promise((resolve, reject) => {
+            const immagine = new Image();
+            immagine.src = percorsoImmagine;
+
+            immagine.onload = () => {
+                const canvas = document.createElement("canvas");
+                const ctx = canvas.getContext("2d");
+                canvas.width = immagine.width;
+                canvas.height = immagine.height;
+                ctx.drawImage(immagine, 0, 0);
+                resolve(canvas.toDataURL("image/jpeg"));
+            };
+
+            immagine.onerror = reject;
+        });
+    };
+
+
+
+    useEffect(() => {
+        const caricaImmaginePredefinita = async () => {
+            const immagineBase64 = await convertiImmagineInBase64('/immagineProfiloVuota.jpg');
+            setFotoProfilo(immagineBase64);  // Imposta l'immagine predefinita in Base64
+        };
+
+        caricaImmaginePredefinita();
+    }, []);
+
     const aggiornaFotoProfilo = (event) => {
         const file = event.target.files[0];
-        if (file && (file.type === "image/jpeg" || file.type === "image/jpg")) {
-            const reader = new FileReader();
-            reader.onload = () => {
-                setFotoProfilo(reader.result);
-            };
-            reader.readAsDataURL(file);
-            setErrorMessages((prev) => {
-                const updatedErrors = { ...prev };
-                delete updatedErrors.fotoProfilo;
-                return updatedErrors;
-            });
+
+        if (file) {
+            // Controlla se il file è di tipo JPEG/JPG
+            if (file.type === "image/jpeg" || file.type === "image/jpg") {
+                const reader = new FileReader();
+                reader.onload = () => {
+                    setFotoProfilo(reader.result); // Aggiorna l'immagine con il file caricato
+                };
+                reader.readAsDataURL(file);
+
+                // Rimuovi l'eventuale messaggio di errore
+                setErrorMessages((prev) => {
+                    const updatedErrors = { ...prev };
+                    delete updatedErrors.fotoProfilo;
+                    return updatedErrors;
+                });
+            } else {
+                // Imposta un messaggio di errore per tipi di file non validi
+                setErrorMessages((prev) => ({
+                    ...prev,
+                    fotoProfilo: "Il file deve essere in formato JPG o JPEG.",
+                }));
+                setFotoProfilo('/immagineProfiloVuota.jpg'); // Reimposta l'immagine predefinita
+                console.log("Immagine predefinita impostata: /immagineProfiloVuota.jpg");
+            }
         } else {
+            // Se non è stato selezionato alcun file, imposta l'immagine predefinita
+            setFotoProfilo('/immagineProfiloVuota.jpg');
             setErrorMessages((prev) => ({
                 ...prev,
-                fotoProfilo: "Il file deve essere in formato JPG o JPEG.",
+                fotoProfilo: "Nessun file selezionato. È stata impostata l'immagine di default.",
             }));
         }
     };
 
+    const aggiungiOrario = () => {
+        setOrariDisponibili([...orariDisponibili, { giorno: "", start: "", end: "" }]);
+    };
 
-    const aggiornaDisponibilita = (event) => {
-        const value = event.target.value;
-        setDisponibilita(value);
-        validateField("disponibilita", value);
+
+    const aggiornaOrario = (index, campo, valore) => {
+        const nuoviOrari = [...orariDisponibili];  // Copia lo stato esistente
+        nuoviOrari[index][campo] = valore;  // Modifica il campo specificato
+        setOrariDisponibili(nuoviOrari);  // Aggiorna lo stato
+    };
+
+
+    const rimuoviOrario = (index) => {
+        setOrariDisponibili(orariDisponibili.filter((_, i) => i !== index));
     };
 
     const isFormValid = () => {
@@ -206,6 +264,15 @@ const CreaUtente = () => {
                 return;
             }
         event.preventDefault();
+
+        //costruisco la stringa per gli orari di disponibilità
+        const orariStringa = orariDisponibili
+            .map(orario => `${orario.giorno} ${orario.start}-${orario.end}`)
+            .join(", ")
+            .replace(/\s*,\s*/g, ',')
+            .trim();
+        console.log(orariStringa);
+
         const utenteDTO = {
             nomeUtente: nome,
             cognomeUtente: cognome,
@@ -220,7 +287,7 @@ const CreaUtente = () => {
             nazionalitaUtente: nazionalita,
             lingueParlateUtente: lingueParlate,
             fotoUtente: fotoProfilo,
-            disponibilitaUtente: disponibilita
+            disponibilitaUtente: orariStringa
         };
 
         console.log(utenteDTO);
@@ -231,22 +298,7 @@ const CreaUtente = () => {
                     "Content-Type": "application/json",
                     "Accept": "application/json"
                 },
-                body: JSON.stringify({
-                    "nomeUtente": nome,
-                    "cognomeUtente": cognome,
-                    "emailUtente": email,
-                    "passwordUtente": password,
-                    "confermaPWUtente": confermaPW,
-                    "dataNascitaUtente": dataDiNascita,
-                    "genderUtente": genere,
-                    "titoloDiStudioUtente": titolodistudio,
-                    "ruoloUtente": ruolo,
-                    "skillUtente": skill,
-                    "nazionalitaUtente": nazionalita,
-                    "lingueParlateUtente": lingueParlate,
-                    "fotoUtente": fotoProfilo,
-                    "disponibilitaUtente": disponibilita
-                })
+                body: JSON.stringify(utenteDTO)
             });
 
             if (response.ok) {
@@ -282,6 +334,8 @@ const CreaUtente = () => {
         hasSpecialChar: false,
         isLengthValid: false
     });
+
+    console.log(passwordConditions);
     const [passwordError, setPasswordError] = useState("");
     const validatePasswordConditions = (password) => {
         const newConditions = {
@@ -411,15 +465,61 @@ const CreaUtente = () => {
 
 
                 {ruolo === "FiguraSpecializzata" && (
-                    <input
-                        type="text"
-                        placeholder={"Disponibilità"}
-                        className={`formEditText field ${errorMessages.disponibilita ? 'error-field' : ''}`}
-                        value={disponibilita}
-                        onChange={aggiornaDisponibilita}
-                        required={true}
-                    />
+                    <>
+                        <h3>Disponibilità Settimanali</h3>
+                        <hr/>
+                        {orariDisponibili.map((orario, index) => (
+                            <div key={index}>
+
+                                <div className="inlineCityDetails">
+
+                                    <select
+                                        value={orario.giorno}
+                                        onChange={(e) => aggiornaOrario(index, "giorno", e.target.value)}
+                                    >
+                                        <option value="">Seleziona Giorno</option>
+                                        {giorniSettimana.map((giorno) => (
+                                            <option key={giorno} value={giorno}>
+                                                {giorno}
+                                            </option>
+                                        ))}
+                                    </select>
+                                    <input
+                                        type="time"
+                                        value={orario.start}
+                                        onChange={(e) => aggiornaOrario(index, "start", e.target.value)}
+                                    />
+                                    <input
+                                        type="time"
+                                        value={orario.end}
+                                        onChange={(e) => aggiornaOrario(index, "end", e.target.value)}
+                                    />
+                                </div>
+                                <div className="buttonContainer">
+                                    <button type="button" className="disponibilitaButton"
+                                            onClick={() => rimuoviOrario(index)}>
+                                        Rimuovi
+                                    </button>
+                                    {/* Pulsante "Aggiungi Orario" interno */}
+                                    <button type="button" className="disponibilitaButton" onClick={aggiungiOrario}>
+                                        Aggiungi Orario
+                                    </button>
+                                </div>
+                            </div>
+                        ))}
+
+                        {/* Pulsante "Aggiungi Orario" esterno (visibile solo se orariDisponibili è vuoto) */}
+                        {orariDisponibili.length === 0 && (
+                            <div className="buttonContainer">
+                                <button type="button" className="disponibilitaButton" onClick={aggiungiOrario}>
+                                    Aggiungi Orario
+                                </button>
+                            </div>
+                        )}
+                    </>
                 )}
+
+
                 {errorMessages.disponibilita && <p className="error">{errorMessages.disponibilita}</p>}
                 <input
                     type="text"
@@ -465,7 +565,6 @@ const CreaUtente = () => {
                     </button>
                 </div>
                 {errorMessages.confermaPW && <p className="error">{errorMessages.confermaPW}</p>}
-
 
                 <input
                     type="file"

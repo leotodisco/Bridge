@@ -146,7 +146,6 @@ public class UtenteServiceImpl implements UtenteService {
         if (utenteOptional.isEmpty()) {
             throw new IllegalArgumentException("Utente non trovato.");
         }
-
         Utente utente = utenteOptional.get();
         try {
             aggiornamenti.forEach((campo, valore) -> {

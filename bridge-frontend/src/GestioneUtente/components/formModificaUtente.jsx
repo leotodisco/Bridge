@@ -1,4 +1,5 @@
 import { useState } from "react";
+import PropTypes from "prop-types";
 
 const TitolodiStudio = {
     ScuolaPrimaria: "Scuola Primaria",
@@ -14,6 +15,8 @@ const Genere = {
     NonSpecificato: "Non Specificato"
 };
 
+const giorniSettimana = ["Lunedi", "Martedi", "Mercoledi", "Giovedi", "Venerdi", "Sabato", "Domenica"];
+
 const regexPatterns = {
     nome: /^[A-Za-zÀ-ÖØ-öø-ÿ' -]{2,30}$/,
     cognome: /^[A-Za-zÀ-ÖØ-öø-ÿ' -]{2,30}$/,
@@ -23,7 +26,7 @@ const regexPatterns = {
     skill: /^[^<>{}[\]]{1,255}$/,
 };
 
-const ModificaUtente = () => {
+const ModificaUtente = ({ setUserData }) => {
     const [nome, setNome] = useState("");
     const [cognome, setCognome] = useState("");
    const [nazionalita, setNazionalita] = useState("");
@@ -31,7 +34,7 @@ const ModificaUtente = () => {
     const [genere, setGenere] = useState([]);
      const [skill, setSkill] = useState("");
     const [lingueParlate, setLingue] = useState("");
-     const [disponibilita, setDisponibilita] = useState("");
+    const [orariDisponibili, setOrariDisponibili] = useState([]);
     const [dataDiNascita, setDataDiNascita] = useState("");
     const [errorMessages, setErrorMessages] = useState({});
 
@@ -99,10 +102,20 @@ const ModificaUtente = () => {
         validateField("lingueParlate", value);
     };
 
-    const aggiornaDisponibilita = (event) => {
-        const value = event.target.value;
-        setDisponibilita(value);
-        validateField("disponibilita", value);
+    const aggiungiOrario = () => {
+        setOrariDisponibili([...orariDisponibili, { giorno: "", start: "", end: "" }]);
+    };
+
+
+    const aggiornaOrario = (index, campo, valore) => {
+        const nuoviOrari = [...orariDisponibili];  // Copia lo stato esistente
+        nuoviOrari[index][campo] = valore;  // Modifica il campo specificato
+        setOrariDisponibili(nuoviOrari);  // Aggiorna lo stato
+    };
+
+
+    const rimuoviOrario = (index) => {
+        setOrariDisponibili(orariDisponibili.filter((_, i) => i !== index));
     };
 
     const isFormValid = () => {
@@ -138,6 +151,19 @@ const ModificaUtente = () => {
             alert("Correggi i campi non validi prima di continuare.");
             return;
         }
+
+        let orariStringa = null;
+
+        // Se il ruolo è "Figura Specializzata", costruisco la stringa degli orari
+        if (ruolo === "FiguraSpecializzata") {
+            orariStringa = orariDisponibili
+                .map(orario => `${orario.giorno} ${orario.start}-${orario.end}`)
+                .join(", ")
+                .replace(/\s*,\s*/g, ',')
+                .trim();
+            console.log(orariStringa);
+        }
+
         event.preventDefault();
         const utenteDTO = {
             nomeUtente: nome,
@@ -148,7 +174,7 @@ const ModificaUtente = () => {
             nazionalitaUtente: nazionalita,
             lingueParlateUtente: lingueParlate,
             dataNascitaUtente: dataDiNascita,
-            disponibilitaUtente: disponibilita
+            disponibilitaUtente: orariStringa
         };
 
 
@@ -162,23 +188,13 @@ const ModificaUtente = () => {
                     "Content-Type": "application/json",
                     "Accept": "application/json"
                 },
-                body: JSON.stringify({
-                    "nomeUtente": nome,
-                    "cognomeUtente": cognome,
-                    "genderUtente": genere,
-                    "titoloDiStudioUtente": titolodistudio,
-                    "skillUtente": skill,
-                    "nazionalitaUtente": nazionalita,
-                    "lingueParlateUtente": lingueParlate,
-                    "dataNascitaUtente": dataDiNascita,
-                    "disponibilitaUtente": disponibilita
-                })
+                body: JSON.stringify(utenteDTO)
             });
 
             if (response.ok) {
                 const data = await response.text();
+                setUserData(data);
                 console.log("Modifica dati avvenuta con successo:", data);
-                alert("Modifica dati avvenuta con successo");
             } else {
                 console.error("Errore durante la modifica");
                 alert("Errore, riprova!");
@@ -264,14 +280,58 @@ const ModificaUtente = () => {
                 {errorMessages.skill && <p className="error">{errorMessages.skill}</p>}
 
                 {ruolo === "FiguraSpecializzata" && (
-                    <input
-                        type="text"
-                        placeholder={"Disponibilità"}
-                        className={`formEditText field ${errorMessages.disponibilita ? 'error-field' : ''}`}
-                        value={disponibilita}
-                        onChange={aggiornaDisponibilita}
-                        required={true}
-                    />
+                    <>
+                        <h3>Disponibilità Settimanali</h3>
+                        <hr/>
+                        {orariDisponibili.map((orario, index) => (
+                            <div key={index}>
+
+                                <div className="inlineCityDetails">
+
+                                    <select
+                                        value={orario.giorno}
+                                        onChange={(e) => aggiornaOrario(index, "giorno", e.target.value)}
+                                    >
+                                        <option value="">Seleziona Giorno</option>
+                                        {giorniSettimana.map((giorno) => (
+                                            <option key={giorno} value={giorno}>
+                                                {giorno}
+                                            </option>
+                                        ))}
+                                    </select>
+                                    <input
+                                        type="time"
+                                        value={orario.start}
+                                        onChange={(e) => aggiornaOrario(index, "start", e.target.value)}
+                                    />
+                                    <input
+                                        type="time"
+                                        value={orario.end}
+                                        onChange={(e) => aggiornaOrario(index, "end", e.target.value)}
+                                    />
+                                </div>
+                                <div className="buttonContainer">
+                                    <button type="button" className="disponibilitaButton"
+                                            onClick={() => rimuoviOrario(index)}>
+                                        Rimuovi
+                                    </button>
+                                    {/* Pulsante "Aggiungi Orario" interno */}
+                                    <button type="button" className="disponibilitaButton" onClick={aggiungiOrario}>
+                                        Aggiungi Orario
+                                    </button>
+                                </div>
+                            </div>
+                        ))}
+
+                        {/* Pulsante "Aggiungi Orario" esterno (visibile solo se orariDisponibili è vuoto) */}
+                        {orariDisponibili.length === 0 && (
+                            <div className="buttonContainer">
+                                <button type="button" className="disponibilitaButton" onClick={aggiungiOrario}>
+                                    Aggiungi Orario
+                                </button>
+                            </div>
+                        )}
+                    </>
                 )}
                 {errorMessages.disponibilita && <p className="error">{errorMessages.disponibilita}</p>}
 
@@ -295,5 +355,9 @@ const ModificaUtente = () => {
             </form>
         </div>
     )
+};
+
+ModificaUtente.propTypes = {
+    setUserData: PropTypes.func.isRequired,  // setUserData è una funzione obbligatoria
 };
 export default ModificaUtente;

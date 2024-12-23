@@ -64,70 +64,72 @@
 
 /* Contenitore principale dei pulsanti */
 .action-buttons {
-    display: flex;
-    flex-direction: column; /* Layout verticale */
-    align-items: center; /* Allinea i pulsanti al centro */
-    justify-content: center; /* Centra verticalmente i pulsanti */
+    display: flex; /* Layout orizzontale */
+    justify-content: center; /* Allinea i pulsanti al centro */
     gap: 20px; /* Spazio uniforme tra i pulsanti */
     margin-top: 20px;
-}
-
-/* Contenitore principale dei pulsanti */
-.action-buttons {
-    display: flex;
-    flex-direction: column; /* Layout verticale */
-    align-items: center; /* Allinea i pulsanti al centro */
-    justify-content: center; /* Centra verticalmente */
-    gap: 20px; /* Spazio uniforme tra i pulsanti */
     width: 100%;
-    margin-top: 20px;
 }
 
 /* Stile base per i pulsanti */
 .action-buttons button {
+    width: 50px; /* Altezza e larghezza uniforme per i pulsanti */
+    height: 50px;
+    border-radius: 50%; /* Forma circolare */
+    border: none;
+    background: #f0f0f0; /* Sfondo dei pulsanti */
     display: flex;
-    align-items: center; /* Allinea icona e testo verticalmente */
-    justify-content: center; /* Centra il contenuto orizzontalmente */
-    gap: 10px; /* Spazio tra icona e testo */
-    padding: 10px 15px;
-    font-size: 1rem;
-    color: #000; /* Colore di default */
-    border: none; /* Nessun bordo */
-    background: none; /* Nessuno sfondo */
+    justify-content: center;
+    align-items: center;
     cursor: pointer;
-    transition: transform 0.2s ease, color 0.3s ease; /* Transizione per animazioni fluide */
-    text-align: center;
+    position: relative;
+    transition: transform 0.2s ease, background-color 0.3s ease;
 }
 
-/* Stile per le icone */
+/* Icone nei pulsanti */
 .action-buttons button i {
-    font-size: 1.5rem; /* Dimensione uniforme dell'icona */
-    color: #000; /* Colore di default */
-    transition: color 0.3s ease; /* Stessa transizione */
+    font-size: 1.5rem; /* Dimensione icona */
+    color: #555; /* Colore di default */
+    transition: color 0.3s ease;
 }
 
-/* Testo accanto alle icone */
-.action-buttons button span {
-    font-size: 1rem;
-    font-weight: 500;
-    color: #000;
-    transition: color 0.3s ease; /* Transizione colore */
+/* Tooltip */
+.action-buttons button::after {
+    content: attr(title); /* Tooltip basato su 'title' */
+    position: absolute;
+    bottom: -40px; /* Posizionato sotto il pulsante */
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #333;
+    color: #fff;
+    font-size: 0.9rem;
+    padding: 5px 8px;
+    border-radius: 4px;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.2s ease, visibility 0.2s ease;
+    white-space: nowrap; /* Evita testo su più righe */
+    z-index: 1;
 }
 
-/* Hover per entrambi i pulsanti */
+.action-buttons button:hover::after {
+    opacity: 1;
+    visibility: visible;
+}
+
+/* Hover per i pulsanti */
 .action-buttons button:hover {
-    transform: scale(1.1); /* Effetto di ingrandimento */
+    transform: scale(1.1); /* Ingrandimento */
+    background-color: #e6e6e6; /* Colore di sfondo al passaggio */
 }
 
 /* Hover per Logout */
-.logoutButton:hover i,
-.logoutButton:hover span {
+.logoutButton:hover i {
     color: #00BF62; /* Verde */
 }
 
 /* Hover per Delete Account */
-.deleteButton:hover i,
-.deleteButton:hover span {
+.deleteButton:hover i {
     color: #d9534f; /* Rosso */
 }
 
@@ -149,11 +151,38 @@
 }
 
 .data-value {
-    margin-left: 5px;
     color: #555;
+    margin-left: 1%;
 }
 
-.caricaIMG{
+h3 {
+    color: #333;
+}
+
+.buttonContainer {
+    display: flex;
+    justify-content: center; /* Centra i pulsanti */
+    gap: 1rem; /* Spazio sopra i pulsanti */
+}
+
+.disponibilitaButton {
+    width: 30%;
+    padding: 0.75rem;
+    font-weight: bold;
+    color: #ffffff;
+    background-color: #00BF62;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.2s;
+    margin-bottom: 1rem;
+}
+
+.data-value.orariDisp {
+    margin-left: 5%;
+}
+
+.caricaIMG {
     margin-top: 10px;
     margin-right: 5px;
     width: 40%;
@@ -188,3 +217,127 @@
         display: none; /* Nasconde il divisore su dispositivi mobili */
     }
 }
+
+/* Popup generico */
+.popup-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5); /* Sfondo semi-trasparente */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+/* Popup contenuto */
+.popup-content {
+    background-color: white;
+    padding: 20px;
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    position: relative; /* Per poter posizionare correttamente il pulsante di chiusura */
+}
+
+/* Stili per il Popup di Eliminazione */
+.popup-eliminazione .popup-content {
+    width: 300px; /* Riduci la larghezza per il popup di eliminazione */
+    height: 200px; /* Aumenta l'altezza per il popup di eliminazione */
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* Pulsante di chiusura */
+.close-popup {
+    position: absolute; /* Posiziona il pulsante in alto a destra */
+    top: 10px;
+    right: 10px;
+    font-size: 18px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #333; /* Colore del testo della X */
+    z-index: 2; /* Assicurati che sia sopra gli altri contenuti */
+}
+
+.close-popup:hover {
+    color: #00BF62; /* Colore rosso al passaggio del mouse */
+}
+
+/* Stili per i pulsanti nel popup di eliminazione */
+.popup-eliminazione .popup-buttons {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    margin-top: 20px; /* Aggiungi margine per non toccare troppo la parte superiore */
+}
+
+.popup-eliminazione .popup-button {
+    padding: 8px 16px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background-color 0.3s;
+}
+
+.popup-eliminazione .popup-button.confirm {
+    background-color: #00BF62; /* Verde per confermare */
+    color: white;
+}
+
+.popup-eliminazione .popup-button.confirm:hover {
+    background-color: #008C4A;
+}
+
+.popup-eliminazione .popup-button.cancel {
+    background-color: #d9534f; /* Rosso per annullare */
+    color: white;
+}
+
+.popup-eliminazione .popup-button.cancel:hover {
+    background-color: #c9302c;
+}
+
+.sectionButtons {
+    display: flex;
+    flex-direction: column; /* Dispone i pulsanti in colonna */
+    gap: 10px; /* Distanza tra i pulsanti */
+    margin-top: 20px; /* Distanza dalla sezione superiore */
+}
+
+.sectionButtons button {
+    margin-right: 10px;
+    width: 100%; /* I pulsanti prendono tutta la larghezza disponibile */
+    padding: 15px 0; /* Aumenta la dimensione dei pulsanti */
+    font-size: 18px; /* Aumenta la dimensione del testo */
+    border: 2px solid transparent; /* Aggiunge un bordo trasparente per la spaziatura */
+    border-radius: 5px;
+    background: transparent; /* Rimuove lo sfondo */
+    color: #333; /* Colore del testo */
+    text-align: center; /* Allinea il testo al centro */
+    cursor: pointer; /* Mostra il cursore pointer quando ci si passa sopra */
+    transition: background-color 0.3s ease, color 0.3s ease, transform 0.3s ease; /* Aggiungi la transizione per l'effetto di ingrandimento */
+}
+
+.sectionButtons button:hover {
+    background-color: #00BF62; /* Colore di sfondo verde al passaggio del mouse */
+    color: white; /* Cambia il colore del testo in bianco */
+    border-color: #00BF62; /* Bordo verde */
+    transform: scale(1.1); /* Aumenta la dimensione del pulsante */
+}
+
+.sectionButtons button:focus {
+    outline: none; /* Rimuove il bordo di focus predefinito */
+}
+
+
+
+
