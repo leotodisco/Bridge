@@ -19,9 +19,9 @@ const CreaLavoro = () => {
     const [candidati, setCandidati] = useState([]);
     const [posizioneLavorativa, setPosizioneLavorativa] = useState("");
     const [nomeAzienda, setNomeAzienda] = useState("");
-    const [orarioLavoro, setOrarioLavoro] = useState("");
+    const [orariLavoro, setOrariLavoro] = useState([{ start: "", end: "" }]);
     const [tipoContratto, setTipoContratto] = useState("");
-    const [retribuzione, setRetribuzione] = useState(""); // Gestito come stringa
+    const [retribuzione, setRetribuzione] = useState("");
     const [nomeSede, setNomeSede] = useState("");
     const [infoUtili, setInfoUtili] = useState("");
     const [indirizzo, setIndirizzo] = useState({
@@ -41,6 +41,12 @@ const CreaLavoro = () => {
         setRetribuzione(valore);
     };
 
+    const aggiornaOrarioLavoro = (index, campo, valore) => {
+        const nuoviOrari = [...orariLavoro];
+        nuoviOrari[index][campo] = valore;
+        setOrariLavoro(nuoviOrari);
+    };
+
     const aggiornaIndirizzo = (campo) => (event) => {
         setIndirizzo({
             ...indirizzo,
@@ -51,13 +57,13 @@ const CreaLavoro = () => {
     const handleSubmit = async (event) => {
         event.preventDefault();
 
-        // Validazione locale aggiuntiva per il CAP
+        // Validazione del CAP
         if (indirizzo.cap && !/^\d{5}$/.test(indirizzo.cap)) {
             alert("Il CAP deve contenere esattamente 5 cifre.");
             return;
         }
 
-        // Convertire la retribuzione con la virgola in un numero
+        // Validazione della retribuzione
         const retribuzioneNumerica = parseFloat(retribuzione.replace(",", "."));
 
         if (isNaN(retribuzioneNumerica) || retribuzioneNumerica <= 0) {
@@ -65,6 +71,20 @@ const CreaLavoro = () => {
             return;
         }
 
+        // Validazione e trasformazione dell'orario di lavoro
+        const orarioLavoroFormatted = orariLavoro
+            .filter(({ start, end }) => start && end) // Rimuove intervalli incompleti
+            .map(({ start, end }) => `${start}-${end}`) // Trasforma in formato `HH:mm-HH:mm`
+            .join(", "); // Unisce intervalli multipli separandoli con una virgola
+
+        console.log("Orario Formattato:", orarioLavoroFormatted);
+
+        if (!orarioLavoroFormatted) {
+            alert("Devi inserire almeno un intervallo di orario di lavoro completo.");
+            return;
+        }
+
+        // Costruzione del DTO
         const lavoroDTO = {
             titolo,
             disponibilita,
@@ -72,9 +92,9 @@ const CreaLavoro = () => {
             candidati: candidati.filter((email) => email.trim() !== ""),
             posizioneLavorativa,
             nomeAzienda,
-            orarioLavoro,
+            orarioLavoro: orarioLavoroFormatted, // Stringa formattata
             tipoContratto,
-            retribuzione: retribuzioneNumerica, // Inviare il valore numerico al backend
+            retribuzione: retribuzioneNumerica,
             nomeSede,
             infoUtili,
             indirizzo,
@@ -92,8 +112,6 @@ const CreaLavoro = () => {
                 },
                 body: JSON.stringify(lavoroDTO),
             });
-
-            console.log("Risposta del server: ", response);
 
             if (!response.ok) {
                 throw new Error(`Errore durante la creazione del lavoro: ${response.status}`);
@@ -116,7 +134,7 @@ const CreaLavoro = () => {
         setCandidati([]);
         setPosizioneLavorativa("");
         setNomeAzienda("");
-        setOrarioLavoro("");
+        setOrarioLavoro([{ start: "", end: "" }]); // Reset degli orari di lavoro
         setTipoContratto("");
         setRetribuzione("");
         setNomeSede("");
@@ -151,13 +169,16 @@ const CreaLavoro = () => {
                 <div className="form-group">
                     <label htmlFor="disponibilita">Disponibilità</label>
                     <div className="checkbox-container">
-                        <input
-                            type="checkbox"
-                            id="disponibilita"
-                            checked={disponibilita}
-                            onChange={(e) => setDisponibilita(e.target.checked)}
-                        />
-                        <span>Annuncio Disponibile</span>
+                        <label htmlFor="disponibilita" className="toggle-switch">
+                            <input
+                                type="checkbox"
+                                id="disponibilita"
+                                checked={disponibilita}
+                                onChange={(e) => setDisponibilita(e.target.checked)}
+                            />
+                            <span className="switch-slider"></span>
+                        </label>
+                        <span>Spunta se l'annuncio deve risultare disponibile</span>
                     </div>
                 </div>
 
@@ -200,17 +221,31 @@ const CreaLavoro = () => {
                     />
                 </div>
 
-                {/* Orario Lavoro */}
+                {/* Orario di Lavoro */}
                 <div className="form-group">
-                    <label htmlFor="orarioLavoro">Orario di Lavoro</label>
-                    <input
-                        id="orarioLavoro"
-                        type="text"
-                        value={orarioLavoro}
-                        onChange={aggiornaCampo(setOrarioLavoro)}
-                        placeholder="Formato: 09:00-18:00"
-                        required
-                    />
+                    <label>Orario di Lavoro</label>
+                    {orariLavoro.map((orario, index) => (
+                        <div key={index} className="orari-row">
+                            <div className="inlineCityDetails">
+                                <input
+                                    type="time"
+                                    value={orario.start}
+                                    onChange={(e) =>
+                                        aggiornaOrarioLavoro(index, "start", e.target.value)
+                                    }
+                                    required
+                                />
+                                <input
+                                    type="time"
+                                    value={orario.end}
+                                    onChange={(e) =>
+                                        aggiornaOrarioLavoro(index, "end", e.target.value)
+                                    }
+                                    required
+                                />
+                            </div>
+                        </div>
+                    ))}
                 </div>
 
                 {/* Tipo Contratto */}
@@ -239,7 +274,7 @@ const CreaLavoro = () => {
                         type="text"
                         value={retribuzione || ""}
                         onChange={aggiornaRetribuzione}
-                        placeholder="Es: 1500.00"
+                        placeholder="Inserisci la retribuzione annua lorda"
                         required
                     />
                 </div>

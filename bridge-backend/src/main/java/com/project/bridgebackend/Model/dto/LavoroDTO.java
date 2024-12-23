@@ -15,6 +15,7 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.Max;
 
 import java.util.List;
 
@@ -76,6 +77,7 @@ public class LavoroDTO {
      */
     @NotNull(message = "Il numero massimo di candidature è obbligatorio")
     @Min(value = 1, message = "Il numero massimo di candidature deve essere almeno 1")
+    @Max(value = 1000, message = "Il numero massimo di candidature non può superare 100")
     private Integer maxCandidature;
 
     /**
