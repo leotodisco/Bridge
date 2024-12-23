@@ -1,8 +1,8 @@
 import './Sidebar.css'; // Import dello stile della sidebar
-import logo from '../../assets/IMG_1581.PNG'; // Logo
+import logo from '../../assets/IMG_1582.PNG'; // Logo
 import { Link } from 'react-router-dom';
 // per installare react-icons: npm install react-icons
-import { FaHome, FaHeart, FaList, FaSignOutAlt, FaChevronDown, FaChevronUp } from "react-icons/fa";
+import { FaHome, FaUser, FaList, FaSignOutAlt, FaChevronDown, FaChevronUp } from "react-icons/fa";
 import PropTypes from 'prop-types';
 import { useState } from 'react';
 
@@ -17,8 +17,16 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
         setIsServicesExpanded(!isServicesExpanded);
     };
 
+    // Funzione per chiudere la sidebar quando si clicca fuori
+    const handleOverlayClick = () => {
+        if (isOpen) toggleSidebar();
+    };
+
     return (
         <>
+            {/* Overlay visibile solo quando la sidebar è aperta */}
+            {isOpen && <div className="sidebar-overlay" onClick={handleOverlayClick}></div>}
+
             {/* Linguetta per aprire la Sidebar */}
             {!isOpen && (
                 <button className="sidebar-toggle-btn" onClick={toggleSidebar}>
@@ -27,8 +35,7 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
             )}
 
             <div className={`sidebar ${isOpen ? 'open' : ''}`}>
-                {/* Pulsante per chiudere la Sidebar */}
-                <button className="close-btn" onClick={toggleSidebar}>×</button>
+
 
                 {/* Sezione del logo */}
                 <div className={`logo ${isServicesExpanded ? 'logo-shifted' : ''}`}>
@@ -40,22 +47,25 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
                     {/* Voce di menu: Home */}
                     <li>
                         <Link to="/">
-                            <FaHome className="icon" /> <span>Home</span>
-                        </Link>                    </li>
-
-                    {/* Voce di menu: Preferiti */}
-                    <li>
-                        <Link to="/preferiti">
-                            <FaHeart className="icon" /> <span>Preferiti</span>
+                            <FaHome className="icon"/> <span>Home</span>
                         </Link>
                     </li>
 
+                    {/* Voce di menu: Preferiti */}
+                    <li>
+                        <Link to="/area-personale">
+                            <FaUser className="icon"/> <span>Area Personale</span>
+                        </Link>
+                    </li>
+
+
                     {/* Voce di menu: Servizi */}
                     <li onClick={toggleServices} className="menu-item">
-                        <FaList className="icon" /> <span>Servizi</span>
+                        <FaList className="icon"/> <span>Servizi</span>
 
                         {/* Icona per espandere o comprimere il menu a tendina */}
-                        {isServicesExpanded ? <FaChevronUp className="expand-icon" /> : <FaChevronDown className="expand-icon" />}
+                        {isServicesExpanded ? <FaChevronUp className="expand-icon"/> :
+                            <FaChevronDown className="expand-icon"/>}
                     </li>
 
                     {/* Sottomenu di Servizi (visibile solo se espanso) */}
@@ -74,7 +84,7 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
                                 <Link to="/view-listaCorsi">Corsi</Link>
                             </li>
                             <li>
-                                <Link to="/mostraAlloggi">Alloggi</Link>
+                                <Link to="/mostraAlloggio">Alloggi</Link>
                             </li>
                         </ul>
                     )}
@@ -83,10 +93,14 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
                     <hr/>
 
                     {/* Voce di menu: Log out */}
-                    <li className={`log-out ${isServicesExpanded ? 'shifted-down' : ''}`}>
-                        <Link to="/login">
-                            <FaSignOutAlt className="icon" /> <span>Log out</span>
-                        </Link>
+                    <li
+                        className={`log-out ${isServicesExpanded ? 'shifted-down' : ''}`}
+                        onClick={() => {
+                            localStorage.clear(); // Rimuove il token e altri dati utente
+                            window.location.href = "/login"; // Reindirizza alla pagina di login
+                        }}
+                    >
+                        <FaSignOutAlt className="icon"/> <span>Log out</span>
                     </li>
                 </ul>
             </div>
@@ -96,8 +110,8 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
 
 // Validazione dei tipi delle props
 Sidebar.propTypes = {
-    isOpen: PropTypes.bool.isRequired, // Indica se la Sidebar è aperta o chiusa
-    toggleSidebar: PropTypes.func.isRequired, // Funzione per alternare l'apertura/chiusura della Sidebar
+    isOpen: PropTypes.bool.isRequired,
+    toggleSidebar: PropTypes.func.isRequired,
 };
 
 export default Sidebar;

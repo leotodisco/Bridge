@@ -41,7 +41,7 @@ const Login = ({ onLogin }) =>  {
             localStorage.setItem('authToken', data.token);
             localStorage.setItem('email', email);
             onLogin(data.token);
-            nav("/App");
+                nav("/");
         } catch (error) {
             document.getElementById("spanErrore").style.display = "block";
             console.error("Error during login:", error);
