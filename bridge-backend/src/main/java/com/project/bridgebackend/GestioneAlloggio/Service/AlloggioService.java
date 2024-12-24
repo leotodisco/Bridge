@@ -21,16 +21,13 @@ public interface AlloggioService {
      */
     void sendEmailRifugiato(String message, String emailRifugiato);
 
-    /**
-     *Firma del metodo che manifesta interesse per un alloggio.
-     * @param emailRifugiato il rifugiato che ha manifestato interesse.
-     * @param emailAlloggio a quale alloggio ha manifestato interesse,
-     *                      il rifugiato.
-     * @return true se l'alloggio è andato correttamente nei preferiti,
-     * del rifugiato, false in caso di errore.
-     */
-    boolean manifestazioneInteresse(String emailRifugiato, String emailAlloggio);
 
+    /** Firma del metodo che permette ad un rifugiato di manifesare interesse per un'alloggio
+     * @param emailRifugiato l'email del rifugiato
+     * @param idAlloggio l'id dell'alloggio al quale si manifesta interesse
+     *
+     * @return ResponseEntity con lo stato dell'operazione
+     */
     public boolean interesse(String emailRifugiato, long idAlloggio);
 
     /**
