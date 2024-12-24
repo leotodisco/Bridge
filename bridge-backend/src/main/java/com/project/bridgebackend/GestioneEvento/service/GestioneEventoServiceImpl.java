@@ -229,4 +229,18 @@ public class GestioneEventoServiceImpl implements GestioneEventoService {
         //Restituisce solo 5 eventi
         return eventi.stream().limit(5).toList();
     }
+
+
+
+
+    @Override
+    public List<Rifugiato> getPartecipantiPerEvento(final long eventoId) {
+        // Recupera l'evento specificato tramite ID
+        Evento evento = eventoDAO.findById(eventoId)
+                .orElseThrow(() -> new IllegalArgumentException("Evento non trovato"));
+
+        // Restituisce la lista dei partecipanti (Rifugiato) associati all'evento
+        return evento.getListaPartecipanti();
+    }
+
 }

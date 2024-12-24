@@ -176,6 +176,7 @@ const AreaPersonale = ({ onLogout }) => {
         }
     };
 
+    const navigate = useNavigate();
 
 
     return (
@@ -240,14 +241,16 @@ const AreaPersonale = ({ onLogout }) => {
 
                             {showPasswordForm && <div className="popup-overlay">
                                 <div className="popup-content">
-                                    <button onClick={() => setShowPasswordForm(false)} className="close-popup">X
+                                    <button onClick={() => setShowPasswordForm(false)} className="close-popup">&times;
                                     </button>
                                     <ModificaPassword userData={userData}/>
                                 </div>
                             </div>}
 
                             <div className="sectionButtons">
-                                <button>I miei Eventi</button>
+                                {ruolo == "Volontario" ? (
+                                <button onClick={() => navigate('/eventi-utente')}>I miei Eventi</button>
+                                ) : null}
                                 <button>I miei Corsi</button>
                                 <button>I miei Alloggi</button>
                                 {ruolo == "FiguraSpecializzata" ? (
@@ -343,8 +346,12 @@ const AreaPersonale = ({ onLogout }) => {
                         <button onClick={() => {
                             setShowModifyForm(false);
                             fetchUserData(); // Forza il fetch dei dati al momento della chiusura
-                        }} className="close-popup ">X</button>
-                        <ModificaUtente setUserData={updateUserData}/>
+                        }} className="close-popup ">&times;</button>
+                        <ModificaUtente userData={userData} setUserData={updateUserData}
+                                        onSuccess={() => {
+                                            setShowModifyForm(false); // Chiude il popup
+                                            fetchUserData(); // Aggiorna i dati
+                                        }}/>
                     </div>
                 </div>
             )}

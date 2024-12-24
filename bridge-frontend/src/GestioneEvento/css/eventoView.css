@@ -326,4 +326,95 @@ textarea {
     }
 }
 
+.popup-container {
+    transition: transform 0.5s ease-in-out;
+}
 
+.move-left {
+    transform: translateX(-60%); /* Sposta il popup a sinistra */
+}
+
+/* Container for each participant */
+.partecipante-item {
+    display: flex;
+    flex-direction: row; /* Align name and surname horizontally */
+    justify-content: flex-start; /* Ensure the name and surname are aligned to the left */
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+/* Style for name and surname */
+.partecipante-item .dati {
+    font-size: 14px;  /* Adjust text size if needed */
+    color: #333;
+    margin-right: 10px; /* Space between name and surname */
+}
+
+/* Styling for email */
+.second-popup .email {
+    font-size: 14px;   /* Adjust email font size */
+    color: #333;
+    text-align: center; /* Ensures the email text is centered */
+    font-weight: bold;
+    margin-top: 10px;   /* Adds space between name/cognome and email */
+    width: 50%;        /* Ensures the email takes the full width */
+}
+
+/* Popup Container */
+.second-popup {
+    position: fixed;
+    top: 23%; /* Positioned below the main popup */
+    left: -100%; /* Initially out of view on the left */
+    transform: translateY(0);
+    background-color: #fff;
+    padding: 20px;
+    font-family: 'Roboto', Arial, sans-serif;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    z-index: 9999;
+    width: 90%;
+    max-width: 600px;
+    height: auto;
+    box-sizing: border-box;
+    opacity: 0; /* Initially invisible */
+    transition: transform 0.5s ease-in-out, opacity 0.3s ease-in-out;
+}
+
+/* Visible popup */
+.second-popup.visible {
+    left: 50%; /* Moves the popup to the center from the left */
+    opacity: 1; /* Makes it visible */
+}
+
+/* List styling */
+.second-popup ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+/* Container for each participant */
+.partecipante-item {
+    display: flex;
+    flex-direction: row; /* Align name and surname horizontally */
+    justify-content: flex-start; /* Ensure the name and surname are aligned to the left */
+    align-items: center;
+    margin-bottom: 10px;
+    border-bottom: 1px solid #ddd; /* Horizontal line between participants */
+    padding-bottom: 10px; /* Space below the name and email */
+}
+
+
+.partecipante-item .dati {
+    margin-right: 10px; /* Space between name and surname */
+}
+
+/* Media query per schermi piccoli (mobile/tablet) */
+@media screen and (max-width: 768px) {
+    /* Posizione del popup secondario sotto il popup principale */
+    .second-popup {
+        top: 10%; /* Spostato più in basso */
+        left: 50%; /* Centra il popup orizzontalmente */
+        transform: translateX(-50%); /* Centra rispetto alla larghezza */
+        width: 90%; /* Occupa il 90% della larghezza dello schermo */
+    }
+}

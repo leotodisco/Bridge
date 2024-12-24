@@ -221,7 +221,6 @@ h3 {
         display: none; /* Nasconde il divisore su dispositivi mobili */
     }
 }
-
 /* Popup generico */
 .popup-overlay {
     position: fixed;
@@ -233,19 +232,19 @@ h3 {
     display: flex;
     justify-content: center;
     align-items: center;
-    z-index: 1000;
+    z-index: 1000; /* Assicurati che sia sopra gli altri contenuti */
 }
 
-/* Popup contenuto */
 .popup-content {
-    background-color: white;
-    padding: 20px;
+    position: relative; /* Aggiunto per fare in modo che la X sia posizionata rispetto a questo contenitore */
+    max-width: 100%; /* Limita la larghezza */
+    max-height: 99%; /* Limita l'altezza al 80% dell'altezza della finestra */
+    padding: 10px;
     border-radius: 10px;
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
-    align-items: center;
-    position: relative; /* Per poter posizionare correttamente il pulsante di chiusura */
+    align-items: flex-start;
+    background-color: white; /* Aggiungi un background bianco per la parte del contenuto */
 }
 
 /* Stili per il Popup di Eliminazione */
@@ -258,9 +257,9 @@ h3 {
     align-items: center;
 }
 
-/* Pulsante di chiusura */
+/* Stili per il pulsante di chiusura */
 .close-popup {
-    position: absolute; /* Posiziona il pulsante in alto a destra */
+    position: absolute; /* Posiziona la X in alto a destra */
     top: 10px;
     right: 10px;
     font-size: 18px;
@@ -272,7 +271,7 @@ h3 {
 }
 
 .close-popup:hover {
-    color: #00BF62; /* Colore rosso al passaggio del mouse */
+    color: #00BF62; /* Colore verde al passaggio del mouse */
 }
 
 /* Stili per i pulsanti nel popup di eliminazione */
@@ -341,7 +340,3 @@ h3 {
 .sectionButtons button:focus {
     outline: none; /* Rimuove il bordo di focus predefinito */
 }
-
-
-
-

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import {useEffect, useState} from "react";
 import PropTypes from "prop-types";
 
 const TitolodiStudio = {
@@ -26,7 +26,7 @@ const regexPatterns = {
     skill: /^[^<>{}[\]]{1,255}$/,
 };
 
-const ModificaUtente = ({ setUserData }) => {
+const ModificaUtente = ({ userData , setUserData, onSuccess  }) => {
     const [nome, setNome] = useState("");
     const [cognome, setCognome] = useState("");
    const [nazionalita, setNazionalita] = useState("");
@@ -37,6 +37,19 @@ const ModificaUtente = ({ setUserData }) => {
     const [orariDisponibili, setOrariDisponibili] = useState([]);
     const [dataDiNascita, setDataDiNascita] = useState("");
     const [errorMessages, setErrorMessages] = useState({});
+
+    useEffect(() => {
+        // Reimposta i valori quando userData cambia (utile se cambia dinamicamente)
+        setNome(userData?.nomeUtente || "");
+        setCognome(userData?.cognomeUtente || "");
+        setNazionalita(userData?.nazionalitaUtente || "");
+        setTitolodistudio(userData?.titoloDiStudioUtente || "");
+        setGenere(userData?.genderUtente || "");
+        setSkill(userData?.skillUtente || "");
+        setLingue(userData?.lingueParlateUtente || "");
+        setOrariDisponibili(userData?.disponibilitaUtente || []);
+        setDataDiNascita(userData?.dataNascitaUtente || "");
+    }, [userData]);
 
     const aggiornaDataDiNascita = (event) => {
         const value = event.target.value;
@@ -194,6 +207,7 @@ const ModificaUtente = ({ setUserData }) => {
             if (response.ok) {
                 const data = await response.text();
                 setUserData(data);
+                onSuccess();
                 console.log("Modifica dati avvenuta con successo:", data);
             } else {
                 console.error("Errore durante la modifica");
@@ -209,6 +223,7 @@ const ModificaUtente = ({ setUserData }) => {
         <div className="formRegistrazione">
             <h2>Modifica Dati Personali</h2>
             <form onSubmit={gestisciSubmit}>
+                <label>Nome</label>
                 <input
                     type="text"
                     placeholder={"Nome"}
@@ -219,6 +234,7 @@ const ModificaUtente = ({ setUserData }) => {
                 />
                 {errorMessages.nome && <p className="error">{errorMessages.nome}</p>}
 
+                <label>Cognome</label>
                 <input
                     type="text"
                     placeholder={"Cognome"}
@@ -229,6 +245,7 @@ const ModificaUtente = ({ setUserData }) => {
                 />
                 {errorMessages.cognome && <p className="error">{errorMessages.cognome}</p>}
 
+                <label>Data di Nascita</label>
                 <input
                     type="date"
                     className={`formEditText field ${errorMessages.dataNascita ? 'error-field' : ''}`}
@@ -238,6 +255,7 @@ const ModificaUtente = ({ setUserData }) => {
                 />
                 {errorMessages.dataNascita && <p className="error">{errorMessages.dataNascita}</p>}
 
+                <label>Genere</label>
                 <select
                     className={"formEditText selectMulti"}
                     value={genere}
@@ -252,6 +270,7 @@ const ModificaUtente = ({ setUserData }) => {
                     ))}
                 </select>
 
+                <label>Nazionalità</label>
                 <input
                     type="text"
                     placeholder={"Nazionalità"}
@@ -260,6 +279,7 @@ const ModificaUtente = ({ setUserData }) => {
                     onChange={aggiornaNazionalita}
                 />
                 {errorMessages.nazionalita && <p className="error">{errorMessages.nazionalita}</p>}
+                <label>Lingue Parlate</label>
                 <input
                     type="text"
                     placeholder={"Lingue Parlate"}
@@ -269,6 +289,7 @@ const ModificaUtente = ({ setUserData }) => {
                     required={true}
                 />
                 {errorMessages.lingueParlate && <p className="error">{errorMessages.lingueParlate}</p>}
+                <label>Skill</label>
                 <input
                     type="text"
                     placeholder={"Skill"}
@@ -322,7 +343,6 @@ const ModificaUtente = ({ setUserData }) => {
                                 </div>
                             </div>
                         ))}
-
                         {/* Pulsante "Aggiungi Orario" esterno (visibile solo se orariDisponibili è vuoto) */}
                         {orariDisponibili.length === 0 && (
                             <div className="buttonContainer">
@@ -335,6 +355,7 @@ const ModificaUtente = ({ setUserData }) => {
                 )}
                 {errorMessages.disponibilita && <p className="error">{errorMessages.disponibilita}</p>}
 
+                <label>Titolo di Studio</label>
                 <select
                     className={"formEditText selectMulti"}
                     value={titolodistudio}
@@ -358,6 +379,8 @@ const ModificaUtente = ({ setUserData }) => {
 };
 
 ModificaUtente.propTypes = {
-    setUserData: PropTypes.func.isRequired,  // setUserData è una funzione obbligatoria
+    userData: PropTypes.object.isRequired,
+    setUserData: PropTypes.func.isRequired,
+    onSuccess: PropTypes.func.isRequired,
 };
 export default ModificaUtente;

@@ -9,6 +9,7 @@ import com.project.bridgebackend.Model.dao.VolontarioDAO;
 import com.project.bridgebackend.Model.dto.EventoDTO;
 import com.project.bridgebackend.Model.Entity.Indirizzo;
 import com.project.bridgebackend.Model.dao.IndirizzoDAO;
+import com.project.bridgebackend.Model.dto.UtenteDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -120,6 +121,21 @@ public class GestioneEventoController {
 
         //Risposta con evento creato
         return new ResponseEntity<>(createdEvent, HttpStatus.CREATED);
+    }
+
+    /**
+     * Endpoint per ottenere la lista dei partecipanti di un evento.
+     * @param id identificativo dell'evento.
+     * @return lista dei partecipanti dell'evento.
+     */
+    @GetMapping("/partecipanti/{id}")
+    public ResponseEntity<List<Rifugiato>> getPartecipanti(@PathVariable final long id) {
+        try {
+            List<Rifugiato> partecipanti = gestioneEventoService.getPartecipantiPerEvento(id);
+            return ResponseEntity.ok(partecipanti);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        }
     }
 
     /**
