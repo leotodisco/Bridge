@@ -1,6 +1,8 @@
+// CreaCorso.jsx
 import { useState } from "react";
+import { FaTimes } from 'react-icons/fa'; // Importa l'icona
+import { useNavigate } from 'react-router-dom'; // Importa useNavigate per la navigazione
 import "../../GestioneCorso/css/formCorsoStyle.css";
-
 
 const LINGUA = {
     ITALIANO: "ITALIANO",
@@ -21,7 +23,8 @@ const CATEGORIA = {
     ALTRO: "ALTRO",
 };
 
-const CreaCorso = () => {
+// eslint-disable-next-line react/prop-types
+const CreaCorso = ({ onClose }) => { // Accetta la prop onClose
     const [titolo, setTitolo] = useState("");
     const [descrizione, setDescrizione] = useState("");
     const [categoria, setCategoria] = useState("");
@@ -55,7 +58,7 @@ const CreaCorso = () => {
     const validateDescrizione = () => {
         const descrizioneRegex = /^[A-Za-z0-9À-ÿ .,'-]{3,500}$/;
         if (!descrizioneRegex.test(descrizione)) {
-            setDescrizioneError("La descrizione deve contenere da 3 a 50 caratteri alfanumerici");
+            setDescrizioneError("La descrizione deve contenere da 3 a 500 caratteri alfanumerici");
             return false;
         }
         setDescrizioneError("");
@@ -103,11 +106,11 @@ const CreaCorso = () => {
         try {
             const response = await fetch("http://localhost:8080/api/corsi/upload", {
                 method: "POST",
-                body: formData,  // Qui siamo comunque obbligati a usare FormData per il file
+                body: formData,  // Usare FormData per il file
             });
 
             if (!response.ok) {
-                const errorMessage = await response.text(); // Leggi il corpo della risposta qui
+                const errorMessage = await response.text(); // Leggi il corpo della risposta
                 throw new Error(`Errore durante il caricamento del PDF: ${errorMessage}`);
             }
 
@@ -124,7 +127,7 @@ const CreaCorso = () => {
 
     const handleSubmit = async (event) => {
         event.preventDefault();
-       //if (!validateForm()) return;
+        //if (!validateForm()) return;
 
         const isTitoloValid = validateTitolo();
         const isDescrizioneValid = validateDescrizione();
@@ -161,7 +164,6 @@ const CreaCorso = () => {
             pdf: uploadedPdfId,
         };
 
-
         console.log("Corso da creare:", corsoDTO);  // Log dei dettagli del corso da creare
         try {
             const response = await fetch("http://localhost:8080/api/corsi/crea", {
@@ -193,13 +195,34 @@ const CreaCorso = () => {
         }
     };
 
+    const navigate = useNavigate(); // Hook per la navigazione
+
+    const handleClose = () => {
+        console.log("Pulsante di chiusura cliccato"); // Log di debug
+        if (onClose) {
+            onClose(); // Chiude il modal se onClose è fornito
+        } else {
+            navigate('/view-listacorsi'); // Reindirizza a /view-listacorsi
+        }
+    };
+
     return (
         <div className="formContainer">
+            {/* Pulsante di chiusura */}
+            <button
+                type="button" // Specifica il tipo del pulsante
+                className="closeIcon"
+                onClick={handleClose}
+                aria-label="Chiudi"
+            >
+                <FaTimes />
+            </button>
+
             <h2>Crea un Corso</h2>
             <form onSubmit={handleSubmit}>
-                <div className={"formField"}>
+                <div className="formField">
                     <input
-                        className={ 'InputField ${titoloError ? "error" : " "}'}
+                        className={`InputField ${titoloError ? "error" : ""}`}
                         type="text"
                         placeholder="Titolo del corso"
                         value={titolo}
@@ -209,7 +232,7 @@ const CreaCorso = () => {
                     {titoloError && <p className="errorText">{titoloError}</p>}
                 </div>
 
-                <div className={"formField"}>
+                <div className="formField">
                     <textarea
                         className={`InputField ${descrizioneError ? "error" : ""}`}
                         placeholder="Descrizione"
@@ -220,7 +243,7 @@ const CreaCorso = () => {
                     {descrizioneError && <p className="errorText">{descrizioneError}</p>}
                 </div>
 
-                <div className={"formField"}>
+                <div className="formField">
                     <select
                         className={`InputField ${categoriaError ? "error" : ""}`}
                         value={categoria}
@@ -237,42 +260,42 @@ const CreaCorso = () => {
                     {categoriaError && <p className="errorText">{categoriaError}</p>}
                 </div>
 
-                <div className={"formField"}>
-                <select
-                    className={`InputField ${linguaError ? "error" : ""}`}
-                    value={lingua}
-                    onChange={aggiornaLingua}
-                    required
-                >
-                    <option value="">Seleziona una lingua</option>
-                    {Object.values(LINGUA).map((lang) => (
-                        <option key={lang} value={lang}>
-                            {lang}
-                        </option>
-                    ))}
-                </select>
+                <div className="formField">
+                    <select
+                        className={`InputField ${linguaError ? "error" : ""}`}
+                        value={lingua}
+                        onChange={aggiornaLingua}
+                        required
+                    >
+                        <option value="">Seleziona una lingua</option>
+                        {Object.values(LINGUA).map((lang) => (
+                            <option key={lang} value={lang}>
+                                {lang}
+                            </option>
+                        ))}
+                    </select>
                 </div>
                 {linguaError && <p className="errorText">{linguaError}</p>}
 
-                <div className={"formField"}>
-                        <div className="fileInputWrapper">
-                            <label className="fileButton">
-                                Seleziona un file PDF
-                                <input
-                                    type="file"
-                                    accept="application/pdf"
-                                    onChange={aggiornaPdfFile}
-                                    style={{ display: "none" }}
-                                />
-                            </label>
-                            {pdfFile && (
-                                <p className="filePreview">File selezionato: {pdfFile.name}</p>
-                            )}
-                        </div>
-                        <button className="fileButton" type="submit" disabled={loading}>
-                            {loading ? "Caricamento..." : "Crea Corso"}
-                        </button>
-                        {pdfFileError && <p className="errorText">{pdfFileError}</p>}
+                <div className="formField">
+                    <div className="fileInputWrapper">
+                        <label className="fileButton">
+                            Seleziona un file PDF
+                            <input
+                                type="file"
+                                accept="application/pdf"
+                                onChange={aggiornaPdfFile}
+                                style={{ display: "none" }}
+                            />
+                        </label>
+                        {pdfFile && (
+                            <p className="filePreview">File selezionato: {pdfFile.name}</p>
+                        )}
+                    </div>
+                    <button className="fileButton" type="submit" disabled={loading}>
+                        {loading ? "Caricamento..." : "Crea Corso"}
+                    </button>
+                    {pdfFileError && <p className="errorText">{pdfFileError}</p>}
                 </div>
             </form>
         </div>
