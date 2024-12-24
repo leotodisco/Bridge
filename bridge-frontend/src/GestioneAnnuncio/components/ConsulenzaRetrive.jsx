@@ -105,6 +105,7 @@ const ConsulenzaView = ({ id, onClose, onUpdate }) => {
         }
     };
 
+    //controlla se un utente ha già manifestato il suo interesse per una consulenza
     const checkIfUserIsRegistered = async (idConsulenza) => {
         try {
             const response = await fetch(`http://localhost:8080/api/annunci/verifica-candidato/${idConsulenza}`, {
@@ -115,13 +116,42 @@ const ConsulenzaView = ({ id, onClose, onUpdate }) => {
                 },
             });
             if (response.ok) {
-                const data = await response.json();
+                const data = await response.text();
+                console.log(data);
                 setIsRegistered(true);
             } else {
                 throw new Error("Errore durante la verifica dell'iscrizione.");
             }
         } catch (error) {
             console.error("Errore:", error);
+        }
+    };
+
+    //rimuovere un rifugiato dalla lista candidati
+    const handleRemoveInterest = async (idConsulenza, email) => {
+        try {
+            if (!token) {
+                alert("Token non valido. Effettua nuovamente il login.");
+                return;
+            }
+            const response = await fetch(`http://localhost:8080/api/annunci/rimuovi-interesse/${idConsulenza}`, {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ emailRifugiato: email }),  // Assicurati che l'oggetto contenga l'email
+            });
+
+            if (response.ok) {
+                alert("La tua candidatura è stata rimossa.");
+                setIsRegistered(false);  // Imposta lo stato a false dopo la rimozione
+            } else {
+                throw new Error("Errore durante la rimozione.");
+            }
+        } catch (error) {
+            console.error("Errore:", error);
+            alert("Non è stato possibile rimuovere la candidatura.");
         }
     };
 
@@ -299,9 +329,17 @@ const ConsulenzaView = ({ id, onClose, onUpdate }) => {
                         <div className="popup-body">
                             {tipoUtente === "RIFUGIATO" && (
                                 <div>
-                                    <h4>Iscriviti se desideri una consulenza</h4>
+                                    <h3>Iscriviti se desideri una consulenza</h3>
+                                    <hr/>
                                     {isRegistered ? (
-                                        <p>Sei già registrato per questa consulenza.</p>
+                                        <div>
+                                            <p className="popup-subtitle">Sei già registrato per questa consulenza.</p>
+                                             <button
+                                                   onClick={() => handleRemoveInterest(id, emailUtenteLoggato)}
+                                                   className="remove-button">
+                                                   Rimuovi dalla lista di attesa
+                                             </button>
+                                        </div>
                                     ) : (
                                         <button
                                             onClick={() => handleRegisterInterest(id, emailUtenteLoggato)}

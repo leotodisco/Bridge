@@ -333,7 +333,7 @@ public class GestioneAnnuncioServiceImp implements GestioneAnnuncioService {
             throw new IllegalArgumentException("Email vuota o nulla");
         }
         if (idConsulenza <= 0) {
-            throw new IllegalArgumentException("ID alloggio non valido");
+            throw new IllegalArgumentException("ID consulenza non valido");
         }
 
         // Recupera il rifugiato dal database
@@ -353,6 +353,37 @@ public class GestioneAnnuncioServiceImp implements GestioneAnnuncioService {
         }
 
         c.getCandidati().add(r.getEmail());
+        //aggiorno la consulenza
+        consulenzaDAO.save(c);
+    }
+
+    @Override
+    public void rimuoviInteresseConsulenza(final long idConsulenza, final String emailRifugiato){
+        if (emailRifugiato == null || emailRifugiato.trim().isEmpty()) {
+            throw new IllegalArgumentException("Email vuota o nulla");
+        }
+        if (idConsulenza <= 0) {
+            throw new IllegalArgumentException("ID consulenza non valido");
+        }
+
+        // Recupera il rifugiato dal database
+        Rifugiato r = rifugiatoDAO.findByEmail(emailRifugiato);
+        if (r == null) {
+            throw new IllegalArgumentException("Rifugiato non trovato");
+        }
+
+        Consulenza c = consulenzaDAO.findConsulenzaById(idConsulenza);
+        if (c == null) {
+            throw new IllegalArgumentException("Consulenza non trovato");
+        }
+
+        // Verifica se l'email del rifugiato non è presente in lista
+        if (!c.getCandidati().contains(r.getEmail())) {
+            throw new IllegalArgumentException(
+                    "Il rifugito non risulata interessato alla consulenza");
+        }
+        //rimuovo dalla lista candidati
+        c.getCandidati().remove(r.getEmail());
         //aggiorno la consulenza
         consulenzaDAO.save(c);
     }

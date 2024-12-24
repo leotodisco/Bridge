@@ -79,7 +79,10 @@ public interface GestioneAnnuncioService {
      */
 
     void eliminaConsulenza(long idConsulenza);
-    //      **Metodi per Lavoro**
+
+    public void rimuoviInteresseConsulenza(final long idConsulenza, final String emailRifugiato);
+
+        //      **Metodi per Lavoro**
 
     /**
      * Inserisce un nuovo annuncio di lavoro nel database.
