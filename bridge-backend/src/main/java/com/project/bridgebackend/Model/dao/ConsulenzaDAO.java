@@ -1,11 +1,14 @@
 package com.project.bridgebackend.Model.dao;
 
+import com.project.bridgebackend.Model.Entity.Alloggio;
 import com.project.bridgebackend.Model.Entity.Consulenza;
 import com.project.bridgebackend.Model.Entity.Utente;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * @author Geraldine Montella.
@@ -30,4 +33,9 @@ public interface ConsulenzaDAO extends JpaRepository<Consulenza, Long> {
         * non ci sono consulenze associate a quel proprietario.
         */
        List<Consulenza> findByProprietario(Utente proprietario);
+
+
+       @Query("SELECT c FROM Consulenza c WHERE c.id =:id")
+       Consulenza findConsulenzaById(long id);
+
 }

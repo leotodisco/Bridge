@@ -51,6 +51,56 @@
     margin-bottom:8px;
 }
 
+/* Stili per il pulsante "Aggiungi alla lista di attesa" */
+.register-button {
+    background-color: #4caf50;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    font-size: 16px;
+    font-weight: bold;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.register-button:hover {
+    background-color: #45a049;
+}
+
+/* Stili per il pulsante "Rimuovi dalla lista di attesa" */
+.remove-button {
+    background-color: #f44336;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    font-size: 16px;
+    font-weight: bold;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.remove-button:hover {
+    background-color: #d32f2f;
+}
+
+/* Stili per il testo nella sezione di interesse */
+.popup-body h4 {
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 10px;
+    color: #333;
+}
+
+/* Messaggio per chi è già registrato */
+.popup-body p {
+    font-size: 16px;
+    color: #555;
+    margin-bottom: 10px;
+}
+
+
 /* Animazione di ingresso */
 @keyframes fadeIn {
     from {

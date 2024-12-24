@@ -1,9 +1,11 @@
 import { useEffect, useState } from "react";
 import logo from '../../assets/IMG_1582.PNG'; // Logo
 import "./Homepage.css";
+import Footer from "../Footer/Footer.jsx"
 import EventoRetrieveView from "../../GestioneEvento/components/EventoRetrieveView.jsx";
 import {Link} from "react-router-dom";
 import AboutUs from "../AboutUs/AboutUs.jsx";
+
 
 const Homepage = () => {
     const [jobs, setJobs] = useState([]);
@@ -125,6 +127,8 @@ const Homepage = () => {
 
             {/* Popup About Us */}
             {isAboutUsOpen && <AboutUs onClose={toggleAboutUsPopup} />}
+
+            <Footer />
         </div>
     );
 };

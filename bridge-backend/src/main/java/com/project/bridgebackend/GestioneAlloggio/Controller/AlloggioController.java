@@ -145,14 +145,14 @@ public class AlloggioController {
 
 
             // Rimuoviamo le foto dalla DTO, non ci servono più per il salvataggio dell'alloggio
-                Alloggio createdAlloggio = alloggioService.addAlloggio(newalloggio);
-                if (createdAlloggio != null) {
-                    return new ResponseEntity<>("Alloggio aggiunto con successo", HttpStatus.CREATED);
-                } else {
-                    return new ResponseEntity<>("Errore nell'aggiunta dell'alloggio", HttpStatus.BAD_REQUEST);
-                }
+            Alloggio createdAlloggio = alloggioService.addAlloggio(newalloggio);
+            if (createdAlloggio != null) {
+                return new ResponseEntity<>("Alloggio aggiunto con successo", HttpStatus.CREATED);
+            } else {
+                return new ResponseEntity<>("Errore nell'aggiunta dell'alloggio", HttpStatus.BAD_REQUEST);
+            }
             //} //else {
-               // return new ResponseEntity<>("Accesso negato: Solo i volontari possono aggiungere alloggi", HttpStatus.FORBIDDEN);
+            // return new ResponseEntity<>("Accesso negato: Solo i volontari possono aggiungere alloggi", HttpStatus.FORBIDDEN);
             //}
         } catch (Exception e) {
             return new ResponseEntity<>("Errore interno del server: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
@@ -193,42 +193,12 @@ public class AlloggioController {
         }
     }
 
-
-    /*@PostMapping("/preferiti")
-    public ResponseEntity<String> manifestazioneInteresse(@RequestBody Map<String, String> request) {
-    /**
-     * Permette a un rifugiato di manifestare interesse per un alloggio.
+    /** Metodo che permette ad un rifugiato di manifesare interesse per un'alloggio
+     * @param emailRifugiato l'email del rifugiato
+     * @param idAlloggio l'id dell'alloggio al quale si manifesta interesse
      *
-     * @param request mappa contenente email del rifugiato e titolo dell'alloggio
      * @return ResponseEntity con lo stato dell'operazione
      */
-    @PostMapping("/preferiti")
-    public ResponseEntity<String> manifestazioneInteresse(
-            @RequestBody final Map<String, String> request) {
-        try {
-            String emailRifugiato = request.get("emailRifugiato");
-            String titoloAlloggio = request.get("titoloAlloggio");
-
-            if (emailRifugiato == null) {
-                return ResponseEntity.badRequest().body("email mancata");
-            }
-            if (titoloAlloggio == null) {
-                return ResponseEntity.badRequest().body("Titolo mancanto");
-            }
-
-            boolean successo = alloggioService.manifestazioneInteresse(emailRifugiato, titoloAlloggio);
-            if (successo) {
-                return ResponseEntity.ok("Manifestazione di interesse avvenuta con successo.");
-            } else {
-                return ResponseEntity.badRequest().body("Il rifugiato ha già manifestato interesse per questo alloggio.");
-            }
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("Si è verificato un errore imprevisto.");
-        }
-    }
 
     @PostMapping("/interesse")
     public ResponseEntity<String> manifestaInteresse(@RequestParam String emailRifugiato, @RequestParam long idAlloggio) {

@@ -40,6 +40,7 @@ const Login = ({ onLogin }) =>  {
             const data = await response.json();
             localStorage.setItem('authToken', data.token);
             localStorage.setItem('email', email);
+            localStorage.setItem('ruolo', data.ruolo);
             onLogin(data.token);
                 nav("/");
         } catch (error) {

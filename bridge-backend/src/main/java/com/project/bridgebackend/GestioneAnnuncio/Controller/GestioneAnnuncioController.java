@@ -8,6 +8,7 @@ import com.project.bridgebackend.Model.Entity.FiguraSpecializzata;
 import com.project.bridgebackend.Model.Entity.Volontario;
 import com.project.bridgebackend.Model.Entity.Indirizzo;
 import com.project.bridgebackend.Model.Entity.Utente;
+import com.project.bridgebackend.Model.dao.ConsulenzaDAO;
 import com.project.bridgebackend.Model.dao.FiguraSpecializzataDAO;
 import com.project.bridgebackend.Model.dao.IndirizzoDAO;
 import com.project.bridgebackend.Model.dao.VolontarioDAO;
@@ -78,10 +79,16 @@ public class GestioneAnnuncioController {
     private IndirizzoDAO indirizzoDAO;
 
     /**
-     * servizi per l'estrazione delle informazioni dal token.
+     * Servizi per l'estrazione delle informazioni dal token.
      */
     @Autowired
     private JwtService jwtService;
+
+    /**
+     * DAO per accedere ai dati delle consulenze.
+     */
+    @Autowired
+    private ConsulenzaDAO consulenzaDAO;
 
 
     /**
@@ -292,6 +299,163 @@ public class GestioneAnnuncioController {
             // Gestisce errori generici
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body("Errore durante l'aggiornamento della consulenza: " + e.getMessage());
+        }
+    }
+
+
+    /**
+     * Metodo per salvare l'interesse dimostrato da un rifugiato,
+     * per una consulenza.
+     * @param idConsulenza è l'id della consulenza che il rifugiato
+     *                     vuole dimostrare interesse.
+     * @param authorizationHeader Stringa di autorizzazione,
+     *                            in modo da poter verificare,
+     *                            se l'utente attualmente loggato,
+     *                            può effettivamente manifestare interesse.
+     *
+     * @return ResponseEntity contenente la risposta positiva se l'utente,
+     * è stato registrato nella lista della consulenza, negativa in caso,
+     * contrario.
+     */
+    @PostMapping("/manifestazione-interesse/{idConsulenza}")
+    public ResponseEntity<?> manifestaInteresse(
+            @PathVariable final long idConsulenza,
+            @RequestHeader("Authorization") final String authorizationHeader) {
+        // Estrai il token JWT dall'header Authorization
+        String token = authorizationHeader.replace("Bearer ", "");
+        //per estrarre l'email dal token
+        String emailUtenteLoggato = jwtService.extractUsername(token);
+        if (emailUtenteLoggato == null) {
+            return ResponseEntity.badRequest().body("Token non valido o email non trovata.");
+        }
+
+        try {
+            gestioneAnnuncioService.interesseConsulenza(idConsulenza, emailUtenteLoggato);
+            return ResponseEntity.ok("Interesse manifestato con successo");
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+
+    /**
+     * Metodo per salvare l'interesse dimostrato da un rifugiato,
+     * per una consulenza.
+     * @param idConsulenza è l'id della consulenza per cui si vuole,
+     *                     verificare se l'utente ha già manifestato,
+     *                     interesse.
+     * @param authorizationHeader Stringa di autorizzazione,
+     *                            in modo da poter verificare,
+     *                            se l'utente attualmente loggato,
+     *                            ha effettivamente già manifestato,
+     *                            il suo interesse.
+     *
+     * @return ResponseEntity contenente la risposta positiva se l'utente,
+     * è stato già registrato nella lista candidati della consulenza, negativa in caso,
+     * contrario.
+     */
+    @PostMapping("/verifica-candidato/{idConsulenza}")
+    public ResponseEntity<?> checkInteresse(
+            @PathVariable final long idConsulenza,
+            @RequestHeader("Authorization") final String authorizationHeader) {
+        try {
+            // Verifica che il token non sia nullo o vuoto
+            if (authorizationHeader == null || authorizationHeader.trim().isEmpty()) {
+                return ResponseEntity.badRequest().body("Token non fornito o vuoto.");
+            }
+
+            // Recupera la consulenza tramite DAO
+            Consulenza c = consulenzaDAO.findConsulenzaById(idConsulenza);
+            if (c == null) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Consulenza non trovata.");
+            }
+
+            // Estrai il token JWT dall'header Authorization
+            String token = authorizationHeader.replace("Bearer ", "");
+            // Estrae l'email dell'utente dal token
+            String emailUtente= jwtService.extractUsername(token);
+            if (emailUtente == null || emailUtente.trim().isEmpty()) {
+                return ResponseEntity.badRequest().body("Token non valido o email non trovata.");
+            }
+
+            // Verifica se l'utente è candidato per questa consulenza
+            boolean isFavorito = c.getCandidati().contains(emailUtente);
+
+            // Restituisce lo stato
+            return ResponseEntity.ok(isFavorito);
+        } catch (IllegalArgumentException e) {
+            e.printStackTrace();
+            // Specifica errore legato ad argomenti non validi
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body("Errore nei parametri forniti: " + e.getMessage());
+        } catch (Exception e) {
+            e.printStackTrace();
+            // Gestisce errori generici
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Errore durante l'elaborazione della richiesta: " + e.getMessage());
+        }
+    }
+
+
+    /**
+     * Metodo per rimuovere l'interesse dimostrato da un rifugiato,
+     * per una consulenza.
+     * @param idConsulenza è l'id della consulenza per cui si vuole,
+     *                     verificare se l'utente ha già manifestato,
+     *                     interesse.
+     * @param authorizationHeader Stringa di autorizzazione,
+     *                            in modo da poter verificare,
+     *                            se l'utente attualmente loggato,
+     *                            ha effettivamente già manifestato,
+     *                            il suo interesse.
+     *
+     * @return ResponseEntity contenente la risposta positiva se l'utente,
+     * è stato già registrato nella lista candidati della consulenza, negativa in caso,
+     * contrario.
+     */
+    @PostMapping("/rimuovi-interesse/{idConsulenza}")
+    public ResponseEntity<?> rimuoviInteresse(
+            @PathVariable final long idConsulenza,
+            @RequestHeader("Authorization") final String authorizationHeader) {
+        try {
+            // Verifica che il token non sia nullo o vuoto
+            if (authorizationHeader == null || authorizationHeader.trim().isEmpty()) {
+                return ResponseEntity.badRequest().body("Token non fornito o vuoto.");
+            }
+
+            // Recupera la consulenza tramite DAO
+            Consulenza c = consulenzaDAO.findConsulenzaById(idConsulenza);
+            if (c == null) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Consulenza non trovata.");
+            }
+
+            // Estrai il token JWT dall'header Authorization
+            String token = authorizationHeader.replace("Bearer ", "");
+            // Estrae l'email dell'utente dal token
+            String emailUtente= jwtService.extractUsername(token);
+            if (emailUtente == null || emailUtente.trim().isEmpty()) {
+                return ResponseEntity.badRequest().body("Token non valido o email non trovata.");
+            }
+
+            // Verifica se l'utente è candidato per questa consulenza
+           if (!c.getCandidati().contains(emailUtente)) {
+               return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Rifugiato non presente tra i candidati");
+           }
+
+           //metodo per rimuovere l'interesse di un rifugiato da una candidatura
+            gestioneAnnuncioService.rimuoviInteresseConsulenza(idConsulenza, emailUtente);
+            return ResponseEntity.ok("Rifugiato " + emailUtente
+                    + " rimosso tra i candidati della consulenza");
+        } catch (IllegalArgumentException e) {
+            e.printStackTrace();
+            // Specifica errore legato ad argomenti non validi
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body("Errore nei parametri forniti: " + e.getMessage());
+        } catch (Exception e) {
+            e.printStackTrace();
+            // Gestisce errori generici
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Errore durante l'elaborazione della richiesta: " + e.getMessage());
         }
     }
     /**
@@ -508,4 +672,6 @@ public class GestioneAnnuncioController {
         List<Lavoro> lavori = gestioneAnnuncioService.getRandomLavori();
         return new ResponseEntity<>(lavori, HttpStatus.OK);
     }
+
+
 }

@@ -19,5 +19,11 @@ public class AuthenticationResponse {
      * Token.
      */
     private String token;
+
+    /**
+     * Ruolo dell'utente:
+     * RIFUGIATO / VOLONTARIO / FIGURASPECIALIZZATA / ADMIN.
+     */
+    private String ruolo;
 }
 

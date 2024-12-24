@@ -10,6 +10,7 @@ import CreaAlloggio from "./GestioneAlloggio/components/formAlloggio.jsx";
 import CreaConsulenza from "./GestioneAnnuncio/components/formConsulenza.jsx";
 import CreaUtente from "./Registrazione/components/formRegistrazione.jsx";
 import CreaCorso from "./GestioneCorso/components/formCorso.jsx";
+import ConsulenzaView from "./GestioneAnnuncio/components/viewConsulenza.jsx";
 import AllEventsView from "./GestioneEvento/components/ViewAllEventi.jsx"; // Componente per tutti gli eventi
 import ViewLavoro from "./GestioneAnnuncio/components/ViewLavoro.jsx"; // Componente per tutti i lavori
 import ViewPartecipanti from "./GestioneEvento/components/ViewPartecipanti";
@@ -56,6 +57,7 @@ function App() {
                             <Route path="/eventi-utente" element={<EventiUtente />} />
                             <Route path="/crea-lavoro" element={<CreaLavoro/>}/>
                             <Route path="/view-eventi" element={<AllEventsView />} />
+                            <Route path="/view-consulenza" element={<ConsulenzaView />} />
                             <Route path="/view-lavoro" element={<ViewLavoro />} />
                             <Route path="/view-listaCorsi" element={<ListaCorsiView/>}/>
                             <Route path="/mostraAlloggio" element={<MostraAlloggi />} />
