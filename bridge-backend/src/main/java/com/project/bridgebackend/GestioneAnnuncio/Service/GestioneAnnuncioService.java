@@ -143,4 +143,13 @@ public interface GestioneAnnuncioService {
      * @return Una lista di 5 oggetti `Lavoro` contenenti annunci di lavoro casuali.
      */
     List<Lavoro> getRandomLavori();
+
+    /**
+     * Inserisce un rifugiato nella lista della consulenza.
+     * @param idConsulenza id della consulenza per cui si vuole,
+     *                     dimostrare l'interesse.
+     * @param emailRifugiato email del rifugiato che dimostra,
+     *                       interesse per una consulenza.
+     */
+    void interesseConsulenza(final long idConsulenza, final String emailRifugiato);
 }

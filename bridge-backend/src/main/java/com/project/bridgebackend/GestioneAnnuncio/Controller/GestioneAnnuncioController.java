@@ -8,6 +8,7 @@ import com.project.bridgebackend.Model.Entity.FiguraSpecializzata;
 import com.project.bridgebackend.Model.Entity.Volontario;
 import com.project.bridgebackend.Model.Entity.Indirizzo;
 import com.project.bridgebackend.Model.Entity.Utente;
+import com.project.bridgebackend.Model.dao.ConsulenzaDAO;
 import com.project.bridgebackend.Model.dao.FiguraSpecializzataDAO;
 import com.project.bridgebackend.Model.dao.IndirizzoDAO;
 import com.project.bridgebackend.Model.dao.VolontarioDAO;
@@ -78,10 +79,16 @@ public class GestioneAnnuncioController {
     private IndirizzoDAO indirizzoDAO;
 
     /**
-     * servizi per l'estrazione delle informazioni dal token.
+     * Servizi per l'estrazione delle informazioni dal token.
      */
     @Autowired
     private JwtService jwtService;
+
+    /**
+     * DAO per accedere ai dati delle consulenze.
+     */
+    @Autowired
+    private ConsulenzaDAO consulenzaDAO;
 
 
     /**
@@ -294,6 +301,65 @@ public class GestioneAnnuncioController {
                     .body("Errore durante l'aggiornamento della consulenza: " + e.getMessage());
         }
     }
+
+    @PostMapping("/manifestazione-interesse/{idConsulenza}")
+    public ResponseEntity<?> manifestaInteresse(
+            @PathVariable final long idConsulenza,
+            @RequestHeader("Authorization") final String authorizationHeader) {
+        // Estrai il token JWT dall'header Authorization
+        String token = authorizationHeader.replace("Bearer ", "");
+        //per estrarre l'email dal token
+        String emailUtenteLoggato = jwtService.extractUsername(token);
+        if (emailUtenteLoggato == null) {
+            return ResponseEntity.badRequest().body("Token non valido o email non trovata.");
+        }
+
+        try {
+            gestioneAnnuncioService.interesseConsulenza(idConsulenza, emailUtenteLoggato);
+            return ResponseEntity.ok("Interesse manifestato con successo");
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    @PostMapping("/verifica-candidato/{idConsulenza}")
+    public ResponseEntity<?> checkInteresse(
+            @PathVariable final long idConsulenza,
+            @RequestHeader("Authorization") String token) {
+        try {
+            // Verifica che il token non sia nullo o vuoto
+            if (token == null || token.trim().isEmpty()) {
+                return ResponseEntity.badRequest().body("Token non fornito o vuoto.");
+            }
+
+            // Recupera la consulenza tramite DAO
+            Consulenza c = consulenzaDAO.findConsulenzaById(idConsulenza);
+            if (c == null) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Consulenza non trovata.");
+            }
+
+            // Estrae l'email dell'utente dal token
+            String emailUtenteLoggato = jwtService.extractUsername(token);
+            if (emailUtenteLoggato == null || emailUtenteLoggato.trim().isEmpty()) {
+                return ResponseEntity.badRequest().body("Token non valido o email non trovata.");
+            }
+
+            // Verifica se l'utente è candidato per questa consulenza
+            boolean isFavorito = c.getCandidati().contains(emailUtenteLoggato);
+
+            // Restituisce lo stato
+            return ResponseEntity.ok(isFavorito);
+        } catch (IllegalArgumentException e) {
+            // Specifica errore legato ad argomenti non validi
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body("Errore nei parametri forniti: " + e.getMessage());
+        } catch (Exception e) {
+            // Gestisce errori generici
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Errore durante l'elaborazione della richiesta: " + e.getMessage());
+        }
+    }
+
     /**
      * Metodo per attuare modifiche su una specifica consulenza.
      * @param id è l'id della consulenza che si vuole eliminare.
@@ -508,4 +574,6 @@ public class GestioneAnnuncioController {
         List<Lavoro> lavori = gestioneAnnuncioService.getRandomLavori();
         return new ResponseEntity<>(lavori, HttpStatus.OK);
     }
+
+
 }

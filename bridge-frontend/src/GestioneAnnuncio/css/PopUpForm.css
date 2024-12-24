@@ -76,10 +76,10 @@ strong {
 .formContainer {
     width: 100%;
     max-width: 600px;
-    /*padding: 2rem;*/
-    /*border-radius: 10px;*/
-    /*background: #fff;*/
-    /*box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);*/
+    padding: 1rem;
+    /*border-radius: 10px;
+    background: #fff;
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);*/
 }
 
 /* Titoli */
@@ -164,6 +164,63 @@ strong {
 .inlineCityDetails input {
     flex: 1;
 }
+/* Style per i pulsanti "Aggiungi" e "Rimuovi" */
+button {
+    padding: 10px 15px;
+    font-size: 14px;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: background-color 0.3s, transform 0.2s ease-in-out;
+    margin: 5px;
+}
+
+button:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+}
+
+/* Pulsante Aggiungi Orario */
+button[type="button"]:first-of-type {
+    background-color: #28a745;  /* Verde */
+    color: white;
+}
+
+button[type="button"]:first-of-type:hover {
+    background-color: #218838;
+    transform: scale(1.05);
+}
+
+button[type="button"]:first-of-type:active {
+    background-color: #1e7e34;
+}
+
+button[type="button"].buttonDisabled {
+    background-color: #cccccc;  /* Colore grigio chiaro per bottone disabilitato */
+    cursor: not-allowed;        /* Cambia il cursore quando è disabilitato */
+    opacity: 0.6;               /* Rende il bottone trasparente */
+}
+
+button[type="button"].buttonDisabled:hover {
+    background-color: #cccccc;  /* Colore grigio chiaro per bottone disabilitato */
+    cursor: not-allowed;        /* Cambia il cursore quando è disabilitato */
+    opacity: 0.6;
+}
+
+/* Pulsante Rimuovi Orario */
+button[type="button"]:last-of-type {
+    background-color: #dc3545;  /* Rosso */
+    color: white;
+}
+
+button[type="button"]:last-of-type:hover {
+    background-color: #c82333;
+    transform: scale(1.05);
+}
+
+button[type="button"]:last-of-type:active {
+    background-color: #bd2130;
+}
 
 /* Pulsante di invio */
 button[type="submit"] {
@@ -191,6 +248,19 @@ button[type="submit"]:active {
     box-shadow: none;
 }
 
+button[type="button"] {
+    color: #fff;
+    background-color: #D93025;
+    border: none;
+    padding: 0.5rem;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+button[type="button"]:hover {
+    background-color: #B71C1C;
+}
+
 /* Autofill per campi di input */
 input:-webkit-autofill {
     -webkit-box-shadow: 0 0 0px 1000px #fafafa inset !important; /* Sfondo coerente con il resto */
@@ -215,7 +285,7 @@ select:-webkit-autofill {
 
 /* Linea orizzontale*/
 hr {
-     /* Rimuove lo stile predefinito */
+    /* Rimuove lo stile predefinito */
     height: 1px; /* Spessore della linea */
     background-color: #396F85; /* Colore della linea */
     /* Spaziatura sopra e sotto */
