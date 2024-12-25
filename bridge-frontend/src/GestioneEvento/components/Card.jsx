@@ -22,7 +22,7 @@ import '../../GestioneEvento/css/card.css';
  */
 
 // Componente Card
-const Card = ({ data, labels, onClick, onInfoClick }) => {
+const Card = ({ data, labels, onClick, onInfoClick, children }) => {
     return (
         <div className="card" onClick={onClick}>
             {/* Header con il titolo */}
@@ -60,6 +60,10 @@ const Card = ({ data, labels, onClick, onInfoClick }) => {
                         </div>
                     )}
                 </div>
+
+                {/* Area per contenuti dinamici */}
+                {children && <div className="card-extra-content">{children}</div>}
+
                 {/* Footer con il pulsante per maggiori informazioni */}
                 <div className="card-footer">
                     <button className="card-button" onClick={onInfoClick}>
@@ -99,6 +103,8 @@ Card.propTypes = {
     onClick: PropTypes.func,
     // Funzione da eseguire al click sul pulsante per maggiori informazioni
     onInfoClick: PropTypes.func.isRequired,
+     //contenuti aggiuntivi per personalizzare le card se necessario
+    children: PropTypes.node,
 };
 
 // Valori di default per le etichette

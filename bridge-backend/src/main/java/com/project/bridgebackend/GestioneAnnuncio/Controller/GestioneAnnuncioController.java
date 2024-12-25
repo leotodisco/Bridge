@@ -16,15 +16,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.HttpStatus;
 import jakarta.validation.Valid;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.*;
+
 import java.util.HashMap;
 import java.util.List;
 
@@ -493,6 +486,30 @@ public class GestioneAnnuncioController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body("Errore durante l'eliminazione della consulenza: " + e.getMessage());
         }
+    }
+
+    @GetMapping("/pubblicati")
+    public ResponseEntity<List<Consulenza>> getConsulezePubblicate(
+            @RequestParam("email") final String email) {
+        System.out.println("Email ricevuta: " + email);
+
+
+        // Recupera il volontario tramite email
+        FiguraSpecializzata figspe = figuraSpecializzataDAO.findByEmail(email);
+        System.out.println("Figura Specializzata trovata: " + figspe);
+        if (figspe == null) {
+            System.out.println("Figura Specializzata non trovato");
+            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+        }
+
+        //Recupera le consulenze pubblicate
+        List<Consulenza> consulenze = gestioneAnnuncioService.getConsulenzeByProprietario(figspe);
+        consulenze.forEach(System.out::println);
+        if (consulenze.isEmpty()) {
+            System.out.println("Nessun evento trovato per questa figura specializzata");
+            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(consulenze, HttpStatus.OK);
     }
 
     /**

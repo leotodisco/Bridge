@@ -78,7 +78,8 @@ public class SecurityConfig {
                                 "/areaPersonale/DatiFotoUtente/{email}","/areaPersonale/modificaUtente/{email}",
                                 "/areaPersonale/modificaPassword/{email}","/areaPersonale/modificaFotoUtente/{email}",
                                 "/api/annunci/manifestazione-interesse/{idConsulenza}",
-                                "/api/annunci/rimuovi-interesse/{idConsulenza}").permitAll()
+                                "/api/annunci/rimuovi-interesse/{idConsulenza}",
+                                "/api/annunci/pubblicati").permitAll()
                         .requestMatchers(getPublicEndpoints()).permitAll()
                         .requestMatchers("/authentication/login", "/authentication/registrazioneUtente",
                                 "/api/eventi/crea", "/api/corsi/crea", "/api/annunci/creaConsulenza",
@@ -90,7 +91,7 @@ public class SecurityConfig {
                                 "/api/eventi/{id}/disiscrivi", "/api/eventi/pubblicati", "/areaPersonale/elimina/{email},",
                                 "/api/annunci/view_consulenze/retrieve/{id}","/api/annunci/modifica_consulenza/{idConsulenza}",
                                 "/api/eventi/{id}/iscrizione","/alloggi/mostra","/alloggi/SingoloAlloggio/{titolo}", "/api/corsi/cerca/{id}", "/api/corsi/modifica/{id}",
-                                "/api/corsi/listaCorsi","/areaPersonale/DatiUtente/{email}",
+                                "/api/corsi/listaCorsi","/areaPersonale/DatiUtente/{email}","/api/annunci/pubblicati",
                                 "/api/annunci/manifestazione-interesse/{idConsulenza}", "/api/annunci/rimuovi-interesse/{idConsulenza}").permitAll()
                         .requestMatchers(getPublicEndpoints()).permitAll()
                         .anyRequest().authenticated()
@@ -133,6 +134,7 @@ public class SecurityConfig {
                 "/api/annunci/manifestazione-interesse/{idConsulenza}",
                 "/api/annunci/verifica-candidato/{idConsulenza}",
                 "/api/annunci/rimuovi-interesse/{idConsulenza}",
+                "/api/annunci/pubblicati",
                 "/api/annunci/creaLavoro",
                 "/api/annunci/view_lavori",
                 "/api/annunci/view_lavori/proprietario/{id}",

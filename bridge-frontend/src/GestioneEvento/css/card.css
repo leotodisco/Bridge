@@ -9,7 +9,7 @@
     transition: all 0.3s ease-in-out;
     font-family: Arial, sans-serif;
     border-radius: 10px;
-    height: 330px;
+    min-height: 330px; /*altezza minima per mantenere l'aspetto uniforme*/
     padding: 6px;
 }
 
@@ -91,6 +91,7 @@
     margin-top: 10px;
 }
 
+
 .card-button {
     padding: 10px 20px;
     background-color: #336a7e;
@@ -104,6 +105,15 @@
 
 .card-button:hover {
     background-color: #224f63;
+}
+
+.card-extra-content {
+    margin-top: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap; /* Permette ai contenuti di andare a capo se necessario */
+    gap: 10px; /* Spazio tra gli elementi extra */
 }
 
 /* Media queries per la responsività */
