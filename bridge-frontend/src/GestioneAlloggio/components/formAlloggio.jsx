@@ -1,4 +1,4 @@
-import { useState } from "react";
+import {useEffect, useState} from "react";
 
 const Servizi = {
     WIFI: "WIFI",
@@ -13,6 +13,7 @@ const CreaAlloggio = () => {
     const [fotos, setFotos] = useState([]);
     const [servizi, setServizi] = useState("");
     const [titolo, setTitolo] = useState("");
+    const [volontario, setVolontario] = useState(false);
     const [indirizzo, setIndirizzo] = useState({
         via: "",
         cap: "",
@@ -110,6 +111,16 @@ const CreaAlloggio = () => {
         return Object.keys(nuoviErrori).length === 0;
     };
 
+    // Verifica se l'utente è loggato come Volontario
+    useEffect(() => {
+        const ruoloUtente = localStorage.getItem('ruolo'); // Recupera il ruolo dal localStorage
+
+        if (ruoloUtente === 'Volontario') {
+            setVolontario(true); // Imposta che l'utente è un volontario
+        }
+    }, []);
+
+
     const handleSubmit = async (event) => {
         event.preventDefault();
 
@@ -119,6 +130,17 @@ const CreaAlloggio = () => {
         }
 
         try {
+
+            if (!volontario) {
+                throw new Error("L'utente non è autorizzato a creare un alloggio.");
+            }
+
+            const emailProprietario = localStorage.getItem('email'); // Recupera l'email del volontario da localStorage
+
+            if (!emailProprietario) {
+                throw new Error("Email del volontario non trovata");
+            }
+
             const response = await fetch("http://localhost:8080/alloggi/aggiungi", {
                 method: "POST",
                 headers: {
@@ -132,7 +154,7 @@ const CreaAlloggio = () => {
                     maxPersone : maxPersone,
                     servizi : servizi,
                     foto: fotos,
-                    emailProprietario: "jedy@jedy.com",
+                    emailProprietario: emailProprietario,
                     indirizzo: {
                         via: indirizzo.via,
                         numCivico: indirizzo.numCivico,
