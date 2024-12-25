@@ -19,6 +19,7 @@ const AreaPersonale = ({ onLogout }) => {
     const [showDeletePopup, setShowDeletePopup] = useState(false);
 
     const ruolo = localStorage.getItem('ruolo');
+    console.log('Ruolo letto:', ruolo);
 
     const fetchUserData = async () => {
         try {
@@ -248,13 +249,13 @@ const AreaPersonale = ({ onLogout }) => {
                             </div>}
 
                             <div className="sectionButtons">
-                                {ruolo == "Volontario" ? (
+                                {ruolo=="Volontario" ? (
                                 <button onClick={() => navigate('/eventi-utente')}>I miei Eventi</button>
                                 ) : null}
                                 <button>I miei Corsi</button>
                                 <button>I miei Alloggi</button>
                                 {ruolo == "FiguraSpecializzata" ? (
-                                    <button>Le mie Consulenze</button>
+                                    <button onClick={() => navigate('/consuleza-utente')}>Le mie Consulenze</button>
                                 ) : null}
                                 <button>I miei Annunci di Lavoro</button>
                             </div>
