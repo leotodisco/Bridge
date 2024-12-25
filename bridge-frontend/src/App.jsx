@@ -19,6 +19,7 @@ import ListaCorsiView from "./GestioneCorso/components/listaCorsiView.jsx";
 import AreaPersonale from "./GestioneUtente/components/AreaPersonale.jsx";
 import AboutUs from "./Components/AboutUs/AboutUs.jsx";
 import EventiUtente from "./GestioneUtente/components/dashboardEventi.jsx";
+import Alloggio from "./GestioneAlloggio/components/Alloggio.jsx";
 
 function App() {
     const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -67,6 +68,7 @@ function App() {
                             <Route path="/crea-consulenza" element={<CreaConsulenza />} />
                             <Route path="/eventi/:id/partecipanti" element={<ViewPartecipanti />} />
                             <Route path="/crea-corso" element={<CreaCorso/>}/>
+                            <Route path="/alloggi/SingoloAlloggio/:titolo" element={<Alloggio />} />
                             <Route path="/about-us" element={<AboutUs />} />
                             <Route
                                 path="/area-personale"
@@ -80,6 +82,7 @@ function App() {
                             <Route path="/" element={<Homepage />} />
                             <Route path="/view-eventi" element={<AllEventsView />} />
                             <Route path="/view-lavoro" element={<ViewLavoro />} />
+                            <Route path="/alloggi/SingoloAlloggio/:titolo" element={<Alloggio />} />
                             <Route path="/view-listaCorsi" element={<ListaCorsiView/>}/>
                             <Route path="/mostraAlloggio" element={<MostraAlloggi />} />
                             <Route path="/login" element={<Login onLogin={handleLogin} />} />
