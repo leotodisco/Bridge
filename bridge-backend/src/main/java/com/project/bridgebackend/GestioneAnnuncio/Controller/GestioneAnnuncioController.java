@@ -2,12 +2,7 @@ package com.project.bridgebackend.GestioneAnnuncio.Controller;
 
 import com.project.bridgebackend.GestioneAnnuncio.Service.GestioneAnnuncioService;
 import com.project.bridgebackend.GestioneCorso.Controller.GestioneCorsoController;
-import com.project.bridgebackend.Model.Entity.Consulenza;
-import com.project.bridgebackend.Model.Entity.Lavoro;
-import com.project.bridgebackend.Model.Entity.FiguraSpecializzata;
-import com.project.bridgebackend.Model.Entity.Volontario;
-import com.project.bridgebackend.Model.Entity.Indirizzo;
-import com.project.bridgebackend.Model.Entity.Utente;
+import com.project.bridgebackend.Model.Entity.*;
 import com.project.bridgebackend.Model.dao.ConsulenzaDAO;
 import com.project.bridgebackend.Model.dao.FiguraSpecializzataDAO;
 import com.project.bridgebackend.Model.dao.IndirizzoDAO;
@@ -532,7 +527,7 @@ public class GestioneAnnuncioController {
      * @param proprietarioId ID del proprietario degli annunci di lavoro.
      * @return ResponseEntity contenente la lista degli annunci di lavoro del proprietario specificato.
      */
-    @PostMapping("/view_lavori/proprietario/{id}")
+    @GetMapping("/view_lavori/proprietario/{id}")
     public ResponseEntity<List<Lavoro>> getLavoriByProprietario(
             @PathVariable("id") final String proprietarioId) {
         Utente proprietario = volontarioDAO.findByEmail(proprietarioId);
@@ -673,5 +668,13 @@ public class GestioneAnnuncioController {
         return new ResponseEntity<>(lavori, HttpStatus.OK);
     }
 
-
+    @GetMapping("/candidati_lavoro/{id}")
+    public ResponseEntity<List<String>> getCandidatiLavoro(@PathVariable final long id) {
+        try {
+            List<String> candidati = gestioneAnnuncioService.getCandidatiPerLavoro(id);
+            return ResponseEntity.ok(candidati);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        }
+    }
 }

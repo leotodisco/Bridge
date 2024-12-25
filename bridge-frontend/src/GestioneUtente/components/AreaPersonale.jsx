@@ -256,7 +256,7 @@ const AreaPersonale = ({ onLogout }) => {
                                 {ruolo == "FiguraSpecializzata" ? (
                                     <button>Le mie Consulenze</button>
                                 ) : null}
-                                <button>I miei Annunci di Lavoro</button>
+                                <button onClick={() => navigate('/lavori-utente')}>I miei Annunci di Lavoro</button>
                             </div>
                         </div>
                     </div>

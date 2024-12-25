@@ -12,14 +12,14 @@ import CreaUtente from "./Registrazione/components/formRegistrazione.jsx";
 import CreaCorso from "./GestioneCorso/components/formCorso.jsx";
 import ConsulenzaView from "./GestioneAnnuncio/components/viewConsulenza.jsx";
 import AllEventsView from "./GestioneEvento/components/ViewAllEventi.jsx"; // Componente per tutti gli eventi
-import ViewLavoro from "./GestioneAnnuncio/components/ViewLavoro.jsx"; // Componente per tutti i lavori
-import ViewPartecipanti from "./GestioneEvento/components/ViewPartecipanti";
+import ViewLavoro from "./GestioneAnnuncio/components/ViewLavoro.jsx";
 import MostraAlloggi from "./GestioneAlloggio/components/MostraAlloggi.jsx";
 import ListaCorsiView from "./GestioneCorso/components/listaCorsiView.jsx";
 import AreaPersonale from "./GestioneUtente/components/AreaPersonale.jsx";
 import AboutUs from "./Components/AboutUs/AboutUs.jsx";
 import EventiUtente from "./GestioneUtente/components/dashboardEventi.jsx";
 import Alloggio from "./GestioneAlloggio/components/Alloggio.jsx";
+import LavoriUtente from "./GestioneUtente/components/dashboardLavoro.jsx";
 
 function App() {
     const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -66,9 +66,9 @@ function App() {
                             <Route path="/crea-lavoro" element={<CreaLavoro />} />
                             <Route path="/crea-alloggio" element={<CreaAlloggio />} />
                             <Route path="/crea-consulenza" element={<CreaConsulenza />} />
-                            <Route path="/eventi/:id/partecipanti" element={<ViewPartecipanti />} />
                             <Route path="/crea-corso" element={<CreaCorso/>}/>
                             <Route path="/alloggi/SingoloAlloggio/:titolo" element={<Alloggio />} />
+                            <Route path="/lavori-utente" element={<LavoriUtente />} />
                             <Route path="/about-us" element={<AboutUs />} />
                             <Route
                                 path="/area-personale"

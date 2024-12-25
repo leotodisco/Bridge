@@ -69,7 +69,7 @@ public class SecurityConfig {
                                 "/api/eventi/{id}/disiscrivi","/api/eventi/{id}/partecipanti",  "/api/eventi/pubblicati", "/areaPersonale/elimina/{email},",
                                 "/api/annunci/view_consulenze/retrieve/{id}","/api/annunci/modifica_consulenza/{idConsulenza}",
                                 "/api/eventi/{id}/iscrizione", "/api/corsi/cerca/{id}", "/api/corsi/modifica/{id}",
-                                "/api/corsi/listaCorsi","/areaPersonale/DatiUtente/{email}","/alloggi/mostra","/alloggi/preferiti","/alloggi/isFavorito",
+                                "/api/corsi/listaCorsi","/api/corsi/listaCorsiUtente/{email}","/areaPersonale/DatiUtente/{email}","/alloggi/mostra","/alloggi/preferiti","/alloggi/isFavorito",
                                 "/alloggi/SingoloAlloggio/{titolo}",
                                 "/api/corsi/download/{id}","/areaPersonale/DatiFotoUtente/{email}",
                                 "/api/eventi/{id}/iscrizione", "/api/corsi/cerca/{id}",

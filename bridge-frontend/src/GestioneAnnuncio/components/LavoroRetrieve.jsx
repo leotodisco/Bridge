@@ -1,13 +1,17 @@
 import { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import "../../GestioneAnnuncio/css/formLavoro.css";
+import "../../GestioneEvento/css/eventoView.css"
+import {useLocation} from "react-router-dom";
 
 const LavoroView = ({ id, onClose }) => {
     const [lavoroData, setLavoroData] = useState(null);
     const [loading, setLoading] = useState(true);
+    const [candidati, setCandidati] = useState([]);
     const [error, setError] = useState(null);
     const [editing, setEditing] = useState(false);
-
+    const location = useLocation(); // Ottieni la route corrente
+    const isLavoriUtenteRoute = location.pathname.includes("lavori-utente"); // Verifica se è la route desiderata
     const [titolo, setTitolo] = useState("");
     const [posizioneLavorativa, setPosizioneLavorativa] = useState("");
     const [retribuzione, setRetribuzione] = useState(0);
@@ -15,6 +19,8 @@ const LavoroView = ({ id, onClose }) => {
     const [nomeAzienda, setNomeAzienda] = useState("");
     const [orarioLavoro, setOrarioLavoro] = useState("");
     const [infoUtili, setInfoUtili] = useState("");
+    const [showSecondPopup, setShowSecondPopup] = useState(false); // Stato per il secondo popup
+    const [popupTransition, setPopupTransition] = useState(false); // Stato per il movimento del popup
     const [indirizzo, setIndirizzo] = useState({
         via: "",
         numCivico: "",
@@ -27,6 +33,7 @@ const LavoroView = ({ id, onClose }) => {
     // Recupera l'email dell'utente loggato dal localStorage
     const emailUtenteLoggato = localStorage.getItem("email");
 
+    const token = localStorage.getItem("authToken"); // Recupera il token JWT
 
     // Funzione per ottenere i dettagli di un annuncio di lavoro
     const fetchLavoro = async (id) => {
@@ -61,10 +68,24 @@ const LavoroView = ({ id, onClose }) => {
     };
 
 
-    // Effettua il fetch dei dettagli dell'annuncio al primo rendering
     useEffect(() => {
         fetchLavoro(id);
     }, [id]);
+
+    // Effettua il fetch dei dettagli dell'annuncio al primo rendering
+    useEffect(() => {
+
+        if (showSecondPopup) {
+            // Aggiungi la classe per far comparire il secondo popup
+            setTimeout(() => {
+                const secondPopup = document.querySelector('.second-popup');
+                if (secondPopup) {
+                    secondPopup.classList.add('visible');
+                }
+            }, 200); // Ritardo per sincronizzare la comparsa
+            fetchCandidati(); // Carica i partecipanti
+        }
+    }, [showSecondPopup] );
 
 
     // Se il caricamento è in corso, mostra un messaggio
@@ -159,7 +180,6 @@ const LavoroView = ({ id, onClose }) => {
             return;
         }
 
-        const token = localStorage.getItem("token");
         if (!token) {
             console.error("Token non trovato. Effettua nuovamente il login.");
             alert("Token non trovato. Effettua nuovamente il login.");
@@ -202,9 +222,29 @@ const LavoroView = ({ id, onClose }) => {
         }
     };
 
+        const fetchCandidati = async () => {
+            try {
+                const response = await fetch(`http://localhost:8080/api/annunci/candidati_lavoro/${id}`, {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                });
+                if (!response.ok) {
+                    throw new Error("Errore durante il recupero dei candidati.");
+                }
+                const data = await response.json();
+                setCandidati(data); // Presumiamo che data sia un array di stringhe
+            } catch (err) {
+                setError(err.message);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+
     return (
         <div className="popup-overlay">
-            <div className="popup-container">
+            <div className={`popup-container ${popupTransition ? "move-left" : ""}`}>
                 <button className="popup-close" onClick={onClose}>
                     &times;
                 </button>
@@ -247,13 +287,21 @@ const LavoroView = ({ id, onClose }) => {
                                 {luogoConcatenato}
                             </p>
                         </div>
-                        {emailUtenteLoggato === lavoroData.proprietario.email && (
+                        {isLavoriUtenteRoute && emailUtenteLoggato === lavoroData.proprietario.email && (
                             <div className="button-group">
                                 <button onClick={() => setEditing(true)} className="edit-button">
                                     Modifica Annuncio
                                 </button>
                                 <button onClick={handleDelete} className="delete-button">
                                     Elimina Annuncio
+                                </button>
+                                <button className="popup-button"
+                                        onClick={() => {
+                                            setPopupTransition(true);
+                                            setTimeout(() => setShowSecondPopup(true), 500);
+                                        }}>
+                                    Mostra Candidati
+                                    <i className="fa-solid fa-arrow-right" style={{marginLeft: '8px'}}></i>
                                 </button>
                             </div>
                         )}
@@ -325,6 +373,19 @@ const LavoroView = ({ id, onClose }) => {
                     </>
                 )}
             </div>
+            {showSecondPopup && (
+                <div className="second-popup">
+                    <button className="popup-close" onClick={() => { setPopupTransition(false);setShowSecondPopup(false)}}>
+                        &times;
+                    </button>
+                    <h2>Lista dei Candidati</h2>
+                    <ul>
+                        {candidati.map((candidato, index) => (
+                            <li key={index}>{candidato}</li> // Stampa ogni candidato come stringa
+                        ))}
+                    </ul>
+                </div>
+            )}
         </div>
     );
 };

@@ -108,4 +108,5 @@ public class GestioneCorsoServiceImpl implements GestioneCorsoService {
     public List<Corso> findAll() {
         return corsoDAO.findAll();
     }
+
 }

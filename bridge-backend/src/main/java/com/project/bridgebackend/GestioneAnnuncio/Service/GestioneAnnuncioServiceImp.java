@@ -402,4 +402,14 @@ public class GestioneAnnuncioServiceImp implements GestioneAnnuncioService {
         return lavori.stream().limit(5).toList();
     }
 
+    @Override
+    public List<String> getCandidatiPerLavoro(final long lavoroId) {
+        // Recupera l'evento specificato tramite ID
+        Lavoro lavoro = lavoroDAO.findById(lavoroId)
+                .orElseThrow(() -> new IllegalArgumentException("Lavoro non trovato"));
+
+        // Restituisce la lista dei partecipanti (Rifugiato) associati all'evento
+        return lavoro.getCandidati();
+    }
+
 }

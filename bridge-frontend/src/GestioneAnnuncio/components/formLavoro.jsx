@@ -84,6 +84,8 @@ const CreaLavoro = () => {
             return;
         }
 
+        const email = localStorage.getItem("email");
+
         // Costruzione del DTO
         const lavoroDTO = {
             titolo,
@@ -98,7 +100,7 @@ const CreaLavoro = () => {
             nomeSede,
             infoUtili,
             indirizzo,
-            proprietario: "mario.verdi@example.com",
+            proprietario: email,
         };
 
         console.log("Dati dell'annuncio di lavoro: ", lavoroDTO);

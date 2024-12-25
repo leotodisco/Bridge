@@ -155,4 +155,11 @@ public interface GestioneAnnuncioService {
      *                       interesse per una consulenza.
      */
     void interesseConsulenza(final long idConsulenza, final String emailRifugiato);
+
+    /**
+     * Recupera tutti i candiddati per un determinato lavoro.
+     * @param lavoroId identificativo del lavoro.
+     * @return Una lista di candidati.
+     */
+    List<String> getCandidatiPerLavoro(final long lavoroId);
 }
