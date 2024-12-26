@@ -132,12 +132,24 @@ public class AlloggioServiceImplementazione implements AlloggioService {
     /**
      * Metodo che invia una email al rifugiato.
      *
-     * @param message il messaggio da inviare
+     * @param messaggio il messaggio da inviare
      * @param emailRifugiato l'email del rifugiato destinatario
      */
     @Override
-    public void sendEmailRifugiato(final String message,
+    public void sendEmailRifugiato(final String messaggio,
                                    final String emailRifugiato) {
+
+        try {
+            SimpleMailMessage message = new SimpleMailMessage();
+            message.setFrom("beehaveofficial@gmail.com");
+            message.setTo("mariozurolo00@gmail.com");
+            message.setSubject("PROVA");
+            message.setText(messaggio);
+            mailSender.send(message);
+            System.out.println("email inviata");
+        } catch (Exception e) {
+            System.out.println("Errore nell invio dell'email a: " + emailRifugiato + e.getMessage());
+        }
 
     }
 
@@ -280,5 +292,19 @@ public class AlloggioServiceImplementazione implements AlloggioService {
 
         //Restituisce solo 5 eventi
         return alloggi.stream().limit(5).toList();
+    }
+
+    @Override
+    public List<Alloggio> getAllAlloggiByEmail(String email){
+
+        if(email == null || email.trim().isEmpty()) {
+            throw new IllegalArgumentException("Email nullo");
+        }
+        try{
+            List<Alloggio> allAlloggi= alloggioDAO.getAllAlloggiByEmail(email);
+            return allAlloggi;
+        }catch(Exception e){
+            throw new IllegalArgumentException("Non trovati gli alloggi " + e.getMessage());
+        }
     }
 }

@@ -81,4 +81,9 @@ public interface AlloggioService {
      * @return lista di 5 alloggi casuali.
      */
     List<Alloggio> getRandomAlloggi();
+
+    /**
+     * Firma del metodo per ottenere tutti gli alloggi di un proprietario
+     */
+    List<Alloggio> getAllAlloggiByEmail(String email);
 }
