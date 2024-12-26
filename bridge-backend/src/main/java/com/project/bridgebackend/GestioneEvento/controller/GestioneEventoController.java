@@ -9,18 +9,12 @@ import com.project.bridgebackend.Model.dao.VolontarioDAO;
 import com.project.bridgebackend.Model.dto.EventoDTO;
 import com.project.bridgebackend.Model.Entity.Indirizzo;
 import com.project.bridgebackend.Model.dao.IndirizzoDAO;
+import com.project.bridgebackend.util.JwtService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.*;
+
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
@@ -65,6 +59,8 @@ public class GestioneEventoController {
      */
     @Autowired
     private RifugiatoDAO rifugiatoDAO;
+    @Autowired
+    private JwtService jwtService;
 
     /**
      * Crea un nuovo evento.
@@ -73,9 +69,22 @@ public class GestioneEventoController {
      * @return L'evento creato, incapsulato in una risposta HTTP con codice 201 (CREATED).
      */
     @PostMapping("/crea")
-    public ResponseEntity<Evento> creaEvento(
-            @Valid @RequestBody final EventoDTO eventoDTO) {
+    public ResponseEntity<?> creaEvento(
+            @Valid @RequestBody final EventoDTO eventoDTO,
+            @RequestHeader("Authorization") final String autorizationHeader) {
 
+        // Estrae il token JWT dall'header Authorization
+        String token = autorizationHeader.replace("Bearer ", "");
+
+        // Estrae l'email dal token
+        String emailUtenteLoggato = jwtService.extractUsername(token);
+
+        // Verifica se l'utente loggato è un volontario
+        Volontario volontarioLoggato = volontarioDAO.findByEmail(emailUtenteLoggato);
+        if(volontarioLoggato == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body("Non sei autorizzato a creare un evento");
+        }
 
          // Recupero dati dell'indirizzo dell'evento.
          // Salvataggio in Indirizzo
@@ -96,13 +105,6 @@ public class GestioneEventoController {
         long idIndirizzo = gestioneEventoService
                 .salvaIndirizzoEvento(indirizzo);
 
-        //Recupero volontario organizzatore dell'evento
-        Volontario volontario = volontarioDAO
-                .findByEmail(eventoDTO.getOrganizzatore().getEmail());
-        //Controllo se il volontario esiste
-        if (volontario == null) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
-        }
 
         //Creazione entity Evento da DTO
         Evento evento = new Evento();
@@ -112,7 +114,7 @@ public class GestioneEventoController {
         evento.setLinguaParlata(eventoDTO.getLinguaParlata());
         evento.setDescrizione(eventoDTO.getDescrizione());
         evento.setLuogo(indirizzoDAO.getReferenceById(idIndirizzo));
-        evento.setOrganizzatore(volontario);
+        evento.setOrganizzatore(volontarioLoggato);
         evento.setMaxPartecipanti(eventoDTO.getMaxPartecipanti());
 
         //Salvataggio evento in DB
@@ -185,22 +187,30 @@ public class GestioneEventoController {
      * @return Evento aggiornato con il partecipante aggiunto, o un errore se il partecipante o l'evento non esiste.
      */
     @PostMapping("/{id}/iscrivi")
-    public ResponseEntity<?> iscriviPartenope(
+    public ResponseEntity<?> iscriviPartecipante(
             @PathVariable final long id,
-            @RequestParam final String emailPartecipante) {
+            @RequestParam final String emailPartecipante,
+            @RequestHeader("Authorization") final String autorizationHeader) {
+
+        // Estrae il token JWT dall'header Authorization
+        String token = autorizationHeader.replace("Bearer ", "");
+
+        // Estrae l'email dal token
+        String emailUtenteLoggato = jwtService.extractUsername(token);
+
+        // Verifica se l'utente loggato è un rifugiato
+        Rifugiato rifugiatoLoggato = rifugiatoDAO.findByEmail(emailUtenteLoggato);
+        if(rifugiatoLoggato == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body("Non sei autorizzato a iscriverti ad un evento");
+        }
 
         // Verifica che l'evento esista
         Evento evento = gestioneEventoService.getEventoById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Evento non trovato"));
 
-        // Verifica che il rifugiato esista
-        Rifugiato rifugiato = rifugiatoDAO.findByEmail(emailPartecipante);
-        if (rifugiato == null) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Rifugiato non trovato");
-        }
-
         // Iscrivi il partecipante
-        gestioneEventoService.iscrizioneEvento(id, emailPartecipante);
+        gestioneEventoService.iscrizioneEvento(id, emailUtenteLoggato);
 
         return new ResponseEntity<>(evento, HttpStatus.OK);
     }
@@ -216,8 +226,23 @@ public class GestioneEventoController {
     @DeleteMapping("/{id}/disiscrivi")
     public ResponseEntity<Evento> disiscriviPartecipante(
             @PathVariable final long id,
-            @RequestParam final String emailPartecipante) {
+            @RequestParam final String emailPartecipante,
+            @RequestHeader("Authorization") final String autorizationHeader) {
         try {
+
+            // Estrae il token JWT dall'header Authorization
+            String token = autorizationHeader.replace("Bearer ", "");
+
+            // Estrae l'email dal token
+            String emailUtenteLoggato = jwtService.extractUsername(token);
+
+            // Verifica se l'utente loggato è un rifugiato
+            Rifugiato rifugiatoLoggato = rifugiatoDAO.findByEmail(emailUtenteLoggato);
+            if(rifugiatoLoggato == null) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                        .body(null);
+            }
+
             System.out.println("Disiscrivi partecipante: "
                     + id + " " + emailPartecipante);
             Evento eventoAggiornato = gestioneEventoService.disiscrizioneEvento(id, emailPartecipante);
@@ -319,4 +344,6 @@ public class GestioneEventoController {
         List<Evento> eventi = gestioneEventoService.getRandomEvents();
         return new ResponseEntity<>(eventi, HttpStatus.OK);
     }
+
+
 }

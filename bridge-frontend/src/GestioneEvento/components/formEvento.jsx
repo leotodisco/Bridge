@@ -1,5 +1,6 @@
 import { useState } from "react";
 import '../../GestioneEvento/css/formEventoStyle.css';
+import PropTypes from "prop-types";
 
 // Oggetto contenente le lingue disponibili
 const Lingua = {
@@ -16,7 +17,7 @@ const Lingua = {
 };
 
 // Funzione per creare l'evento
-const CreaEvento = () => {
+const CreaEvento = ( { onClose }) => {
     // Stato per gestire i dati del modulo
     const [nome, setNome] = useState(""); // Nome dell'evento
     const [data, setData] = useState(""); // Data dell'evento
@@ -31,6 +32,8 @@ const CreaEvento = () => {
         provincia: ""
     });
     const [maxPartecipanti, setMaxPartecipanti] = useState(1); // Numero massimo di partecipanti
+
+    const emailUtenteLoggato = localStorage.getItem("email");
 
     // Funzioni per aggiornare i valori dello stato
     // Aggiorna il nome dell'evento
@@ -264,6 +267,11 @@ const CreaEvento = () => {
         console.log("Validazione CAP: ", luogo.cap);
         console.log("Validazione campi: ", isNomeValido, isDataValida, isOraValida, isLinguaParlataValida, isDescrizioneValida, isMaxPartecipantiValido, isLuogoValido);
 
+        if (!emailUtenteLoggato) {
+            alert("Sessione scaduta. Esegui di nuovo il login.");
+            return;
+        }
+
         if(!isNomeValido || !isDataValida || !isOraValida || !isLinguaParlataValida || !isDescrizioneValida || !isMaxPartecipantiValido || !isLuogoValido) {
             console.log("Errore nella validazione dei campi!");
             return;
@@ -284,13 +292,15 @@ const CreaEvento = () => {
 
         try {
 
+            const token = localStorage.getItem("authToken");
 
             // Richiesta POST per creare l'evento
             const response = await fetch("http://localhost:8080/api/eventi/crea", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
-                    "Accept": "application/json"
+                    "Accept": "application/json",
+                    "Authorization": `Bearer ${token}`
                 },
                 // Converte l'oggetto in formato JSON
                 body: JSON.stringify({
@@ -307,7 +317,7 @@ const CreaEvento = () => {
                         provincia: luogo.provincia
                     },
                     organizzatore: {
-                        "email": "defilippo@gmail.com" //todo: prendere l'email dell'utente loggato
+                        email: emailUtenteLoggato
                     },
                     maxPartecipanti: maxPartecipanti
                 })
@@ -329,37 +339,43 @@ const CreaEvento = () => {
 
     // Form per la creazione dell'evento
     return (
-        // Form per la creazione dell'evento
-        <div className="formContainer">
-            <h2>Crea un nuovo evento</h2>
-            <hr/>
-            <p className="introText">
-                Segui questi passaggi per creare un nuovo evento:
-            </p>
-            <ul className="introList">
-                <li>Compila i campi sottostanti con i dettagli del tuo evento.</li>
-                <li>Assicurati di riempire tutti i campi richiesti.</li>
-                <li>Quando hai completato, clicca sul pulsante <a href="#creaEventoButton" className="scrollLink"><strong>Crea Evento</strong></a> per pubblicare.
-                </li>
-            </ul>
+        <div className="FormPopup-overlay">
+            <div className="FormPopup-container">
+                <button className="popup-close-btn" onClick={onClose}>
+                    &times;
+                </button>
+                <div className="formContainer">
+                    <h2>Crea un nuovo evento</h2>
+                    <hr/>
+                    <p className="introText">
+                        Segui questi passaggi per creare un nuovo evento:
+                    </p>
+                    <ul className="introList">
+                        <li>Compila i campi sottostanti con i dettagli del tuo evento.</li>
+                        <li>Assicurati di riempire tutti i campi richiesti.</li>
+                        <li>Quando hai completato, clicca sul pulsante <a href="#creaEventoButton"
+                                                                          className="scrollLink"><strong>Crea
+                            Evento</strong></a> per pubblicare.
+                        </li>
+                    </ul>
 
-            <form onSubmit={handleSubmit}>
-                <h3>Informazioni Principali:</h3>
-                <hr/>
-                <div className="formField">
-                    <input
-                        type="text"
-                        placeholder="Nome evento"
-                        title="Digita il nome dell'evento"
-                        className={`formEditText ${nomeErrore ? "erroreInput" : ""}`}
-                        value={nome}
-                        onChange={aggiornaNome}
-                        required
-                    />
-                    {nomeErrore ? <span className="errore">{nomeErrore}</span> : null}
-                </div>
+                    <form onSubmit={handleSubmit}>
+                        <h3>Informazioni Principali:</h3>
+                        <hr/>
+                        <div className="formField">
+                            <input
+                                type="text"
+                                placeholder="Nome evento"
+                                title="Digita il nome dell'evento"
+                                className={`formEditText ${nomeErrore ? "erroreInput" : ""}`}
+                                value={nome}
+                                onChange={aggiornaNome}
+                                required
+                            />
+                            {nomeErrore ? <span className="errore">{nomeErrore}</span> : null}
+                        </div>
 
-                <div className="formField">
+                        <div className="formField">
                     <textarea
                         placeholder="Descrizione"
                         title="Digita la descrizione dell'evento"
@@ -368,133 +384,139 @@ const CreaEvento = () => {
                         onChange={aggiornaDescrizione}
                         required
                     />
-                    {descrizioneErrore ? <span className="errore">{descrizioneErrore}</span> : null}
+                            {descrizioneErrore ? <span className="errore">{descrizioneErrore}</span> : null}
+                        </div>
+
+                        <div className="formField">
+                            <select
+                                className={`formEditText ${linguaParlataErrore ? "erroreInput" : ""}`}
+                                value={linguaParlata}
+                                title="Seleziona la lingua parlata durante l'evento"
+                                onChange={aggiornaLinguaParlata}
+                                required
+                            >
+                                <option value="" disabled>
+                                    Seleziona una lingua
+                                </option>
+                                {Object.values(Lingua).map((lang) => (
+                                    <option key={lang} value={lang}>
+                                        {lang}
+                                    </option>
+                                ))}
+                            </select>
+                            {linguaParlataErrore ? <span className="errore">{linguaParlataErrore}</span> : null}
+                        </div>
+
+                        <div className="formField">
+                            <input
+                                type="number"
+                                placeholder="Max partecipanti"
+                                title="Seleziona il numero massimo di partecipanti"
+                                className={`formEditText ${maxPartecipantiErrore ? "erroreInput" : ""}`}
+                                value={maxPartecipanti}
+                                onChange={aggiornaMaxPartecipanti}
+                                required
+                            />
+                            {maxPartecipantiErrore ? <span className="errore">{maxPartecipantiErrore}</span> : null}
+                        </div>
+
+                        <h3>Data e Ora</h3>
+                        <hr/>
+                        <div className="inlineDateTime">
+
+
+                            <input
+                                type="date"
+                                title="Seleziona la data dell'evento"
+                                className={`formEditText ${dataErrore ? "erroreInput" : ""}`}
+                                value={data}
+                                onChange={aggiornaData}
+                                required
+                            />
+                            {dataErrore ? <span className="errore">{dataErrore}</span> : null}
+
+                            <input
+                                type="time"
+                                title="Seleziona l'ora dell'evento"
+                                className={`formEditText ${oraErrore ? "erroreInput" : ""}`}
+                                value={ora}
+                                onChange={aggiornaOra}
+                                required
+                            />
+                            {oraErrore ? <span className="errore">{oraErrore}</span> : null}
+                        </div>
+
+                        <h3>Luogo</h3>
+                        <hr/>
+                        <div className="inlineAddress">
+                            <input
+                                type="text"
+                                placeholder="Via"
+                                title="Inserisci la via del luogo dell'evento"
+                                //className={`formEditText ${viaErrore ? "erroreInput" : ""}`}
+                                value={luogo.via}
+                                onChange={aggiornaVia}
+                                required
+                            />
+
+                            <input
+                                type="text"
+                                placeholder="Numero Civico"
+                                title="Inserisci il numero civico del luogo dell'evento"
+                                //className={`formEditText ${numCivicoErrore ? "erroreInput" : ""}`}
+                                value={luogo.numCivico}
+                                onChange={aggiornaNumCivico}
+                                required
+                            />
+                        </div>
+
+                        <div className="inlineCityDetails">
+                            <div>
+                                <input
+                                    type="text"
+                                    placeholder="Città"
+                                    title="Inserisci la città del luogo dell'evento"
+                                    //className={`formEditText ${cittaErrore ? "erroreInput" : ""}`}
+                                    value={luogo.citta}
+                                    onChange={aggiornaCitta}
+                                    required
+                                />
+                            </div>
+
+                            <div>
+                                <input
+                                    type="text"
+                                    placeholder="CAP"
+                                    title="Inserisci il CAP del luogo dell'evento"
+                                    //className={`formEditText ${capErrore ? "erroreInput" : ""}`}
+                                    value={luogo.cap}
+                                    onChange={aggiornaCap}
+                                    required
+                                />
+                            </div>
+
+                            <div>
+                                <input
+                                    type="text"
+                                    placeholder="Provincia"
+                                    title="Inserisci la provincia del luogo dell'evento"
+                                    value={luogo.provincia}
+                                    onChange={aggiornaProvincia}
+                                    required
+                                />
+                            </div>
+                        </div>
+                        {luogoErrore ? <span className="errore">{luogoErrore}</span> : null}
+                        <button id="creaEventoButton" type="submit">Crea Evento</button>
+                    </form>
                 </div>
-
-                <div className="formField">
-                    <select
-                        className={`formEditText ${linguaParlataErrore ? "erroreInput" : ""}`}
-                        value={linguaParlata}
-                        title="Seleziona la lingua parlata durante l'evento"
-                        onChange={aggiornaLinguaParlata}
-                        required
-                    >
-                        <option value="" disabled>
-                            Seleziona una lingua
-                        </option>
-                        {Object.values(Lingua).map((lang) => (
-                            <option key={lang} value={lang}>
-                                {lang}
-                            </option>
-                        ))}
-                    </select>
-                    {linguaParlataErrore ? <span className="errore">{linguaParlataErrore}</span> : null}
-                </div>
-
-                <div className="formField">
-                    <input
-                        type="number"
-                        placeholder="Max partecipanti"
-                        title="Seleziona il numero massimo di partecipanti"
-                        className={`formEditText ${maxPartecipantiErrore ? "erroreInput" : ""}`}
-                        value={maxPartecipanti}
-                        onChange={aggiornaMaxPartecipanti}
-                        required
-                    />
-                    {maxPartecipantiErrore ? <span className="errore">{maxPartecipantiErrore}</span> : null}
-                </div>
-
-                <h3>Data e Ora</h3>
-                <hr/>
-                <div className="inlineDateTime">
-
-
-                        <input
-                            type="date"
-                            title="Seleziona la data dell'evento"
-                            className={`formEditText ${dataErrore ? "erroreInput" : ""}`}
-                            value={data}
-                            onChange={aggiornaData}
-                            required
-                        />
-                        {dataErrore ? <span className="errore">{dataErrore}</span> : null}
-
-                        <input
-                            type="time"
-                            title="Seleziona l'ora dell'evento"
-                            className={`formEditText ${oraErrore ? "erroreInput" : ""}`}
-                            value={ora}
-                            onChange={aggiornaOra}
-                            required
-                        />
-                        {oraErrore ? <span className="errore">{oraErrore}</span> : null}
-                </div>
-
-                <h3>Luogo</h3>
-                <hr/>
-                <div className="inlineAddress">
-                        <input
-                            type="text"
-                            placeholder="Via"
-                            title="Inserisci la via del luogo dell'evento"
-                            //className={`formEditText ${viaErrore ? "erroreInput" : ""}`}
-                            value={luogo.via}
-                            onChange={aggiornaVia}
-                            required
-                        />
-
-                        <input
-                            type="text"
-                            placeholder="Numero Civico"
-                            title="Inserisci il numero civico del luogo dell'evento"
-                            //className={`formEditText ${numCivicoErrore ? "erroreInput" : ""}`}
-                            value={luogo.numCivico}
-                            onChange={aggiornaNumCivico}
-                            required
-                        />
-                </div>
-
-                <div className="inlineCityDetails">
-                    <div>
-                        <input
-                            type="text"
-                            placeholder="Città"
-                            title="Inserisci la città del luogo dell'evento"
-                            //className={`formEditText ${cittaErrore ? "erroreInput" : ""}`}
-                            value={luogo.citta}
-                            onChange={aggiornaCitta}
-                            required
-                        />
-                    </div>
-
-                    <div>
-                    <input
-                            type="text"
-                            placeholder="CAP"
-                            title="Inserisci il CAP del luogo dell'evento"
-                            //className={`formEditText ${capErrore ? "erroreInput" : ""}`}
-                            value={luogo.cap}
-                            onChange={aggiornaCap}
-                            required
-                        />
-                    </div>
-
-                    <div>
-                    <input
-                            type="text"
-                            placeholder="Provincia"
-                            title="Inserisci la provincia del luogo dell'evento"
-                            value={luogo.provincia}
-                            onChange={aggiornaProvincia}
-                            required
-                        />
-                    </div>
-                </div>
-                {luogoErrore ? <span className="errore">{luogoErrore}</span> : null}
-                <button id="creaEventoButton" type="submit">Crea Evento</button>
-            </form>
+            </div>
         </div>
     );
+};
+
+CreaEvento.propTypes = {
+    onClose: PropTypes.func.isRequired, // Specifica che onClose è obbligatorio
 };
 
 // Esporta il componente CreaEvento

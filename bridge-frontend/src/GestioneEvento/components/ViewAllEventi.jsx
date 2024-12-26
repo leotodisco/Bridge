@@ -4,6 +4,9 @@ import "../../GestioneEvento/css/card.css";
 import EventView from "./EventoRetrieveView.jsx";
 //Per installare la libreria: npm install date-fns
 import { format } from "date-fns";
+import "../css/AllEventiStyle.css";
+import {Link} from "react-router-dom";
+import CreaEvento from "./formEvento.jsx";
 
 /*
  * @author Alessia De Filippo
@@ -31,6 +34,10 @@ const AllEventsView = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [selectedEventId, setSelectedEventId] = useState(null); // Stato per il popup
+    const [showCreatePopup, setShowCreatePopup] = useState(false); // Stato per il popup di creazione evento
+
+    //const [isVolontario, setIsVolontario] = useState(false);
+
 
     const fetchEvents = async () => {
         try {
@@ -51,11 +58,28 @@ const AllEventsView = () => {
         setSelectedEventId(null); // Chiudi il popup
     };
 
+    const closeCreatePopup = () => {
+        setShowCreatePopup(false); // Chiudi il popup di creazione evento
+    };
+
     useEffect(() => {
         fetchEvents();
     }, []);
 
+    // Esempio di salvataggio del ruolo
 
+    console.log(localStorage.getItem('ruolo'));
+
+
+    // Verifica se l'utente è loggato come Volontario
+    /*useEffect(() => {
+        const ruoloUtente = localStorage.getItem('ruolo');
+        console.log(ruoloUtente);
+        if (ruoloUtente === 'VOLONTARIO') {
+            setIsVolontario(true);
+        }
+        fetchEvents();
+    }, []);*/
 
     if (loading) {
         return <p>Caricamento in corso...</p>;
@@ -67,7 +91,17 @@ const AllEventsView = () => {
 
     return (
         <div>
-            <h1>Tutti gli Eventi</h1>
+            {/* Contenitore del titolo e del pulsante */}
+            <div className="headerForm-container">
+                <h1 className="header-title">Tutti gli Eventi</h1>
+                {/* Pulsante per aggiungere un nuovo evento */}
+                <button className="btn btn-circle">
+                    <Link to="/crea-evento">
+                        +
+                    </Link>
+                </button>
+            </div>
+
             {events.length > 0 ? (
                 <div className="cards-container">
                     {events.map((event) => (
@@ -76,8 +110,8 @@ const AllEventsView = () => {
                             data={{
                                 title: event.nome,
                                 image: event.organizzatore.fotoUtente
-                                            ? event.organizzatore.fotoUtente
-                                            : "https://via.placeholder.com/150/cccccc/000000?text=No+Image",
+                                    ? event.organizzatore.fotoUtente
+                                    : "https://via.placeholder.com/150/cccccc/000000?text=No+Image",
                                 userName: `${event.organizzatore.nome} ${event.organizzatore.cognome}`,
                                 parameter1: formatDate(event.data), // Questo è Parametro 1
                                 parameter2: formatTime(event.ora),  // Questo è Parametro 2
@@ -100,6 +134,11 @@ const AllEventsView = () => {
             {/* Mostra il popup se selectedEventId è impostato */}
             {selectedEventId && (
                 <EventView id={selectedEventId} onClose={closePopup} />
+            )}
+
+            {/* Popup creazione evento */}
+            {showCreatePopup && (
+                <CreaEvento onClose={closeCreatePopup} />
             )}
         </div>
     );
