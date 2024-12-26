@@ -1,6 +1,6 @@
 import './App.css';
-import {BrowserRouter as Router, Routes, Route} from 'react-router-dom';
-import {useEffect, useState} from 'react';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { useEffect, useState } from 'react';
 import Sidebar from './Components/Sidebar/Sidebar.jsx';
 import Homepage from './Components/Homepage/Homepage.jsx';
 import Login from "./GestioneLogin/components/login.jsx";
@@ -21,13 +21,14 @@ import AboutUs from "./Components/AboutUs/AboutUs.jsx";
 import EventiUtente from "./GestioneUtente/components/dashboardEventi.jsx";
 import Alloggio from "./GestioneAlloggio/components/Alloggio.jsx";
 import LavoriUtente from "./GestioneUtente/components/dashboardLavoro.jsx";
+import AlloggiByProprietario from "./GestioneAlloggio/components/AlloggiByProprietario.jsx";
 
 function App() {
     const [isAuthenticated, setIsAuthenticated] = useState(false);
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
     // Controlla se il token JWT è presente al caricamento
-        useEffect(() => {
+    useEffect(() => {
         const token = localStorage.getItem('authToken');
         setIsAuthenticated(!!token);
     }, []);
@@ -53,29 +54,26 @@ function App() {
             <main className={`main-content ${isSidebarOpen ? 'shifted' : ''}`}>
                 {isAuthenticated ? (
                     <>
-
                         <Routes>
                             <Route path="/" element={<Homepage />} />
                             <Route path="/eventi-utente" element={<EventiUtente />} />
-                            <Route path="/consuleza-utente" element={<ConsulenzaUtente/>}/>
-                            <Route path="/crea-lavoro" element={<CreaLavoro/>}/>
+                            <Route path="/consuleza-utente" element={<ConsulenzaUtente />} />
+                            <Route path="/crea-lavoro" element={<CreaLavoro />} />
                             <Route path="/view-eventi" element={<AllEventsView />} />
                             <Route path="/view-consulenza" element={<ConsulenzaView />} />
                             <Route path="/view-lavoro" element={<ViewLavoro />} />
-                            <Route path="/view-listaCorsi" element={<ListaCorsiView/>}/>
+                            <Route path="/view-listaCorsi" element={<ListaCorsiView />} />
                             <Route path="/mostraAlloggio" element={<MostraAlloggi />} />
                             <Route path="/crea-evento" element={<CreaEvento />} />
                             <Route path="/crea-lavoro" element={<CreaLavoro />} />
                             <Route path="/crea-alloggio" element={<CreaAlloggio />} />
                             <Route path="/crea-consulenza" element={<CreaConsulenza />} />
-                            <Route path="/crea-corso" element={<CreaCorso/>}/>
+                            <Route path="/crea-corso" element={<CreaCorso />} />
                             <Route path="/alloggi/SingoloAlloggio/:titolo" element={<Alloggio />} />
                             <Route path="/lavori-utente" element={<LavoriUtente />} />
                             <Route path="/about-us" element={<AboutUs />} />
-                            <Route
-                                path="/area-personale"
-                                element={<AreaPersonale onLogout={handleLogout} />}
-                            />
+                            <Route path="/view-my-alloggi/:email" element={<AlloggiByProprietario />} />
+                            <Route path="/area-personale" element={<AreaPersonale onLogout={handleLogout} />} />
                         </Routes>
                     </>
                 ) : (
@@ -85,11 +83,12 @@ function App() {
                             <Route path="/view-eventi" element={<AllEventsView />} />
                             <Route path="/view-lavoro" element={<ViewLavoro />} />
                             <Route path="/alloggi/SingoloAlloggio/:titolo" element={<Alloggio />} />
-                            <Route path="/view-listaCorsi" element={<ListaCorsiView/>}/>
+                            <Route path="/view-listaCorsi" element={<ListaCorsiView />} />
                             <Route path="/mostraAlloggio" element={<MostraAlloggi />} />
                             <Route path="/login" element={<Login onLogin={handleLogin} />} />
                             <Route path="/crea-utente" element={<CreaUtente />} />
                             <Route path="/about-us" element={<AboutUs />} />
+                            <Route path="/view-my-alloggi/:email" element={<AlloggiByProprietario />} />
                         </Routes>
                     </>
                 )}

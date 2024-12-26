@@ -24,11 +24,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Base64;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 
 /**
@@ -297,4 +293,26 @@ public class AlloggioController {
         alloggio.setFoto(fotoBase64);
         return alloggio;
     }
+
+    @GetMapping("/alloggiByEmail/{email}")
+    public ResponseEntity<List<Alloggio>> getAlloggiByEmail(@PathVariable String email) {
+        try {
+            List<Alloggio> alloggi = alloggioService.getAllAlloggiByEmail(email);
+
+            if (alloggi.isEmpty() || alloggi == null) {
+                System.out.println("Nessun alloggio trovato");
+                return ResponseEntity.ok(Collections.emptyList());
+            }
+
+            return ResponseEntity.ok(alloggi);
+        } catch (IllegalArgumentException e) {
+            // Specifica l'errore per alloggi non trovati
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Collections.emptyList());
+        } catch (Exception e) {
+            // Gestisce altri tipi di errori generali
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        }
+    }
+
+
 }

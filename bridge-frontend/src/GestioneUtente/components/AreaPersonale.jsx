@@ -253,7 +253,11 @@ const AreaPersonale = ({ onLogout }) => {
                                 <button onClick={() => navigate('/eventi-utente')}>I miei Eventi</button>
                                 ) : null}
                                 <button>I miei Corsi</button>
-                                <button>I miei Alloggi</button>
+
+                                {ruolo=="Volontario" ? (
+                                    <button onClick={() => navigate('/view-my-alloggi/:email')}>I miei Alloggi</button>
+                                ) : null}
+
                                 {ruolo == "FiguraSpecializzata" ? (
                                     <button onClick={() => navigate('/consuleza-utente')}>Le mie Consulenze</button>
                                 ) : null}
