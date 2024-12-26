@@ -20,6 +20,7 @@ import AreaPersonale from "./GestioneUtente/components/AreaPersonale.jsx";
 import AboutUs from "./Components/AboutUs/AboutUs.jsx";
 import EventiUtente from "./GestioneUtente/components/dashboardEventi.jsx";
 import Alloggio from "./GestioneAlloggio/components/Alloggio.jsx";
+import Chatbot from "./GestioneChatbot/components/Chatbot.jsx";
 import LavoriUtente from "./GestioneUtente/components/dashboardLavoro.jsx";
 import AlloggiByProprietario from "./GestioneAlloggio/components/AlloggiByProprietario.jsx";
 
@@ -71,6 +72,7 @@ function App() {
                             <Route path="/crea-corso" element={<CreaCorso />} />
                             <Route path="/alloggi/SingoloAlloggio/:titolo" element={<Alloggio />} />
                             <Route path="/lavori-utente" element={<LavoriUtente />} />
+                            <Route path="/chatBot" element={<Chatbot/>}/>
                             <Route path="/about-us" element={<AboutUs />} />
                             <Route path="/view-my-alloggi/:email" element={<AlloggiByProprietario />} />
                             <Route path="/area-personale" element={<AreaPersonale onLogout={handleLogout} />} />
@@ -87,6 +89,7 @@ function App() {
                             <Route path="/mostraAlloggio" element={<MostraAlloggi />} />
                             <Route path="/login" element={<Login onLogin={handleLogin} />} />
                             <Route path="/crea-utente" element={<CreaUtente />} />
+                            <Route path="/chatBot" element={<Chatbot/>}/>
                             <Route path="/about-us" element={<AboutUs />} />
                             <Route path="/view-my-alloggi/:email" element={<AlloggiByProprietario />} />
                         </Routes>
