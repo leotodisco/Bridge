@@ -179,6 +179,7 @@ const CreaConsulenza = () => {
             const response = await fetch("http://localhost:8080/api/annunci/creaConsulenza", {
                 method: "POST",
                 headers: {
+                    'Authentication': `Bearer ${localStorage.getItem('authToken')}`,
                     "Content-Type": "application/json",
                     "Accept": "application/json"
                 },

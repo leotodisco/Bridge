@@ -5,6 +5,7 @@ import Card from "../../GestioneEvento/components/Card.jsx";
 import "../../GestioneEvento/css/card.css";
 import ConsulenzaView from "./ConsulenzaRetrive.jsx";
 import FormConsulenza from "./formConsulenza.jsx";
+import {useNavigate} from "react-router-dom";
 /*
 * @author Geraldine Montella
 *
@@ -29,17 +30,41 @@ const AllConsulenzaView = () => {
     const [isFiguraSpecializzata, setIsFiguraSpecializzata] = useState(false);
     const [isPopupVisible, setPopupVisible] = useState(false); // State for showing the create modal
     const [userImages, setUserImages] = useState({}); // Stato per le immagini dei profili
+    const [tipoFiltro, setTipoFiltro] = useState("");
+    const nav = useNavigate();
 
     // Funzione per ottenere tutte le consulenze
-    const fetchConsulenze = async () => {
+    const fetchConsulenze = async (tipo = "") => {
+        setLoading(true);
         try {
             // Usa fetch per recuperare i dati
             const token = localStorage.getItem('authToken');
-            const response = await fetch('http://localhost:8080/api/annunci/view_consulenze');
+            const url = tipo
+                ? `http://localhost:8080/api/annunci/view_consulenze/filter?tipo=${tipo}`
+                : `http://localhost:8080/api/annunci/view_consulenze`;
+
+            console.log("Calling URL:", url); // Log per verificare l'URL
+
+            if (!token) {
+                alert("Non sei autenticato. Effettua il login.");
+                nav('/login');
+                return;
+            }
+
+            const response = await
+                fetch(url,{
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json',
+                    },
+                });
+
             if (!response.ok) {
                 throw new Error('Errore durante il recupero delle consulenze');
             }
             const data = await response.json(); // Converte la risposta in formato JSON
+            console.log("Fetched data:", data);
             setConsulenze(data);
 
             const userImagesData = {};
@@ -97,6 +122,13 @@ const AllConsulenzaView = () => {
     };
 
     // Verifica se l'utente è loggato come FIGURASPECIALIZZA
+    const handleFiltroChange = (event) => {
+        const tipo = event.target.value;
+        setTipoFiltro(tipo);
+        fetchConsulenze(tipo); // Filtra i risultati
+    };
+
+    // Funzione per ottenere le consulenze di un proprietario specifico
     useEffect(() => {
         const ruoloUtente = localStorage.getItem('ruolo'); // Supponiamo che il ruolo dell'utente sia memorizzato nel localStorage
         if (ruoloUtente === 'FIGURASPECIALIZZATA') {
@@ -120,6 +152,20 @@ const AllConsulenzaView = () => {
             {isFiguraSpecializzata && (
                 <button onClick={() => setPopupVisible(true)} className="openPopupButton">Crea una Consulenza</button>
             )}
+
+            {/* Barra dei filtri */}
+            <div className="filter-bar">
+                <label>Filtra per tipo:</label>
+                <select value={tipoFiltro} onChange={handleFiltroChange}>
+                    <option value="">Tutte</option>
+                    <option value="SANITARIA">Sanitaria</option>
+                    <option value="LEGALE">Legale</option>
+                    <option value="COMMERCIALE">Commerciale</option>
+                    <option value="PSICOLOGICA">Psicologica</option>
+                    <option value="TRADUTTORE">Traduttore</option>
+                </select>
+            </div>
+
             {consulenze.length > 0 ? (
                 <div className="cards-container">
                     {consulenze.map((event) => {

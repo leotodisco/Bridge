@@ -109,6 +109,7 @@ const CreaLavoro = () => {
             const response = await fetch("http://localhost:8080/api/annunci/creaLavoro", {
                 method: "POST",
                 headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('authToken')}`,
                     "Content-Type": "application/json",
                     Accept: "application/json",
                 },

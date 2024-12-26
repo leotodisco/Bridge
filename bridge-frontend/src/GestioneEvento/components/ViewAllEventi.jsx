@@ -5,7 +5,7 @@ import EventView from "./EventoRetrieveView.jsx";
 //Per installare la libreria: npm install date-fns
 import { format } from "date-fns";
 import "../css/AllEventiStyle.css";
-import {Link} from "react-router-dom";
+import {Link, useNavigate} from "react-router-dom";
 import CreaEvento from "./formEvento.jsx";
 
 /*
@@ -35,13 +35,30 @@ const AllEventsView = () => {
     const [error, setError] = useState(null);
     const [selectedEventId, setSelectedEventId] = useState(null); // Stato per il popup
     const [showCreatePopup, setShowCreatePopup] = useState(false); // Stato per il popup di creazione evento
-
+    const nav = useNavigate();
     //const [isVolontario, setIsVolontario] = useState(false);
 
 
     const fetchEvents = async () => {
         try {
-            const response = await fetch("http://localhost:8080/api/eventi/all");
+            const email = localStorage.getItem('email');
+            const token = localStorage.getItem('authToken');
+
+            if (!email || !token) {
+                alert("Non sei autenticato. Effettua il login.");
+                nav('/login');
+                return;
+            }
+
+            const response = await
+            fetch("http://localhost:8080/api/eventi/all", {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json',
+                },
+            });
+
             if (!response.ok) {
                 throw new Error("Errore durante il recupero degli eventi");
             }

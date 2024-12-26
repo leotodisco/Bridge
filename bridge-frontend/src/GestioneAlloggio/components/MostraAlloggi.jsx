@@ -8,6 +8,7 @@ const MostraAlloggi = () => {
     const [error, setError] = useState(null);
     const [userImages, setUserImages] = useState({}); // Stato per le immagini degli alloggi
     const navigate = useNavigate();
+    const nav = useNavigate();
 
     const handleInfoClick = (titolo) => {
         navigate(`/alloggi/SingoloAlloggio/${titolo}`);
@@ -15,7 +16,25 @@ const MostraAlloggi = () => {
 
     const fetchAlloggi = async () => {
         try {
-            const response = await fetch("http://localhost:8080/alloggi/mostra");
+
+            const email = localStorage.getItem('email');
+            const token = localStorage.getItem('authToken');
+
+            if (!email || !token) {
+                alert("Non sei autenticato. Effettua il login.");
+                nav('/login');
+                return;
+            }
+
+            const response = await
+                fetch("http://localhost:8080/alloggi/mostra", {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json',
+                    },
+                });
+
             if (!response.ok) {
                 console.error("Errore HTTP durante il fetch degli alloggi:", response.status);
                 throw new Error(`Errore HTTP: ${response.status}`);
@@ -25,7 +44,6 @@ const MostraAlloggi = () => {
 
             setAlloggi(data);
 
-            const token = localStorage.getItem('authToken');
             const alloggioImagesData = {};
             for (const alloggio of data) {
                 console.log(`Recupero immagine per l'alloggio ID: ${alloggio.id}`);

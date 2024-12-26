@@ -46,7 +46,14 @@ const EventView = ({ id, onClose }) => {
 
     const fetchEvent = async (id) => {
         try {
-            const response = await fetch(`http://localhost:8080/api/eventi/retrieve/${id}?emailPartecipante=${encodeURIComponent(emailPartecipante)}`);
+            const response = await fetch(`http://localhost:8080/api/eventi/retrieve/${id}?emailPartecipante=${encodeURIComponent(emailPartecipante)}`, {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json',
+                },
+            });
+
             if (!response.ok) {
                 throw new Error("Evento non trovato");
             }
@@ -67,7 +74,14 @@ const EventView = ({ id, onClose }) => {
         }
         try {
             const url = `http://localhost:8080/api/eventi/${id}/iscrizione?emailPartecipante=${encodeURIComponent(emailPartecipante)}`;
-            const response = await fetch(url);
+
+            const response = await fetch(url, {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json',
+                },
+            });
             if (!response.ok) {
                 throw new Error(`Errore nella richiesta: ${response.status} - ${response.statusText}`);
             }

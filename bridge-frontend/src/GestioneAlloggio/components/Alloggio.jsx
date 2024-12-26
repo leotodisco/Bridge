@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
+import {useNavigate, useParams} from "react-router-dom";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faHeart, faHeartBroken } from '@fortawesome/free-solid-svg-icons'; // Importa le icone del cuore
 import "../css/alloggio.css";
@@ -12,11 +12,14 @@ const DettaglioAlloggio = () => {
     const [error, setError] = useState(null);
     const [fotoIngrandita, setFotoIngrandita] = useState(null); // Stato per foto ingrandita
     const [isFavorito, setIsFavorito] = useState(false); // Stato per tracciare se l'alloggio è nei preferiti
+    const nav = useNavigate();
+    const emailRifugiato = localStorage.getItem("email");
+    const token = localStorage.getItem("authToken");
 
     // Funzione per gestire il click sull'icona del cuore
     const handleClickCuore2 = async () => {
-        try {
-            const emailRifugiato = localStorage.getItem("email");
+            try {
+
             const idAlloggio = alloggio.id;
 
             if (!emailRifugiato) {
@@ -29,9 +32,16 @@ const DettaglioAlloggio = () => {
                 return;
             }
 
+            if (!emailRifugiato || !token) {
+                alert("Non sei autenticato. Effettua il login.");
+                nav('/login');
+                return;
+            }
+
             const response = await fetch(`http://localhost:8080/alloggi/interesse?emailRifugiato=${encodeURIComponent(emailRifugiato)}&idAlloggio=${idAlloggio}`, {
                 method: "POST",
                 headers: {
+                    Authorization: `Bearer ${token}`,
                     "Accept": "application/json",
                 },
             });
@@ -68,7 +78,15 @@ const DettaglioAlloggio = () => {
                     setIsFavorito(true);
                 } else {
                     // Altrimenti, fai una richiesta API per verificare se è nei preferiti
-                    const response = await fetch(`http://localhost:8080/alloggi/isFavorito?email=${emailRifugiato}&idAlloggio=${idAlloggio}`);
+                    const response = await fetch(`http://localhost:8080/alloggi/isFavorito?email=${emailRifugiato}&idAlloggio=${idAlloggio}`, {
+                        method: "GET",
+                        headers: {
+                            'Authorization': `Bearer ${token}`,
+                            "Content-Type": "application/json",
+                            "Accept": "application/json"
+                        },
+                    });
+
                     if (response.ok) {
                         const isFavorito = await response.json();
                         setIsFavorito(isFavorito);
@@ -95,6 +113,7 @@ const DettaglioAlloggio = () => {
                 const response = await fetch(`http://localhost:8080/alloggi/SingoloAlloggio/${titolo}`, {
                     method: "GET",
                     headers: {
+                        'Authorization': `Bearer ${token}`,
                         "Content-Type": "application/json",
                         "Accept": "application/json"
                     },

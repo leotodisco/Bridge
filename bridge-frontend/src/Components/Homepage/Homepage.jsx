@@ -16,6 +16,7 @@ const Homepage = () => {
     const [isAboutUsOpen, setIsAboutUsOpen] = useState(false); // Stato per gestire la visibilità del popup About Us
 
     useEffect(() => {
+
         // Fetch jobs
         fetch("/api/annunci/random")
             .then((response) => response.json())
