@@ -8,7 +8,7 @@ const Chatbot = () => {
 
 
     const openai = new OpenAI({
-        apiKey: "", // Usa una variabile ambiente
+        apiKey: import.meta.env.VITE_OPENAI_API_KEY , // Usa una variabile ambiente
         dangerouslyAllowBrowser: true
     });
 
