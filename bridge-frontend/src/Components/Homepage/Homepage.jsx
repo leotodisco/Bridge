@@ -62,6 +62,12 @@ const Homepage = () => {
                 </button>
             </section>
 
+            <button className="chatbot-btn">
+                <Link to="/chatBot">
+                    <h3>Apri chatbot</h3>
+                </Link>
+            </button>
+
             <div className="main-content">
                 {/* Colonna sinistra */}
                 <div className="left-column">
