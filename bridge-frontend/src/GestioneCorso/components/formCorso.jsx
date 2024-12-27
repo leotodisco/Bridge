@@ -38,6 +38,8 @@ const CreaCorso = ({ onClose }) => { // Accetta la prop onClose
     const aggiornaCategoria = (e) => setCategoria(e.target.value);
     const aggiornaLingua = (e) => setLingua(e.target.value);
     const aggiornaPdfFile = (e) => setPdfFile(e.target.files[0]);
+    const emailUtenteLoggato = localStorage.getItem("email");
+    console.log(emailUtenteLoggato);
 
     const [titoloError, setTitoloError] = useState("");
     const [descrizioneError, setDescrizioneError] = useState("");
@@ -166,16 +168,23 @@ const CreaCorso = ({ onClose }) => { // Accetta la prop onClose
 
         console.log("Corso da creare:", corsoDTO);  // Log dei dettagli del corso da creare
         try {
+            const token = localStorage.getItem("authToken");  // Recupera il token JWT
+            console.log(localStorage.getItem("authToken"));
+
             const response = await fetch("http://localhost:8080/api/corsi/crea", {
                 method: "POST",
-                headers: { "Content-Type": "application/json" },
+                headers: {
+                    "Content-Type": "application/json" ,
+                    "Accept": "application/json",
+                    "Authorization": `Bearer ${token}`  // Invia il token JWT nell'intestazione
+                },
                 body: JSON.stringify({
                     titolo: titolo,
                     descrizione: descrizione,
                     categoria: categoria,
                     lingua: lingua,
                     pdf: uploadedPdfId,
-                    proprietario: "Monella@example.com",  // Nota: Cambiato "example.come" in "example.com"
+                    proprietario: emailUtenteLoggato
                 }),
             });
 

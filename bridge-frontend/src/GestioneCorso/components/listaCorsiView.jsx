@@ -1,4 +1,3 @@
-// ListaCorsiView.jsx
 import { useEffect, useState } from "react";
 import Card from "../../GestioneEvento/components/Card.jsx";
 import CorsoView from "./corsoView.jsx";
@@ -13,6 +12,7 @@ const ListaCorsiView = () => {
     const [loading, setLoading] = useState(true);
     const [selectedCorsoId, setSelectedCorsoId] = useState(null);
     const [showModal, setShowModal] = useState(false);
+    const ruolo = localStorage.getItem("ruolo");
 
     const fetchCorsi = async () => {
         try {
@@ -53,14 +53,21 @@ const ListaCorsiView = () => {
     if (error) {
         return <p>Errore nel recupero dei corsi.</p>;
     }
+    console.log("RUOLO", ruolo);
 
     return (
         <div>
             <div className="header-container">
                 <h1>Tutti i Corsi</h1>
-                <button onClick={toggleModal} className="btn btn-primary" aria-label="Aggiungi Nuovo Corso">
-                    <FaPlus size={20}/> {/* Dimensione dell'icona regolabile */}
-                </button>
+                {ruolo === "FIGURASPECIALIZZATA" && (
+                    <button
+                        onClick={toggleModal}
+                        className="btn btn-primary"
+                        aria-label="Aggiungi Nuovo Corso"
+                    >
+                        <FaPlus size={20} />
+                    </button>
+                )}
             </div>
             {corsi.length > 0 ? (
                 <div className="cards-container">
