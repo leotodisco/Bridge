@@ -9,6 +9,8 @@ const Login = ({ onLogin }) =>  {
     const [password, setPassword] = useState("");
     const nav = useNavigate();
 
+    const token = localStorage.getItem('authToken');
+
 
     const aggiornaEmail = (event) => {
         setEmail(event.target.value);
@@ -25,6 +27,7 @@ const Login = ({ onLogin }) =>  {
             const response = await fetch('http://localhost:8080/authentication/login', {
                 method: 'POST',
                 headers: {
+                    'Authorization': `Barer ${token}`,
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({

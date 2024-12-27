@@ -18,6 +18,7 @@ const Homepage = () => {
 
 
     useEffect(() => {
+
         // Fetch jobs
         fetch("/api/annunci/random")
             .then((response) => response.json())

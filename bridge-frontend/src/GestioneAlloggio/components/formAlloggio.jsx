@@ -1,4 +1,5 @@
 import {useEffect, useState} from "react";
+import {useNavigate} from "react-router-dom";
 
 const Servizi = {
     WIFI: "WIFI",
@@ -8,6 +9,7 @@ const Servizi = {
 
 const CreaAlloggio = () => {
     const [descrizione, setDescrizione] = useState("");
+    const nav = useNavigate();
     const [maxPersone, setMaxPersone] = useState(1);
     const [metratura, setMetratura] = useState("");
     const [fotos, setFotos] = useState([]);
@@ -141,12 +143,24 @@ const CreaAlloggio = () => {
                 throw new Error("Email del volontario non trovata");
             }
 
+            const email = localStorage.getItem('email');
+            const token = localStorage.getItem('authToken');
+
+            if (!email || !token) {
+                alert("Non sei autenticato. Effettua il login.");
+                nav('/login');
+                return;
+            }
+
+
             const response = await fetch("http://localhost:8080/alloggi/aggiungi", {
                 method: "POST",
                 headers: {
+                    'Authorization': `Bearer ${token}`,
                     "Content-Type": "application/json",
                     Accept: "application/json"
                 },
+
                 body: JSON.stringify({
                     titolo : titolo,
                     descrizione : descrizione,

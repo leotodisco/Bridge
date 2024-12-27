@@ -16,6 +16,7 @@ const ListaCorsiView = () => {
 
     const fetchCorsi = async () => {
         try {
+
             const response = await fetch("http://localhost:8080/api/corsi/listaCorsi");
             if (response.ok) {
                 const data = await response.json();

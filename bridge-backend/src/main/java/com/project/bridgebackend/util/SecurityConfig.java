@@ -59,41 +59,8 @@ public class SecurityConfig {
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/authentication/login", "/authentication/registrazioneUtente",
-                                "/api/eventi/crea", "/api/corsi/crea", "/api/annunci/creaConsulenza",
-                                "/api/corsi/upload", "/alloggi/aggiungi", "/api/annunci/creaLavoro", "/api/annunci/view_lavori",
-                                "api/annunci/view_lavori/proprietario/{id}", "/api/annunci/view_lavori/retrieve/{id}",
-                                "/api/annunci/modifica_lavoro/{id}", "/api/annunci/elimina_lavoro/{id}",
-                                "/api/annunci/view_consulenze", "/api/annunci/view_consulenze/proprietario/{id}",
-                                "/api/eventi/all", "/api/eventi/retrieve/{id}", "/api/eventi/{id}/iscrivi",
-                                "/api/eventi/{id}/disiscrivi","/api/eventi/{id}/partecipanti",  "/api/eventi/pubblicati", "/areaPersonale/elimina/{email},",
-                                "/api/annunci/view_consulenze/retrieve/{id}","/api/annunci/modifica_consulenza/{idConsulenza}",
-                                "/api/eventi/{id}/iscrizione", "/api/corsi/cerca/{id}", "/api/corsi/modifica/{id}",
-                                "/api/corsi/listaCorsi","/api/corsi/listaCorsiUtente/{email}","/areaPersonale/DatiUtente/{email}","/alloggi/mostra","/alloggi/preferiti","/alloggi/isFavorito",
-                                "/alloggi/SingoloAlloggio/{titolo}",
-                                "/api/corsi/download/{id}","/areaPersonale/DatiFotoUtente/{email}",
-                                "/api/eventi/{id}/iscrizione", "/api/corsi/cerca/{id}",
-                                "/api/corsi/modifica/{id}",
-                                "/api/corsi/listaCorsi","/areaPersonale/DatiUtente/{email}","/api/corsi/download/{id}",
-                                "/areaPersonale/DatiFotoUtente/{email}","/areaPersonale/modificaUtente/{email}",
-                                "/areaPersonale/modificaPassword/{email}","/areaPersonale/modificaFotoUtente/{email}",
-                                "/api/annunci/manifestazione-interesse/{idConsulenza}",
-                                "/api/annunci/rimuovi-interesse/{idConsulenza}",
-                                "/api/annunci/pubblicati").permitAll()
-                        .requestMatchers(getPublicEndpoints()).permitAll()
-                        .requestMatchers("/authentication/login", "/authentication/registrazioneUtente",
-                                "/api/eventi/crea", "/api/corsi/crea", "/api/annunci/creaConsulenza",
-                                "/api/corsi/upload", "/alloggi/aggiungi", "/api/annunci/creaLavoro", "/api/annunci/view_lavori",
-                                "api/annunci/view_lavori/proprietario/{id}", "/api/annunci/view_lavori/retrieve/{id}",
-                                "/api/annunci/modifica_lavoro/${id}", "/api/annunci/elimina_lavoro/{id}",
-                                "/api/annunci/view_consulenze", "/api/annunci/view_consulenze/proprietario/{id}",
-                                "/api/eventi/all", "/api/eventi/retrieve/{id}", "/api/eventi/{id}/iscrivi",
-                                "/api/eventi/{id}/disiscrivi", "/api/eventi/pubblicati", "/areaPersonale/elimina/{email},",
-                                "/api/annunci/view_consulenze/retrieve/{id}","/api/annunci/modifica_consulenza/{idConsulenza}",
-                                "/api/eventi/{id}/iscrizione","/alloggi/mostra","/alloggi/SingoloAlloggio/{titolo}", "/api/corsi/cerca/{id}", "/api/corsi/modifica/{id}",
-                                "/api/corsi/listaCorsi","/areaPersonale/DatiUtente/{email}","/api/annunci/pubblicati",
-                                "/api/annunci/manifestazione-interesse/{idConsulenza}", "/api/annunci/rimuovi-interesse/{idConsulenza}").permitAll()
-                        .requestMatchers(getPublicEndpoints()).permitAll()
+                        .requestMatchers("/authentication/login", "/authentication/registrazioneUtente").anonymous() // Accesso consentito solo a non autenticati
+                        .requestMatchers(getPublicEndpoints()).authenticated() // Richiedono token JWT valido
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
@@ -114,12 +81,13 @@ public class SecurityConfig {
                 "/authentication/login",
                 "/authentication/registrazioneUtente",
 
-                // EVENTi
+                // EVENTI
                 "/api/eventi/crea",
                 "/api/eventi/all",
                 "/api/eventi/retrieve/{id}",
                 "/api/eventi/{id}/iscrivi",
                 "/api/eventi/{id}/disiscrivi",
+                "/api/eventi/{id}/partecipanti",
                 "/api/eventi/pubblicati",
                 "/api/eventi/{id}/iscrizione",
                 "/api/eventi/random",
@@ -128,7 +96,7 @@ public class SecurityConfig {
                 "/api/annunci/creaConsulenza",
                 "/api/annunci/view_consulenze",
                 "/api/annunci/view_consulenze/proprietario/{id}",
-                "/api/annunci/view_consulenze/retrive/{id}",
+                "/api/annunci/view_consulenze/retrieve/{id}",
                 "/api/annunci/modifica_consulenza/{idConsulenza}",
                 "/api/annunci/eliminaConsulenza/{id}",
                 "/api/annunci/manifestazione-interesse/{idConsulenza}",
@@ -138,7 +106,7 @@ public class SecurityConfig {
                 "/api/annunci/creaLavoro",
                 "/api/annunci/view_lavori",
                 "/api/annunci/view_lavori/proprietario/{id}",
-                "/api/annunci/view_lavori/retrive/{id}",
+                "/api/annunci/view_lavori/retrieve/{id}",
                 "/api/annunci/modifica_lavoro/{id}",
                 "/api/annunci/elimina_lavoro/{id}",
                 "/api/annunci/random",
@@ -149,6 +117,7 @@ public class SecurityConfig {
                 "/api/corsi/cerca/{id}",
                 "/api/corsi/modifica/{id}",
                 "/api/corsi/listaCorsi",
+                "/api/corsi/listaCorsiUtente/{email}",
                 "/api/corsi/download/{id}",
 
                 // ALLOGGI
@@ -182,6 +151,7 @@ public class SecurityConfig {
         configuration.setAllowedOrigins(List.of(
                 "http://localhost:5174",
                 "http://localhost:5173",
+                "http://localhost:8080",
                 "https://your-production-domain.com"
         ));
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"));

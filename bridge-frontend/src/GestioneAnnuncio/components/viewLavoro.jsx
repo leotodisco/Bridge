@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import LavoroView from "./LavoroRetrieve.jsx";
 import Card from "../../GestioneEvento/components/Card.jsx";
 import "../../GestioneEvento/css/card.css";
+import {useNavigate} from "react-router-dom";
 
 /**
  * @author Vito Vernellati
@@ -21,11 +22,29 @@ const AllLavoroView = () => {
     const [loading, setLoading] = useState(true); // Stato di caricamento
     const [error, setError] = useState(null); // Stato di errore
     const [selectedLavoroId, setSelectedLavoroId] = useState(null); // ID annuncio selezionato
+    const nav = useNavigate();
 
     // Funzione per recuperare gli annunci di lavoro
     const fetchLavori = async () => {
         try {
-            const response = await fetch("http://localhost:8080/api/annunci/view_lavori");
+            const email = localStorage.getItem('email');
+            const token = localStorage.getItem('authToken');
+
+            if (!email || !token) {
+                alert("Non sei autenticato. Effettua il login.");
+                nav('/login');
+                return;
+            }
+
+            const response = await
+                fetch("http://localhost:8080/api/annunci/view_lavori", {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json',
+                    },
+                });
+
             if (!response.ok) {
                 throw new Error("Errore durante il recupero degli annunci di lavoro");
             }
