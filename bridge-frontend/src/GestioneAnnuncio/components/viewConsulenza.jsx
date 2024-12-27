@@ -138,7 +138,7 @@ const AllConsulenzaView = () => {
     // Funzione per ottenere le consulenze di un proprietario specifico
     useEffect(() => {
         const ruoloUtente = localStorage.getItem('ruolo'); // Supponiamo che il ruolo dell'utente sia memorizzato nel localStorage
-        if (ruoloUtente === 'FIGURASPECIALIZZATA') {
+        if (ruoloUtente === 'FiguraSpecializzata') {
             setIsFiguraSpecializzata(true);
         }
         fetchConsulenze();

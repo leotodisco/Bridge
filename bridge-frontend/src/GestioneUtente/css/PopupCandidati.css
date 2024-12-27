@@ -5,13 +5,16 @@
     left: 50%; /* Centro orizzontale */
     transform: translate(-50%, -50%); /* Centra il popup */
     width: 90%; /* Larghezza responsiva */
-    max-width: 400px; /* Larghezza massima */
+    max-width: 500px; /* Larghezza massima */
     background-color: #fff; /* Sfondo bianco */
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Effetto ombra */
     border-radius: 10px; /* Angoli arrotondati */
     z-index: 1000; /* Garantisce che il popup sia sopra tutto */
     padding: 20px; /* Spaziatura interna */
     box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
 }
 
 /* Sfondo semi-trasparente per l'overlay */
@@ -34,22 +37,99 @@
     margin-bottom: 15px;
 }
 
-/* Stile per la lista dei candidati */
+.popup h3 {
+    text-align: center;
+    margin-bottom: 20px;
+    color: #333;
+}
+
+.profile-picture {
+    display: block;
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    margin: 0 auto 20px;
+    object-fit: cover;
+    border: 2px solid #ddd;
+}
+
+.data-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 0;
+    border-bottom: 1px solid #f0f0f0;
+    font-size: 14px;
+}
+
+.data-label {
+    font-weight: bold;
+    text-align: left;
+    color: #555;
+    width: 40%;
+}
+
+.data-value {
+    text-align: right;
+    color: #333;
+    width: 60%;
+}
+
+/* Struttura per la lista dei candidati */
 .popup ul {
     list-style-type: none; /* Rimuove i punti elenco */
     padding: 0;
     margin: 0;
 }
 
+/* Layout Flex per ogni candidato */
 .popup ul li {
+    display: flex; /* Attiva il layout Flexbox */
+    justify-content: space-between; /* Spazio uniforme tra gli elementi */
+    align-items: center; /* Allinea verticalmente al centro */
     padding: 10px;
     border-bottom: 1px solid #ddd; /* Separatore tra i candidati */
     font-size: 16px;
     color: #555;
 }
 
-.popup ul li:last-child {
-    border-bottom: none; /* Rimuove il bordo dall'ultimo elemento */
+/* Layout per la sezione a sinistra (Email con icona) */
+.popup ul li .email-section {
+    display: flex;
+    align-items: center;
+}
+
+.popup ul li .email-section i {
+    margin-left: 10px; /* Distanza tra l'email e l'icona */
+    cursor: pointer;
+}
+
+.popup ul li .email-section span {
+    font-weight: bold;
+    color: #336a7e;
+}
+
+/* Layout per i pulsanti di accettazione e rifiuto a destra */
+.popup ul li .action-buttons {
+    display: flex;
+    flex-direction: column; /* Sovrappone i pulsanti */
+    align-items: flex-end;
+}
+
+.popup ul li .action-buttons button {
+    margin: 5px 0; /* Spazio tra i pulsanti */
+    padding: 8px 15px;
+    font-size: 14px;
+    color: #fff;
+    background-color: #336a7e; /* Colore di sfondo */
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
+    transition: background-color 0.3s ease-in-out;
+}
+
+/* Hover per i pulsanti di azione */
+.popup ul li .action-buttons button:hover {
+    background-color: #224f63; /* Colore al passaggio del mouse */
 }
 
 /* Stile per il pulsante di chiusura */

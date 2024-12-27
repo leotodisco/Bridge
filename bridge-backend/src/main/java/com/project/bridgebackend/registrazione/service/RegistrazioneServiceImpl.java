@@ -184,16 +184,16 @@ public class RegistrazioneServiceImpl implements RegistrazioneService {
 
         if (adminDAO.findByEmail(request.getEmail()) != null) {
             jwtToken = jwtService.generateToken(adminDAO.findByEmail(request.getEmail()));
-            ruoloUtente = "ADMIN";
+            ruoloUtente = "Admin";
         } else if (volontarioDAO.findByEmail(request.getEmail()) != null) {
             jwtToken = jwtService.generateToken(volontarioDAO.findByEmail(request.getEmail()));
-            ruoloUtente = "VOLONTARIO";
+            ruoloUtente = "Volontario";
         } else if (rifugiatoDAO.findByEmail(request.getEmail()) != null) {
             jwtToken = jwtService.generateToken(rifugiatoDAO.findByEmail(request.getEmail()));
-            ruoloUtente = "RIFUGIATO";
+            ruoloUtente = "Rifugiato";
         } else if (figSpecDAO.findByEmail(request.getEmail()) != null) {
             jwtToken = jwtService.generateToken(figSpecDAO.findByEmail(request.getEmail()));
-            ruoloUtente = "FIGURASPECIALIZZATA";
+            ruoloUtente = "FiguraSpecializzata";
         } else {
             throw new IllegalArgumentException("Utente non trovato");
         }

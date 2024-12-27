@@ -25,6 +25,7 @@ import LavoriUtente from "./GestioneUtente/components/dashboardLavoro.jsx";
 import AlloggiByProprietario from "./GestioneAlloggio/components/AlloggiByProprietario.jsx";
 import "./GestioneChatbot/css/Chatbot.css"
 import {FaRobot} from "react-icons/fa";
+import { ToastContainer } from 'react-toastify';
 
 function App() {
     const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -54,17 +55,20 @@ function App() {
         setIsSidebarOpen(!isSidebarOpen);
     };
 
+
     // Funzione toggle
     const toggleChatbotPopup = () => {
         setIsChatbotOpen((prev) => !prev);
     };
 
     return (
+
         <Router>
             <Sidebar isOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />
             <main className={`main-content ${isSidebarOpen ? 'shifted' : ''}`}>
                 {isAuthenticated ? (
                     <>
+                        <ToastContainer />
                         <Routes>
                             <Route path="/" element={<Homepage />} />
                             <Route path="/eventi-utente" element={<EventiUtente />} />

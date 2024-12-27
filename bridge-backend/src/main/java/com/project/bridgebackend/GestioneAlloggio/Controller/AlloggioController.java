@@ -223,7 +223,8 @@ public class AlloggioController {
      * @return ResponseEntity con valore booleano che indica se è favorito
      */
     @GetMapping("/isFavorito")
-    public ResponseEntity<Boolean> isFavorito(@RequestParam String email, @RequestParam long idAlloggio) {
+    public ResponseEntity<Boolean> isFavorito(@RequestParam String email,
+                                              @RequestParam long idAlloggio) {
         try {
             // Verifica se l'alloggio esiste
             Alloggio alloggio = alloggioDAO.findAlloggioById(idAlloggio);

@@ -1,7 +1,9 @@
 import { useState, useEffect } from "react";
 import PropTypes from "prop-types"; // Per validare le props
 import "../../GestioneEvento/css/eventoView.css";
-import {useNavigate} from "react-router-dom";
+
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css'; // Importa lo stile di default
 
 //pop up per chiedere conferma prima di eliminare
 const ConfirmDeletePopup = ({ onConfirm, onCancel }) => (
@@ -22,7 +24,6 @@ const ConfirmDeletePopup = ({ onConfirm, onCancel }) => (
 
 const ConsulenzaView = ({ id, onClose, onUpdate }) => {
     const [consulenzaData, setConsulenzaData] = useState(null);
-    const nav = useNavigate();
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [editing, setEditing] = useState(false);
@@ -51,22 +52,13 @@ const ConsulenzaView = ({ id, onClose, onUpdate }) => {
     // Funzione per recuperare i dettagli della consulenza
     const fetchConsulenza = async (id) => {
         try {
-
-            // check su token:
-            if (!token) {
-                alert("Non sei autenticato. Effettua il login.");
-                nav('/login');
-                return;
-            }
-
             const response = await fetch(`http://localhost:8080/api/annunci/view_consulenze/retrive/${id}`, {
-                method: "GET",
+                method: 'GET',
                 headers: {
-                    Authorization: `Bearer ${token}`,
-                    "Accept": "application/json",
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json',
                 },
             });
-
             if (!response.ok) {
                 throw new Error("Consulenza non trovata");
             }
@@ -97,13 +89,10 @@ const ConsulenzaView = ({ id, onClose, onUpdate }) => {
 
     const handleRegisterInterest = async (idConsulenza, email) => {
         try {
-            // check su token:
             if (!token) {
-                alert("Non sei autenticato. Effettua il login.");
-                nav('/login');
+                toast.error("Token non valido. Effettua nuovamente il login.");
                 return;
             }
-
             const response = await fetch(`http://localhost:8080/api/annunci/manifestazione-interesse/${idConsulenza}`, {
                 method: 'POST',
                 headers: {
@@ -114,27 +103,20 @@ const ConsulenzaView = ({ id, onClose, onUpdate }) => {
             });
 
             if (response.ok) {
-                alert("Sei stato aggiunto alla lista di attesa!");
+                toast.info("Sei stato aggiunto alla lista di attesa!");
                 setIsRegistered(true);  // Imposta lo stato su 'true' dopo la registrazione
             } else {
                 throw new Error("Errore durante la registrazione.");
             }
         } catch (error) {
             console.error("Errore:", error);
-            alert("Non è stato possibile aggiungerti alla lista di attesa.");
+            toast.error("Non è stato possibile aggiungerti alla lista di attesa.");
         }
     };
 
     //controlla se un utente ha già manifestato il suo interesse per una consulenza
     const checkIfUserIsRegistered = async (idConsulenza) => {
         try {
-            // check su token:
-            if (!token) {
-                alert("Non sei autenticato. Effettua il login.");
-                nav('/login');
-                return;
-            }
-
             const response = await fetch(`http://localhost:8080/api/annunci/verifica-candidato/${idConsulenza}`, {
                 method: 'POST',
                 headers: {
@@ -143,9 +125,9 @@ const ConsulenzaView = ({ id, onClose, onUpdate }) => {
                 },
             });
             if (response.ok) {
-                const data = await response.text();
+                const data = await response.json();
                 console.log(data);
-                setIsRegistered(true);
+                setIsRegistered(data);
             } else {
                 throw new Error("Errore durante la verifica dell'iscrizione.");
             }
@@ -158,7 +140,7 @@ const ConsulenzaView = ({ id, onClose, onUpdate }) => {
     const handleRemoveInterest = async (idConsulenza, email) => {
         try {
             if (!token) {
-                alert("Token non valido. Effettua nuovamente il login.");
+                toast.error("Token non valido. Effettua nuovamente il login.");
                 return;
             }
             const response = await fetch(`http://localhost:8080/api/annunci/rimuovi-interesse/${idConsulenza}`, {
@@ -171,14 +153,14 @@ const ConsulenzaView = ({ id, onClose, onUpdate }) => {
             });
 
             if (response.ok) {
-                alert("La tua candidatura è stata rimossa.");
+                toast.info("La tua candidatura è stata rimossa.");
                 setIsRegistered(false);  // Imposta lo stato a false dopo la rimozione
             } else {
                 throw new Error("Errore durante la rimozione.");
             }
         } catch (error) {
             console.error("Errore:", error);
-            alert("Non è stato possibile rimuovere la candidatura.");
+            toast.error("Non è stato possibile rimuovere la candidatura.");
         }
     };
 
@@ -186,7 +168,7 @@ const ConsulenzaView = ({ id, onClose, onUpdate }) => {
     useEffect(() => {
         const fetchData = async () => {
             await fetchConsulenza(id);
-            if (tipoUtente === 'RIFUGIATO' && emailUtenteLoggato) {
+            if (tipoUtente === 'Rifugiato' && emailUtenteLoggato) {
                 await checkIfUserIsRegistered(id);
             }
         };
@@ -235,14 +217,6 @@ const ConsulenzaView = ({ id, onClose, onUpdate }) => {
         };
         try {
             const token = localStorage.getItem('token');
-
-            // check su token:
-            if (!token) {
-                alert("Non sei autenticato. Effettua il login.");
-                nav('/login');
-                return;
-            }
-
             const response = await fetch(`http://localhost:8080/api/annunci/modifica_consulenza/${id}`, {
                 method: 'POST',
                 headers: {
@@ -257,7 +231,7 @@ const ConsulenzaView = ({ id, onClose, onUpdate }) => {
             }
             const data = await response.json();
 
-            alert("Consulenza modificata con successo!");
+            toast.info("Consulenza modificata con successo!");
 
             // Ricarica i dati aggiornati
             await fetchConsulenza(id);
@@ -269,7 +243,7 @@ const ConsulenzaView = ({ id, onClose, onUpdate }) => {
             setEditing(false);
         } catch (err) {
             console.error(err);
-            alert("Non è stato possibile modificare la consulenza.");
+            toast.error("Non è stato possibile modificare la consulenza.");
         }
     };
 
@@ -278,13 +252,6 @@ const ConsulenzaView = ({ id, onClose, onUpdate }) => {
     const handleDelete = async () => {
         const token = localStorage.getItem('token');
         try {
-            // check su token:
-            if (!token) {
-                alert("Non sei autenticato. Effettua il login.");
-                nav('/login');
-                return;
-            }
-
             const response = await fetch(`http://localhost:8080/api/annunci/eliminaConsulenza/${id}`, {
                 method: 'DELETE',
                 headers: {
@@ -296,12 +263,12 @@ const ConsulenzaView = ({ id, onClose, onUpdate }) => {
                 throw new Error("Errore durante l'eliminazione della consulenza.");
             }
 
-            alert("Consulenza eliminata con successo!");
+            toast.info("Consulenza eliminata con successo!");
             onClose(); // Chiudi il popup dopo l'eliminazione
             onUpdate({ id }, true); // Aggiorna la lista delle consulenze
         } catch (err) {
             console.error(err);
-            alert("Non è stato possibile eliminare la consulenza.");
+            toast.error("Non è stato possibile eliminare la consulenza.");
         }
     };
 
@@ -369,7 +336,7 @@ const ConsulenzaView = ({ id, onClose, onUpdate }) => {
                             </div>
                         )}
                         <div className="popup-body">
-                            {tipoUtente === "RIFUGIATO" && (
+                            {tipoUtente === "Rifugiato"  && (
                                 <div>
                                     <h3>Iscriviti se desideri una consulenza</h3>
                                     <hr/>

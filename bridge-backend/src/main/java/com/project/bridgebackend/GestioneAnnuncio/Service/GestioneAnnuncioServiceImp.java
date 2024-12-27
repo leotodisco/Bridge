@@ -12,10 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import jakarta.validation.Valid;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 /**
  * @author Geraldine Montella, Vito Vernellati.
@@ -288,8 +285,8 @@ public class GestioneAnnuncioServiceImp implements GestioneAnnuncioService {
                     }
                     break;
                 case "candidati":
-                    if (valore instanceof List) {
-                        List<String> nuoviCandidati = (List<String>) valore;
+                    if (valore instanceof Map<?,?>) {
+                        Map<String,Boolean> nuoviCandidati = (Map<String,Boolean>) valore;
                         consulenza.setCandidati(nuoviCandidati);
                     } else {
                         throw new IllegalArgumentException("Formato candidati non valido.");
@@ -353,11 +350,11 @@ public class GestioneAnnuncioServiceImp implements GestioneAnnuncioService {
         }
 
         // Verifica se l'email del rifugiato è già nella lista candidati
-        if (c.getCandidati().contains(r.getEmail())) {
+        if (c.getCandidati().containsKey(r.getEmail())) {
             throw new IllegalArgumentException("Interesse già manifestato");
         }
 
-        c.getCandidati().add(r.getEmail());
+        c.getCandidati().put(r.getEmail(), false);
         //aggiorno la consulenza
         consulenzaDAO.save(c);
     }
@@ -383,7 +380,7 @@ public class GestioneAnnuncioServiceImp implements GestioneAnnuncioService {
         }
 
         // Verifica se l'email del rifugiato non è presente in lista
-        if (!c.getCandidati().contains(r.getEmail())) {
+        if (!c.getCandidati().containsKey(r.getEmail())) {
             throw new IllegalArgumentException(
                     "Il rifugito non risulata interessato alla consulenza");
         }
@@ -392,6 +389,37 @@ public class GestioneAnnuncioServiceImp implements GestioneAnnuncioService {
         //aggiorno la consulenza
         consulenzaDAO.save(c);
     }
+
+    @Override
+    public void accettaConsulenzaRifugiato(final long idConsulenza, final String emailRifugiato) {
+        if (emailRifugiato == null || emailRifugiato.trim().isEmpty()) {
+            throw new IllegalArgumentException("Email vuota o nulla");
+        }
+        if (idConsulenza <= 0) {
+            throw new IllegalArgumentException("ID consulenza non valido");
+        }
+
+        // Recupera il rifugiato dal database
+        Rifugiato r = rifugiatoDAO.findByEmail(emailRifugiato);
+        if (r == null) {
+            throw new IllegalArgumentException("Rifugiato non trovato");
+        }
+
+        Consulenza c = consulenzaDAO.findConsulenzaById(idConsulenza);
+        if (c == null) {
+            throw new IllegalArgumentException("Alloggio non trovato");
+        }
+
+        // Verifica se l'email del rifugiato è già nella lista candidati
+        if (c.getCandidati().containsKey(r.getEmail())) {
+            throw new IllegalArgumentException("Interesse già manifestato");
+        }
+
+        c.getCandidati().put(r.getEmail(), true);
+        //aggiorno la consulenza
+        consulenzaDAO.save(c);
+    }
+
     /**
      *
      */

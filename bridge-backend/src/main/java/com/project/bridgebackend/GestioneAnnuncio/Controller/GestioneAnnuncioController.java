@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 
 /**
@@ -368,8 +369,7 @@ public class GestioneAnnuncioController {
             }
 
             // Verifica se l'utente è candidato per questa consulenza
-            boolean isFavorito = c.getCandidati().contains(emailUtente);
-
+            boolean isFavorito = c.getCandidati().containsKey(emailUtente);
             // Restituisce lo stato
             return ResponseEntity.ok(isFavorito);
         } catch (IllegalArgumentException e) {
@@ -427,7 +427,7 @@ public class GestioneAnnuncioController {
             }
 
             // Verifica se l'utente è candidato per questa consulenza
-           if (!c.getCandidati().contains(emailUtente)) {
+           if (!c.getCandidati().containsKey(emailUtente)) {
                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Rifugiato non presente tra i candidati");
            }
 
@@ -545,7 +545,7 @@ public class GestioneAnnuncioController {
      * @param id ID dell'annuncio di lavoro.
      * @return ResponseEntity contenente l'annuncio di lavoro specificato.
      */
-    @GetMapping("/view_lavori/retrieve/{id}")
+    @GetMapping("/view_lavori/retrive/{id}")
     public ResponseEntity<Lavoro> getLavoroById(@PathVariable final long id) {
         Lavoro lavoro = gestioneAnnuncioService.getLavori(id);
         System.out.println(lavoro);
@@ -666,6 +666,98 @@ public class GestioneAnnuncioController {
             LOGGER.error("Errore generico durante l'eliminazione: {}", e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body("Errore durante l'eliminazione del lavoro: " + e.getMessage());
+        }
+    }
+
+    @PostMapping("/accetta/{idConsulenza}")
+    public ResponseEntity<?> accettaConsulenza(
+            @PathVariable final long idConsulenza,
+            @RequestBody final Map<String, String> requestBody,
+            @RequestHeader("Authorization") final String authorizationHeader) {
+        try {
+            // Verifica che il token non sia nullo o vuoto
+            if (authorizationHeader == null || authorizationHeader.trim().isEmpty()) {
+                return ResponseEntity.badRequest().body("Token non fornito o vuoto.");
+            }
+            // Estrai l'email dal body
+            String emailRifugiato = requestBody.get("email");
+            if (emailRifugiato == null || emailRifugiato.isEmpty()) {
+                return ResponseEntity.badRequest().body("Email non fornita.");
+            }
+
+            // Recupera la consulenza tramite DAO
+            Consulenza c = consulenzaDAO.findConsulenzaById(idConsulenza);
+            if (c == null) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Consulenza non trovata.");
+            }
+
+            // Verifica se l'utente è candidato per questa consulenza
+            if (!c.getCandidati().containsKey(emailRifugiato)) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Rifugiato non presente tra i candidati");
+            }
+
+            //metodo per rimuovere l'interesse di un rifugiato da una candidatura
+            gestioneAnnuncioService.rimuoviInteresseConsulenza(idConsulenza,emailRifugiato);
+
+            gestioneAnnuncioService.accettaConsulenzaRifugiato(idConsulenza, emailRifugiato);
+
+            return ResponseEntity.ok("Rifugiato " + emailRifugiato
+                    + " rimosso tra i candidati della consulenza");
+        } catch (IllegalArgumentException e) {
+            e.printStackTrace();
+            // Specifica errore legato ad argomenti non validi
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body("Errore nei parametri forniti: " + e.getMessage());
+        } catch (Exception e) {
+            e.printStackTrace();
+            // Gestisce errori generici
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Errore durante l'elaborazione della richiesta: " + e.getMessage());
+        }
+    }
+
+    @PostMapping("/rifiuta/{idConsulenza}")
+    public ResponseEntity<?> rifiutaConsulenza(
+            @PathVariable final long idConsulenza,
+            @RequestBody final Map<String, String> requestBody,
+            @RequestHeader("Authorization") final String authorizationHeader) {
+        try {
+            // Verifica che il token non sia nullo o vuoto
+            if (authorizationHeader == null || authorizationHeader.trim().isEmpty()) {
+                return ResponseEntity.badRequest().body("Token non fornito o vuoto.");
+            }
+            // Estrai l'email dal body
+            String emailRifugiato = requestBody.get("email");
+            if (emailRifugiato == null || emailRifugiato.isEmpty()) {
+                return ResponseEntity.badRequest().body("Email non fornita.");
+            }
+
+            // Recupera la consulenza tramite DAO
+            Consulenza c = consulenzaDAO.findConsulenzaById(idConsulenza);
+            if (c == null) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Consulenza non trovata.");
+            }
+
+            // Verifica se l'utente è candidato per questa consulenza
+            if (!c.getCandidati().containsKey(emailRifugiato)) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Rifugiato non presente tra i candidati");
+            }
+
+            //metodo per rimuovere l'interesse di un rifugiato da una candidatura
+            gestioneAnnuncioService.rimuoviInteresseConsulenza(idConsulenza,emailRifugiato);
+
+            return ResponseEntity.ok("Rifugiato " + emailRifugiato
+                    + " rimosso tra i candidati della consulenza");
+        } catch (IllegalArgumentException e) {
+            e.printStackTrace();
+            // Specifica errore legato ad argomenti non validi
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body("Errore nei parametri forniti: " + e.getMessage());
+        } catch (Exception e) {
+            e.printStackTrace();
+            // Gestisce errori generici
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Errore durante l'elaborazione della richiesta: " + e.getMessage());
         }
     }
     /**

@@ -84,6 +84,8 @@ public interface GestioneAnnuncioService {
 
     public void rimuoviInteresseConsulenza(final long idConsulenza, final String emailRifugiato);
 
+    public void accettaConsulenzaRifugiato(final long idConsulenza, final String emailRifugiato);
+
         //      **Metodi per Lavoro**
 
 

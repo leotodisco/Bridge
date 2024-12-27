@@ -12,6 +12,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author Geraldine Montella.
@@ -75,6 +76,8 @@ public class Consulenza extends Annuncio {
             name = "consulenza_rifugiati",
             joinColumns = @JoinColumn(name = "consulenza_id")
     )
-    @Column(name = "rifugiato_email", nullable = false)
-    private List<String> candidati;
+    @MapKeyColumn(name = "rifugiato_email")
+    @Column(name = "stato")
+    private Map<String, Boolean> candidati; // true = accettato, false = respinto/in attesa
+
 }
