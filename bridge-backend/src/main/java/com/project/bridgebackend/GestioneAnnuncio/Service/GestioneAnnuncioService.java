@@ -6,6 +6,8 @@ import com.project.bridgebackend.Model.Entity.Consulenza;
 import com.project.bridgebackend.Model.Entity.Indirizzo;
 import com.project.bridgebackend.Model.Entity.Lavoro;
 import com.project.bridgebackend.Model.Entity.Utente;
+import com.project.bridgebackend.Model.Entity.enumeration.TipoConsulenza;
+
 import java.util.HashMap;
 import java.util.List;
 
@@ -83,6 +85,15 @@ public interface GestioneAnnuncioService {
     public void rimuoviInteresseConsulenza(final long idConsulenza, final String emailRifugiato);
 
         //      **Metodi per Lavoro**
+
+
+    /**
+     * Funzione per la ricerca di una determinata consuelenza,
+     * in base alla tipologia.
+     * @param tipo tipologia della consulenza che si vuole cercare.,
+     *
+     */
+    List<Consulenza> getConsulenzeByTipo(TipoConsulenza tipo);
 
     /**
      * Inserisce un nuovo annuncio di lavoro nel database.

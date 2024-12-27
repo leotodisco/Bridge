@@ -233,6 +233,11 @@ public class GestioneAnnuncioServiceImp implements GestioneAnnuncioService {
         return consulenzaDAO.findByProprietario(proprietario);
     }
 
+    @Override
+    public List<Consulenza> getConsulenzeByTipo(TipoConsulenza tipo) {
+        return consulenzaDAO.findByTipo(tipo);
+    }
+
     /**
      * Modifica una consulenza esistente nel database.
      *

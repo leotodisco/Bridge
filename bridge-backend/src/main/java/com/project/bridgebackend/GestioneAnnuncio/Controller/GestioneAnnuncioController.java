@@ -4,6 +4,7 @@ import com.project.bridgebackend.GestioneAnnuncio.Service.GestioneAnnuncioServic
 import com.project.bridgebackend.GestioneCorso.Controller.GestioneCorsoController;
 import com.project.bridgebackend.Model.Entity.*;
 import com.project.bridgebackend.Model.dao.ConsulenzaDAO;
+import com.project.bridgebackend.Model.Entity.enumeration.TipoConsulenza;
 import com.project.bridgebackend.Model.dao.FiguraSpecializzataDAO;
 import com.project.bridgebackend.Model.dao.IndirizzoDAO;
 import com.project.bridgebackend.Model.dao.VolontarioDAO;
@@ -446,6 +447,7 @@ public class GestioneAnnuncioController {
                     .body("Errore durante l'elaborazione della richiesta: " + e.getMessage());
         }
     }
+
     /**
      * Metodo per attuare modifiche su una specifica consulenza.
      * @param id è l'id della consulenza che si vuole eliminare.
@@ -510,6 +512,18 @@ public class GestioneAnnuncioController {
             return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
         }
         return new ResponseEntity<>(consulenze, HttpStatus.OK);
+    }
+
+    @GetMapping("/view_consulenze/filter")
+    public ResponseEntity<List<Consulenza>> getConsulenzeByTipo(
+            @RequestParam(required = false) TipoConsulenza tipo) {
+        List<Consulenza> consulenze;
+        if (tipo != null) {
+            consulenze = gestioneAnnuncioService.getConsulenzeByTipo(tipo);
+        } else {
+            consulenze = gestioneAnnuncioService.getAllConsulenze();
+        }
+        return ResponseEntity.ok(consulenze);
     }
 
     /**

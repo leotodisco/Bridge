@@ -72,6 +72,23 @@
     border-bottom: none;
 }
 
+.filter-bar {
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.filter-bar label {
+    font-weight: bold;
+}
+
+.filter-bar select {
+    padding: 5px;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+}
+
 /* Aggiungi al tuo file CSS */
 
 .popupOverlay {

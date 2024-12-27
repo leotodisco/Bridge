@@ -3,6 +3,7 @@ package com.project.bridgebackend.Model.dao;
 import com.project.bridgebackend.Model.Entity.Alloggio;
 import com.project.bridgebackend.Model.Entity.Consulenza;
 import com.project.bridgebackend.Model.Entity.Utente;
+import com.project.bridgebackend.Model.Entity.enumeration.TipoConsulenza;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -38,4 +39,6 @@ public interface ConsulenzaDAO extends JpaRepository<Consulenza, Long> {
        @Query("SELECT c FROM Consulenza c WHERE c.id =:id")
        Consulenza findConsulenzaById(long id);
 
+       @Query("SELECT c FROM Consulenza c WHERE c.tipo =:tipo")
+       List<Consulenza> findByTipo(TipoConsulenza tipo);
 }
