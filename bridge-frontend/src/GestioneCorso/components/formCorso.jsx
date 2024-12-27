@@ -32,7 +32,7 @@ const CreaCorso = ({ onClose }) => { // Accetta la prop onClose
     const [pdfFile, setPdfFile] = useState(null);
     const [pdfId, setPdfId] = useState(null);
     const [loading, setLoading] = useState(false);
-
+    const nav= useNavigate();
     const aggiornaTitolo = (e) => setTitolo(e.target.value);
     const aggiornaDescrizione = (e) => setDescrizione(e.target.value);
     const aggiornaCategoria = (e) => setCategoria(e.target.value);
@@ -106,10 +106,22 @@ const CreaCorso = ({ onClose }) => { // Accetta la prop onClose
         formData.append("pdf", file);  // il file stesso
 
         try {
-            const response = await fetch("http://localhost:8080/api/corsi/upload", {
-                method: "POST",
-                body: formData,  // Usare FormData per il file
-            });
+            const token = localStorage.getItem('authToken');
+
+            if (!token) {
+                alert("Non sei autenticato. Effettua il login.");
+                nav('/login');
+                return;
+            }
+
+            const response = await
+                fetch("http://localhost:8080/api/corsi/upload", {
+                    method: 'GET',
+                    body: formData,
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                    },
+                });
 
             if (!response.ok) {
                 const errorMessage = await response.text(); // Leggi il corpo della risposta
@@ -171,6 +183,12 @@ const CreaCorso = ({ onClose }) => { // Accetta la prop onClose
             const token = localStorage.getItem("authToken");  // Recupera il token JWT
             console.log(localStorage.getItem("authToken"));
 
+            if (!token) {
+                alert("Non sei autenticato. Effettua il login.");
+                nav('/login');
+                return;
+            }
+
             const response = await fetch("http://localhost:8080/api/corsi/crea", {
                 method: "POST",
                 headers: {
@@ -204,14 +222,12 @@ const CreaCorso = ({ onClose }) => { // Accetta la prop onClose
         }
     };
 
-    const navigate = useNavigate(); // Hook per la navigazione
-
     const handleClose = () => {
         console.log("Pulsante di chiusura cliccato"); // Log di debug
         if (onClose) {
             onClose(); // Chiude il modal se onClose è fornito
         } else {
-            navigate('/view-listacorsi'); // Reindirizza a /view-listacorsi
+            nav('/view-listacorsi'); // Reindirizza a /view-listacorsi
         }
     };
 

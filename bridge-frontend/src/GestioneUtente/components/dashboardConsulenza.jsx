@@ -14,9 +14,27 @@ const ConsulenzaUtente = () => {
     const email = localStorage.getItem('email'); // Assicurati che l'email sia salvata.
 
     useEffect(() => {
+        const token = localStorage.getItem('authToken');
+
+        if (!token) {
+            alert("Token non trovato. Effettua nuovamente il login.");
+            return;
+        }
+
         // Recupera gli eventi dell'utente
-        fetch(`http://localhost:8080/api/annunci/pubblicati?email=${email}`)
-            .then((response) => response.json())
+        fetch(`http://localhost:8080/api/annunci/pubblicati?email=${email}`, {
+            method: 'GET',
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json',
+            },
+        })
+            .then((response) => {
+                if (!response.ok) {
+                    throw new Error('Errore nella risposta del server');
+                }
+                return response.json();
+            })
             .then((data) => setConsulenza(data))
             .catch((error) => {
                 setError('Errore durante il recupero delle consulenze');

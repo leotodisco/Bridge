@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import "../../GestioneCorso/css/corsoView.css"; // Import del file CSS
-import "../../GestioneCorso/css/formCorsoStyle.css"; // Import del file CSS
+import "../../GestioneCorso/css/formCorsoStyle.css";
+import {useNavigate} from "react-router-dom"; // Import del file CSS
 
 const LINGUA = {
     ITALIANO: "ITALIANO",
@@ -40,6 +41,7 @@ const CorsoView = ({ id, onClose }) => {
     const [categoriaError, setCategoriaError] = useState("");
     const [linguaError, setLinguaError] = useState("");
     const [pdfFileError, setPdfFileError] = useState("");
+    const nav = useNavigate();
 
     // Recupera l'email dell'utente loggato
     const emailUtenteLoggato = localStorage.getItem("email");
@@ -49,7 +51,23 @@ const CorsoView = ({ id, onClose }) => {
 
     const fetchCorso = async () => {
         try {
-            const response = await fetch(`http://localhost:8080/api/corsi/cerca/${id}`);
+            const token = localStorage.getItem('authToken');
+
+            if (!token) {
+                alert("Non sei autenticato. Effettua il login.");
+                nav('/login');
+                return;
+            }
+
+            const response = await
+                fetch(`http://localhost:8080/api/corsi/cerca/${id}`, {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json',
+                    },
+                });
+
             if (!response.ok) throw new Error("Corso non trovato");
 
             const data = await response.json();
@@ -123,10 +141,24 @@ const CorsoView = ({ id, onClose }) => {
         uploadFormData.append("pdf", file);
 
         try {
-            const response = await fetch("http://localhost:8080/api/corsi/upload", {
-                method: "POST",
-                body: uploadFormData,
-            });
+
+            const token = localStorage.getItem('authToken');
+
+            if (!token) {
+                alert("Non sei autenticato. Effettua il login.");
+                nav('/login');
+                return;
+            }
+
+            const response = await
+                fetch("http://localhost:8080/api/corsi/upload", {
+                    method: 'POST',
+                    body: uploadFormData,
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+
+                    },
+                });
 
             if (!response.ok) {
                 throw new Error("Errore durante il caricamento del PDF.");
@@ -177,9 +209,22 @@ const CorsoView = ({ id, onClose }) => {
     // Funzione per scaricare il PDF del corso
     const downloadPDF = async (courseId, courseTitle) => {
         try {
-            const response = await fetch(`http://localhost:8080/api/corsi/download/${courseId}`, {
-                method: "GET",
-            });
+
+            const token = localStorage.getItem('authToken');
+
+            if (!token) {
+                alert("Non sei autenticato. Effettua il login.");
+                nav('/login');
+                return;
+            }
+
+            const response = await
+                fetch(`http://localhost:8080/api/corsi/download/${courseId}`, {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                    },
+                });
 
             if (!response.ok) {
                 throw new Error(`Errore durante il download del PDF: ${response.status} ${response.statusText}`);

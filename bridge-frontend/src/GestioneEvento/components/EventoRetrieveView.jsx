@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import PropTypes from "prop-types"; // Importa PropTypes per validare le props
 import { format } from "date-fns"; // Importa date-fns per la formattazione
 import "../../GestioneEvento/css/eventoView.css";
+import {useNavigate} from "react-router-dom";
 
 // Funzione per formattare la data
 const formatDate = (dateString) => {
@@ -21,7 +22,7 @@ const EventView = ({ id, onClose }) => {
     const [isSubscribed, setIsSubscribed] = useState(false);
     const [showSecondPopup, setShowSecondPopup] = useState(false); // Stato per il secondo popup
     const [popupTransition, setPopupTransition] = useState(false); // Stato per il movimento del popup
-
+    const nav = useNavigate();
     const [partecipanti, setPartecipanti] = useState([]); // Stato per i partecipanti
     const [partecipantiError, setPartecipantiError] = useState(null);
     const [partecipantiLoading, setPartecipantiLoading] = useState(false);
@@ -46,6 +47,13 @@ const EventView = ({ id, onClose }) => {
 
     const fetchEvent = async (id) => {
         try {
+
+            if (!token) {
+                alert("Non sei autenticato. Effettua il login.");
+                nav('/login');
+                return;
+            }
+
             const response = await fetch(`http://localhost:8080/api/eventi/retrieve/${id}?emailPartecipante=${encodeURIComponent(emailPartecipante)}`, {
                 method: 'GET',
                 headers: {
@@ -74,6 +82,12 @@ const EventView = ({ id, onClose }) => {
         }
         try {
             const url = `http://localhost:8080/api/eventi/${id}/iscrizione?emailPartecipante=${encodeURIComponent(emailPartecipante)}`;
+
+            if (!token) {
+                alert("Non sei autenticato. Effettua il login.");
+                nav('/login');
+                return;
+            }
 
             const response = await fetch(url, {
                 method: 'GET',
@@ -114,9 +128,23 @@ const EventView = ({ id, onClose }) => {
 
     const handleUnsubscription = async () => {
         try {
-            const response = await fetch(`http://localhost:8080/api/eventi/${id}/disiscrivi?emailPartecipante=${encodeURIComponent(emailPartecipante)}`, {
-                method: "DELETE",
-            });
+            const token = localStorage.getItem('authToken');
+
+            if (!token) {
+                alert("Non sei autenticato. Effettua il login.");
+                nav('/login');
+                return;
+            }
+
+            const response = await
+                fetch(`http://localhost:8080/api/eventi/${id}/disiscrivi?emailPartecipante=${encodeURIComponent(emailPartecipante)}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json',
+                    },
+                });
+
             if (!response.ok) {
                 throw new Error("Errore durante la disiscrizione");
             }
@@ -131,11 +159,21 @@ const EventView = ({ id, onClose }) => {
     const fetchPartecipanti = async () => {
         try {
             setPartecipantiLoading(true);
-            const response = await fetch(`http://localhost:8080/api/eventi/partecipanti/${id}`, {
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                },
-            });
+
+            if (!token) {
+                alert("Non sei autenticato. Effettua il login.");
+                nav('/login');
+                return;
+            }
+
+            const response = await
+                fetch(`http://localhost:8080/api/eventi/partecipanti/${id}`, {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                    },
+                });
+
             if (!response.ok) {
                 throw new Error("Errore durante il recupero dei partecipanti.");
             }

@@ -12,9 +12,27 @@ const EventiUtente = () => {
     const email = localStorage.getItem('email'); // Assicurati che l'email sia salvata.
 
     useEffect(() => {
+        const token = localStorage.getItem('authToken'); // Sostituisci con il tuo token
+
+        if (!token) {
+            alert("Token non trovato. Effettua nuovamente il login.");
+            return;
+        }
+
         // Recupera gli eventi dell'utente
-        fetch(`http://localhost:8080/api/eventi/pubblicati?email=${email}`)
-            .then((response) => response.json())
+        fetch(`http://localhost:8080/api/eventi/pubblicati?email=${email}`, {
+            method: 'GET',
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json',
+            },
+        })
+            .then((response) => {
+                if (!response.ok) {
+                    throw new Error('Errore nella risposta del server');
+                }
+                return response.json();
+            })
             .then((data) => setEventi(data))
             .catch((error) => {
                 setError('Errore durante il recupero degli eventi');

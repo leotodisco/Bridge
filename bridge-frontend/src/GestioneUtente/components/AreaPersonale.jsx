@@ -83,6 +83,12 @@ const AreaPersonale = ({ onLogout }) => {
             const email = localStorage.getItem('email');
             const token = localStorage.getItem('authToken');
 
+            if (!email || !token) {
+                alert("Non sei autenticato. Effettua il login.");
+                nav('/login');
+                return;
+            }
+
             const response = await fetch(`http://localhost:8080/areaPersonale/elimina/${email}`, {
                 method: 'DELETE',
                 headers: {

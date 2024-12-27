@@ -8,11 +8,24 @@ const LavoriUtente = () => {
     const [selectedLavoroId, setSelectedLavoroId] = useState(null);
     // Recupera l'email dell'utente loggato (esempio: salvata in localStorage)
     const email = localStorage.getItem('email'); // Assicurati che l'email sia salvata.
+    const token = localStorage.getItem('authToken'); // Assicurati che il token sia salvato.
 
     useEffect(() => {
+
         // Recupera gli eventi dell'utente
-        fetch(`http://localhost:8080/api/annunci/view_lavori/proprietario/${email}`)
-            .then((response) => response.json())
+        fetch(`http://localhost:8080/api/annunci/view_lavori/proprietario/${email}`, {
+            method: 'GET',
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json',
+            },
+        })
+            .then((response) => {
+                if (!response.ok) {
+                    throw new Error('Errore nella risposta del server');
+                }
+                return response.json();
+            })
             .then((data) => setLavori(data))
             .catch((error) => {
                 setError('Errore durante il recupero dei lavori');

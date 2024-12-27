@@ -1,6 +1,7 @@
 import { useState } from "react";
 import '../../GestioneEvento/css/formEventoStyle.css';
 import PropTypes from "prop-types";
+import {useNavigate} from "react-router-dom";
 
 // Oggetto contenente le lingue disponibili
 const Lingua = {
@@ -18,6 +19,7 @@ const Lingua = {
 
 // Funzione per creare l'evento
 const CreaEvento = ( { onClose }) => {
+    const nav = useNavigate();
     // Stato per gestire i dati del modulo
     const [nome, setNome] = useState(""); // Nome dell'evento
     const [data, setData] = useState(""); // Data dell'evento
@@ -294,6 +296,12 @@ const CreaEvento = ( { onClose }) => {
 
             const token = localStorage.getItem("authToken");
 
+            if (!token) {
+                alert("Non sei autenticato. Effettua il login.");
+                nav('/login');
+                return;
+            }
+
             // Richiesta POST per creare l'evento
             const response = await fetch("http://localhost:8080/api/eventi/crea", {
                 method: "POST",
@@ -302,6 +310,7 @@ const CreaEvento = ( { onClose }) => {
                     "Accept": "application/json",
                     "Authorization": `Bearer ${token}`
                 },
+
                 // Converte l'oggetto in formato JSON
                 body: JSON.stringify({
                     nome: nome,

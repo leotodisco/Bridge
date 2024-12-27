@@ -195,9 +195,15 @@ const ModificaUtente = ({ userData , setUserData, onSuccess  }) => {
 
         console.log(utenteDTO);
         try {
+            const token = localStorage.getItem("token");
+            if (!token) {
+                alert("Token non trovato. Effettua nuovamente il login.");
+                return;
+            }
             const response = await fetch(`http://localhost:8080/areaPersonale/modificaUtente/${email}`, {
                 method: "POST",
                 headers: {
+                    'Authorization': `Bearer ${token}`,
                     "Content-Type": "application/json",
                     "Accept": "application/json"
                 },

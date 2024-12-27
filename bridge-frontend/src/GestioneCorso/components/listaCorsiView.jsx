@@ -5,6 +5,7 @@ import CreaCorso from "./formCorso.jsx";
 import "../../GestioneEvento/css/card.css";
 import "../../GestioneCorso/css/listaCorsiStyle.css";
 import {FaPlus} from "react-icons/fa";
+import {useNavigate} from "react-router-dom";
 
 const ListaCorsiView = () => {
     const [corsi, setCorsi] = useState([]);
@@ -13,11 +14,27 @@ const ListaCorsiView = () => {
     const [selectedCorsoId, setSelectedCorsoId] = useState(null);
     const [showModal, setShowModal] = useState(false);
     const ruolo = localStorage.getItem("ruolo");
+    const nav = useNavigate();
 
     const fetchCorsi = async () => {
         try {
+            const token = localStorage.getItem('authToken');
 
-            const response = await fetch("http://localhost:8080/api/corsi/listaCorsi");
+            if (!token) {
+                alert("Non sei autenticato. Effettua il login.");
+                nav('/login');
+                return;
+            }
+
+            const response = await
+                fetch("http://localhost:8080/api/corsi/listaCorsi", {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json',
+                    },
+                });
+
             if (response.ok) {
                 const data = await response.json();
                 setCorsi(data);

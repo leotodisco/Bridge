@@ -116,6 +116,11 @@ const ModificaPassword = () => {
         const token = localStorage.getItem('Token');
         const email = localStorage.getItem('email');
         try {
+            if (!token) {
+                alert("Token non trovato. Effettua nuovamente il login.");
+                return;
+            }
+
             const response = await fetch(`http://localhost:8080/areaPersonale/modificaPassword/${email}`, {
                 method: "POST",
                 headers: {
