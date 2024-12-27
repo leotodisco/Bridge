@@ -1,22 +1,22 @@
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import OpenAI from "openai";
+import "../css/Chatbot.css";
 
 const Chatbot = () => {
     const [messages, setMessages] = useState([]);
     const [userInput, setUserInput] = useState('');
     const [loading, setLoading] = useState(false);
-
+    const messagesEndRef = useRef(null);
 
     const openai = new OpenAI({
-        apiKey: import.meta.env.VITE_OPENAI_API_KEY , // Usa una variabile ambiente
+        apiKey: import.meta.env.VITE_OPENAI_API_KEY,
         dangerouslyAllowBrowser: true
     });
 
     const handleSendMessage = async () => {
-        if (!userInput.trim()) return; // Ignora input vuoti
+        if (!userInput.trim()) return;
         setLoading(true);
 
-        // Aggiorna i messaggi con l'input dell'utente
         const newMessages = [
             ...messages,
             { role: "user", content: userInput },
@@ -54,26 +54,33 @@ const Chatbot = () => {
         }
     };
 
+    useEffect(() => {
+        messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    }, [messages]);
+
     return (
-        <div style={{ padding: "20px", maxWidth: "600px", margin: "0 auto" }}>
-            <div style={{ border: "1px solid #ccc", borderRadius: "10px", padding: "10px", height: "400px", overflowY: "auto" }}>
+        <div className="chatbot-container">
+            <div className="chatbot-header">
+                <h2>Bridge Chatbot</h2>
+            </div>
+            <div className="chatbot-messages">
                 {messages.map((msg, index) => (
-                    <div key={index} style={{ marginBottom: "10px" }}>
-                        <strong>{msg.role === "user" ? "Tu:" : "Bridge:"}</strong>
+                    <div key={index} className={`chatbot-message ${msg.role}`}>
+                        <strong>{msg.role === "user" ? "You:" : "Bridge:"}</strong>
                         <p>{msg.content}</p>
                     </div>
                 ))}
-                {loading && <p>Scrivendo...</p>}
+                {loading && <p className="chatbot-writing">Scrivendo...</p>}
+                <div ref={messagesEndRef} />
             </div>
-            <div style={{ marginTop: "10px" }}>
+            <div className="chatbot-input">
                 <input
                     type="text"
                     value={userInput}
                     onChange={(e) => setUserInput(e.target.value)}
-                    placeholder="Scrivi un messaggio..."
-                    style={{ width: "80%", padding: "10px", marginRight: "10px" }}
+                    placeholder="Scrivi un messaggio"
                 />
-                <button onClick={handleSendMessage} style={{ padding: "10px" }} disabled={loading}>
+                <button onClick={handleSendMessage} disabled={loading}>
                     Invia
                 </button>
             </div>

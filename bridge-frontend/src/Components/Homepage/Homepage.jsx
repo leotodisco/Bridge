@@ -15,6 +15,8 @@ const Homepage = () => {
     const [isPopupOpen, setIsPopupOpen] = useState(false);
     const [isAboutUsOpen, setIsAboutUsOpen] = useState(false); // Stato per gestire la visibilità del popup About Us
 
+
+
     useEffect(() => {
 
         // Fetch jobs
@@ -63,16 +65,9 @@ const Homepage = () => {
                 </button>
             </section>
 
-            <button className="chatbot-btn">
-                <Link to="/chatBot">
-                    <h3>Apri chatbot</h3>
-                </Link>
-            </button>
-
             <div className="main-content">
                 {/* Colonna sinistra */}
                 <div className="left-column">
-
                     <section className="section">
                         <Link to="/view-eventi" className="section-title">
                             <h3>Prossimi Eventi</h3>
@@ -127,14 +122,14 @@ const Homepage = () => {
                     </section>
                 </div>
             </div>
-            {/* Popup per la visualizzazione dettagliata dell'evento */}
+
+            {/* Popup EVENTO dettagliato */}
             {isPopupOpen && selectedEventId && (
-                <EventoRetrieveView id={selectedEventId} onClose={handleClosePopup}/>
+                <EventoRetrieveView id={selectedEventId} onClose={handleClosePopup} />
             )}
 
-            {/* Popup About Us */}
+            {/* Popup ABOUT US */}
             {isAboutUsOpen && <AboutUs onClose={toggleAboutUsPopup} />}
-
             <Footer />
         </div>
     );
