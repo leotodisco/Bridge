@@ -24,13 +24,6 @@ const Login = ({ onLogin }) =>  {
         event.preventDefault();
 
         try {
-
-            if (!email || !token) {
-                alert("Non sei autenticato. Effettua il login.");
-                nav('/login');
-                return;
-            }
-
             const response = await fetch('http://localhost:8080/authentication/login', {
                 method: 'POST',
                 headers: {
