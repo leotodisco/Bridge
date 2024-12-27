@@ -342,3 +342,129 @@
     }
 }
 
+/* Pulsante flottante in basso a destra */
+.chatbot-fab {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    width: 55px;
+    height: 55px;
+    background-color: #396F85;
+    color: #ffffff;
+    border: none;
+    border-radius: 50%;
+    font-size: 24px; /* se usi un’emoji/icona testo */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+    z-index: 9999;
+    transition: transform 0.2s ease-in-out;
+}
+
+.chatbot-fab:hover {
+    transform: scale(1.05);
+}
+
+/* Popup Chatbot (fisso in basso a destra, sopra il pulsante) */
+.chatbot-modal {
+    position: fixed;
+    bottom: 80px; /* così sta sopra il pulsante .chatbot-fab */
+    right: 20px;
+    width: 350px;          /* larghezza finestra */
+    height: 500px;         /* altezza fissa per mostrare tutto il form */
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+    z-index: 9999;
+
+    /* Layout in colonna per header, messaggi e input */
+    display: flex;
+    flex-direction: column;
+
+    /* Piccola animazione in entrata (opzionale) */
+    animation: chatbot-slide-up 0.3s ease forwards;
+}
+
+/* Bottone “X” per chiudere */
+.close-chatbot-btn {
+    position: absolute;
+    top: 8px;
+    right: 10px;
+    background: transparent;
+    border: none;
+    font-size: 1.4rem;
+    color: #333;
+    cursor: pointer;
+}
+
+/* (Opzionale) Stile per l’header in alto */
+.chatbot-header {
+    background-color: #f0f4f8;
+    padding: 10px;
+    text-align: center;
+    font-weight: bold;
+}
+
+/* Area messaggi: scorre in verticale e occupa tutto lo spazio disponibile */
+.chatbot-messages {
+    flex: 1;                /* Riempie lo spazio rimanente */
+    padding: 1rem;
+    overflow-y: auto;       /* Scrolling solo dei messaggi */
+    background-color: #ffffff;
+    box-shadow: inset 0 2px 4px rgba(0,0,0,0.05);
+}
+
+/* Contenitore input in fondo */
+.chatbot-input {
+    display: flex;
+    align-items: center;
+    padding: 0.75rem;
+    border-top: 1px solid #ddd;
+}
+
+/* Input testo */
+.chatbot-input input {
+    flex: 1;
+    padding: 0.75rem 1rem;
+    border: 1px solid #c1cad6;
+    border-radius: 20px;
+    font-size: 16px;
+}
+
+/* Bottone invia */
+.chatbot-input button {
+    margin-left: 0.5rem;
+    padding: 0.75rem 1.25rem;
+    background-color: #396F85;
+    color: #fff;
+    border: none;
+    border-radius: 20px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+.chatbot-input button:hover {
+    background-color: #315a6d;
+    transform: scale(1.05);
+}
+
+.chatbot-input button:active {
+    transform: scale(0.95);
+}
+
+/* Piccola animazione di scorrimento dal basso (opzionale) */
+@keyframes chatbot-slide-up {
+    0% {
+        transform: translateY(10px);
+        opacity: 0;
+    }
+    100% {
+        transform: translateY(0px);
+        opacity: 1;
+    }
+}

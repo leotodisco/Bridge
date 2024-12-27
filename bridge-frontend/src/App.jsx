@@ -23,10 +23,15 @@ import Alloggio from "./GestioneAlloggio/components/Alloggio.jsx";
 import Chatbot from "./GestioneChatbot/components/Chatbot.jsx";
 import LavoriUtente from "./GestioneUtente/components/dashboardLavoro.jsx";
 import AlloggiByProprietario from "./GestioneAlloggio/components/AlloggiByProprietario.jsx";
+import "./GestioneChatbot/css/Chatbot.css"
+import {FaRobot} from "react-icons/fa";
 
 function App() {
     const [isAuthenticated, setIsAuthenticated] = useState(false);
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+
+    // Stato per il chatbot
+    const [isChatbotOpen, setIsChatbotOpen] = useState(false);
 
     // Controlla se il token JWT è presente al caricamento
     useEffect(() => {
@@ -47,6 +52,11 @@ function App() {
 
     const toggleSidebar = () => {
         setIsSidebarOpen(!isSidebarOpen);
+    };
+
+    // Funzione toggle
+    const toggleChatbotPopup = () => {
+        setIsChatbotOpen((prev) => !prev);
     };
 
     return (
@@ -96,6 +106,23 @@ function App() {
                     </>
                 )}
             </main>
+
+            {/* -------------- CHATBOT POPUP -------------- */}
+
+            {/* Pulsante "flottante" in basso a destra per aprire il chatbot */}
+            <button className="chatbot-fab" onClick={toggleChatbotPopup}>
+                <FaRobot size={24} aria-hidden="true" />
+            </button>
+
+            {isChatbotOpen && (
+                <div className="chatbot-modal">
+                    {/* Bottone di chiusura in alto a destra nel box */}
+                    <button className="close-chatbot-btn" onClick={toggleChatbotPopup}>
+                        &times;
+                    </button>
+                    <Chatbot />
+                </div>
+            )}
         </Router>
     );
 }
