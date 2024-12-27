@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import PropTypes from "prop-types"; // Per validare le props
 import "../../GestioneEvento/css/eventoView.css";
+import {useNavigate} from "react-router-dom";
 
 //pop up per chiedere conferma prima di eliminare
 const ConfirmDeletePopup = ({ onConfirm, onCancel }) => (
@@ -21,6 +22,7 @@ const ConfirmDeletePopup = ({ onConfirm, onCancel }) => (
 
 const ConsulenzaView = ({ id, onClose, onUpdate }) => {
     const [consulenzaData, setConsulenzaData] = useState(null);
+    const nav = useNavigate();
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [editing, setEditing] = useState(false);
@@ -49,7 +51,22 @@ const ConsulenzaView = ({ id, onClose, onUpdate }) => {
     // Funzione per recuperare i dettagli della consulenza
     const fetchConsulenza = async (id) => {
         try {
-            const response = await fetch(`http://localhost:8080/api/annunci/view_consulenze/retrive/${id}`);
+
+            // check su token:
+            if (!token) {
+                alert("Non sei autenticato. Effettua il login.");
+                nav('/login');
+                return;
+            }
+
+            const response = await fetch(`http://localhost:8080/api/annunci/view_consulenze/retrive/${id}`, {
+                method: "GET",
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                    "Accept": "application/json",
+                },
+            });
+
             if (!response.ok) {
                 throw new Error("Consulenza non trovata");
             }
@@ -80,10 +97,13 @@ const ConsulenzaView = ({ id, onClose, onUpdate }) => {
 
     const handleRegisterInterest = async (idConsulenza, email) => {
         try {
+            // check su token:
             if (!token) {
-                alert("Token non valido. Effettua nuovamente il login.");
+                alert("Non sei autenticato. Effettua il login.");
+                nav('/login');
                 return;
             }
+
             const response = await fetch(`http://localhost:8080/api/annunci/manifestazione-interesse/${idConsulenza}`, {
                 method: 'POST',
                 headers: {
@@ -108,6 +128,13 @@ const ConsulenzaView = ({ id, onClose, onUpdate }) => {
     //controlla se un utente ha già manifestato il suo interesse per una consulenza
     const checkIfUserIsRegistered = async (idConsulenza) => {
         try {
+            // check su token:
+            if (!token) {
+                alert("Non sei autenticato. Effettua il login.");
+                nav('/login');
+                return;
+            }
+
             const response = await fetch(`http://localhost:8080/api/annunci/verifica-candidato/${idConsulenza}`, {
                 method: 'POST',
                 headers: {
@@ -208,6 +235,14 @@ const ConsulenzaView = ({ id, onClose, onUpdate }) => {
         };
         try {
             const token = localStorage.getItem('token');
+
+            // check su token:
+            if (!token) {
+                alert("Non sei autenticato. Effettua il login.");
+                nav('/login');
+                return;
+            }
+
             const response = await fetch(`http://localhost:8080/api/annunci/modifica_consulenza/${id}`, {
                 method: 'POST',
                 headers: {
@@ -243,6 +278,13 @@ const ConsulenzaView = ({ id, onClose, onUpdate }) => {
     const handleDelete = async () => {
         const token = localStorage.getItem('token');
         try {
+            // check su token:
+            if (!token) {
+                alert("Non sei autenticato. Effettua il login.");
+                nav('/login');
+                return;
+            }
+
             const response = await fetch(`http://localhost:8080/api/annunci/eliminaConsulenza/${id}`, {
                 method: 'DELETE',
                 headers: {

@@ -1,5 +1,6 @@
 import { useState } from "react";
 import "../css/formLavoro.css";
+import {useNavigate} from "react-router-dom";
 
 const TipoContratto = {
     FULL_TIME: "Full Time",
@@ -13,6 +14,7 @@ const TipoContratto = {
 };
 
 const CreaLavoro = () => {
+    const nav = useNavigate();
     const [titolo, setTitolo] = useState("");
     const [disponibilita, setDisponibilita] = useState(false);
     const [maxCandidature, setMaxCandidature] = useState(1);
@@ -106,10 +108,18 @@ const CreaLavoro = () => {
         console.log("Dati dell'annuncio di lavoro: ", lavoroDTO);
 
         try {
+            const token = localStorage.getItem("token");
+            // check su token:
+            if (!token) {
+                alert("Non sei autenticato. Effettua il login.");
+                nav('/login');
+                return;
+            }
+
             const response = await fetch("http://localhost:8080/api/annunci/creaLavoro", {
                 method: "POST",
                 headers: {
-                    'Authorization': `Bearer ${localStorage.getItem('authToken')}`,
+                    'Authorization': `Bearer ${token}`,
                     "Content-Type": "application/json",
                     Accept: "application/json",
                 },

@@ -1,4 +1,5 @@
 import { useState } from "react";
+import {useNavigate} from "react-router-dom";
 
 const Tipo = {
     SANITARIA: "SANITARIA",
@@ -9,7 +10,7 @@ const Tipo = {
 };
 
 const giorniSettimana = ["Lunedi", "Martedi", "Mercoledi", "Giovedi", "Venerdi", "Sabato", "Domenica"];
-
+const nav = useNavigate;
 
 const CreaConsulenza = () => {
     const [titolo, setTitolo] = useState("");
@@ -176,10 +177,18 @@ const CreaConsulenza = () => {
         console.log("Dati della consulenza: ", consulenzaDTO);
 
         try {
+            const token = localStorage.getItem("authToken");
+            // check su token:
+            if (!token) {
+                alert("Non sei autenticato. Effettua il login.");
+                nav('/login');
+                return;
+            }
+
             const response = await fetch("http://localhost:8080/api/annunci/creaConsulenza", {
                 method: "POST",
                 headers: {
-                    'Authentication': `Bearer ${localStorage.getItem('authToken')}`,
+                    'Authentication': `Bearer ${token}`,
                     "Content-Type": "application/json",
                     "Accept": "application/json"
                 },

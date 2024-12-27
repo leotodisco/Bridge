@@ -71,6 +71,13 @@ const AllConsulenzaView = () => {
             for (const consulenza of data) {
                 const email = consulenza.proprietario.email;
                 try {
+                    // check su token:
+                    if (!token) {
+                        alert("Non sei autenticato. Effettua il login.");
+                        nav('/login');
+                        return;
+                    }
+
                     const imgResponse = await fetch(`http://localhost:8080/areaPersonale/DatiFotoUtente/${email}`, {
                         method: 'GET',
                         headers: {

@@ -152,7 +152,6 @@ const CreaAlloggio = () => {
                 return;
             }
 
-
             const response = await fetch("http://localhost:8080/alloggi/aggiungi", {
                 method: "POST",
                 headers: {

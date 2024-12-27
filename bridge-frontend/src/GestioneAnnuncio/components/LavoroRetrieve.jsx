@@ -38,6 +38,7 @@ const LavoroView = ({ id, onClose }) => {
     // Funzione per ottenere i dettagli di un annuncio di lavoro
     const fetchLavoro = async (id) => {
         try {
+
             const response = await fetch(`http://localhost:8080/api/annunci/view_lavori/retrieve/${id}`, {
                 method: 'GET',
                 headers: {
