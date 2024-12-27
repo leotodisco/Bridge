@@ -20,8 +20,10 @@ const MostraMyAlloggi = () => {
             const token = localStorage.getItem('authToken');
             const proprietarioEmail = localStorage.getItem("email");
 
+            // check su token:
             if (!token) {
-                setError("Token di autenticazione mancante.");
+                alert("Non sei autenticato. Effettua il login.");
+                navigate('/login');
                 return;
             }
 

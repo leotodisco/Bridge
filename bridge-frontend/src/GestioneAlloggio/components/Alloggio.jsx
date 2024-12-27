@@ -77,6 +77,14 @@ const DettaglioAlloggio = () => {
                 if (favorito === "true") {
                     setIsFavorito(true);
                 } else {
+
+                    // check su token:
+                    if (!token) {
+                        alert("Non sei autenticato. Effettua il login.");
+                        nav('/login');
+                        return;
+                    }
+
                     // Altrimenti, fai una richiesta API per verificare se è nei preferiti
                     const response = await fetch(`http://localhost:8080/alloggi/isFavorito?email=${emailRifugiato}&idAlloggio=${idAlloggio}`, {
                         method: "GET",
@@ -110,6 +118,13 @@ const DettaglioAlloggio = () => {
     useEffect(() => {
         const fetchAlloggio = async () => {
             try {
+                // check su token:
+                if (!token) {
+                    alert("Non sei autenticato. Effettua il login.");
+                    nav('/login');
+                    return;
+                }
+
                 const response = await fetch(`http://localhost:8080/alloggi/SingoloAlloggio/${titolo}`, {
                     method: "GET",
                     headers: {

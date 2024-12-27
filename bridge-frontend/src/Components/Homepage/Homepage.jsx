@@ -3,7 +3,7 @@ import logo from '../../assets/IMG_1582.PNG'; // Logo
 import "./Homepage.css";
 import Footer from "../Footer/Footer.jsx"
 import EventoRetrieveView from "../../GestioneEvento/components/EventoRetrieveView.jsx";
-import {Link} from "react-router-dom";
+import {Link, useNavigate} from "react-router-dom";
 import AboutUs from "../AboutUs/AboutUs.jsx";
 
 
@@ -14,29 +14,58 @@ const Homepage = () => {
     const [selectedEventId, setSelectedEventId] = useState(null);
     const [isPopupOpen, setIsPopupOpen] = useState(false);
     const [isAboutUsOpen, setIsAboutUsOpen] = useState(false); // Stato per gestire la visibilità del popup About Us
-
+    const nav = useNavigate();
 
 
     useEffect(() => {
 
+        // Recupero del token da localStorage
+        const token = localStorage.getItem("authToken");
+
+        // check su token:
+        if (!token) {
+            alert("Non sei autenticato. Effettua il login.");
+            nav('/login');
+            return;
+        }
+
         // Fetch jobs
-        fetch("/api/annunci/random")
+        fetch("/api/annunci/random", {
+            method: "GET",
+            headers: {
+                "Authorization": `Bearer ${token}`, // <--- ecco l'header
+                "Content-Type": "application/json",
+            },
+        })
             .then((response) => response.json())
             .then((data) => setJobs(data))
             .catch((error) => console.error("Errore fetching jobs:", error));
 
         // Fetch random events
-        fetch("/api/eventi/random")
+        fetch("/api/eventi/random", {
+            method: "GET",
+            headers: {
+                "Authorization": `Bearer ${token}`,
+                "Content-Type": "application/json",
+            },
+        })
             .then((response) => response.json())
             .then((data) => setEvents(data))
             .catch((error) => console.error("Errore fetching events:", error));
 
         // Fetch accommodations
-        fetch("/api/alloggi/random")
+        fetch("/api/alloggi/random", {
+            method: "GET",
+            headers: {
+                "Authorization": `Bearer ${token}`,
+                "Content-Type": "application/json",
+            },
+        })
             .then((response) => response.json())
             .then((data) => setAccommodations(data))
             .catch((error) => console.error("Errore fetching accommodations:", error));
     }, []);
+
 
     // Gestisce l'apertura del popup con l'ID dell'evento selezionato
     const handleOpenPopup = (id) => {
