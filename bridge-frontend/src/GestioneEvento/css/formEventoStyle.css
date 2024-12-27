@@ -7,12 +7,11 @@
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.5); /* Sfondo nero semi-trasparente */
+    background-color: rgba(0, 0, 0, 0.5); /* Sfondo scuro traslucido */
     display: flex;
     justify-content: center;
     align-items: center;
-    z-index: 1000; /* Assicurati che il popup sia sopra */
-    overflow: hidden; /* Evita lo scrolling della pagina sottostante */
+    z-index: 1000; /* Porta il popup in primo piano */
 }
 
 /* Contenitore principale del popup */
@@ -32,23 +31,37 @@
     z-index: 1100;
 }
 
-/* Pulsante di chiusura */
-.popup-close-btn {
-    position: absolute;
-    top: 10px; /* Distanza dall'alto */
-    right: 10px; /* Distanza dal lato destro */
-    background: transparent; /* Sfondo trasparente */
-    border: none; /* Nessun bordo */
-    font-size: 1.5rem; /* Dimensione del carattere */
-    font-weight: bold; /* Grassetto */
-    color: #333; /* Colore della "X" */
-    cursor: pointer; /* Cambia il cursore a puntatore */
+.header-FormContainer {
+    display: flex;
+    align-items: center;
+    justify-content: center; /* Centra il contenuto */
+    padding: 10px;
+    position: relative;
 }
 
-.popup-close-btn:hover {
-    color: #00BF62; /* Cambia colore al passaggio del mouse */
+
+.form-title {
+    margin: 0 auto; /* Centra il testo */
+    font-size: 20px;
+    font-weight: bold;
+    color: #333;
+    text-align: center;
 }
 
+.close-button {
+    position: absolute; /* Assicura che il pulsante sia posizionato */
+    right: 10px;
+    background: none;
+    border: none;
+    font-size: 24px;
+    font-weight: bold;
+    color: #333;
+    cursor: pointer;
+}
+
+.close-button:hover {
+    color: #ff0000; /* Cambia colore quando il cursore passa sopra */
+}
 
 /* Stile della barra di scorrimento */
 .popup-container::-webkit-scrollbar {

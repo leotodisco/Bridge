@@ -28,8 +28,11 @@ const EventView = ({ id, onClose }) => {
     const [partecipantiLoading, setPartecipantiLoading] = useState(false);
 
     // Recupera l'email dell'utente loggato dal localStorage
+    // Recupera l'email e il ruolo dell'utente loggato dal localStorage
     const emailPartecipante = localStorage.getItem("email");
     const token = localStorage.getItem("authToken");
+    const ruoloPartecipante = localStorage.getItem("ruolo");
+
 
     // Quando il secondo popup deve essere visibile
     useEffect(() => {
@@ -241,7 +244,7 @@ const EventView = ({ id, onClose }) => {
                                 <span className="popup-value">{eventData.organizzatore.nome} {eventData.organizzatore.cognome}</span>
                             </div>
                         </div>
-                        {emailPartecipante !== eventData.organizzatore.email && (
+                        {ruoloPartecipante === "RIFUGIATO" && emailPartecipante !== eventData.organizzatore.email && (
                             <div className="popup-actions">
                                 {isSubscribed ? (
                                     <button className="popup-button" onClick={handleUnsubscription}>
@@ -254,16 +257,19 @@ const EventView = ({ id, onClose }) => {
                                 )}
                             </div>
                         )}
-                        <button
-                            className="popup-button"
-                            onClick={() => {
-                                setPopupTransition(true);
-                                setTimeout(() => setShowSecondPopup(true), 500);
-                            }}
-                        >
-                            Mostra Partecipanti
-                            <i className="fa-solid fa-arrow-right" style={{marginLeft: '8px'}}></i>
-                        </button>
+                        {emailPartecipante === eventData.organizzatore.email && (
+                            <button
+                                className="popup-button"
+                                onClick={() => {
+                                    setPopupTransition(true);
+                                    setTimeout(() => setShowSecondPopup(true), 500);
+                                }}
+                            >
+                                Mostra Partecipanti
+                                <i className="fa-solid fa-arrow-right" style={{ marginLeft: '8px' }}></i>
+                            </button>
+                        )}
+
                     </div>
                 </div>
             ) : null}

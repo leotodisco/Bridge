@@ -1,7 +1,8 @@
 import { useState } from "react";
 import '../../GestioneEvento/css/formEventoStyle.css';
+import { useNavigate } from "react-router-dom";
 import PropTypes from "prop-types";
-import {useNavigate} from "react-router-dom";
+
 
 // Oggetto contenente le lingue disponibili
 const Lingua = {
@@ -18,7 +19,7 @@ const Lingua = {
 };
 
 // Funzione per creare l'evento
-const CreaEvento = ( { onClose }) => {
+const CreaEvento = (  ) => {
     const nav = useNavigate();
     // Stato per gestire i dati del modulo
     const [nome, setNome] = useState(""); // Nome dell'evento
@@ -36,6 +37,14 @@ const CreaEvento = ( { onClose }) => {
     const [maxPartecipanti, setMaxPartecipanti] = useState(1); // Numero massimo di partecipanti
 
     const emailUtenteLoggato = localStorage.getItem("email");
+    const navigate = useNavigate();
+
+    // Funzione per chiudere il popup o reindirizzare
+    const handleClose = () => {
+        if (emailUtenteLoggato) {
+            navigate('/view-eventi'); // Reindirizza a /view-listacorsi
+        }
+    };
 
     // Funzioni per aggiornare i valori dello stato
     // Aggiorna il nome dell'evento
@@ -340,6 +349,7 @@ const CreaEvento = ( { onClose }) => {
             // Se la richiesta va a buon fine, stampa il risultato
             const result = await response.json();
             console.log("Evento creato con successo: ", result);
+            handleClose(); // Chiude il popup dopo la creazione
         } catch (error) {
             console.error("Errore durante la creazione dell'evento: ", error);
             alert("Errore durante la creazione dell'evento");
@@ -350,12 +360,14 @@ const CreaEvento = ( { onClose }) => {
     return (
         <div className="FormPopup-overlay">
             <div className="FormPopup-container">
-                <button className="popup-close-btn" onClick={onClose}>
-                    &times;
-                </button>
-                <div className="formContainer">
+                <div className="header-FormContainer">
                     <h2>Crea un nuovo evento</h2>
-                    <hr/>
+                    <button className="close-button" onClick={handleClose}>
+                        &times;
+                    </button>
+                </div>
+                <div className="formContainer">
+                <hr/>
                     <p className="introText">
                         Segui questi passaggi per creare un nuovo evento:
                     </p>
@@ -525,7 +537,7 @@ const CreaEvento = ( { onClose }) => {
 };
 
 CreaEvento.propTypes = {
-    onClose: PropTypes.func.isRequired, // Specifica che onClose è obbligatorio
+    onClose: PropTypes.func.isRequired,
 };
 
 // Esporta il componente CreaEvento

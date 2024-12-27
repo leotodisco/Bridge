@@ -33,7 +33,7 @@ function App() {
     // Stato per il chatbot
     const [isChatbotOpen, setIsChatbotOpen] = useState(false);
 
-    // Controlla se il token JWT è presente al caricamento
+    // Controlla se il token JWT Ã¨ presente al caricamento
     useEffect(() => {
         const token = localStorage.getItem('authToken');
         setIsAuthenticated(!!token);

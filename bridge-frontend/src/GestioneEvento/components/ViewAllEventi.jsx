@@ -36,7 +36,7 @@ const AllEventsView = () => {
     const [selectedEventId, setSelectedEventId] = useState(null); // Stato per il popup
     const [showCreatePopup, setShowCreatePopup] = useState(false); // Stato per il popup di creazione evento
     const nav = useNavigate();
-    //const [isVolontario, setIsVolontario] = useState(false);
+    const ruolo = localStorage.getItem("ruolo");
 
 
     const fetchEvents = async () => {
@@ -112,11 +112,13 @@ const AllEventsView = () => {
             <div className="headerForm-container">
                 <h1 className="header-title">Tutti gli Eventi</h1>
                 {/* Pulsante per aggiungere un nuovo evento */}
-                <button className="btn btn-circle">
-                    <Link to="/crea-evento">
-                        +
-                    </Link>
-                </button>
+                {ruolo === "VOLONTARIO" && (
+                    <button className="btn btn-circle">
+                        <Link to="/crea-evento">
+                            +
+                        </Link>
+                    </button>
+                )}
             </div>
 
             {events.length > 0 ? (
