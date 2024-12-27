@@ -78,8 +78,14 @@ const Chatbot = () => {
                     type="text"
                     value={userInput}
                     onChange={(e) => setUserInput(e.target.value)}
+                    onKeyDown={(e) => {
+                        if (e.key === "Enter") {
+                            handleSendMessage();
+                        }
+                    }}
                     placeholder="Scrivi un messaggio"
                 />
+
                 <button onClick={handleSendMessage} disabled={loading}>
                     Invia
                 </button>
