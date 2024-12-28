@@ -2,7 +2,6 @@ package com.project.bridgebackend.Model.dto;
 
 import com.project.bridgebackend.Model.Entity.Indirizzo;
 import com.project.bridgebackend.Model.Entity.enumeration.TipoConsulenza;
-
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
@@ -13,9 +12,8 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
-import jakarta.validation.constraints.Min;
-
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author Geraldine Montella.
@@ -79,7 +77,7 @@ public class ConsulenzaDTO {
      * Lista dei candidati che hanno applicato all'annuncio.
      * Ogni email nella lista deve essere non vuota.
      */
-    private List<@NotBlank(message = "l'email del candidato non può essere vuoto") String> candidati;
+    private Map<@NotBlank(message = "l'email del candidato non può essere vuoto") String, Boolean> candidati;
 
     /** Campi specifici di Consulenza
     /**

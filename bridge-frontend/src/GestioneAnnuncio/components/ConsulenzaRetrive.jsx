@@ -2,6 +2,9 @@ import { useState, useEffect } from "react";
 import PropTypes from "prop-types"; // Per validare le props
 import "../../GestioneEvento/css/eventoView.css";
 
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css'; // Importa lo stile di default
+
 //pop up per chiedere conferma prima di eliminare
 const ConfirmDeletePopup = ({ onConfirm, onCancel }) => (
     <div className="popup-overlay">
@@ -26,7 +29,7 @@ const ConsulenzaView = ({ id, onClose, onUpdate }) => {
     const [editing, setEditing] = useState(false);
     //pop up per richiedere la conferma dell'eliminazione
     const [showConfirmDelete, setShowConfirmDelete] = useState(false); // Stato per il popup di conferma eliminazione
-
+    const [isRegistered, setIsRegistered] = useState(false);
     // Stati per i campi del form
     const [titolo, setTitolo] = useState("");
     const [descrizione, setDescrizione] = useState("");
@@ -43,11 +46,19 @@ const ConsulenzaView = ({ id, onClose, onUpdate }) => {
 
     // Prendo da localStorage l'email dell'utente attualmente loggato
     const emailUtenteLoggato = localStorage.getItem('email');
+    const tipoUtente = localStorage.getItem('ruolo');
+    const token = localStorage.getItem('authToken');
 
     // Funzione per recuperare i dettagli della consulenza
     const fetchConsulenza = async (id) => {
         try {
-            const response = await fetch(`http://localhost:8080/api/annunci/view_consulenze/retrive/${id}`);
+            const response = await fetch(`http://localhost:8080/api/annunci/view_consulenze/retrive/${id}`, {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json',
+                },
+            });
             if (!response.ok) {
                 throw new Error("Consulenza non trovata");
             }
@@ -76,10 +87,94 @@ const ConsulenzaView = ({ id, onClose, onUpdate }) => {
         }
     };
 
+    const handleRegisterInterest = async (idConsulenza, email) => {
+        try {
+            if (!token) {
+                toast.error("Token non valido. Effettua nuovamente il login.");
+                return;
+            }
+            const response = await fetch(`http://localhost:8080/api/annunci/manifestazione-interesse/${idConsulenza}`, {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ emailRifugiato: email }),
+            });
+
+            if (response.ok) {
+                toast.info("Sei stato aggiunto alla lista di attesa!");
+                setIsRegistered(true);  // Imposta lo stato su 'true' dopo la registrazione
+            } else {
+                throw new Error("Errore durante la registrazione.");
+            }
+        } catch (error) {
+            console.error("Errore:", error);
+            toast.error("Non è stato possibile aggiungerti alla lista di attesa.");
+        }
+    };
+
+    //controlla se un utente ha già manifestato il suo interesse per una consulenza
+    const checkIfUserIsRegistered = async (idConsulenza) => {
+        try {
+            const response = await fetch(`http://localhost:8080/api/annunci/verifica-candidato/${idConsulenza}`, {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json',
+                },
+            });
+            if (response.ok) {
+                const data = await response.json();
+                console.log(data);
+                setIsRegistered(data);
+            } else {
+                throw new Error("Errore durante la verifica dell'iscrizione.");
+            }
+        } catch (error) {
+            console.error("Errore:", error);
+        }
+    };
+
+    //rimuovere un rifugiato dalla lista candidati
+    const handleRemoveInterest = async (idConsulenza, email) => {
+        try {
+            if (!token) {
+                toast.error("Token non valido. Effettua nuovamente il login.");
+                return;
+            }
+            const response = await fetch(`http://localhost:8080/api/annunci/rimuovi-interesse/${idConsulenza}`, {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ emailRifugiato: email }),  // Assicurati che l'oggetto contenga l'email
+            });
+
+            if (response.ok) {
+                toast.info("La tua candidatura è stata rimossa.");
+                setIsRegistered(false);  // Imposta lo stato a false dopo la rimozione
+            } else {
+                throw new Error("Errore durante la rimozione.");
+            }
+        } catch (error) {
+            console.error("Errore:", error);
+            toast.error("Non è stato possibile rimuovere la candidatura.");
+        }
+    };
+
+
     useEffect(() => {
-        console.log("ID consulenza:", id);
-        fetchConsulenza(id);
-    }, [id]);
+        const fetchData = async () => {
+            await fetchConsulenza(id);
+            if (tipoUtente === 'Rifugiato' && emailUtenteLoggato) {
+                await checkIfUserIsRegistered(id);
+            }
+        };
+
+        fetchData();
+    }, [tipoUtente, emailUtenteLoggato, id]);
 
     if (loading) {
         return (
@@ -136,7 +231,7 @@ const ConsulenzaView = ({ id, onClose, onUpdate }) => {
             }
             const data = await response.json();
 
-            alert("Consulenza modificata con successo!");
+            toast.info("Consulenza modificata con successo!");
 
             // Ricarica i dati aggiornati
             await fetchConsulenza(id);
@@ -148,9 +243,10 @@ const ConsulenzaView = ({ id, onClose, onUpdate }) => {
             setEditing(false);
         } catch (err) {
             console.error(err);
-            alert("Non è stato possibile modificare la consulenza.");
+            toast.error("Non è stato possibile modificare la consulenza.");
         }
     };
+
 
     // Funzione per eliminare la consulenza
     const handleDelete = async () => {
@@ -167,12 +263,12 @@ const ConsulenzaView = ({ id, onClose, onUpdate }) => {
                 throw new Error("Errore durante l'eliminazione della consulenza.");
             }
 
-            alert("Consulenza eliminata con successo!");
+            toast.info("Consulenza eliminata con successo!");
             onClose(); // Chiudi il popup dopo l'eliminazione
             onUpdate({ id }, true); // Aggiorna la lista delle consulenze
         } catch (err) {
             console.error(err);
-            alert("Non è stato possibile eliminare la consulenza.");
+            toast.error("Non è stato possibile eliminare la consulenza.");
         }
     };
 
@@ -193,57 +289,81 @@ const ConsulenzaView = ({ id, onClose, onUpdate }) => {
                 )}
                 {!editing ? (
                     <>
-                    <div className="popup-header">
-                        <h1 className="popup-title">{consulenzaData.titolo}</h1>
-                        <p className="popup-subtitle">{consulenzaData.descrizione}</p>
-                    </div>
-                    <div className="popup-body">
-                        <h3>Dettagli</h3>
-                        <hr/>
-                        <div className="popup-details">
-                            <div className="popup-row">
-                                <span className="popup-label">Tipologia:</span>
-                                <span className="popup-value">{consulenzaData.tipo}</span>
-                            </div>
-                            <div className="popup-row">
-                                <span className="popup-label">Orari disponibili:</span>
-                                <span className="popup-value">{consulenzaData.orariDisponibili}</span>
+                        <div className="popup-header">
+                            <h1 className="popup-title">{consulenzaData.titolo}</h1>
+                            <p className="popup-subtitle">{consulenzaData.descrizione}</p>
+                        </div>
+                        <div className="popup-body">
+                            <h3>Dettagli</h3>
+                            <hr/>
+                            <div className="popup-details">
+                                <div className="popup-row">
+                                    <span className="popup-label">Tipologia:</span>
+                                    <span className="popup-value">{consulenzaData.tipo}</span>
+                                </div>
+                                <div className="popup-row">
+                                    <span className="popup-label">Orari disponibili:</span>
+                                    <span className="popup-value">{consulenzaData.orariDisponibili}</span>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    <div className="popup-body">
-                        <h3>Contatti Diretti</h3>
-                        <hr/>
-                        <div className="popup-details">
-                            <div className="popup-row">
-                                <span className="popup-label">Email:</span>
-                                <span className="popup-value">{consulenzaData.proprietario.email}</span>
-                            </div>
-                            <div className="popup-row">
-                                <span className="popup-label">Numero Telefono:</span>
-                                <span className="popup-value">{consulenzaData.numero}</span>
+                        <div className="popup-body">
+                            <h3>Contatti Diretti</h3>
+                            <hr/>
+                            <div className="popup-details">
+                                <div className="popup-row">
+                                    <span className="popup-label">Email:</span>
+                                    <span className="popup-value">{consulenzaData.proprietario.email}</span>
+                                </div>
+                                <div className="popup-row">
+                                    <span className="popup-label">Numero Telefono:</span>
+                                    <span className="popup-value">{consulenzaData.numero}</span>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    <div className="popup-body">
-                        <h3>Sede</h3>
-                        <p className="popup-location">{luogoConcatenato}</p>
-                    </div>
-                    {emailUtenteLoggato === consulenzaData.proprietario.email && (
-                        <div>
-                            <button onClick={() => setEditing(true)} className="edit-button">
-                                Modifica Consulenza
-                            </button>
-                            <button onClick={() => setShowConfirmDelete(true)} className="delete-button">
-                                Elimina Consulenza
-                            </button>
+                        <div className="popup-body">
+                            <h3>Sede</h3>
+                            <p className="popup-location">{luogoConcatenato}</p>
                         </div>
-                    )}
+                        {emailUtenteLoggato === consulenzaData.proprietario.email && (
+                            <div>
+                                <button onClick={() => setEditing(true)} className="edit-button">
+                                    Modifica Consulenza
+                                </button>
+                                <button onClick={() => setShowConfirmDelete(true)} className="delete-button">
+                                    Elimina Consulenza
+                                </button>
+                            </div>
+                        )}
+                        <div className="popup-body">
+                            {tipoUtente === "Rifugiato"  && (
+                                <div>
+                                    <h3>Iscriviti se desideri una consulenza</h3>
+                                    <hr/>
+                                    {isRegistered ? (
+                                        <div>
+                                            <p className="popup-subtitle">Sei già registrato per questa consulenza.</p>
+                                             <button
+                                                   onClick={() => handleRemoveInterest(id, emailUtenteLoggato)}
+                                                   className="remove-button">
+                                                   Rimuovi dalla lista di attesa
+                                             </button>
+                                        </div>
+                                    ) : (
+                                        <button
+                                            onClick={() => handleRegisterInterest(id, emailUtenteLoggato)}
+                                            className="register-button">
+                                            Aggiungi alla lista di attesa
+                                        </button>
+                                    )}
+                                </div>
+                            )}
+                        </div>
                     </>
                 ) : (
                     <>
-                    <h2>Modifica Consulenza</h2>
-                        <hr />
+                        <h2>Modifica Consulenza</h2>
+                        <hr/>
                         <div className="form-group">
                             <label>Titolo</label>
                             <input

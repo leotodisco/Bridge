@@ -1,4 +1,5 @@
 import { useState } from "react";
+import {useNavigate} from "react-router-dom";
 
 const Tipo = {
     SANITARIA: "SANITARIA",
@@ -9,7 +10,7 @@ const Tipo = {
 };
 
 const giorniSettimana = ["Lunedi", "Martedi", "Mercoledi", "Giovedi", "Venerdi", "Sabato", "Domenica"];
-
+const nav = useNavigate;
 
 const CreaConsulenza = () => {
     const [titolo, setTitolo] = useState("");
@@ -48,6 +49,29 @@ const CreaConsulenza = () => {
         });
     };
 
+    //per controllare che non vi siano sovrapposizioni orarie
+    const controllaSovrapposizioniOrari = () => {
+        for (let i = 0; i < orariDisponibili.length; i++) {
+            for (let j = i + 1; j < orariDisponibili.length; j++) {
+                if (orariDisponibili[i].giorno === orariDisponibili[j].giorno) {
+                    const start1 = orariDisponibili[i].start;
+                    const end1 = orariDisponibili[i].end;
+                    const start2 = orariDisponibili[j].start;
+                    const end2 = orariDisponibili[j].end;
+
+                    if (
+                        (start1 < end2 && start2 < end1) || // Sovrapposizione oraria
+                        start1 === start2 || end1 === end2 // Intervalli identici
+                    ) {
+                        return false;
+                    }
+                }
+            }
+        }
+        return true;
+    };
+
+
     //logica per gestire gli orari di disponibilità
     const aggiungiOrario = () => {
         setOrariDisponibili([...orariDisponibili, { giorno: "", start: "", end: "" }]);
@@ -75,7 +99,6 @@ const CreaConsulenza = () => {
         }
 
         // Validazione numero telefono
-        // Validazione numero telefono
         if (numero && !/^((00|\+)39[. ]??)??3\d{2}[. ]??\d{6,7}$/.test(numero)) {
             nuoviErrori.numero = "Numero di telefono non valido. Deve seguire il formato italiano (+39 o 0039 opzionali).";
             valido = false;
@@ -87,6 +110,9 @@ const CreaConsulenza = () => {
             valido = false;
         } else if (orariDisponibili.some(orario => !orario.giorno || !orario.start || !orario.end)) {
             nuoviErrori.orariDisponibili = "Completa tutti i campi degli orari disponibili.";
+            valido = false;
+        } else if (!controllaSovrapposizioniOrari()) {
+            nuoviErrori.orariDisponibili = "Gli orari disponibili non possono sovrapporsi.";
             valido = false;
         }
 
@@ -102,8 +128,6 @@ const CreaConsulenza = () => {
             nuoviErrori.cap = "Il CAP deve contenere esattamente 5 cifre.";
             valido = false;
         }
-
-
 
         setErrori(nuoviErrori);
         return valido;
@@ -153,9 +177,18 @@ const CreaConsulenza = () => {
         console.log("Dati della consulenza: ", consulenzaDTO);
 
         try {
+            const token = localStorage.getItem("authToken");
+            // check su token:
+            if (!token) {
+                alert("Non sei autenticato. Effettua il login.");
+                nav('/login');
+                return;
+            }
+
             const response = await fetch("http://localhost:8080/api/annunci/creaConsulenza", {
                 method: "POST",
                 headers: {
+                    'Authentication': `Bearer ${token}`,
                     "Content-Type": "application/json",
                     "Accept": "application/json"
                 },
@@ -231,7 +264,14 @@ const CreaConsulenza = () => {
                         <button type="button" onClick={() => rimuoviOrario(index)}>Rimuovi</button>
                     </div>
                 ))}
-                <button type="button" onClick={aggiungiOrario}>Aggiungi Orario</button>
+                <button
+                    type="button"
+                    onClick={aggiungiOrario}
+                    disabled={orariDisponibili.some(orario => !orario.giorno || !orario.start || !orario.end)}
+                    className={orariDisponibili.some(orario => !orario.giorno || !orario.start || !orario.end) ? "buttonDisabled" : ""}
+                >
+                    Aggiungi Orario
+                </button>
                 {errori.orariDisponibili && <p className="error">{errori.orariDisponibili}</p>}
 
                 <input
@@ -270,7 +310,7 @@ const CreaConsulenza = () => {
                 </div>
 
                 <h3>Indirizzo</h3>
-                <hr />
+                <hr/>
                 <div className="inlineCityDetails">
                     <input
                         type="text"

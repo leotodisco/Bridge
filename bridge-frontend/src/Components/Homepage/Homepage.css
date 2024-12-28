@@ -1,0 +1,470 @@
+/* Stile generale */
+.welcome-banner {
+    width: 1200px;
+    text-align: center;
+    background-color: #0C3444;
+    padding: 20px;
+    border-radius: 20px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.welcome-banner:hover {
+    transform: scale(1.02); /* Leggera espansione */
+    box-shadow: 0 6px 10px rgba(0, 0, 0, 0.3); /* Ombra più pronunciata */
+}
+
+.welcome-logo {
+    width: 220px;
+    height: 100px;
+}
+
+.welcome-banner h2 {
+    color: white;
+    margin: 10px;
+}
+
+.explore-btn {
+    background-color: #2a5368;
+    color: white;
+    border: none;
+    border-radius: 20px;
+    padding: 10px 30px;
+    font-size: 1.2rem;
+    font-weight: bold;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+    cursor: pointer;
+    transition: transform 0.2s, background-color 0.2s;
+}
+
+.explore-btn:hover {
+    background-color: #00BF62;
+    transform: scale(1.05);
+}
+
+.explore-btn:focus {
+    outline: none;
+    box-shadow: 0 0 8px rgba(0, 0, 0, 0.4);
+}
+
+.about-us-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.8);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+.modal-content {
+    background: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    max-width: 600px;
+    width: 80%;
+    position: relative;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+}
+
+.close-btn {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: transparent;
+    border: none;
+    font-size: 20px;
+    cursor: pointer;
+}
+
+
+/* Layout principale a due colonne */
+.main-content {
+    display: grid;
+    grid-template-columns: 2fr 1fr; /* Due colonne */
+    gap: 30px;
+    margin-top: 50px;
+    align-items: flex-start; /* Allinea gli elementi in alto */
+}
+
+/* Colonna sinistra (Eventi e Lavori) */
+.left-column {
+    flex: 2;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+/* Colonna destra (Alloggi) */
+.right-column {
+    flex: 1;
+}
+
+/* Stile generale per le sezioni */
+.section {
+    background-color: #fff;
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease; /* Aggiungi transizione */
+}
+
+.section:hover {
+    transform: translateY(-5px); /* Solleva leggermente il riquadro */
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2); /* Ombra più profonda */
+}
+
+/* Scrollable lista */
+.scrollable-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    max-height: 150px; /* Altezza fissa per 3 elementi */
+    overflow-y: auto; /* Barra di scorrimento verticale */
+    scrollbar-width: thin; /* Scrollbar sottile */
+}
+
+/* Elementi nella lista */
+.list-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #f9f9f9;
+    padding: 10px 20px;
+    margin-right: 20px;
+    border-radius: 20px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.list-item p {
+    margin: 0;
+    font-size: 1rem;
+    flex: 1;
+    text-align: center;
+}
+
+/* Opzioni (i puntini) */
+.list-options {
+    font-size: 1.5rem;
+    color: #0C3444;
+    cursor: pointer;
+}
+
+/* Stile per la scrollbar nei browser Webkit (Chrome, Edge, Safari) */
+.scrollable-list::-webkit-scrollbar {
+    width: 6px;
+}
+
+.scrollable-list::-webkit-scrollbar-thumb {
+    background-color: #0C3444;
+    border-radius: 10px;
+}
+
+.scrollable-list::-webkit-scrollbar-track {
+    background-color: #e0e0e0;
+    border-radius: 10px;
+}
+
+/* Griglia degli alloggi */
+.accommodations-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr); /* Due colonne */
+    gap: 10px;
+    max-height: 400px; /* Altezza massima */
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: #004080 #e0e0e0;
+}
+
+.accommodation-item img {
+    width: 100%;
+    height: auto;
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Header della sezione: titolo e pulsante sulla stessa riga */
+.section-header {
+    display: flex; /* Layout in riga */
+    justify-content: space-between; /* Titolo a sinistra, pulsante a destra */
+    align-items: center; /* Allinea verticalmente al centro */
+    margin-bottom: 15px; /* Spazio sotto */
+}
+
+.section-header h3 {
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin: 0;
+}
+
+/* Titoli delle sezioni */
+.section-title {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #004080;
+    text-decoration: none;
+    cursor: pointer;
+    transition: transform 0.3s ease, color 0.3s ease; /* Animazione fluida su trasformazione e colore */
+}
+
+.section-title h3 {
+    margin-bottom: 10px;
+    transition: transform 0.3s ease, color 0.3s ease; /* Transizione per hover e click */
+}
+
+/* Hover */
+.section-title h3:hover {
+    color: #00BF62; /* Cambia colore su hover */
+    transform: scale(1.1); /* Ingrandisce leggermente il titolo */
+}
+
+/* Click (active state) */
+.section-title h3:active {
+    color: #003366; /* Cambia il colore quando viene cliccato */
+    transform: scale(0.95); /* Riduce leggermente le dimensioni per dare effetto di pressione */
+}
+
+/* Griglia degli alloggi */
+.accommodations-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr); /* Due colonne di default */
+    gap: 10px;
+    max-height: 400px; /* Altezza massima */
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: #004080 #e0e0e0;
+    transition: all 0.3s ease; /* Transizione fluida per ridimensionamento */
+}
+
+/* Ridimensiona i riquadri su schermi più piccoli */
+@media (max-width: 1024px) {
+    .main-content {
+        grid-template-columns: 1fr; /* Disposizione in colonna */
+        gap: 20px;
+        min-height: 100px;
+    }
+
+    .welcome-banner {
+        width: 100%; /* Rende il banner a tutta larghezza */
+    }
+
+    .welcome-logo {
+        width: 150px; /* Riduce la dimensione del logo */
+        height: 70px;
+    }
+
+    .section {
+        padding: 15px; /* Riduce il padding */
+        width: 100%; /* Restringe i riquadri al 90% della larghezza del contenitore */
+        margin: 0 auto; /* Centra i riquadri */
+    }
+
+    .scrollable-list {
+        max-height: 120px; /* Riduce l'altezza massima della lista */
+    }
+
+    .list-item p {
+        font-size: 0.9rem; /* Riduce la dimensione del testo */
+    }
+
+    .accommodations-grid {
+        grid-template-columns: 1fr; /* Una colonna su schermi stretti */
+    }
+
+}
+
+/* Per dispositivi molto stretti */
+@media (max-width: 480px) {
+    .welcome-banner {
+        padding: 10px; /* Riduce il padding */
+    }
+
+    .welcome-logo {
+        width: 120px; /* Riduce ulteriormente la dimensione del logo */
+        height: 60px;
+    }
+
+    .welcome-banner h2 {
+        font-size: 1.2rem; /* Riduce la dimensione del titolo */
+    }
+
+    .explore-btn {
+        padding: 8px 20px; /* Riduce il padding del pulsante */
+        font-size: 1rem; /* Riduce la dimensione del testo */
+    }
+
+    .modal-content {
+        padding: 15px; /* Riduce il padding */
+    }
+
+    .close-btn {
+        top: 5px; /* Sposta il pulsante di chiusura verso l'alto */
+        right: 5px; /* Sposta il pulsante di chiusura verso destra */
+        font-size: 18px; /* Riduce la dimensione del testo */
+    }
+
+    .section-header h3 {
+        font-size: 1.3rem; /* Riduce la dimensione del titolo */
+    }
+
+    .view-all-btn {
+        padding: 5px 10px; /* Riduce il padding del pulsante */
+        font-size: 0.8rem; /* Riduce la dimensione del testo */
+    }
+
+    .section-title {
+        font-size: 1.3rem; /* Riduce la dimensione del titolo */
+    }
+
+    .section-title h3 {
+        margin-bottom: 5px; /* Riduce lo spazio sotto il titolo */
+    }
+
+    .accommodations-grid {
+        grid-template-columns: 1fr; /* Una colonna su schermi stretti */
+    }
+}
+
+
+
+@media (max-width: 768px) {
+    .accommodations-grid {
+        grid-template-columns: 1fr; /* Una colonna su schermi stretti */
+    }
+
+    .section {
+        padding: 15px; /* Riduce il padding */
+        width: 100%; /* Restringe i riquadri al 90% della larghezza del contenitore */
+        margin: 0 auto; /* Centra i riquadri */
+    }
+}
+
+/* Pulsante flottante in basso a destra */
+.chatbot-fab {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    width: 55px;
+    height: 55px;
+    background-color: #396F85;
+    color: #ffffff;
+    border: none;
+    border-radius: 50%;
+    font-size: 24px; /* se usi un’emoji/icona testo */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+    z-index: 9999;
+    transition: transform 0.2s ease-in-out;
+}
+
+.chatbot-fab:hover {
+    transform: scale(1.05);
+}
+
+/* Popup Chatbot (fisso in basso a destra, sopra il pulsante) */
+.chatbot-modal {
+    position: fixed;
+    bottom: 80px; /* così sta sopra il pulsante .chatbot-fab */
+    right: 20px;
+    width: 350px;          /* larghezza finestra */
+    height: 500px;         /* altezza fissa per mostrare tutto il form */
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+    z-index: 9999;
+
+    /* Layout in colonna per header, messaggi e input */
+    display: flex;
+    flex-direction: column;
+
+    /* Piccola animazione in entrata (opzionale) */
+    animation: chatbot-slide-up 0.3s ease forwards;
+}
+
+/* Bottone “X” per chiudere */
+.close-chatbot-btn {
+    position: absolute;
+    top: 8px;
+    right: 10px;
+    background: transparent;
+    border: none;
+    font-size: 1.4rem;
+    color: #333;
+    cursor: pointer;
+}
+
+/* (Opzionale) Stile per l’header in alto */
+.chatbot-header {
+    background-color: #f0f4f8;
+    padding: 10px;
+    text-align: center;
+    font-weight: bold;
+}
+
+/* Area messaggi: scorre in verticale e occupa tutto lo spazio disponibile */
+.chatbot-messages {
+    flex: 1;                /* Riempie lo spazio rimanente */
+    padding: 1rem;
+    overflow-y: auto;       /* Scrolling solo dei messaggi */
+    background-color: #ffffff;
+    box-shadow: inset 0 2px 4px rgba(0,0,0,0.05);
+}
+
+/* Contenitore input in fondo */
+.chatbot-input {
+    display: flex;
+    align-items: center;
+    padding: 0.75rem;
+    border-top: 1px solid #ddd;
+}
+
+/* Input testo */
+.chatbot-input input {
+    flex: 1;
+    padding: 0.75rem 1rem;
+    border: 1px solid #c1cad6;
+    border-radius: 20px;
+    font-size: 16px;
+}
+
+/* Bottone invia */
+.chatbot-input button {
+    margin-left: 0.5rem;
+    padding: 0.75rem 1.25rem;
+    background-color: #396F85;
+    color: #fff;
+    border: none;
+    border-radius: 20px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+.chatbot-input button:hover {
+    background-color: #315a6d;
+    transform: scale(1.05);
+}
+
+.chatbot-input button:active {
+    transform: scale(0.95);
+}
+
+/* Piccola animazione di scorrimento dal basso (opzionale) */
+@keyframes chatbot-slide-up {
+    0% {
+        transform: translateY(10px);
+        opacity: 0;
+    }
+    100% {
+        transform: translateY(0px);
+        opacity: 1;
+    }
+}

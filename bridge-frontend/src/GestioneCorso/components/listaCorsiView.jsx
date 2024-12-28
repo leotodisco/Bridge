@@ -1,19 +1,40 @@
 import { useEffect, useState } from "react";
 import Card from "../../GestioneEvento/components/Card.jsx";
+import CorsoView from "./corsoView.jsx";
+import CreaCorso from "./formCorso.jsx";
 import "../../GestioneEvento/css/card.css";
 import "../../GestioneCorso/css/listaCorsiStyle.css";
-import CorsoView from "./corsoView.jsx";
-import { Link } from 'react-router-dom';  // Importa il componente Link
+import {FaPlus} from "react-icons/fa";
+import {useNavigate} from "react-router-dom";
 
 const ListaCorsiView = () => {
     const [corsi, setCorsi] = useState([]);
     const [error, setError] = useState(false);
     const [loading, setLoading] = useState(true);
     const [selectedCorsoId, setSelectedCorsoId] = useState(null);
+    const [showModal, setShowModal] = useState(false);
+    const ruolo = localStorage.getItem("ruolo");
+    const nav = useNavigate();
 
     const fetchCorsi = async () => {
         try {
-            const response = await fetch("http://localhost:8080/api/corsi/listaCorsi");
+            const token = localStorage.getItem('authToken');
+
+            if (!token) {
+                alert("Non sei autenticato. Effettua il login.");
+                nav('/login');
+                return;
+            }
+
+            const response = await
+                fetch("http://localhost:8080/api/corsi/listaCorsi", {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json',
+                    },
+                });
+
             if (response.ok) {
                 const data = await response.json();
                 setCorsi(data);
@@ -28,27 +49,43 @@ const ListaCorsiView = () => {
         }
     };
 
-    const closePopup = () => {
-        setSelectedCorsoId(null);
-    }
-
     useEffect(() => {
         fetchCorsi();
+        const closeOnEscapeKeyDown = (e) => {
+            if ((e.charCode || e.keyCode) === 27) {
+                setShowModal(false);
+            }
+        };
+        document.body.addEventListener('keydown', closeOnEscapeKeyDown);
+        return () => {
+            document.body.removeEventListener('keydown', closeOnEscapeKeyDown);
+        };
     }, []);
+
+    const toggleModal = () => setShowModal(!showModal);
 
     if (loading) {
         return <p>Caricamento in corso...</p>;
     }
 
     if (error) {
-        return <p>Errore: {error}</p>;
+        return <p>Errore nel recupero dei corsi.</p>;
     }
+    console.log("RUOLO", ruolo);
 
     return (
         <div>
-            <div className="header-container">  {/* Aggiunto container per titolo e bottone */}
+            <div className="header-container">
                 <h1>Tutti i Corsi</h1>
-                <Link to="/crea-corso" className="btn btn-primary">Aggiungi Nuovo Corso</Link>
+                {ruolo === "FIGURASPECIALIZZATA" && (
+                    <button
+                        onClick={toggleModal}
+                        className="btn btn-primary"
+                        aria-label="Aggiungi Nuovo Corso"
+                    >
+                        <FaPlus size={20} />
+                    </button>
+                )}
             </div>
             {corsi.length > 0 ? (
                 <div className="cards-container">
@@ -59,11 +96,11 @@ const ListaCorsiView = () => {
                                 title: corso.titolo,
                                 image: corso.proprietario.fotoUtente
                                     ? corso.proprietario.fotoUtente
-                                    : "https://via.placeholder.com/150/cccccc/000000?text=No+Image",
+                                    : "https://via.placeholder.com/150",
                                 userName: `${corso.proprietario.nome} ${corso.proprietario.cognome}`,
                                 parameter1: corso.lingua,
                                 parameter2: corso.categoriaCorso,
-                                parameter3: corso.proprietario ? corso.proprietario.nome : "Non specificato",
+                                parameter3: corso.proprietario.nome,
                             }}
                             labels={{
                                 parameter1: "Lingua",
@@ -78,8 +115,13 @@ const ListaCorsiView = () => {
             ) : (
                 <p>Nessun corso disponibile.</p>
             )}
-            {selectedCorsoId && (
-                <CorsoView id={selectedCorsoId} onClose={closePopup} />
+            {selectedCorsoId && <CorsoView id={selectedCorsoId} onClose={() => setSelectedCorsoId(null)} />}
+            {showModal && (
+                <div className="modal">
+                    <div >
+                        <CreaCorso onClose={toggleModal} />
+                    </div>
+                </div>
             )}
         </div>
     );

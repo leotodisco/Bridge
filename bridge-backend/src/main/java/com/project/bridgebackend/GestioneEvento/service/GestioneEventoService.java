@@ -2,6 +2,8 @@ package com.project.bridgebackend.GestioneEvento.service;
 
 import com.project.bridgebackend.Model.Entity.Evento;
 import com.project.bridgebackend.Model.Entity.Indirizzo;
+import com.project.bridgebackend.Model.Entity.Rifugiato;
+
 import java.util.List;
 import java.util.Optional;
 
@@ -69,4 +71,17 @@ public interface GestioneEventoService {
      * @return evento con partecipanti.
      */
     Evento trovaEventoConPartecipanti(long eventoId);
+
+    /**
+     * Permette di ottenere la lista dei partecipanti di un evento.
+     * @param eventoId identificativo dell'evento.
+     * @return lista dei partecipanti.
+     */
+    List<Rifugiato> getPartecipantiPerEvento(final long eventoId);
+
+    /**
+     * Permette di avere eventi random.
+     * @return lista di eventi random.
+     */
+    List<Evento> getRandomEvents();
 }

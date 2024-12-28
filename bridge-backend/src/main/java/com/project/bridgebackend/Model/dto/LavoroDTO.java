@@ -15,6 +15,7 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.Max;
 
 import java.util.List;
 
@@ -27,8 +28,7 @@ import java.util.List;
  * dei dati forniti.
  *
  * @author Vito Vernellati
- * @created 08/12/2024
- * @version 1.0
+ * @since  08/12/2024
  */
 
 @Data
@@ -38,7 +38,7 @@ import java.util.List;
 @EqualsAndHashCode
 public class LavoroDTO {
 
-    /** Campi di annuncio */
+    //campi specifici di annuncio
 
     /**
      * Titolo dell'annuncio.
@@ -77,6 +77,7 @@ public class LavoroDTO {
      */
     @NotNull(message = "Il numero massimo di candidature è obbligatorio")
     @Min(value = 1, message = "Il numero massimo di candidature deve essere almeno 1")
+    @Max(value = 1000, message = "Il numero massimo di candidature non può superare 100")
     private Integer maxCandidature;
 
     /**
@@ -87,7 +88,7 @@ public class LavoroDTO {
     @Pattern(regexp = "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$", message = "Email del candidato non valida")
             String> candidati;
 
-    /** Campi specifici di Lavoro */
+    //Campi specifici di Lavoro
 
     /**
      * Posizione lavorativa richiesta nell'annuncio.

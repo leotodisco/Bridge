@@ -1,7 +1,5 @@
 package com.project.bridgebackend.Model.Entity;
 
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Column;
 import jakarta.persistence.MappedSuperclass;
 import jakarta.persistence.Id;
@@ -112,11 +110,11 @@ public class Annuncio {
      * È una relazione @OneToMany, in cui un annuncio può essere associato a più candidati.
      * La relazione è mappata dall'attributo annuncio nell'entità Rifugiato.
      */
-    @ElementCollection
-    @CollectionTable(
-            name = "annuncio_rifugiati",
-            joinColumns = @JoinColumn(name = "annuncio_id")
-    )
-    @Column(name = "rifugiato_email", nullable = false)
-    private List<String> candidati;
+//    @ElementCollection
+//    @CollectionTable(
+//            name = "annuncio_rifugiati",
+//            joinColumns = @JoinColumn(name = "annuncio_id")
+//    )
+//    @Column(name = "rifugiato_email", nullable = false)
+//    private List<String> candidati;
 }

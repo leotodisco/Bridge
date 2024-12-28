@@ -46,15 +46,23 @@ public class RegistrazioneServiceImpl implements RegistrazioneService {
     @Autowired
     private FiguraSpecializzataDAO figSpecDAO;
 
+    /**
+     * Gestore delle autenticazioni che verifica le credenziali degli utenti
+     * (email e password) e valida il processo di autenticazione.
+     */
     @Autowired
     private AuthenticationManager authenticationManager;
 
+    /**
+     * Servizio per la generazione e la gestione dei token JWT, utilizzati
+     * per l'autenticazione e l'autorizzazione degli utenti.
+     */
     @Autowired
     private JwtService jwtService;
 
     /**
      * Metodo per la cifratura della password.
-     * @param password
+     * @param password scritta dall'utente
      * @return la password cifrata come stringa.
      * */
     public String safePassword(final String password) {
@@ -171,20 +179,28 @@ public class RegistrazioneServiceImpl implements RegistrazioneService {
                         request.getPassword()
                 ));
         String jwtToken;
+        //setto anche il ruolo
+        String ruoloUtente = "";
+
         if (adminDAO.findByEmail(request.getEmail()) != null) {
             jwtToken = jwtService.generateToken(adminDAO.findByEmail(request.getEmail()));
+            ruoloUtente = "Admin";
         } else if (volontarioDAO.findByEmail(request.getEmail()) != null) {
             jwtToken = jwtService.generateToken(volontarioDAO.findByEmail(request.getEmail()));
+            ruoloUtente = "Volontario";
         } else if (rifugiatoDAO.findByEmail(request.getEmail()) != null) {
             jwtToken = jwtService.generateToken(rifugiatoDAO.findByEmail(request.getEmail()));
+            ruoloUtente = "Rifugiato";
         } else if (figSpecDAO.findByEmail(request.getEmail()) != null) {
             jwtToken = jwtService.generateToken(figSpecDAO.findByEmail(request.getEmail()));
+            ruoloUtente = "FiguraSpecializzata";
         } else {
             throw new IllegalArgumentException("Utente non trovato");
         }
 
         return AuthenticationResponse.builder()
                 .token(jwtToken)
+                .ruolo(ruoloUtente)
                 .build();
     }
 

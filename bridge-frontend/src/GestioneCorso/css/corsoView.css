@@ -1,7 +1,6 @@
 .formContainer {
     display: flex;
     flex-direction: column;
-    max-width: 600px;
     margin: 0 auto;
     padding: 20px;
     background-color: #fff;
@@ -97,18 +96,11 @@
 
 /* Colore per il pulsante "Modifica" */
 .modifica-button {
-    background-color: #3498db; /* blu */
-}
-
-.modifica-button:hover {
-    background-color: #2980b9; /* blu scuro in hover */
+    background-color: #0C3444; /* blu */
 }
 
 /* Colore per il pulsante "Scarica PDF" */
 .scarica-button {
-    background-color: #e67e22; /* arancione */
+    background-color: #0C3444;
 }
 
-.scarica-button:hover {
-    background-color: #d35400; /* arancione più scuro in hover */
-}

@@ -8,13 +8,25 @@ function LogoutButton({ onLogout }) {
 
     const handleLogout = async () => {
         try {
-            // Chiamata al backend per confermare il logout (opzionale)
-            await fetch('/authentication/logout', {
-                method: 'POST',
-                headers: {
-                    'Authorization': `Bearer ${localStorage.getItem('authToken')}`,
-                },
-            });
+            const token = localStorage.getItem('authToken');
+
+            if (!token) {
+                alert("Non sei autenticato. Effettua il login.");
+                navigate('/login');
+                return;
+            }
+
+            const response = await
+                fetch('/authentication/logout', {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                    },
+                });
+
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
 
             // Rimuovi il token dal client
             localStorage.removeItem('authToken');
@@ -25,9 +37,9 @@ function LogoutButton({ onLogout }) {
                 onLogout();
             }
 
-
             // Reindirizza alla pagina di login
             navigate('/login');
+
         } catch (error) {
             console.error('Errore durante il logout:', error);
         }

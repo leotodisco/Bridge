@@ -42,5 +42,20 @@ public interface RegistrazioneService {
                                      String confermaPW)
             throws Exception;
 
-    AuthenticationResponse login(final AuthenticationRequest request) throws Exception;
+    /**
+     * Metodo per effettuare il login di un utente.
+     * Riceve una richiesta contenente le credenziali,
+     * dell'utente (email e password),
+     * verifica l'autenticità delle credenziali,
+     * e restituisce una risposta con le informazioni
+     * di autenticazione, come un token JWT.
+     *
+     * @param request l'oggetto contenente le credenziali
+     *                dell'utente (email e password).
+     * @return un oggetto contenente il token JWT,
+     *         o altre informazioni necessarie per l'autenticazione.
+     * @throws Exception se le credenziali sono errate o si verifica un errore
+     *                   durante il processo di autenticazione.
+     */
+    AuthenticationResponse login(AuthenticationRequest request) throws Exception;
 }

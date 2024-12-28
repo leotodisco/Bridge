@@ -11,7 +11,7 @@ import java.time.LocalDate;
 /**
  * @author Benedetta Colella.
  * Creato il: 03/12/2024.
- * Questa è la classe relativa ad un Admin.
+ * Questa è la classe relativa a un Admin.
  * */
 
 @Entity
@@ -33,19 +33,25 @@ public class Admin extends Utente {
      * @param fotoProfilo
      */
 
-    public Admin(String email, String nome,
-                 String cognome, String lingueParlate,
-                 String fotoProfilo, String skill,
-                 LocalDate dataNascita, TitoloDiStudio titoloDiStudio,
-                 Ruolo role, Gender gender,
-                 String nazionalita, String password) {
+    public Admin(final String email,
+                 final String nome,
+                 final String cognome,
+                 final String lingueParlate,
+                 final String fotoProfilo,
+                 final String skill,
+                 final LocalDate dataNascita,
+                 final TitoloDiStudio titoloDiStudio,
+                 final Ruolo role,
+                 final Gender gender,
+                 final String nazionalita,
+                 final String password) {
         super(email, nome, cognome, lingueParlate, fotoProfilo,
                 skill, dataNascita, titoloDiStudio, role, gender,
                 nazionalita, password);
     }
 
     /**
-     * costruttore vuoto.
+     * Costruttore vuoto.
      */
     public Admin() {
     }

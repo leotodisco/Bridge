@@ -8,6 +8,7 @@ import com.project.bridgebackend.Model.Entity.FiguraSpecializzata;
 import com.project.bridgebackend.Model.dao.CorsoDAO;
 import com.project.bridgebackend.Model.dao.FiguraSpecializzataDAO;
 import com.project.bridgebackend.Model.dto.CorsoDTO;
+import com.project.bridgebackend.util.JwtService;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
@@ -21,7 +22,6 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.List;
-
 
 /**
  * @author Biagio Gallo.
@@ -43,32 +43,69 @@ public class GestioneCorsoController {
     private CorsoDAO corsoDAO;
     @Autowired
     private PDFService pdfService;
+    @Autowired
+    private JwtService jwtService;
 
-
-    // Endpoint per creare un nuovo corso
+    /**
+     * Endpoint per creare un nuovo corso.
+     *
+     * @param authorizationHeader Header di autorizzazione contenente il token JWT
+     * @param corsoDTO DTO contenente i dati del corso da creare
+     * @return ResponseEntity con il corso creato o errore
+     */
     @PostMapping("/crea")
-    public ResponseEntity<Corso> creaCorso(@RequestBody @Valid CorsoDTO corsoDTO) {
+    public ResponseEntity<Corso> creaCorso(
+            @RequestHeader("Authorization") final String authorizationHeader,
+            @RequestBody @Valid CorsoDTO corsoDTO) {
         try {
+            log.info("Richiesta per la creazione di un corso ricevuta.");
+            log.info("Authorization Header: {}", authorizationHeader);
+
+            // Estrai il token dall'header
+            String token = authorizationHeader.replace("Bearer ", "");
+            log.info("Token estratto: {}", token);
+
+            // Estrai l'email dal token
+            String emailUtenteAutenticato = jwtService.extractUsername(token);
+            log.info("Email utente autenticato: {}", emailUtenteAutenticato);
+
+            // Recupera la figura specializzata associata all'email
+            FiguraSpecializzata figuraSpecializzata = figuraSpecializzataDAO.findByEmail(emailUtenteAutenticato);
+            if (figuraSpecializzata == null) {
+                log.warn("FiguraSpecializzata non trovata per email: {}", emailUtenteAutenticato);
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).body(null);
+            }
+
+            // Creazione del corso
             Corso newCorso = new Corso();
             newCorso.setTitolo(corsoDTO.getTitolo());
             newCorso.setLingua(corsoDTO.getLingua());
             newCorso.setCategoriaCorso(corsoDTO.getCategoria());
             newCorso.setDescrizione(corsoDTO.getDescrizione());
-            newCorso.setPdf(corsoDTO.getPdf()); // Associa l'ID del PDF
-
-            FiguraSpecializzata figuraSpecializzata = figuraSpecializzataDAO.findByEmail(corsoDTO.getProprietario());
-            if (figuraSpecializzata == null) {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
-            }
+            newCorso.setPdf(corsoDTO.getPdf());
             newCorso.setProprietario(figuraSpecializzata);
 
+            // Salvataggio del corso
             Corso createdCorso = gestioneCorsoService.creaCorso(newCorso);
+            log.info("Corso creato con successo. ID: {}", createdCorso.getId());
+
             return new ResponseEntity<>(createdCorso, HttpStatus.CREATED);
+        } catch (IllegalArgumentException e) {
+            log.error("Errore durante la creazione del corso: {}", e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
         } catch (Exception e) {
+            log.error("Errore generico durante la creazione del corso", e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
     }
 
+    /**
+     * Endpoint per caricare un file PDF.
+     *
+     * @param name Nome del file
+     * @param file File PDF da caricare
+     * @return ResponseEntity con l'ID del file PDF caricato
+     */
     @PostMapping("/upload")
     @CrossOrigin(origins = "http://localhost:5174", allowedHeaders = "*")
     public ResponseEntity<String> uploadPDF(@RequestParam("nome") String name, @RequestParam("pdf") MultipartFile file) {
@@ -82,69 +119,61 @@ public class GestioneCorsoController {
     }
 
     @PostMapping("/modifica/{id}")
-    @CrossOrigin(origins = "http://localhost:5174", allowedHeaders = "*")
     public ResponseEntity<Corso> modificaCorso(
             @PathVariable Long id,
+            @RequestHeader("Authorization") final String authorizationHeader,
             @RequestBody @Valid CorsoDTO corsoDTO) {
         try {
-            // Trova il corso usando l'ID passato nell'URL
+            log.info("Authorization Header ricevuto: {}", authorizationHeader);
+            String token = authorizationHeader.replace("Bearer ", "");
+            log.info("Token estratto: {}", token);
+
+            String emailUtenteLoggato = jwtService.extractUsername(token);
+            log.info("Email utente loggato estratta: {}", emailUtenteLoggato);
+
             Corso corso = corsoDAO.findById(id).orElse(null);
             if (corso == null) {
                 log.warn("Corso non trovato per ID: {}", id);
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
             }
 
-            // Trova il proprietario usando l'email dal DTO
-            FiguraSpecializzata figuraSpecializzata = figuraSpecializzataDAO.findByEmail(corsoDTO.getProprietario());
-            if (figuraSpecializzata == null) {
-                log.warn("FiguraSpecializzata non trovata per email: {}", corsoDTO.getProprietario());
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
-            }
-
-            // Controlla che il proprietario attuale sia quello corretto
-            if (!corso.getProprietario().getEmail().equals(figuraSpecializzata.getEmail())) {
-                log.warn("Il proprietario del corso non corrisponde. Corso: {}, FiguraSpecializzata: {}", corso.getProprietario(), figuraSpecializzata);
+            if (!corso.getProprietario().getEmail().equals(emailUtenteLoggato)) {
+                log.warn("Accesso non autorizzato per l'utente: {}", emailUtenteLoggato);
                 return ResponseEntity.status(HttpStatus.FORBIDDEN).body(null);
             }
 
-            // Aggiorna i campi del corso
-            corso.setId(id);
             corso.setTitolo(corsoDTO.getTitolo());
             corso.setLingua(corsoDTO.getLingua());
             corso.setCategoriaCorso(corsoDTO.getCategoria());
             corso.setDescrizione(corsoDTO.getDescrizione());
             corso.setPdf(corsoDTO.getPdf());
 
-            // Salva il corso modificato
             Corso updatedCorso = gestioneCorsoService.modificaCorso(corso);
-
             return new ResponseEntity<>(updatedCorso, HttpStatus.OK);
         } catch (Exception e) {
             log.error("Errore durante la modifica del corso", e);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null); // Gestione errori generici
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
     }
 
     @PostMapping("/elimina/{id}")
-    @CrossOrigin(origins = "http://localhost:5174", allowedHeaders = "*")
     public ResponseEntity<String> eliminaCorso(@PathVariable Long id) {
         try {
             Corso corso = corsoDAO.findById(id).orElse(null);
             if (corso == null) {
                 log.warn("Corso non trovato per ID: {}", id);
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Corso non trovato.");
             }
 
             gestioneCorsoService.eliminaCorso(corso);
-            return ResponseEntity.ok("Corso eliminato con successo");
+            return ResponseEntity.ok("Corso eliminato con successo.");
         } catch (Exception e) {
             log.error("Errore durante l'eliminazione del corso", e);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Errore durante l'eliminazione del corso.");
         }
     }
 
     @GetMapping("/cerca/{id}")
-    @CrossOrigin(origins = "http://localhost:5174", allowedHeaders = "*")
     public ResponseEntity<Corso> cercaCorso(@PathVariable Long id) {
         try {
             Corso corso = corsoDAO.findById(id).orElse(null);
@@ -159,11 +188,10 @@ public class GestioneCorsoController {
     }
 
     @GetMapping("/listaCorsi")
-    @CrossOrigin(origins = "http://localhost:5174", allowedHeaders = "*")
     public ResponseEntity<List<Corso>> findAll() {
         try {
             List<Corso> corsi = corsoDAO.findAll();
-            if (corsi == null) {
+            if (corsi == null || corsi.isEmpty()) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
             }
             return ResponseEntity.ok(corsi);
@@ -173,30 +201,45 @@ public class GestioneCorsoController {
         }
     }
 
+    /**
+     * Endpoint per ottenere la lista di tutti i corsi pubblicati da un utente.
+     * @param
+     * @return ResponseEntity con la lista di corsi di un certo utente o errore
+     */
+    /*
+    @GetMapping("/listaCorsiUtente/{email}")
+    public ResponseEntity<List<Corso>> findAllUtente(@PathVariable final String email) {
+        try {
+            List<Corso> corsi = corsoDAO.findByProprietario(email);
+            if (corsi == null || corsi.isEmpty()) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+            }
+            return ResponseEntity.ok(corsi);
+        } catch (Exception e) {
+            LOGGER.error("Errore durante la ricerca dei corsi", e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        }
+    }*/
+
     @GetMapping("/download/{id}")
-    @CrossOrigin(origins = "http://localhost:5174", allowedHeaders = "*")
     public void downloadPDF(@PathVariable Long id, HttpServletResponse response) {
         try {
-            // Recupera il corso dal database
             Corso corso = corsoDAO.findById(id).orElse(null);
             if (corso == null || corso.getPdf() == null) {
                 response.sendError(HttpServletResponse.SC_NOT_FOUND, "Corso o PDF non trovato");
                 return;
             }
 
-            // Recupera il PDF associato al corso
             PDFDoc pdfDoc = pdfService.getPdf(corso.getPdf());
             if (pdfDoc == null || pdfDoc.getPdf() == null) {
                 response.sendError(HttpServletResponse.SC_NOT_FOUND, "PDF non trovato");
                 return;
             }
 
-            // Imposta i headers per il download
             response.setContentType("application/pdf");
-            response.setHeader("Content-Disposition", "attachment; filename=" + pdfDoc.getNome_pdf());
+            response.setHeader("Content-Disposition", "attachment; filename=" + pdfDoc.getNomePdf());
             response.setContentLength(pdfDoc.getPdf().length);
 
-            // Scrivi il contenuto del PDF nel response
             try (OutputStream outputStream = response.getOutputStream()) {
                 outputStream.write(pdfDoc.getPdf());
             }
@@ -209,6 +252,4 @@ public class GestioneCorsoController {
             }
         }
     }
-
-
 }

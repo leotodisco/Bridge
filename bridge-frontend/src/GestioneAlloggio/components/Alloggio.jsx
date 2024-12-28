@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
+import {useNavigate, useParams} from "react-router-dom";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faHeart, faHeartBroken } from '@fortawesome/free-solid-svg-icons'; // Importa le icone del cuore
 import "../css/alloggio.css";
@@ -12,67 +12,145 @@ const DettaglioAlloggio = () => {
     const [error, setError] = useState(null);
     const [fotoIngrandita, setFotoIngrandita] = useState(null); // Stato per foto ingrandita
     const [isFavorito, setIsFavorito] = useState(false); // Stato per tracciare se l'alloggio è nei preferiti
+    const nav = useNavigate();
+    const emailRifugiato = localStorage.getItem("email");
+    const token = localStorage.getItem("authToken");
 
     // Funzione per gestire il click sull'icona del cuore
-    const handleClickCuore = async () => {
-        try {
-            const emailRifugiato = localStorage.getItem("email");
-            const titoloAlloggio = alloggio.titolo;
+    const handleClickCuore2 = async () => {
+            try {
 
-            const response = await fetch("http://localhost:8080/alloggi/preferiti", {
+            const idAlloggio = alloggio.id;
+
+            console.log("Email Rifugiato:", emailRifugiato);
+            console.log("ID Alloggio:", idAlloggio);
+
+            if (!emailRifugiato) {
+                setError("Email mancante.");
+                return;
+            }
+
+            if (!idAlloggio || isNaN(idAlloggio)) {
+                setError("ID alloggio non valido.");
+                return;
+            }
+
+            if (!emailRifugiato || !token) {
+                alert("Non sei autenticato. Effettua il login.");
+                nav('/login');
+                return;
+            }
+
+            const response = await fetch(`http://localhost:8080/alloggi/interesse?emailRifugiato=${encodeURIComponent(emailRifugiato)}&idAlloggio=${idAlloggio}`, {
                 method: "POST",
                 headers: {
-                    "Content-Type": "application/json",
-                    "Accept": "application/json"
+                    Authorization: `Bearer ${token}`,
+                    "Accept": "application/json",
                 },
-                body: JSON.stringify({
-                    emailRifugiato: emailRifugiato,
-                    titoloAlloggio: titoloAlloggio
-                })
             });
 
+            console.log("Response status:", response.status);
+
             if (response.ok) {
-                setIsFavorito(true);
+                const newFavoritoState = !isFavorito; // Cambia lo stato
+                setIsFavorito(newFavoritoState);
+
+                // Salva o rimuovi lo stato nel localStorage
+                if (newFavoritoState) {
+                    localStorage.setItem(`favorito_${idAlloggio}`, "true");
+                } else {
+                    localStorage.removeItem(`favorito_${idAlloggio}`);
+                }
+
+                console.log("Interesse manifestato con successo.");
             } else {
                 const errorData = await response.text();
                 setError(`Errore durante l'aggiunta ai preferiti: ${errorData}`);
+                console.error("Errore:", errorData);
             }
         } catch (error) {
             setError(`Errore: ${error.message}`);
+            console.error("Errore:", error.message);
         }
     };
-
-
 
     useEffect(() => {
         const checkFavorito = async () => {
             try {
                 const emailRifugiato = localStorage.getItem("email");
-                const titoloAlloggio = alloggio.titolo;
+                const idAlloggio = alloggio.id;
 
-                const response = await fetch(`http://localhost:8080/alloggi/isFavorito?email=${emailRifugiato}&titolo=${titoloAlloggio}`);
+                console.log("Email Rifugiato (checkFavorito):", emailRifugiato);
+                console.log("ID Alloggio (checkFavorito):", idAlloggio);
+
+                // Controlla se lo stato è già salvato nel localStorage
+                    // Altrimenti, fai una richiesta API per verificare se è nei preferiti
+                const response = await fetch(`http://localhost:8080/alloggi/isFavorito?email=${emailRifugiato}&idAlloggio=${idAlloggio}`);
+                console.log("Response status (isFavorito):", response.status);
+
                 if (response.ok) {
                     const isFavorito = await response.json();
                     setIsFavorito(isFavorito);
+                    console.log("Favorito status from server:", isFavorito);
+                    // Salva il risultato nel localStorage per evitare future richieste
+                    if (isFavorito) {
+                       setIsFavorito(true);
+                    }
                 } else {
+
+                    // check su token:
+                    if (!token) {
+                        alert("Non sei autenticato. Effettua il login.");
+                        nav('/login');
+                        return;
+                    }
+
                     console.warn("Errore durante il controllo dello stato dei preferiti");
+                    const response = await fetch(`http://localhost:8080/alloggi/isFavorito?email=${emailRifugiato}&idAlloggio=${idAlloggio}`, {
+                        method: "GET",
+                        headers: {
+                            'Authorization': `Bearer ${token}`,
+                            "Content-Type": "application/json",
+                            "Accept": "application/json"
+                        },
+                    });
+
+                    if (response.ok) {
+                        const isFavorito = await response.json();
+                        setIsFavorito(isFavorito);
+                        // Salva il risultato nel localStorage per evitare future richieste
+                        if (isFavorito) {
+                            localStorage.setItem(`favorito_${idAlloggio}`, "true");
+                        }
+                    } else {
+                        console.warn("Errore durante il controllo dello stato dei preferiti");
+                    }
                 }
+
             } catch (error) {
                 console.error("Errore:", error.message);
             }
         };
 
-        checkFavorito();
-    }, [titolo]);
-
-
+        if (alloggio.id) {
+            checkFavorito();
+        }
+    }, [alloggio.id]); // Assicurati che alloggio.id sia disponibile prima di fare la chiamata
 
     useEffect(() => {
         const fetchAlloggio = async () => {
             try {
+                // check su token:
+                if (!token) {
+                    alert("Non sei autenticato. Effettua il login.");
+                    nav('/login');
+                    return;
+                }
+
                 const response = await fetch(`http://localhost:8080/alloggi/SingoloAlloggio/${titolo}`, {
                     method: "GET",
                     headers: {
+                        'Authorization': `Bearer ${token}`,
                         "Content-Type": "application/json",
                         "Accept": "application/json"
                     },
@@ -113,7 +191,7 @@ const DettaglioAlloggio = () => {
             </p>
 
             {/* Icona cuore per manifestazione interesse */}
-            <div className="cuore-container" onClick={handleClickCuore}>
+            <div className="cuore-container2" onClick={handleClickCuore2}>
                 <FontAwesomeIcon
                     icon={isFavorito ? faHeart : faHeartBroken}
                     color={isFavorito ? "red" : "gray"}
@@ -159,3 +237,4 @@ const DettaglioAlloggio = () => {
 };
 
 export default DettaglioAlloggio;
+

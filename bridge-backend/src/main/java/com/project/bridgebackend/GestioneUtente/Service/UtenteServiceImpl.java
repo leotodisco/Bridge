@@ -1,8 +1,6 @@
 package com.project.bridgebackend.GestioneUtente.Service;
 
-import com.project.bridgebackend.Model.Entity.Admin;
 import com.project.bridgebackend.Model.Entity.FiguraSpecializzata;
-import com.project.bridgebackend.Model.Entity.Lavoro;
 import com.project.bridgebackend.Model.Entity.Utente;
 import com.project.bridgebackend.Model.Entity.enumeration.Gender;
 import com.project.bridgebackend.Model.Entity.enumeration.TitoloDiStudio;
@@ -10,13 +8,11 @@ import com.project.bridgebackend.Model.dao.FiguraSpecializzataDAO;
 import com.project.bridgebackend.Model.dao.UtenteDAO;
 import com.project.bridgebackend.fotoProfilo.FotoProfilo;
 import com.project.bridgebackend.fotoProfilo.FotoProfiloService;
-import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.Base64;
@@ -33,15 +29,31 @@ import java.util.Optional;
 @Transactional
 public class UtenteServiceImpl implements UtenteService {
 
+    /**
+     * Service per la gestione delle foto.
+     */
     @Autowired
     private FotoProfiloService fotoProfiloService;
 
+    /**
+     * Dao per la gestione degli utenti.
+     */
     @Autowired
     private UtenteDAO utenteDAO;
 
+    /**
+     * Figura specializzata per la gestione degli utenti.
+     */
     @Autowired
     private FiguraSpecializzataDAO fsDAO;
 
+
+    /**
+     * Bean per la gestione della cifratura delle password.
+     * Utilizza un'implementazione di,
+     * {@link org.springframework.security.crypto.password.PasswordEncoder}
+     * per garantire la sicurezza durante la memorizzazione delle password.
+     */
     @Autowired
     private PasswordEncoder passwordEncoder;
 
@@ -56,42 +68,84 @@ public class UtenteServiceImpl implements UtenteService {
         return pwCifrata;
     }
 
+    /**
+     * Metodo per eliminare un utente dato il suo indirizzo email.
+     * Viene eliminata anche la foto profilo associata all'utente.
+     *
+     * @param email indirizzo email dell'utente da eliminare.
+     * @throws Exception se si verifica un errore durante l'eliminazione.
+     */
     @Override
-    public void eliminaUtente(String email) throws Exception {
+    public void eliminaUtente(final String email) throws Exception {
         try {
             String idFoto = utenteDAO.findByEmail(email).getFotoProfilo();
             utenteDAO.delete(utenteDAO.findByEmail(email));
             fotoProfiloService.deleteIMG(idFoto);
-        }catch(Exception e) {
+        } catch (Exception e) {
             throw new Exception(e.getMessage());
         }
     }
 
-    public FotoProfilo getFotoUtente(String email) throws IOException {
+    /**
+     * Recupera la foto profilo di un utente dato il suo indirizzo email.
+     *
+     * @param email indirizzo email dell'utente.
+     * @return un oggetto {@link FotoProfilo} contenente la foto dell'utente.
+     * @throws IOException se si verifica un errore durante il recupero della foto.
+     */
+    public FotoProfilo getFotoUtente(
+            final String email) throws IOException {
         Utente u = utenteDAO.findByEmail(email);
         FotoProfilo fp = fotoProfiloService.getIMG(u.getFotoProfilo());
         return fp;
     }
 
-    public void modificaPassword(String email, String password) throws Exception {
+    /**
+     * Modifica la password di un utente dato il suo indirizzo email.
+     * La nuova password viene cifrata prima di essere salvata.
+     *
+     * @param email indirizzo email dell'utente.
+     * @param password nuova password da impostare.
+     * @throws Exception se si verifica un errore durante l'aggiornamento della password.
+     */
+    public void modificaPassword(
+            final String email,
+            final String password) throws Exception {
         Utente u = utenteDAO.findByEmail(email);
         System.out.println(password);
         u.setPassword(safePassword(password));
         utenteDAO.save(u);
     }
 
+    /**
+     * Modifica la disponibilità di un utente specializzato dato il suo indirizzo email.
+     *
+     * @param email indirizzo email dell'utente.
+     * @param disp nuova disponibilità da impostare.
+     * @throws Exception se si verifica un errore durante l'aggiornamento della disponibilità.
+     */
     public void modificaDisp(final String email, final String disp) throws Exception {
         FiguraSpecializzata fs = fsDAO.findByEmail(email);
         fs.setDisponibilita(disp);
           fsDAO.save(fs);
     }
 
-    public Utente modificaUtente(final String email, final HashMap<String, Object> aggiornamenti) throws IOException {
+    /**
+     * Modifica i dati di un utente dato il suo indirizzo email e una mappa,
+     * di aggiornamenti.
+     *
+     * @param email indirizzo email dell'utente.
+     * @param aggiornamenti mappa contenente le chiavi e i valori dei dati da aggiornare.
+     * @return l'oggetto {@link Utente} aggiornato.
+     * @throws IOException se si verifica un errore durante l'aggiornamento.
+     */
+    public Utente modificaUtente(
+            final String email,
+            final HashMap<String, Object> aggiornamenti) throws IOException {
         Optional<Utente> utenteOptional = utenteDAO.findById(email);
         if (utenteOptional.isEmpty()) {
             throw new IllegalArgumentException("Utente non trovato.");
         }
-
         Utente utente = utenteOptional.get();
         try {
             aggiornamenti.forEach((campo, valore) -> {
@@ -130,7 +184,16 @@ public class UtenteServiceImpl implements UtenteService {
         return utenteDAO.save(utente);
     }
 
-    public void modificaFotoUtente(String email, String base64Image) throws IOException {
+    /**
+     * Modifica la foto profilo di un utente dato il suo indirizzo email e una nuova immagine in formato Base64.
+     *
+     * @param email indirizzo email dell'utente.
+     * @param base64Image immagine in formato Base64 da salvare come nuova foto profilo.
+     * @throws IOException se si verifica un errore durante l'aggiornamento della foto.
+     */
+    public void modificaFotoUtente(
+            final String email,
+            final String base64Image) throws IOException {
         // Trova l'utente dal database tramite email
         Optional<Utente> utenteOptional = utenteDAO.findById(email);
         if (utenteOptional.isEmpty()) {
@@ -159,8 +222,14 @@ public class UtenteServiceImpl implements UtenteService {
         }
     }
 
-
-    public Utente getUtente(String email) {
+    /**
+     * Recupera un utente dal sistema dato il suo indirizzo email.
+     *
+     * @param email indirizzo email dell'utente.
+     * @return l'oggetto {@link Utente} associato all'indirizzo email fornito.
+     */
+    public Utente getUtente(
+            final String email) {
         Utente u = utenteDAO.findByEmail(email);
         return u;
     }

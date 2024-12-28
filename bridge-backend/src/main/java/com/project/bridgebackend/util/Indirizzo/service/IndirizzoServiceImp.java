@@ -9,15 +9,42 @@ import org.springframework.stereotype.Service;
 import java.util.HashMap;
 import java.util.Optional;
 
+/**
+ * Implementazione del servizio per la gestione degli indirizzi.
+ * Fornisce metodi per aggiornare i dati degli indirizzi nel sistema.
+ */
 @Service
 public class IndirizzoServiceImp implements IndirizzoService {
 
+    /**
+     * Oggetto per l'accesso e la gestione degli indirizzi nel database.
+     * Utilizza il DAO per interagire con la tabella degli indirizzi.
+     */
     @Autowired
     private IndirizzoDAO indirizzoDAO;
 
+    /**
+     * Metodo per aggiornare un indirizzo esistente nel database.
+     * <p>
+     * Aggiorna i campi dell'indirizzo identificato tramite il suo ID.
+     * Se i campi sono presenti nella mappa,
+     * verranno aggiornati nel database.
+     * In caso di ID non valido,
+     * viene lanciata un'eccezione.
+     * </p>
+     *
+     * @param idIndirizzo ID univoco dell'indirizzo da aggiornare.
+     * @param indirizzoData Mappa contenente i dati da aggiornare nell'indirizzo.
+     *                      Le chiavi della mappa sono: "via", "citta", "cap",
+     *                      "num_civico" e "provincia". I valori devono essere
+     *                      di tipo String per le stringhe e Integer per i numeri.
+     * @throws IllegalArgumentException se l'indirizzo con l'ID fornito non esiste.
+     */
     @Override
     @Transactional
-    public void aggiornaIndirizzo(long idIndirizzo, HashMap<String, Object> indirizzoData) {
+    public void aggiornaIndirizzo(
+            final long idIndirizzo,
+            final HashMap<String, Object> indirizzoData) {
         Optional<Indirizzo> indirizzoOptional = indirizzoDAO.findById(idIndirizzo);
 
         if (indirizzoOptional.isEmpty()) {

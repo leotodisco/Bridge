@@ -16,8 +16,11 @@ import java.util.Optional;
 /**
  * @author Alessia De Filippo.
  * Creato il 03/12/2024.
- * DAO della classe Evento.
- */
+ * Repository per la gestione degli oggetti {@link Evento}.
+ * Fornisce metodi per l'accesso e la manipolazione dei,
+ * dati relativi agli eventi.
+ * Utilizza Spring Data JPA per fornire implementazioni automatiche,
+ * delle query. */
 
 @Repository
 public interface EventoDAO extends JpaRepository<Evento, Long> {
@@ -67,11 +70,29 @@ public interface EventoDAO extends JpaRepository<Evento, Long> {
     List<Evento> findEventiConSpazioDisponibile();
 
     /**
+     * Questo metodo esegue una query per ottenere l'evento specificato,
+     * e carica anche la lista dei partecipanti,
+     * attraverso una join con la tabella relativa.
+     * L'evento restituito conterrà tutte le informazioni necessarie,
+     * sui partecipanti associati.
      *
+     * @param eventoId l'ID dell'evento da recuperare.
+     * @return la lista dei partecipanti.
+     * Se non esiste un evento con l'ID fornito, il metodo restituirà null.
      */
     @Query("SELECT e FROM Evento e JOIN FETCH e.listaPartecipanti WHERE e.id = :eventoId")
     Optional<Evento> findEventoWithPartecipanti(long eventoId);
 
+    /**
+     * Questo metodo esegue una query per ottenere una lista di eventi,
+     * e carica anche le informazioni relative,
+     * agli organizzatori di ciascun evento attraverso una join.
+     * Gli eventi restituiti conterranno tutte le informazioni
+     * sugli organizzatori associati.
+     *
+     * @return una lista di eventi, ciascuno con il proprio organizzatore.
+     *         La lista potrebbe essere vuota se non ci sono eventi nel sistema.
+     */
     @Query("SELECT e FROM Evento e JOIN Fetch e.organizzatore")
     List<Evento> findAllWithOrganizzatore();
 }

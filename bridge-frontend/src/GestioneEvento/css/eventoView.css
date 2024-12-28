@@ -51,6 +51,56 @@
     margin-bottom:8px;
 }
 
+/* Stili per il pulsante "Aggiungi alla lista di attesa" */
+.register-button {
+    background-color: #4caf50;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    font-size: 16px;
+    font-weight: bold;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.register-button:hover {
+    background-color: #45a049;
+}
+
+/* Stili per il pulsante "Rimuovi dalla lista di attesa" */
+.remove-button {
+    background-color: #f44336;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    font-size: 16px;
+    font-weight: bold;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.remove-button:hover {
+    background-color: #d32f2f;
+}
+
+/* Stili per il testo nella sezione di interesse */
+.popup-body h4 {
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 10px;
+    color: #333;
+}
+
+/* Messaggio per chi è già registrato */
+.popup-body p {
+    font-size: 16px;
+    color: #555;
+    margin-bottom: 10px;
+}
+
+
 /* Animazione di ingresso */
 @keyframes fadeIn {
     from {
@@ -171,6 +221,7 @@
 }
 
 .popup-container {
+    position: fixed;
     max-width: 600px; /* Limita la larghezza massima del popup */
     width: 90%; /* Adatta il popup al 90% della larghezza dello schermo */
     margin: 0 auto; /* Centra il popup orizzontalmente */
@@ -326,4 +377,92 @@ textarea {
     }
 }
 
+.popup-container {
+    transition: transform 0.5s ease-in-out;
+}
 
+.move-left {
+    transform: translateX(-60%); /* Sposta il popup a sinistra */
+}
+
+/* Container for each participant */
+.partecipante-item {
+    display: flex;
+    flex-direction: row; /* Align name and surname horizontally */
+    justify-content: flex-start; /* Ensure the name and surname are aligned to the left */
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+/* Style for name and surname */
+.partecipante-item .dati {
+    font-size: 14px;  /* Adjust text size if needed */
+    color: #333;
+    margin-right: 10px; /* Space between name and surname */
+}
+
+/* Styling for email */
+.second-popup .email {
+    font-size: 14px;   /* Adjust email font size */
+    color: #333;
+    text-align: center; /* Ensures the email text is centered */
+    font-weight: bold;
+    margin-top: 10px;   /* Adds space between name/cognome and email */
+    width: 50%;        /* Ensures the email takes the full width */
+}
+
+/* Popup Container */
+.second-popup {
+
+    position: fixed;
+    max-width: 600px; /* Limita la larghezza massima del popup */
+    width: 90%; /* Adatta il popup al 90% della larghezza dello schermo */
+    margin: 0 auto; /* Centra il popup orizzontalmente */
+    overflow-y: auto; /* Aggiunge lo scroll se il contenuto è troppo alto */
+    max-height: 90vh; /* Limita l'altezza massima al 90% della finestra */
+    padding: 20px;
+    box-sizing: border-box; /* Include il padding nel calcolo delle dimensioni */
+    background-color: #fff; /* Sfondo bianco */
+    border-radius: 8px; /* Angoli arrotondati */
+    opacity: 0; /* Initially invisible */
+    transition: transform 0.5s ease-in-out, opacity 0.3s ease-in-out;
+}
+
+/* Visible popup */
+.second-popup.visible {
+    left: 50%; /* Moves the popup to the center from the left */
+    opacity: 1; /* Makes it visible */
+}
+
+/* List styling */
+.second-popup ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+/* Container for each participant */
+.partecipante-item {
+    display: flex;
+    flex-direction: row; /* Align name and surname horizontally */
+    justify-content: flex-start; /* Ensure the name and surname are aligned to the left */
+    align-items: center;
+    margin-bottom: 10px;
+    border-bottom: 1px solid #ddd; /* Horizontal line between participants */
+    padding-bottom: 10px; /* Space below the name and email */
+}
+
+
+.partecipante-item .dati {
+    margin-right: 10px; /* Space between name and surname */
+}
+
+/* Media query per schermi piccoli (mobile/tablet) */
+@media screen and (max-width: 768px) {
+    /* Posizione del popup secondario sotto il popup principale */
+    .second-popup {
+        top: 10%; /* Spostato più in basso */
+        left: 50%; /* Centra il popup orizzontalmente */
+        transform: translateX(-50%); /* Centra rispetto alla larghezza */
+        width: 90%; /* Occupa il 90% della larghezza dello schermo */
+    }
+}

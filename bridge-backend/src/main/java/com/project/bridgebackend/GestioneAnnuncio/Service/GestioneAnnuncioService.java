@@ -1,6 +1,12 @@
 package com.project.bridgebackend.GestioneAnnuncio.Service;
 
-import com.project.bridgebackend.Model.Entity.*;
+
+
+import com.project.bridgebackend.Model.Entity.Consulenza;
+import com.project.bridgebackend.Model.Entity.Indirizzo;
+import com.project.bridgebackend.Model.Entity.Lavoro;
+import com.project.bridgebackend.Model.Entity.Utente;
+import com.project.bridgebackend.Model.Entity.enumeration.TipoConsulenza;
 
 import java.util.HashMap;
 import java.util.List;
@@ -10,8 +16,7 @@ import java.util.List;
  * Include operazioni di inserimento, modifica, eliminazione e gestione delle preferenze.
  *
  * @author Geraldine Montella, Vito Vernellati
- * @created 04/12/2024
- * @version 1.0
+ * creato in data 04/12/2024
  */
 public interface GestioneAnnuncioService {
 
@@ -55,7 +60,7 @@ public interface GestioneAnnuncioService {
      * @param id intero identificativo della consulenza che si vuole ottenere.
      * @return consulenza avente nel db l'id specificato se presente.
      */
-    Consulenza getConsulenze( long id);
+    Consulenza getConsulenze(long id);
 
     /**
      * Funzione per aggiornare una certa consulenza sulla base delle informazioni passate.
@@ -65,8 +70,8 @@ public interface GestioneAnnuncioService {
      *
      * @return consulenza aggiornata con le nuove modifiche
      */
-    Consulenza modificaAnnuncioConsulenza(final long idConsulenza,
-                                          final HashMap<String, Object> aggiornamenti);
+    Consulenza modificaAnnuncioConsulenza(long idConsulenza,
+                                          HashMap<String, Object> aggiornamenti);
 
     /**
      * Funzione per l'eliminazione di una consulenza sulla base,
@@ -76,7 +81,21 @@ public interface GestioneAnnuncioService {
      */
 
     void eliminaConsulenza(long idConsulenza);
-    //      **Metodi per Lavoro**
+
+    public void rimuoviInteresseConsulenza(final long idConsulenza, final String emailRifugiato);
+
+    public void accettaConsulenzaRifugiato(final long idConsulenza, final String emailRifugiato);
+
+        //      **Metodi per Lavoro**
+
+
+    /**
+     * Funzione per la ricerca di una determinata consuelenza,
+     * in base alla tipologia.
+     * @param tipo tipologia della consulenza che si vuole cercare.,
+     *
+     */
+    List<Consulenza> getConsulenzeByTipo(TipoConsulenza tipo);
 
     /**
      * Inserisce un nuovo annuncio di lavoro nel database.
@@ -134,4 +153,26 @@ public interface GestioneAnnuncioService {
      */
     void eliminaAnnuncioLavoro(long idAnnuncio);
 
+
+    /**
+     * Recupera in maniera casuale 5 annunci di lavoro.
+     * @return Una lista di 5 oggetti `Lavoro` contenenti annunci di lavoro casuali.
+     */
+    List<Lavoro> getRandomLavori();
+
+    /**
+     * Inserisce un rifugiato nella lista della consulenza.
+     * @param idConsulenza id della consulenza per cui si vuole,
+     *                     dimostrare l'interesse.
+     * @param emailRifugiato email del rifugiato che dimostra,
+     *                       interesse per una consulenza.
+     */
+    void interesseConsulenza(final long idConsulenza, final String emailRifugiato);
+
+    /**
+     * Recupera tutti i candiddati per un determinato lavoro.
+     * @param lavoroId identificativo del lavoro.
+     * @return Una lista di candidati.
+     */
+    List<String> getCandidatiPerLavoro(final long lavoroId);
 }

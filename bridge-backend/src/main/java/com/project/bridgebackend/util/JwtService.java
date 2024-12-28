@@ -5,12 +5,9 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import io.jsonwebtoken.SignatureAlgorithm;
-
-import javax.crypto.SecretKey;
 import java.security.Key;
 import java.util.Date;
 import java.util.HashMap;
@@ -36,19 +33,20 @@ import java.util.function.Function;
  * Questo servizio è un componente essenziale per l'integrazione con meccanismi di autenticazione basati su JWT
  * in un'applicazione Spring.
  */
-
-
 @Service
 public class JwtService {
-
-    private String secretKey = "UmdVa1hwMnI1dTh4L0E/RChHK0tiUGVTaFZtWXEzdDY="; // Chiave segreta configurata in application.properties
+    /**
+     * Chiave segreta configurata in application.properties.
+     */
+    private String secretKey = "UmdVa1hwMnI1dTh4L0E/RChHK0tiUGVTaFZtWXEzdDY=";
 
     /**
      * Metodo per la generazione di un token.
      * @param userDetails
      * @return token.
      */
-    public String generateToken(Utente userDetails) {
+    public String generateToken(
+            final Utente userDetails) {
         HashMap<String, Object> mappaClaims = new HashMap<>();
         mappaClaims.put("id", userDetails.getEmail());
         mappaClaims.put("ruolo", userDetails.getRole());
@@ -83,7 +81,8 @@ public class JwtService {
      * @param token
      * @return username/password.
      */
-    public String extractUsername(String token) {
+    public String extractUsername(
+            final String token) {
         return extractClaim(token, Claims::getSubject);
     }
 
@@ -92,7 +91,8 @@ public class JwtService {
      * @param token Token JWT.
      * @return Data di scadenza.
      */
-    public Date extractExpiration(String token) {
+    public Date extractExpiration(
+            final String token) {
         return extractClaim(token, Claims::getExpiration);
     }
 
@@ -121,11 +121,15 @@ public class JwtService {
 
     /**
      * Estrae un claim specifico dal token.
-     * @param token Token JWT.
+     *
+     * @param <T> Il tipo del valore del claim estratto.
+     * @param token Token JWT da cui estrarre il claim.
      * @param claimsResolver Funzione per risolvere il claim.
-     * @return Valore del claim.
+     * @return Valore del claim estratto.
      */
-    private <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {
+    private <T> T extractClaim(
+            final String token,
+            final Function<Claims, T> claimsResolver) {
         final Claims claims = extractAllClaims(token);
         return claimsResolver.apply(claims);
     }
@@ -135,7 +139,8 @@ public class JwtService {
      * @param token Token JWT.
      * @return Tutti i claims.
      */
-    private Claims extractAllClaims(String token) {
+    private Claims extractAllClaims(
+            final String token) {
         return Jwts.parserBuilder()
                 .setSigningKey(getSignInKey())
                 .build()

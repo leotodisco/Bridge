@@ -1,8 +1,6 @@
 package com.project.bridgebackend.Model.dao;
 
 import com.project.bridgebackend.Model.Entity.Volontario;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 /**

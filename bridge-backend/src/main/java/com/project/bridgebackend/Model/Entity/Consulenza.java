@@ -1,13 +1,7 @@
 package com.project.bridgebackend.Model.Entity;
 
 import com.project.bridgebackend.Model.Entity.enumeration.TipoConsulenza;
-import jakarta.persistence.InheritanceType;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
-import jakarta.persistence.Inheritance;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Column;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -16,8 +10,9 @@ import lombok.Setter;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
-import java.util.List;
 
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author Geraldine Montella.
@@ -70,4 +65,19 @@ public class Consulenza extends Annuncio {
     )
     @Column(name = "numero", nullable = false, length = 15)
     private String numero;
+
+    /**
+     * Lista di candidati (di tipo Rifugiato) che hanno applicato per l'annuncio.
+     * È una relazione @OneToMany, in cui un annuncio può essere associato a più candidati.
+     * La relazione è mappata dall'attributo annuncio nell'entità Rifugiato.
+     */
+    @ElementCollection
+    @CollectionTable(
+            name = "consulenza_rifugiati",
+            joinColumns = @JoinColumn(name = "consulenza_id")
+    )
+    @MapKeyColumn(name = "rifugiato_email")
+    @Column(name = "stato")
+    private Map<String, Boolean> candidati; // true = accettato, false = respinto/in attesa
+
 }

@@ -4,6 +4,9 @@ import "../../GestioneEvento/css/card.css";
 import EventView from "./EventoRetrieveView.jsx";
 //Per installare la libreria: npm install date-fns
 import { format } from "date-fns";
+import "../css/AllEventiStyle.css";
+import {Link, useNavigate} from "react-router-dom";
+import CreaEvento from "./formEvento.jsx";
 
 /*
  * @author Alessia De Filippo
@@ -31,10 +34,31 @@ const AllEventsView = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [selectedEventId, setSelectedEventId] = useState(null); // Stato per il popup
+    const [showCreatePopup, setShowCreatePopup] = useState(false); // Stato per il popup di creazione evento
+    const nav = useNavigate();
+    const ruolo = localStorage.getItem("ruolo");
+
 
     const fetchEvents = async () => {
         try {
-            const response = await fetch("http://localhost:8080/api/eventi/all");
+            const email = localStorage.getItem('email');
+            const token = localStorage.getItem('authToken');
+
+            if (!email || !token) {
+                alert("Non sei autenticato. Effettua il login.");
+                nav('/login');
+                return;
+            }
+
+            const response = await
+            fetch("http://localhost:8080/api/eventi/all", {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json',
+                },
+            });
+
             if (!response.ok) {
                 throw new Error("Errore durante il recupero degli eventi");
             }
@@ -51,11 +75,28 @@ const AllEventsView = () => {
         setSelectedEventId(null); // Chiudi il popup
     };
 
+    const closeCreatePopup = () => {
+        setShowCreatePopup(false); // Chiudi il popup di creazione evento
+    };
+
     useEffect(() => {
         fetchEvents();
     }, []);
 
+    // Esempio di salvataggio del ruolo
 
+    console.log(localStorage.getItem('ruolo'));
+
+
+    // Verifica se l'utente è loggato come Volontario
+    /*useEffect(() => {
+        const ruoloUtente = localStorage.getItem('ruolo');
+        console.log(ruoloUtente);
+        if (ruoloUtente === 'VOLONTARIO') {
+            setIsVolontario(true);
+        }
+        fetchEvents();
+    }, []);*/
 
     if (loading) {
         return <p>Caricamento in corso...</p>;
@@ -67,7 +108,19 @@ const AllEventsView = () => {
 
     return (
         <div>
-            <h1>Tutti gli Eventi</h1>
+            {/* Contenitore del titolo e del pulsante */}
+            <div className="headerForm-container">
+                <h1 className="header-title">Tutti gli Eventi</h1>
+                {/* Pulsante per aggiungere un nuovo evento */}
+                {ruolo === "VOLONTARIO" && (
+                    <button className="btn btn-circle">
+                        <Link to="/crea-evento">
+                            +
+                        </Link>
+                    </button>
+                )}
+            </div>
+
             {events.length > 0 ? (
                 <div className="cards-container">
                     {events.map((event) => (
@@ -76,8 +129,8 @@ const AllEventsView = () => {
                             data={{
                                 title: event.nome,
                                 image: event.organizzatore.fotoUtente
-                                            ? event.organizzatore.fotoUtente
-                                            : "https://via.placeholder.com/150/cccccc/000000?text=No+Image",
+                                    ? event.organizzatore.fotoUtente
+                                    : "https://via.placeholder.com/150/cccccc/000000?text=No+Image",
                                 userName: `${event.organizzatore.nome} ${event.organizzatore.cognome}`,
                                 parameter1: formatDate(event.data), // Questo è Parametro 1
                                 parameter2: formatTime(event.ora),  // Questo è Parametro 2
@@ -100,6 +153,11 @@ const AllEventsView = () => {
             {/* Mostra il popup se selectedEventId è impostato */}
             {selectedEventId && (
                 <EventView id={selectedEventId} onClose={closePopup} />
+            )}
+
+            {/* Popup creazione evento */}
+            {showCreatePopup && (
+                <CreaEvento onClose={closeCreatePopup} />
             )}
         </div>
     );

@@ -1,13 +1,16 @@
 package com.project.bridgebackend.Model.dao;
 
-
 import com.project.bridgebackend.Model.Entity.Admin;
 
 /**
  *
  * @author Benedetta Colella.
  * Data creazione: 05/12/2024
- * Interfaccia che indica un DAO per l'Admin
+ * Repository per la gestione degli oggetti {@link Admin}.
+ * Fornisce metodi per l'accesso e la manipolazione dei,
+ * dati relativi agli utenti admin.
+ * Utilizza Spring Data JPA per fornire implementazioni automatiche,
+ * delle query.
  */
 
 public interface AdminDAO extends UtenteDAO {

@@ -9,11 +9,13 @@ import com.project.bridgebackend.Model.dao.VolontarioDAO;
 import com.project.bridgebackend.Model.dto.EventoDTO;
 import com.project.bridgebackend.Model.Entity.Indirizzo;
 import com.project.bridgebackend.Model.dao.IndirizzoDAO;
+import com.project.bridgebackend.util.JwtService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.sql.SQLOutput;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
@@ -25,10 +27,13 @@ import org.springframework.web.server.ResponseStatusException;
 /**
  * @author Alessia De Filippo.
  * Creato il: 06/12/2024.
+ *
  * Controller per la gestione degli eventi.
+ * Fornisce API REST per la creazione, il recupero,
+ * la modifica e la cancellazione degli eventi.
  */
 @RestController
-@CrossOrigin(origins = "http://localhost:5173", allowedHeaders = "*")
+@CrossOrigin(origins = "http://localhost:5174", allowedHeaders = "*")
 @RequestMapping("api/eventi")
 public class GestioneEventoController {
 
@@ -50,22 +55,41 @@ public class GestioneEventoController {
     @Autowired
     private VolontarioDAO volontarioDAO;
 
+    /**
+     * DAO per la gestione delle operazioni sui rifugiati.
+     */
     @Autowired
     private RifugiatoDAO rifugiatoDAO;
+    @Autowired
+    private JwtService jwtService;
 
     /**
-     * Metodo per la creazione di un evento.
-     * @param eventoDTO evento da creare.
-     * @return evento creato.
+     * Crea un nuovo evento.
+     *
+     * @param eventoDTO DTO che contiene i dati dell'evento da creare.
+     * @return L'evento creato, incapsulato in una risposta HTTP con codice 201 (CREATED).
      */
     @PostMapping("/crea")
-    public ResponseEntity<Evento> creaEvento(
-            @Valid @RequestBody final EventoDTO eventoDTO) {
+    public ResponseEntity<?> creaEvento(
+            @Valid @RequestBody final EventoDTO eventoDTO,
+            @RequestHeader("Authorization") final String autorizationHeader) {
 
-        /*
-         * Recupero dati dell'indirizzo dell'evento.
-         * Salvataggio in Indirizzo
-         */
+        // Estrae il token JWT dall'header Authorization
+        String token = autorizationHeader.replace("Bearer ", "");
+
+        // Estrae l'email dal token
+        String emailUtenteLoggato = jwtService.extractUsername(token);
+
+        // Verifica se l'utente loggato è un volontario
+        Volontario volontarioLoggato = volontarioDAO.findByEmail(emailUtenteLoggato);
+        if(volontarioLoggato == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body("Non sei autorizzato a creare un evento");
+        }
+
+         // Recupero dati dell'indirizzo dell'evento.
+         // Salvataggio in Indirizzo
+
         Indirizzo indirizzo = new Indirizzo();
         indirizzo.setVia(
                 eventoDTO.getLuogo().getVia());
@@ -82,13 +106,6 @@ public class GestioneEventoController {
         long idIndirizzo = gestioneEventoService
                 .salvaIndirizzoEvento(indirizzo);
 
-        //Recupero volontario organizzatore dell'evento
-        Volontario volontario = volontarioDAO
-                .findByEmail(eventoDTO.getOrganizzatore().getEmail());
-        //Controllo se il volontario esiste
-        if (volontario == null) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
-        }
 
         //Creazione entity Evento da DTO
         Evento evento = new Evento();
@@ -98,7 +115,7 @@ public class GestioneEventoController {
         evento.setLinguaParlata(eventoDTO.getLinguaParlata());
         evento.setDescrizione(eventoDTO.getDescrizione());
         evento.setLuogo(indirizzoDAO.getReferenceById(idIndirizzo));
-        evento.setOrganizzatore(volontario);
+        evento.setOrganizzatore(volontarioLoggato);
         evento.setMaxPartecipanti(eventoDTO.getMaxPartecipanti());
 
         //Salvataggio evento in DB
@@ -109,12 +126,32 @@ public class GestioneEventoController {
     }
 
     /**
-     * Metodo per il fetch di un evento
+     * Endpoint per ottenere la lista dei partecipanti di un evento.
+     * @param id identificativo dell'evento.
+     * @return lista dei partecipanti dell'evento.
      */
+    @GetMapping("/partecipanti/{id}")
+    public ResponseEntity<List<Rifugiato>> getPartecipanti(@PathVariable final long id) {
+        try {
+            List<Rifugiato> partecipanti = gestioneEventoService.getPartecipantiPerEvento(id);
+            return ResponseEntity.ok(partecipanti);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        }
+    }
+
+    /**
+     * Recupera un evento dato il suo ID.
+     *
+     * @param id Identificativo dell'evento da recuperare.
+     * @return DTO dell'evento recuperato, o codice 404 (NOT FOUND) se non trovato.
+     */
+
     @GetMapping("/retrieve/{id}")
-    public ResponseEntity<EventoDTO> getEventoById(@PathVariable long id) {
+    public ResponseEntity<EventoDTO> getEventoById(
+            @PathVariable final long id) {
         Optional<Evento> evento = gestioneEventoService.getEventoById(id);
-        if(evento.isPresent()) {
+        if (evento.isPresent()) {
             //Converto l'entity Evento in DTO
             EventoDTO eventoDTO = new EventoDTO();
             eventoDTO.setId(
@@ -142,45 +179,73 @@ public class GestioneEventoController {
         }
     }
 
+
     /**
-     * Metodo per l'iscrizione di un partecipante a un evento.
-     * @param id
-     * @param emailPartecipante
-     * @return
+     * Iscrive un partecipante a un evento.
+     *
+     * @param id Identificativo dell'evento.
+     * @param emailPartecipante Email del partecipante da iscrivere.
+     * @return Evento aggiornato con il partecipante aggiunto, o un errore se il partecipante o l'evento non esiste.
      */
     @PostMapping("/{id}/iscrivi")
-    public ResponseEntity<?> iscriviPartenope(
-            @PathVariable long id,
-            @RequestParam String emailPartecipante) {
+    public ResponseEntity<?> iscriviPartecipante(
+            @PathVariable final long id,
+            @RequestParam final String emailPartecipante,
+            @RequestHeader("Authorization") final String autorizationHeader) {
+
+        // Estrae il token JWT dall'header Authorization
+        String token = autorizationHeader.replace("Bearer ", "");
+
+        // Estrae l'email dal token
+        String emailUtenteLoggato = jwtService.extractUsername(token);
+
+        // Verifica se l'utente loggato è un rifugiato
+        Rifugiato rifugiatoLoggato = rifugiatoDAO.findByEmail(emailUtenteLoggato);
+        if(rifugiatoLoggato == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body("Non sei autorizzato a iscriverti ad un evento");
+        }
 
         // Verifica che l'evento esista
         Evento evento = gestioneEventoService.getEventoById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Evento non trovato"));
 
-        // Verifica che il rifugiato esista
-        Rifugiato rifugiato = rifugiatoDAO.findByEmail(emailPartecipante);
-        if(rifugiato == null) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Rifugiato non trovato");
-        }
-
         // Iscrivi il partecipante
-        gestioneEventoService.iscrizioneEvento(id, emailPartecipante);
+        gestioneEventoService.iscrizioneEvento(id, emailUtenteLoggato);
 
         return new ResponseEntity<>(evento, HttpStatus.OK);
     }
 
 
     /**
-     * Metodo per la disiscrizione di un partecipante a un evento.
-     * @param id identificativo dell'evento.
-     * @param emailPartecipante email del partecipante.
-     * @return evento aggiornato.
+     * Rimuove l'iscrizione di un partecipante da un evento.
+     *
+     * @param id Identificativo dell'evento.
+     * @param emailPartecipante Email del partecipante da disiscrivere.
+     * @return L'evento aggiornato senza il partecipante, o un errore se i dati non sono validi.
      */
     @DeleteMapping("/{id}/disiscrivi")
     public ResponseEntity<Evento> disiscriviPartecipante(
-            @PathVariable long id, @RequestParam String emailPartecipante) {
+            @PathVariable final long id,
+            @RequestParam final String emailPartecipante,
+            @RequestHeader("Authorization") final String autorizationHeader) {
         try {
-            System.out.println("Disiscrivi partecipante: " + id + " " + emailPartecipante);
+
+            // Estrae il token JWT dall'header Authorization
+            String token = autorizationHeader.replace("Bearer ", "");
+
+            // Estrae l'email dal token
+            String emailUtenteLoggato = jwtService.extractUsername(token);
+
+            // Verifica se l'utente loggato è un rifugiato
+            Rifugiato rifugiatoLoggato = rifugiatoDAO.findByEmail(emailUtenteLoggato);
+            if(rifugiatoLoggato == null) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                        .body(null);
+            }
+
+            System.out.println("Disiscrivi partecipante: "
+                    + id + " " + emailPartecipante);
             Evento eventoAggiornato = gestioneEventoService.disiscrizioneEvento(id, emailPartecipante);
             System.out.println("Evento aggiornato: " + eventoAggiornato);
             return new ResponseEntity<>(eventoAggiornato, HttpStatus.OK);
@@ -196,8 +261,9 @@ public class GestioneEventoController {
 
 
     /**
-     * Metodo per il fetch di tutti gli eventi.
-     * @return
+     * Recupera tutti gli eventi disponibili.
+     *
+     * @return Lista di tutti gli eventi presenti nel database.
      */
     @GetMapping("/all")
     public ResponseEntity<List<Evento>> getAllEventi() {
@@ -205,20 +271,22 @@ public class GestioneEventoController {
         return new ResponseEntity<>(eventi, HttpStatus.OK);
     }
 
+
     /**
-     * Metodo per il fetch degli eventi pubblicati da un volontario.
-     * @param email email del volontario.
-     * @return evento pubblicato.
+     * Recupera tutti gli eventi pubblicati da un volontario.
+     *
+     * @param email Email del volontario.
+     * @return Lista degli eventi pubblicati dal volontario, o codice 404 (NOT FOUND) se non trovati.
      */
     @GetMapping("/pubblicati")
     public ResponseEntity<List<Evento>> getCorsiPubblicatiByVolontario(
-            @RequestParam("email") String email) {
+            @RequestParam("email") final String email) {
         System.out.println("Email ricevuta: " + email);
 
         // Recupera il volontario tramite email
         Volontario volontario = volontarioDAO.findByEmail(email);
         System.out.println("Volontario trovato: " + volontario);
-        if(volontario == null) {
+        if (volontario == null) {
             System.out.println("Volontario non trovato");
             return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
         }
@@ -226,22 +294,29 @@ public class GestioneEventoController {
         //Recupera i corsi pubblicati
         List<Evento> eventi = gestioneEventoService.getEventiByVolontario(email);
         eventi.forEach(System.out::println);
-        if(eventi.isEmpty()) {
+        if (eventi.isEmpty()) {
             System.out.println("Nessun evento trovato per questo volontario");
             return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
         }
         return new ResponseEntity<>(eventi, HttpStatus.OK);
     }
 
+    /**
+     * Verifica se un partecipante è iscritto a un evento.
+     *
+     * @param id Identificativo dell'evento.
+     * @param emailPartecipante Email del partecipante.
+     * @return `true` se il partecipante è iscritto, `false` altrimenti.
+     */
     @GetMapping("/{id}/iscrizione")
     public ResponseEntity<Boolean> verificaIscrizione(
-            @PathVariable long id,
-            @RequestParam String emailPartecipante) {
+            @PathVariable final long id,
+            @RequestParam final String emailPartecipante) {
 
         try {
             // Trova l'evento con i partecipanti
             Evento evento = gestioneEventoService.trovaEventoConPartecipanti(id);
-            if(evento == null) {
+            if (evento == null) {
                 return new ResponseEntity<>(false, HttpStatus.NOT_FOUND);
             }
 
@@ -258,4 +333,18 @@ public class GestioneEventoController {
             return new ResponseEntity<>(false, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
+
+    /**
+     * Recupera eventi casuali per la home page.
+     *
+     * @return Lista di eventi casuali.
+     */
+    @GetMapping("/random")
+    public ResponseEntity<List<Evento>> getRandomEvents() {
+        List<Evento> eventi = gestioneEventoService.getRandomEvents();
+        return new ResponseEntity<>(eventi, HttpStatus.OK);
+    }
+
+
 }

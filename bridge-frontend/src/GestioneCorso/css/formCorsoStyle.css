@@ -1,39 +1,125 @@
-.fileInputWrapper {
-    display: flex; /* Usa Flexbox per gestire layout */
-    align-items: center; /* Centra verticalmente il contenuto */
+.formContainer {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 20px;
+    box-sizing: border-box;
+    position: relative; /* Necessario per posizionare il pulsante di chiusura */
+    background-color: #fff; /* Opzionale: background del form */
+    border-radius: 8px; /* Opzionale: angoli arrotondati */
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); /* Opzionale: ombra */
+}
+
+.closeIcon {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+    color: #333;
+    transition: color 0.3s;
+}
+
+.closeIcon:hover {
+    color: #ff0000;
+}
+
+.formField {
+    margin-bottom: 20px;
+}
+
+.InputField {
     width: 100%;
-    margin-bottom: 1rem; /* Margine uniforme con gli altri campi */
+    padding: 10px;
+    border-radius: 4px;
+    border: 1px solid #ccc;
     box-sizing: border-box;
 }
 
+.fileInputWrapper {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+    padding: 0 15px;
+}
+
 .fileButton {
-    display: inline-block;
-    background: #fff;
-    color: #2c3e50;
-    border: 1px solid #00BF62;
-    padding: 0.5rem 0.5rem; /* Uniforma il padding con gli altri campi */
+    background-color: #0C3444;
+    color: white;
+    border: none;
+    padding: 10px 15px;
     text-align: center;
     border-radius: 4px;
-    font-weight: normal;
     cursor: pointer;
-    width: 40%; /* Stessa larghezza degli altri campi */
-    box-sizing: border-box; /* Include padding e bordi nella larghezza */
-    margin-top: 20px; /* Rimuovi margini extra */
-    transition: background 0.3s, color 0.3s, border-color 0.3s; /* Aggiunge una transizione fluida */
+    transition: background-color 0.3s;
+}
+
+.fileButton:hover {
+    background-color: #0C3444;
+}
+
+.fileButton.closeBtn {
+    background-color: #dc3545;
+}
+
+.fileButton.closeBtn:hover {
+    background-color: #c82333;
 }
 
 .filePreview {
+    margin-top: 0.5rem;
     font-size: 0.9rem;
     color: #0C3444;
-    margin-top: 0.5rem;
-    margin-left: 50px;
-    word-wrap: break-word;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
-p.errorText{
+.errorText {
     color: red;
     font-size: 0.9rem;
-    display: block;
     margin-top: 0.3rem;
-    text-align: start;
+}
+
+
+@media (max-width: 1024px) {
+    .formContainer {
+        max-width: 50%;
+    }
+}
+
+@media (max-width: 768px) {
+    .formContainer {
+        max-width: 30%;
+        padding: 15px;
+    }
+
+    .fileInputWrapper {
+        flex-direction: column;
+        padding: 0;
+    }
+
+    .fileButton {
+        max-width: 100%;
+    }
+
+    .filePreview {
+        text-align: center;
+    }
+}
+
+@media (max-width: 480px) {
+    .InputField, .fileButton, .filePreview {
+        padding: 8px;
+        font-size: 0.9rem;
+    }
+
+    h2 {
+        font-size: 1.5rem;
+    }
+
+    .formImage {
+        width: 80px; /* Riduzione ulteriore per schermi molto piccoli */
+    }
 }

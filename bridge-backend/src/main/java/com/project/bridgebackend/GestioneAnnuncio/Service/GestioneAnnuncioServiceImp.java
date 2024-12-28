@@ -6,15 +6,13 @@ import com.project.bridgebackend.Model.Entity.enumeration.TipoContratto;
 import com.project.bridgebackend.Model.dao.ConsulenzaDAO;
 import com.project.bridgebackend.Model.dao.IndirizzoDAO;
 import com.project.bridgebackend.Model.dao.LavoroDAO;
+import com.project.bridgebackend.Model.dao.RifugiatoDAO;
 import com.project.bridgebackend.util.Indirizzo.service.IndirizzoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import jakarta.validation.Valid;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Optional;
-import java.util.ArrayList;
+
+import java.util.*;
 
 /**
  * @author Geraldine Montella, Vito Vernellati.
@@ -39,6 +37,12 @@ public class GestioneAnnuncioServiceImp implements GestioneAnnuncioService {
      */
     @Autowired
     private IndirizzoDAO indirizzoDAO;
+
+    /**
+     * Repository per la gestione dei rifugiati nel database.
+     */
+    @Autowired
+    private RifugiatoDAO rifugiatoDAO;
 
     /**
      * Repository per la gestione dei lavori nel database.
@@ -111,22 +115,23 @@ public class GestioneAnnuncioServiceImp implements GestioneAnnuncioService {
     }
 
     @Override
-    public List<Lavoro> getAllLavori(){
+    public List<Lavoro> getAllLavori() {
         return lavoroDAO.findAll();
     }
 
     @Override
-    public Lavoro getLavori(long id){
+    public Lavoro getLavori(final long id) {
         return lavoroDAO.findById(id).get();
     }
 
     @Override
-    public List<Lavoro> getLavoriByProprietario(Utente proprietario) {
+    public List<Lavoro> getLavoriByProprietario(final Utente proprietario) {
         return lavoroDAO.findByProprietario(proprietario);
     }
 
     @Override
-    public Lavoro modificaAnnuncioLavoro(long idAnnuncio, HashMap<String, Object> aggiornamenti) {
+    public Lavoro modificaAnnuncioLavoro(final long idAnnuncio,
+                                         final HashMap<String, Object> aggiornamenti) {
         Optional<Lavoro> lavoroOptional = lavoroDAO.findById(idAnnuncio);
         if (lavoroOptional.isEmpty()) {
             throw new IllegalArgumentException("Annuncio di lavoro non trovato.");
@@ -152,8 +157,8 @@ public class GestioneAnnuncioServiceImp implements GestioneAnnuncioService {
                     lavoro.setTipoContratto((TipoContratto) valore);
                     break;
                 case "retribuzione":
-                    double parsed_value = Double.parseDouble(valore.toString());
-                    lavoro.setRetribuzione(parsed_value);
+                    double parsedValue = Double.parseDouble(valore.toString());
+                    lavoro.setRetribuzione(parsedValue);
                     break;
                 case "nomeSede":
                     lavoro.setNomeSede((String) valore);
@@ -183,7 +188,7 @@ public class GestioneAnnuncioServiceImp implements GestioneAnnuncioService {
     }
 
     @Override
-    public void eliminaAnnuncioLavoro(long idAnnuncio) {
+    public void eliminaAnnuncioLavoro(final long idAnnuncio) {
         if (!lavoroDAO.existsById(idAnnuncio)) {
             throw new IllegalArgumentException("Annuncio di lavoro non trovato.");
         }
@@ -198,7 +203,7 @@ public class GestioneAnnuncioServiceImp implements GestioneAnnuncioService {
      * @return la consulenze con l'identificativo id.
      */
     @Override
-    public List<Consulenza> getAllConsulenze(){
+    public List<Consulenza> getAllConsulenze() {
         return consulenzaDAO.findAll();
     }
 
@@ -208,7 +213,7 @@ public class GestioneAnnuncioServiceImp implements GestioneAnnuncioService {
      * @return la lista di tutte le consulenza presenti nel db.
      */
     @Override
-    public Consulenza getConsulenze( long id){
+    public Consulenza getConsulenze(final long id) {
         return consulenzaDAO.findById(id).get();
     }
 
@@ -221,8 +226,13 @@ public class GestioneAnnuncioServiceImp implements GestioneAnnuncioService {
      */
 
     @Override
-    public List<Consulenza> getConsulenzeByProprietario(Utente proprietario) {
+    public List<Consulenza> getConsulenzeByProprietario(final Utente proprietario) {
         return consulenzaDAO.findByProprietario(proprietario);
+    }
+
+    @Override
+    public List<Consulenza> getConsulenzeByTipo(TipoConsulenza tipo) {
+        return consulenzaDAO.findByTipo(tipo);
     }
 
     /**
@@ -256,8 +266,8 @@ public class GestioneAnnuncioServiceImp implements GestioneAnnuncioService {
                 case "maxCandidature":
                     int maxCandidature = (Integer) valore;
                     if (maxCandidature < 1) {
-                        throw new IllegalArgumentException("Il numero " +
-                                "massimo di candidature deve essere almeno 1.");
+                        throw new IllegalArgumentException("Il numero "
+                                + "massimo di candidature deve essere almeno 1.");
                     }
                     consulenza.setMaxCandidature(maxCandidature);
                     break;
@@ -275,8 +285,8 @@ public class GestioneAnnuncioServiceImp implements GestioneAnnuncioService {
                     }
                     break;
                 case "candidati":
-                    if (valore instanceof List) {
-                        List<String> nuoviCandidati = (List<String>) valore;
+                    if (valore instanceof Map<?,?>) {
+                        Map<String,Boolean> nuoviCandidati = (Map<String,Boolean>) valore;
                         consulenza.setCandidati(nuoviCandidati);
                     } else {
                         throw new IllegalArgumentException("Formato candidati non valido.");
@@ -303,8 +313,8 @@ public class GestioneAnnuncioServiceImp implements GestioneAnnuncioService {
                     consulenza.setDisponibilita((Boolean) valore);
                     break;
                 default:
-                    throw new IllegalArgumentException("Campo non valido " +
-                            "per la modifica: " + campo);
+                    throw new IllegalArgumentException("Campo non valido "
+                            + "per la modifica: " + campo);
             }
         });
 
@@ -312,11 +322,127 @@ public class GestioneAnnuncioServiceImp implements GestioneAnnuncioService {
     }
 
     @Override
-    public void eliminaConsulenza(long idConsulenza) {
+    public void eliminaConsulenza(final long idConsulenza) {
         if (!consulenzaDAO.existsById(idConsulenza)) {
             throw new IllegalArgumentException("Nessun riscontro con di consulenze con id " + idConsulenza);
         }
         consulenzaDAO.deleteById(idConsulenza);
+    }
+
+    @Override
+    public void interesseConsulenza(final long idConsulenza, final String emailRifugiato){
+        if (emailRifugiato == null || emailRifugiato.trim().isEmpty()) {
+            throw new IllegalArgumentException("Email vuota o nulla");
+        }
+        if (idConsulenza <= 0) {
+            throw new IllegalArgumentException("ID consulenza non valido");
+        }
+
+        // Recupera il rifugiato dal database
+        Rifugiato r = rifugiatoDAO.findByEmail(emailRifugiato);
+        if (r == null) {
+            throw new IllegalArgumentException("Rifugiato non trovato");
+        }
+
+        Consulenza c = consulenzaDAO.findConsulenzaById(idConsulenza);
+        if (c == null) {
+            throw new IllegalArgumentException("Alloggio non trovato");
+        }
+
+        // Verifica se l'email del rifugiato è già nella lista candidati
+        if (c.getCandidati().containsKey(r.getEmail())) {
+            throw new IllegalArgumentException("Interesse già manifestato");
+        }
+
+        c.getCandidati().put(r.getEmail(), false);
+        //aggiorno la consulenza
+        consulenzaDAO.save(c);
+    }
+
+    @Override
+    public void rimuoviInteresseConsulenza(final long idConsulenza, final String emailRifugiato){
+        if (emailRifugiato == null || emailRifugiato.trim().isEmpty()) {
+            throw new IllegalArgumentException("Email vuota o nulla");
+        }
+        if (idConsulenza <= 0) {
+            throw new IllegalArgumentException("ID consulenza non valido");
+        }
+
+        // Recupera il rifugiato dal database
+        Rifugiato r = rifugiatoDAO.findByEmail(emailRifugiato);
+        if (r == null) {
+            throw new IllegalArgumentException("Rifugiato non trovato");
+        }
+
+        Consulenza c = consulenzaDAO.findConsulenzaById(idConsulenza);
+        if (c == null) {
+            throw new IllegalArgumentException("Consulenza non trovato");
+        }
+
+        // Verifica se l'email del rifugiato non è presente in lista
+        if (!c.getCandidati().containsKey(r.getEmail())) {
+            throw new IllegalArgumentException(
+                    "Il rifugito non risulata interessato alla consulenza");
+        }
+        //rimuovo dalla lista candidati
+        c.getCandidati().remove(r.getEmail());
+        //aggiorno la consulenza
+        consulenzaDAO.save(c);
+    }
+
+    @Override
+    public void accettaConsulenzaRifugiato(final long idConsulenza, final String emailRifugiato) {
+        if (emailRifugiato == null || emailRifugiato.trim().isEmpty()) {
+            throw new IllegalArgumentException("Email vuota o nulla");
+        }
+        if (idConsulenza <= 0) {
+            throw new IllegalArgumentException("ID consulenza non valido");
+        }
+
+        // Recupera il rifugiato dal database
+        Rifugiato r = rifugiatoDAO.findByEmail(emailRifugiato);
+        if (r == null) {
+            throw new IllegalArgumentException("Rifugiato non trovato");
+        }
+
+        Consulenza c = consulenzaDAO.findConsulenzaById(idConsulenza);
+        if (c == null) {
+            throw new IllegalArgumentException("Alloggio non trovato");
+        }
+
+        // Verifica se l'email del rifugiato è già nella lista candidati
+        if (c.getCandidati().containsKey(r.getEmail())) {
+            throw new IllegalArgumentException("Interesse già manifestato");
+        }
+
+        c.getCandidati().put(r.getEmail(), true);
+        //aggiorno la consulenza
+        consulenzaDAO.save(c);
+    }
+
+    /**
+     *
+     */
+    @Override
+    public List<Lavoro> getRandomLavori() {
+        // Recupera tutti gli eventi
+        List<Lavoro> lavori = lavoroDAO.findAll();
+
+        // Mischia la lista
+        Collections.shuffle(lavori);
+
+        // Restituisce solo 5 lavori
+        return lavori.stream().limit(5).toList();
+    }
+
+    @Override
+    public List<String> getCandidatiPerLavoro(final long lavoroId) {
+        // Recupera l'evento specificato tramite ID
+        Lavoro lavoro = lavoroDAO.findById(lavoroId)
+                .orElseThrow(() -> new IllegalArgumentException("Lavoro non trovato"));
+
+        // Restituisce la lista dei partecipanti (Rifugiato) associati all'evento
+        return lavoro.getCandidati();
     }
 
 }

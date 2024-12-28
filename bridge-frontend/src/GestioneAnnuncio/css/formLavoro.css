@@ -1,151 +1,166 @@
-/* Contenitore principale del form */
+/* === RESET DI BASE === */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Montserrat', sans-serif;
+}
+
+/* === CORPO PRINCIPALE === */
+body {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    background: #f4f4f9;
+    padding: 1rem;
+}
+
+/* === FORM CONTAINER === */
 .form-container {
     width: 100%;
-    max-width: 800px;
+    max-width: 600px;
     padding: 2rem;
-    margin: 0 auto;
     border-radius: 10px;
-    background: #ffffff;
+    background: #fff;
     box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
 }
 
-/* Titolo principale */
 .form-container h3 {
-    font-size: 2rem;
-    color: #00BF62;
-    margin-bottom: 1.5rem;
     text-align: center;
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: #0C3444;
+    margin-bottom: 1.5rem;
 }
 
-/* Stile generale del gruppo del form */
-.form-group {
-    margin-bottom: 1.5rem; /* Spazio tra i gruppi */
-}
-
-/* Label per Disponibilità */
-.form-group label {
-    display: block;
-    font-weight: bold;
-    color: #333;
-    margin-bottom: 0.5rem;
-    font-size: 1rem;
-}
-
-/* Contenitore per checkbox e testo */
-.checkbox-container {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem; /* Spazio tra la checkbox e il testo */
-    padding: 0.5rem;
-    border: 1px solid #ccc;
-    border: 1px solid #00BF62;
-    border-radius: 5px;
-    background-color: #f9f9f9;
-    transition: background-color 0.3s, box-shadow 0.3s;
-}
-
-/* Effetto hover per la checkbox */
-.checkbox-container:hover {
-    background-color: #eaeaea;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-}
-
-/* Checkbox */
-.checkbox-container input[type="checkbox"] {
-    width: 20px;
-    height: 20px;
-    accent-color: #00BF62;
-    cursor: pointer;
-}
-
-/* Testo accanto alla checkbox */
-.checkbox-container span {
-    font-size: 0.9rem;
-    color: #555;
-    line-height: 1.5;
-    cursor: pointer;
-}
-
-
-/* Label */
-.form-group label {
-    display: block;
-    font-weight: bold;
-    color: #333;
-    margin-bottom: 0.5rem;
-    text-align: left;
-}
-
-/* Input e textarea */
+/* === FORM ELEMENTS === */
 .form-group input,
-.form-group textarea,
-.form-group select {
+.form-group select,
+.form-group textarea {
     width: 100%;
     padding: 0.75rem;
+    margin-bottom: 1rem;
     border: 1px solid #00BF62;
-    border-radius: 5px;
+    border-radius: 6px;
+    background-color: white;
     font-size: 1rem;
-    color: #333;
-    background: #f9f9f9;
+    color: #2c3e50;
     transition: border-color 0.3s, background-color 0.3s;
 }
 
-/* Placeholder e focus */
-.form-group input::placeholder,
-.form-group textarea::placeholder {
-    color: #aaa;
+.form-group input:hover,
+.form-group select:hover,
+.form-group textarea:hover {
+    background-color: #f9f9f9;
 }
 
 .form-group input:focus,
-.form-group textarea:focus,
-.form-group select:focus {
-    border-color: #0056b3;
-    background: #fff;
+.form-group select:focus,
+.form-group textarea:focus {
+    border-color: #00BF62;
     outline: none;
-    box-shadow: 0 0 5px rgba(0, 91, 179, 0.3);
+    box-shadow: 0 0 5px rgba(0, 191, 98, 0.2);
 }
 
-/* Checkbox */
+/* === TOGGLE SWITCH === */
 .checkbox-container {
     display: flex;
     align-items: center;
-    gap: 10px;
-    font-size: 1rem;
-    color: #333;
+    gap: 0.5rem;
+    margin-top: 0.5rem;
 }
 
-/* Fieldset e legend */
-.form-group fieldset {
-    border: 1px solid #007bff;
-    border-radius: 5px;
+.toggle-switch {
+    position: relative;
+    display: inline-block;
+    width: 40px;
+    height: 20px;
+}
+
+.toggle-switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.switch-slider {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    border-radius: 20px;
+    transition: background-color 0.3s;
+    cursor: pointer;
+}
+
+.switch-slider::before {
+    content: '';
+    position: absolute;
+    width: 16px;
+    height: 16px;
+    left: 2px;
+    bottom: 2px;
+    background-color: white;
+    border-radius: 50%;
+    transition: transform 0.3s;
+}
+
+.toggle-switch input:checked + .switch-slider {
+    background-color: #00BF62;
+}
+
+.toggle-switch input:checked + .switch-slider::before {
+    transform: translateX(20px);
+}
+
+/* === FIELDSET (INDIRIZZO) === */
+fieldset.form-group {
+    border: 1px solid #00BF62;
+    border-radius: 6px;
     padding: 1rem;
     margin-top: 1rem;
+    background: #fff;
 }
 
-.form-group legend {
-    font-weight: bold;
-    color: #00BF62;
-    padding: 0 10px;
+fieldset.form-group legend {
+    font-weight: 700;
+    font-size: 1.2rem;
+    padding: 0 0.5rem;
+    color: #0C3444;
 }
 
-/* Pulsante di invio */
+fieldset.form-group label {
+    font-size: 1rem;
+    margin-top: 0.5rem;
+    color: #2c3e50;
+}
+
+fieldset.form-group input {
+    margin-bottom: 0.5rem;
+}
+
+/* === PULSANTE DI INVIO === */
 button[type="submit"] {
     width: 100%;
     padding: 0.75rem;
-    font-size: 1.125rem;
-    font-weight: bold;
-    color: #ffffff;
-    background-color: #00BF62;
     border: none;
-    border-radius: 5px;
+    border-radius: 6px;
+    background: #00BF62;
+    color: #fff;
+    font-size: 1.125rem;
+    font-weight: 600;
     cursor: pointer;
-    transition: background-color 0.3s, transform 0.2s;
+    margin-top: 1rem;
+    transition: background 0.3s, transform 0.2s, box-shadow 0.3s;
 }
 
 button[type="submit"]:hover {
-    background-color: #05552d;
+    background: #008f4b;
     transform: translateY(-2px);
-    box-shadow: 0 4px 10px rgba(0, 91, 179, 0.3);
+    box-shadow: 0 4px 10px rgba(0, 143, 75, 0.3);
 }
 
 button[type="submit"]:active {
@@ -153,7 +168,15 @@ button[type="submit"]:active {
     box-shadow: none;
 }
 
-/* Design responsivo */
+/* === TESTO DI ERRORE === */
+p.errorText {
+    color: red;
+    font-size: 0.9rem;
+    margin-top: 0.3rem;
+    text-align: start;
+}
+
+/* === RESPONSIVE DESIGN === */
 @media (max-width: 600px) {
     .form-container {
         padding: 1.5rem;
@@ -164,3 +187,4 @@ button[type="submit"]:active {
         padding: 0.65rem;
     }
 }
+

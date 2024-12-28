@@ -12,6 +12,7 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Past;
 import lombok.Data;
+import lombok.ToString;
 import lombok.experimental.SuperBuilder;
 import jakarta.validation.constraints.Pattern;
 import org.springframework.security.core.GrantedAuthority;
@@ -41,6 +42,7 @@ import java.util.List;
  * Skill.
  * fotoProfilo.
  * */
+@ToString
 @Entity
 @SuperBuilder
 @Data
@@ -167,7 +169,8 @@ public class Utente implements Serializable, UserDetails {
                   final String nome,
                   final String cognome,
                   final String lingueParlate,
-                  final String fotoProfilo, String skill,
+                  final String fotoProfilo,
+                  final String skill,
                   final LocalDate dataNascita,
                   final TitoloDiStudio titoloDiStudio,
                   final Ruolo role,
@@ -226,4 +229,6 @@ public class Utente implements Serializable, UserDetails {
     public boolean isEnabled() {
         return UserDetails.super.isEnabled();
     }
+
+
 }

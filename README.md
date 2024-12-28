@@ -15,8 +15,8 @@
 [![GitHub issues](https://img.shields.io/github/issues/leotodisco/Bridge?style=for-the-badge)](https://GitHub.com/leotodisco/Bridge/issues)&nbsp;
 [![GitHub forks](https://img.shields.io/github/forks/leotodisco/Bridge?style=for-the-badge)](https://GitHub.com/leotodisco/Bridge/fork)
 
-[![Build](https://img.shields.io/github/actions/workflow/status/MCalenda/HeartCare/maven.yml?label=JAVA%20CI%20WITH%20MAVEN&style=for-the-badge)
-](https://github.com/MCalenda/HeartCare/actions/workflows/maven.yml)
+[![Build](https://img.shields.io/github/actions/workflow/status/leotodisco/Bridge/maven.yml?label=JAVA%20CI%20WITH%20MAVEN&style=for-the-badge)
+](https://github.com/leotodisco/Bridge/actions/workflows/maven.yml)
 <!-- Qui un giorno ci sarà la nostra roba e non quella di Heartcare, ma fino a che non abbiamo un CI/CD non si può--->
 
 

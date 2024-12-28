@@ -4,8 +4,6 @@
 package com.project.bridgebackend.Model.dto;
 
 
-import com.project.bridgebackend.Model.Entity.FiguraSpecializzata;
-import com.project.bridgebackend.Model.Entity.Utente;
 import com.project.bridgebackend.Model.Entity.enumeration.CategoriaCorso;
 import com.project.bridgebackend.Model.Entity.enumeration.Lingua;
 import jakarta.validation.constraints.Email;

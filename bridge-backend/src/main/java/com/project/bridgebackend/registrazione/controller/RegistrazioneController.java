@@ -1,6 +1,9 @@
 package com.project.bridgebackend.registrazione.controller;
 
-import com.project.bridgebackend.Model.Entity.*;
+import com.project.bridgebackend.Model.Entity.Admin;
+import com.project.bridgebackend.Model.Entity.Volontario;
+import com.project.bridgebackend.Model.Entity.FiguraSpecializzata;
+import com.project.bridgebackend.Model.Entity.Rifugiato;
 import com.project.bridgebackend.Model.Entity.enumeration.Gender;
 import com.project.bridgebackend.Model.Entity.enumeration.Ruolo;
 import com.project.bridgebackend.Model.Entity.enumeration.TitoloDiStudio;
@@ -12,9 +15,11 @@ import com.project.bridgebackend.util.AuthenticationResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-
-
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.RestController;
 import java.time.LocalDate;
 import java.util.Base64;
 
@@ -33,18 +38,26 @@ public class RegistrazioneController {
     @Autowired
     private RegistrazioneService registrazioneService;
 
+    /**
+     * Variabile che si riferisce al service del la gestione,
+     * delle foto.
+     * */
     @Autowired
     private FotoProfiloService fotoser;
 
 
     /**
      * Metodo per la registrazione di un utente in base al ruolo.
-     * @param utente
+     * @param utente contiene le informazioni dell'utente che,
+     *               vuol registrarsi.
+     *
+     * @return stringa contenente la risposta dell'operazione,
+     * se è andata a buon fine o meno.
      * */
     @PostMapping(value = "/registrazioneUtente")
     public ResponseEntity<String> registrazioneUtente(@RequestBody final UtenteDTO utente)
             throws Exception {
-        try{
+        try {
         //System.out.println("Ricevuto DTO: " + utente.toString());
         String nome = utente.getNomeUtente();
         String cognome = utente.getCognomeUtente();
@@ -66,7 +79,7 @@ public class RegistrazioneController {
         Gender genere = utente.getGenderUtente();
         Ruolo ruolo = utente.getRuoloUtente();
         LocalDate dataNascita = utente.getDataNascitaUtente();
-        String Skill = utente.getSkillUtente();
+        String skill = utente.getSkillUtente();
         TitoloDiStudio titoloDiStudio = utente
                 .getTitoloDiStudioUtente();
 
@@ -86,14 +99,14 @@ public class RegistrazioneController {
                     System.err.println("Formato immagine non valido: la stringa Base64 non contiene il prefisso corretto.");
                 }
             }
-            switch (ruolo){
+            switch (ruolo) {
             case Admin:
                      Admin a = new Admin(email,
                         nome,
                         cognome,
                         lingueParlate,
                         fotoProfiloId,
-                        Skill,
+                        skill,
                         dataNascita,
                         titoloDiStudio,
                         ruolo,
@@ -111,7 +124,7 @@ public class RegistrazioneController {
                         cognome,
                         lingueParlate,
                         fotoProfiloId,
-                        Skill,
+                        skill,
                         dataNascita,
                         titoloDiStudio,
                         ruolo,
@@ -129,7 +142,7 @@ public class RegistrazioneController {
                         cognome,
                         lingueParlate,
                         fotoProfiloId,
-                        Skill,
+                        skill,
                         dataNascita,
                         titoloDiStudio,
                         ruolo,
@@ -147,7 +160,7 @@ public class RegistrazioneController {
                         cognome,
                         lingueParlate,
                         fotoProfiloId,
-                        Skill,
+                        skill,
                         dataNascita,
                         titoloDiStudio,
                         ruolo,
@@ -157,6 +170,10 @@ public class RegistrazioneController {
                 registrazioneService
                         .registraRifugiato(r, confermaPW);
                 break;
+
+                default:
+                    throw new IllegalArgumentException("Ruolo non riconosciuto: " + ruolo);
+
         }
 
         return ResponseEntity.ok("Registrazione avvenuta con successo.");

@@ -1,32 +1,22 @@
 package com.project.bridgebackend.Model.Entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.Inheritance;
-import jakarta.persistence.InheritanceType;
-import jakarta.persistence.Table;
-import com.fasterxml.jackson.annotation.JsonFormat;
-import org.springframework.format.annotation.NumberFormat;
-
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
-
 import com.project.bridgebackend.Model.Entity.enumeration.TipoContratto;
-
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 
+import java.util.List;
+
 /**
  * Classe che rappresenta un annuncio di lavoro, estende la classe base Annuncio.
  *
- * @author Vito Vernellati
- * @created 04/12/2024
- * @version 1.0
+ * @author Vito Vernellati.
+ * Creato il 04/12/2024.
  */
 @Entity
 @Getter
@@ -95,6 +85,19 @@ public class Lavoro extends Annuncio {
     @Pattern(regexp = "^[\\wÀ-ÿ\\s,.!?\\'\\-]{1,500}$", message = "Formato info utili non valido ")
     @Size(max = 500, message = "Le info utili non possono superare i 500 caratteri ")
     private String infoUtili;
+
+    /**
+     * Lista di candidati (di tipo Rifugiato) che hanno applicato per l'annuncio.
+     * È una relazione @OneToMany, in cui un annuncio può essere associato a più candidati.
+     * La relazione è mappata dall'attributo annuncio nell'entità Rifugiato.
+     */
+    @ElementCollection
+    @CollectionTable(
+            name = "lavoro_rifugiati",
+            joinColumns = @JoinColumn(name = "lavoro_id")
+    )
+    @Column(name = "rifugiato_email", nullable = false)
+    private List<String> candidati;
 
     /**
      * Costruttore completo.

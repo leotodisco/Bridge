@@ -1,0 +1,76 @@
+/* Contenitore dell'header */
+.headerForm-container {
+    display: flex;
+    justify-content: space-between; /* Titolo centrato e pulsante alla fine */
+    align-items: center; /* Allinea verticalmente titolo e pulsante */
+    padding: 10px 20px; /* Spaziatura interna */
+    border-bottom: 1px solid #ddd; /* Linea divisoria opzionale */
+}
+
+/* Titolo centrato */
+.header-title {
+    flex: 1; /* Occupa tutto lo spazio disponibile */
+    text-align: center; /* Centra il testo */
+    font-size: 24px; /* Dimensione del testo */
+    font-weight: bold; /* Grassetto */
+    color: #2a5368; /* Colore del titolo */
+    margin: 0; /* Rimuove margini predefiniti */
+}
+
+/* Pulsante circolare */
+/* Pulsante circolare */
+.btn.btn-circle {
+    background-color: #2a5368; /* Colore di sfondo */
+    color: white; /* Colore del testo */
+    width: 40px; /* Larghezza del pulsante */
+    height: 40px; /* Altezza del pulsante */
+    display: flex;
+    justify-content: center; /* Centra il segno "+" */
+    align-items: center; /* Centra il segno "+" */
+    border-radius: 50%; /* Rende il pulsante circolare */
+    border: none; /* Rimuove il bordo */
+    cursor: pointer; /* Cambia il cursore al passaggio */
+    font-size: 24px; /* Dimensione del segno "+" */
+    font-weight: bold; /* Grassetto per il segno "+" */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2); /* Ombra */
+    transition: transform 0.2s, background-color 0.2s; /* Effetti di transizione */
+    text-decoration: none; /* Rimuove la sottolineatura */
+}
+
+/* Effetto hover */
+.btn.btn-circle:hover {
+    background-color: #00BF62; /* Colore di sfondo al passaggio */
+    transform: scale(1.1); /* Leggera ingrandimento */
+}
+
+/* Effetto focus */
+.btn.btn-circle:focus {
+    outline: none; /* Rimuove il contorno predefinito */
+    box-shadow: 0 0 8px rgba(0, 0, 0, 0.4); /* Effetto di focus */
+}
+
+/* Effetto active (pulsante premuto) */
+.btn.btn-circle:active {
+    background-color: #2a5368; /* Mantieni il colore originale */
+    transform: scale(1); /* Ripristina la scala */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2); /* Ombra normale */
+}
+
+/* Stile del link all'interno del pulsante */
+.btn.btn-circle a {
+    color: white; /* Colore del testo */
+    text-decoration: none; /* Rimuove la sottolineatura */
+    display: flex; /* Centra il contenuto */
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+}
+
+/* Rimuovi lo stile quando il link è attivo o focus */
+.btn.btn-circle a:focus,
+.btn.btn-circle a:active {
+    text-decoration: none; /* Rimuove la sottolineatura */
+    color: white; /* Mantieni il colore */
+    outline: none; /* Rimuove il contorno */
+}

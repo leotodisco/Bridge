@@ -1,12 +1,13 @@
 /* Container principale del form */
 .formRegistrazione {
     background-color: #f4f7fb;
-    max-width: 800px;
-    margin: 50px auto;
+    width: 30vw;
+    margin: 40px auto;
     padding: 30px;
     border-radius: 8px;
     box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.1);
     font-family: 'Arial', sans-serif;
+    overflow: hidden; /* Impedisce contenuti extra fuori bordo */
 }
 
 /* Titolo del modulo */
@@ -40,6 +41,10 @@
     padding-right: 80px;  /* Aggiungi spazio per il pulsante dentro il campo */
 }
 
+h3{
+    color: #333;
+}
+
 .password-field button {
     position: absolute;
     top: 35%;
@@ -62,19 +67,12 @@
 
 select.selectMulti {
     margin-bottom: 20px; /* Solo per campi con questa classe */
+    border-color: #00BF62;
 }
 
-/* Focus sugli input */
-.formEditText:focus {
-    border-color: #007bff;
-    outline: none;
-    background-color: #f1f9ff;
-}
 
 /* Stile per il pulsante di invio */
 .formButton {
-    background-color: #007bff;
-    color: #fff;
     padding: 15px;
     border: none;
     border-radius: 6px;
@@ -104,6 +102,7 @@ select.formEditText {
 
 .formEditText.field{
     margin-bottom: 20px;
+    border-color: #00BF62;
 }
 
 .formEditText.field.error-field {
@@ -121,10 +120,6 @@ input, select {
     margin-bottom: 15px;
 }
 
-/* Cambia colore al bordo dei select quando selezionati */
-select:focus {
-    border-color: #007bff;
-}
 
 /* Stile aggiuntivo per i titoli dei campi */
 label {
@@ -133,10 +128,25 @@ label {
     color: #333;
 }
 
-/* Spaziatura tra il form e il bottone di invio */
-.formButton {
-    margin-top: 20px;
+.buttonContainer {
+    display: flex;
+    justify-content: center;   /* Centra i pulsanti */
+    gap: 1rem;                 /* Spazio sopra i pulsanti */
 }
+
+.disponibilitaButton {
+    width: 30%;
+    padding: 0.75rem;
+    font-weight: bold;
+    color: #ffffff;
+    background-color: #00BF62;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.2s;
+    margin-bottom: 1rem;
+}
+
 
 /* Extra padding su dispositivi piccoli */
 @media screen and (max-width: 600px) {

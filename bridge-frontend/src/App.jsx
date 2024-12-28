@@ -1,44 +1,53 @@
 import './App.css';
-import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
-import {useEffect, useState} from 'react';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { useEffect, useState } from 'react';
 import Sidebar from './Components/Sidebar/Sidebar.jsx';
-import CreaEvento from './GestioneEvento/components/formEvento.jsx';
-import CreaConsulenza from './GestioneAnnuncio/components/formConsulenza.jsx';
-import CreaCorso from './GestioneCorso/components/formCorso.jsx';
-import CreaUtente from "./Registrazione/components/formRegistrazione.jsx";
+import Homepage from './Components/Homepage/Homepage.jsx';
 import Login from "./GestioneLogin/components/login.jsx";
+import CreaEvento from "./GestioneEvento/components/formEvento.jsx";
+import CreaLavoro from "./GestioneAnnuncio/components/formLavoro.jsx";
 import CreaAlloggio from "./GestioneAlloggio/components/formAlloggio.jsx";
-import ListaCorsiView from "./GestioneCorso/components/listaCorsiView.jsx";
-import CreaLavoro from './GestioneAnnuncio/components/formLavoro.jsx';
-import logo from './assets/IMG_1580.PNG';
-import ViewConsulenza from "./GestioneAnnuncio/components/viewConsulenza.jsx";
-import ViewLavoro from "./GestioneAnnuncio/components/viewLavoro.jsx";
-import LogoutButton from "./GestioneLogout/components/logout.jsx";
-import AreaPersonale from "./GestioneUtente/components/AreaPersonale.jsx";
-import AllEventsView from "./GestioneEvento/components/ViewAllEventi.jsx";
-import EventView from "./GestioneEvento/components/EventoRetrieveView.jsx";
+import CreaConsulenza from "./GestioneAnnuncio/components/formConsulenza.jsx";
+import CreaUtente from "./Registrazione/components/formRegistrazione.jsx";
+import CreaCorso from "./GestioneCorso/components/formCorso.jsx";
+import ConsulenzaView from "./GestioneAnnuncio/components/viewConsulenza.jsx";
+import AllEventsView from "./GestioneEvento/components/ViewAllEventi.jsx"; // Componente per tutti gli eventi
+import ConsulenzaUtente from "./GestioneUtente/components/dashboardConsulenza.jsx";
+import ViewLavoro from "./GestioneAnnuncio/components/ViewLavoro.jsx"; // Componente per tutti i lavori
 import MostraAlloggi from "./GestioneAlloggio/components/MostraAlloggi.jsx";
-import DettaglioAlloggio from "./GestioneAlloggio/components/Alloggio.jsx";
-import CorsoView from "./GestioneCorso/components/corsoView.jsx";
+import ListaCorsiView from "./GestioneCorso/components/listaCorsiView.jsx";
+import AreaPersonale from "./GestioneUtente/components/AreaPersonale.jsx";
+import AboutUs from "./Components/AboutUs/AboutUs.jsx";
+import EventiUtente from "./GestioneUtente/components/dashboardEventi.jsx";
+import Alloggio from "./GestioneAlloggio/components/Alloggio.jsx";
+import Chatbot from "./GestioneChatbot/components/Chatbot.jsx";
+import LavoriUtente from "./GestioneUtente/components/dashboardLavoro.jsx";
+import AlloggiByProprietario from "./GestioneAlloggio/components/AlloggiByProprietario.jsx";
+import "./GestioneChatbot/css/Chatbot.css"
+import {FaRobot} from "react-icons/fa";
+import { ToastContainer } from 'react-toastify';
 
 function App() {
     const [isAuthenticated, setIsAuthenticated] = useState(false);
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
-    // Controlla se il token JWT è presente al caricamento
-        useEffect(() => {
+    // Stato per il chatbot
+    const [isChatbotOpen, setIsChatbotOpen] = useState(false);
+
+    // Controlla se il token JWT Ã¨ presente al caricamento
+    useEffect(() => {
         const token = localStorage.getItem('authToken');
         setIsAuthenticated(!!token);
     }, []);
 
-    // Definizione di handleLogin
+    // Gestione del login
     const handleLogin = () => {
-        setIsAuthenticated(true); // Imposta lo stato su true
+        setIsAuthenticated(true);
     };
 
     const handleLogout = () => {
-        setIsAuthenticated(false); // Imposta lo stato su false
-        localStorage.clear(); // Rimuove tutti i dati salvati
+        setIsAuthenticated(false);
+        localStorage.clear();
         sessionStorage.clear();
     };
 
@@ -46,63 +55,78 @@ function App() {
         setIsSidebarOpen(!isSidebarOpen);
     };
 
+
+    // Funzione toggle
+    const toggleChatbotPopup = () => {
+        setIsChatbotOpen((prev) => !prev);
+    };
+
     return (
+
         <Router>
             <Sidebar isOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />
             <main className={`main-content ${isSidebarOpen ? 'shifted' : ''}`}>
-                <div className="logo-container">
-                    <img src={logo} alt="Logo" className="site-logo"/>
-                </div>
                 {isAuthenticated ? (
                     <>
-                        <nav className="nav-links">
-                            <Link to="/" className="nav-link">Home</Link>
-                            <Link to="/crea-evento" className="nav-link">Crea Evento</Link>
-                            <Link to="/crea-consulenza" className="nav-link">Crea Consulenza</Link>
-                            <Link to="/crea-lavoro" className="nav-link">Crea Annuncio di Lavoro</Link>
-                            <Link to="/crea-corso" className="nav-link">Crea Corso</Link>
-                            <Link to="/crea-alloggio" className="nav-link">Crea Alloggio</Link>
-                            <Link to="/view-listaCorsi" className="nav-link">View Corsi</Link>
-                            <Link to="/area-personale" className="nav-link">Area Personale</Link>
-                            <Link to="/view-consulenza" className="nav-link">View Consulenze</Link>
-                            <Link to="/view-lavoro" className="nav-link">Visualizza Annunci di Lavoro</Link>
-                            <Link to="/view-eventi" className="nav-link">View Eventi</Link>
-                            <Link to="/mostraAlloggi" className="nav-link">View Alloggi</Link>
-                            <LogoutButton onLogout={handleLogout}/>
-                        </nav>
+                        <ToastContainer />
                         <Routes>
-                            <Route path="/" element={<p>Benvenuto nel sistema di gestione!</p>}/>
-                            <Route path="/crea-evento" element={<CreaEvento/>}/>
-                            <Route path="/crea-consulenza" element={<CreaConsulenza/>}/>
-                            <Route path="/crea-lavoro" element={<CreaLavoro/>}/>
-                            <Route path="/crea-corso" element={<CreaCorso/>}/>
-                            <Route path="/crea-utente" element={<CreaUtente/>}/>
-                            <Route path="/login" element={<Login onLogin={handleLogin} />} />
-                            <Route path="/crea-alloggio" element={<CreaAlloggio/>}/>
-                            <Route path="/view-listaCorsi" element={<ListaCorsiView/>}/>
-                            <Route path="/view-consulenza" element={<ViewConsulenza/>}/>
-                            <Route path="/view-lavoro" element={<ViewLavoro/>}/>
-                            <Route path="/area-personale" element={<AreaPersonale onLogout={handleLogout}/>}/>
-                            <Route path="/view-eventi" element={<AllEventsView />}/>
-                            <Route path="/eventi/retrieve/:id" element={<EventView />} />
-                            <Route path="/corso/view-corso/:id" element={<CorsoView/>}/>
-                            <Route path="/mostraAlloggi" element={<MostraAlloggi/>}/>
-                            <Route path="/alloggi/SingoloAlloggio/:titolo" element={<DettaglioAlloggio />} />
+                            <Route path="/" element={<Homepage />} />
+                            <Route path="/eventi-utente" element={<EventiUtente />} />
+                            <Route path="/consuleza-utente" element={<ConsulenzaUtente />} />
+                            <Route path="/crea-lavoro" element={<CreaLavoro />} />
+                            <Route path="/view-eventi" element={<AllEventsView />} />
+                            <Route path="/view-consulenza" element={<ConsulenzaView />} />
+                            <Route path="/view-lavoro" element={<ViewLavoro />} />
+                            <Route path="/view-listaCorsi" element={<ListaCorsiView />} />
+                            <Route path="/mostraAlloggio" element={<MostraAlloggi />} />
+                            <Route path="/crea-evento" element={<CreaEvento />} />
+                            <Route path="/crea-lavoro" element={<CreaLavoro />} />
+                            <Route path="/crea-alloggio" element={<CreaAlloggio />} />
+                            <Route path="/crea-consulenza" element={<CreaConsulenza />} />
+                            <Route path="/crea-corso" element={<CreaCorso />} />
+                            <Route path="/alloggi/SingoloAlloggio/:titolo" element={<Alloggio />} />
+                            <Route path="/lavori-utente" element={<LavoriUtente />} />
+                            <Route path="/chatBot" element={<Chatbot/>}/>
+                            <Route path="/about-us" element={<AboutUs />} />
+                            <Route path="/view-my-alloggi/:email" element={<AlloggiByProprietario />} />
+                            <Route path="/area-personale" element={<AreaPersonale onLogout={handleLogout} />} />
                         </Routes>
                     </>
                 ) : (
                     <>
-                        <nav className="nav-links">
-                            <Link to="/login" className="nav-link">Login</Link>
-                        </nav>
                         <Routes>
-                            <Route path="/" element={<p>Benvenuto nel sistema di gestione!</p>}/>
+                            <Route path="/" element={<Homepage />} />
+                            <Route path="/view-eventi" element={<AllEventsView />} />
+                            <Route path="/view-lavoro" element={<ViewLavoro />} />
+                            <Route path="/alloggi/SingoloAlloggio/:titolo" element={<Alloggio />} />
+                            <Route path="/view-listaCorsi" element={<ListaCorsiView />} />
+                            <Route path="/mostraAlloggio" element={<MostraAlloggi />} />
                             <Route path="/login" element={<Login onLogin={handleLogin} />} />
-                            <Route path="/crea-utente" element={<CreaUtente/>}/>
+                            <Route path="/crea-utente" element={<CreaUtente />} />
+                            <Route path="/chatBot" element={<Chatbot/>}/>
+                            <Route path="/about-us" element={<AboutUs />} />
+                            <Route path="/view-my-alloggi/:email" element={<AlloggiByProprietario />} />
                         </Routes>
                     </>
                 )}
             </main>
+
+            {/* -------------- CHATBOT POPUP -------------- */}
+
+            {/* Pulsante "flottante" in basso a destra per aprire il chatbot */}
+            <button className="chatbot-fab" onClick={toggleChatbotPopup}>
+                <FaRobot size={24} aria-hidden="true" />
+            </button>
+
+            {isChatbotOpen && (
+                <div className="chatbot-modal">
+                    {/* Bottone di chiusura in alto a destra nel box */}
+                    <button className="close-chatbot-btn" onClick={toggleChatbotPopup}>
+                        &times;
+                    </button>
+                    <Chatbot />
+                </div>
+            )}
         </Router>
     );
 }

@@ -1,8 +1,11 @@
 import { useState, useEffect } from "react";
 import '../css/ConsulenzeList.css';
+import '../css/PopUpForm.css';
 import Card from "../../GestioneEvento/components/Card.jsx";
 import "../../GestioneEvento/css/card.css";
 import ConsulenzaView from "./ConsulenzaRetrive.jsx";
+import FormConsulenza from "./formConsulenza.jsx";
+import {useNavigate} from "react-router-dom";
 /*
 * @author Geraldine Montella
 *
@@ -24,17 +27,77 @@ const AllConsulenzaView = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [selectedConsulenzaId, setSelectedConsulenzaId] = useState(null);
+    const [isFiguraSpecializzata, setIsFiguraSpecializzata] = useState(false);
+    const [isPopupVisible, setPopupVisible] = useState(false); // State for showing the create modal
+    const [userImages, setUserImages] = useState({}); // Stato per le immagini dei profili
+    const [tipoFiltro, setTipoFiltro] = useState("");
+    const nav = useNavigate();
 
     // Funzione per ottenere tutte le consulenze
-    const fetchConsulenze = async () => {
+    const fetchConsulenze = async (tipo = "") => {
+        setLoading(true);
         try {
             // Usa fetch per recuperare i dati
-            const response = await fetch('http://localhost:8080/api/annunci/view_consulenze');
+            const token = localStorage.getItem('authToken');
+            const url = tipo
+                ? `http://localhost:8080/api/annunci/view_consulenze/filter?tipo=${tipo}`
+                : `http://localhost:8080/api/annunci/view_consulenze`;
+
+            console.log("Calling URL:", url); // Log per verificare l'URL
+
+            if (!token) {
+                alert("Non sei autenticato. Effettua il login.");
+                nav('/login');
+                return;
+            }
+
+            const response = await
+                fetch(url,{
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json',
+                    },
+                });
+
             if (!response.ok) {
                 throw new Error('Errore durante il recupero delle consulenze');
             }
             const data = await response.json(); // Converte la risposta in formato JSON
+            console.log("Fetched data:", data);
             setConsulenze(data);
+
+            const userImagesData = {};
+            for (const consulenza of data) {
+                const email = consulenza.proprietario.email;
+                try {
+                    // check su token:
+                    if (!token) {
+                        alert("Non sei autenticato. Effettua il login.");
+                        nav('/login');
+                        return;
+                    }
+
+                    const imgResponse = await fetch(`http://localhost:8080/areaPersonale/DatiFotoUtente/${email}`, {
+                        method: 'GET',
+                        headers: {
+                            'Authorization': `Bearer ${token}`,
+                            'Content-Type': 'application/json',
+                        },
+                    });
+
+                    if (imgResponse.ok) {
+                        const imgBase64 = await imgResponse.text();
+                        userImagesData[email] = imgBase64;
+                    } else {
+                        userImagesData[email] = "https://via.placeholder.com/150/cccccc/000000?text=No+Image"; // Placeholder in caso di errore
+                    }
+                } catch (error) {
+                    console.error(`Errore durante il recupero dell'immagine per ${email}:`, error);
+                    userImagesData[email] = "https://via.placeholder.com/150/cccccc/000000?text=No+Image"; // Placeholder in caso di errore
+                }
+            }
+            setUserImages(userImagesData); // Salva tutte le immagini nello stato
         } catch (err) {
             setError('Si è verificato un errore nel recupero delle consulenze: ' + err.message);
         } finally {
@@ -43,6 +106,7 @@ const AllConsulenzaView = () => {
     };
 
     const closePopup = () => {
+        setPopupVisible(false);
         setSelectedConsulenzaId(null);
     };
 
@@ -64,8 +128,19 @@ const AllConsulenzaView = () => {
         }
     };
 
+    // Verifica se l'utente è loggato come FIGURASPECIALIZZA
+    const handleFiltroChange = (event) => {
+        const tipo = event.target.value;
+        setTipoFiltro(tipo);
+        fetchConsulenze(tipo); // Filtra i risultati
+    };
+
     // Funzione per ottenere le consulenze di un proprietario specifico
     useEffect(() => {
+        const ruoloUtente = localStorage.getItem('ruolo'); // Supponiamo che il ruolo dell'utente sia memorizzato nel localStorage
+        if (ruoloUtente === 'FiguraSpecializzata') {
+            setIsFiguraSpecializzata(true);
+        }
         fetchConsulenze();
     }, []);
 
@@ -80,30 +155,51 @@ const AllConsulenzaView = () => {
     return (
         <div>
             <h1>Tutte le Consulenze</h1>
+            <hr/>
+            {isFiguraSpecializzata && (
+                <button onClick={() => setPopupVisible(true)} className="openPopupButton">Crea una Consulenza</button>
+            )}
+
+            {/* Barra dei filtri */}
+            <div className="filter-bar">
+                <label>Filtra per tipo:</label>
+                <select value={tipoFiltro} onChange={handleFiltroChange}>
+                    <option value="">Tutte</option>
+                    <option value="SANITARIA">Sanitaria</option>
+                    <option value="LEGALE">Legale</option>
+                    <option value="COMMERCIALE">Commerciale</option>
+                    <option value="PSICOLOGICA">Psicologica</option>
+                    <option value="TRADUTTORE">Traduttore</option>
+                </select>
+            </div>
+
             {consulenze.length > 0 ? (
                 <div className="cards-container">
-                    {consulenze.map((event) => (
-                        <Card
-                            key={event.id}
-                            data={{
-                                title: event.titolo,
-                                image: event.proprietario.fotoProfilo
-                                    ? event.proprietario.fotoProfilo
-                                    : "https://via.placeholder.com/150/cccccc/000000?text=No+Image",
-                                userName: `${event.proprietario.nome} ${event.proprietario.cognome}`,
-                                parameter1: event.tipo,
-                                parameter2: event.orariDisponibili,
-                                parameter3: event.proprietario.email,
-                            }}
-                            labels={{
-                                parameter1: "Titolo",
-                                    parameter2: "Orari",
-                                parameter3: "Email",
-                            }}
-                            onClick={() => console.log(`Cliccato su consulenza: ${event.titolo}`)}
-                            onInfoClick={() => setSelectedConsulenzaId(event.id)}
-                        />
-                    ))}
+                    {consulenze.map((event) => {
+                        const profileImage = userImages[event.proprietario.email]
+                            ? `data:image/jpeg;base64,${userImages[event.proprietario.email]}`
+                            : "https://via.placeholder.com/150/cccccc/000000?text=No+Image"; // Usa Base64 o fallback
+                        return (
+                            <Card
+                                key={event.id}
+                                data={{
+                                    title: event.titolo,
+                                    image: profileImage,
+                                    userName: `${event.proprietario.nome} ${event.proprietario.cognome}`,
+                                    parameter1: event.tipo,
+                                    parameter2: event.orariDisponibili,
+                                    parameter3: event.proprietario.email,
+                                }}
+                                labels={{
+                                    parameter1: "Tipo",
+                                    parameter2: "Orari Disponibili",
+                                    parameter3: "Email",
+                                }}
+                                onClick={() => console.log(`Cliccato su consulenza: ${event.titolo}`)}
+                                onInfoClick={() => setSelectedConsulenzaId(event.id)}
+                            />
+                        );
+                    })}
                 </div>
             ) : (
                 <p>Nessuna consulenza trovata</p>
@@ -118,6 +214,15 @@ const AllConsulenzaView = () => {
                     //serve per aggiornare la pagina delle card
                     //se si effettuano modifiche agli annunci
                 />
+            )}
+
+            {isPopupVisible && (
+                <div className="popupOverlay" onClick={(e) => e.target === e.currentTarget && closePopup()}>
+                    <div className="popupContainer">
+                        <button onClick={closePopup} className="closePopupButton">X</button>
+                        <FormConsulenza />
+                    </div>
+                </div>
             )}
         </div>
     );
