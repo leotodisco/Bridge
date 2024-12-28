@@ -78,7 +78,6 @@ const CreaUtente = () => {
                     ...prev,
                     dataNascita: "La data di nascita deve essere nel passato.",
                 }));
-                return;
             } else {
                 setErrorMessages((prev) => {
                     const updatedErrors = { ...prev };
@@ -292,17 +291,10 @@ const CreaUtente = () => {
 
         console.log(utenteDTO);
         try {
-            const token = localStorage.getItem("authToken");
-
-            if (!token) {
-                alert("Token non trovato. Effettua nuovamente il login.");
-                return;
-            }
 
             const response = await fetch("http://localhost:8080/authentication/registrazioneUtente", {
                 method: "POST",
                 headers: {
-                    'Authorization': `Bearer ${token}`,
                     "Content-Type": "application/json",
                     "Accept": "application/json"
                 },
