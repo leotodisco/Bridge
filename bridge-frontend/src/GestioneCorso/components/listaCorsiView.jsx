@@ -77,7 +77,7 @@ const ListaCorsiView = () => {
         <div>
             <div className="header-container">
                 <h1>Tutti i Corsi</h1>
-                {ruolo === "FIGURASPECIALIZZATA" && (
+                {ruolo === "FiguraSpecializzata" && (
                     <button
                         onClick={toggleModal}
                         className="btn btn-primary"

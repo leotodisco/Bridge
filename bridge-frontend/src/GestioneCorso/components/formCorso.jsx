@@ -116,7 +116,7 @@ const CreaCorso = ({ onClose }) => { // Accetta la prop onClose
 
             const response = await
                 fetch("http://localhost:8080/api/corsi/upload", {
-                    method: 'GET',
+                    method: 'POST',
                     body: formData,
                     headers: {
                         'Authorization': `Bearer ${token}`,

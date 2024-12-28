@@ -186,9 +186,12 @@ const CorsoView = ({ id, onClose }) => {
         }
 
         try {
+            const token = localStorage.getItem('authToken');
             const response = await fetch(`http://localhost:8080/api/corsi/modifica/${id}`, {
                 method: "POST",
-                headers: { "Content-Type": "application/json" },
+                headers: { "Content-Type": "application/json",
+                    "Authorization": `Bearer ${token}`,
+                },
                 body: JSON.stringify({ ...formData, pdf: pdfId, proprietario: emailUtenteLoggato }),
             });
 

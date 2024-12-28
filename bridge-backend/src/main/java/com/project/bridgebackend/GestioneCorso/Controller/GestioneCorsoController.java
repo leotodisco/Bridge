@@ -191,9 +191,6 @@ public class GestioneCorsoController {
     public ResponseEntity<List<Corso>> findAll() {
         try {
             List<Corso> corsi = corsoDAO.findAll();
-            if (corsi == null || corsi.isEmpty()) {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
-            }
             return ResponseEntity.ok(corsi);
         } catch (Exception e) {
             log.error("Errore durante la ricerca del corso", e);
