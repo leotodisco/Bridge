@@ -19,23 +19,6 @@ import java.util.Optional;
  */
 @Repository
 public interface AlloggioDAO extends JpaRepository<Alloggio, Long> {
-
-    /**
-     * Trova un alloggio in base al suo ID.
-     *
-     * @param id ID dell'alloggio da trovare.
-     * @return un {@link Optional} contenente l'alloggio se trovato, altrimenti vuoto.
-     */
-    Optional<Alloggio> findById(long id);
-
-    /**
-     * Trova un alloggio in base al suo titolo.
-     *
-     * @param titolo titolo dell'alloggio da trovare.
-     * @return un {@link Optional} contenente l'alloggio se trovato, altrimenti vuoto.
-     */
-    Optional<Alloggio> findByTitolo(String titolo);
-
     /**
      * Recupera tutti gli alloggi con il loro proprietario associato.
      * Utilizza un JOIN FETCH per caricare il proprietario insieme agli alloggi.
@@ -46,21 +29,12 @@ public interface AlloggioDAO extends JpaRepository<Alloggio, Long> {
     List<Alloggio> findAllAlloggiWithProprietario();
 
     /**
-     * Trova un alloggio in base al suo titolo tramite una query personalizzata.
-     *
-     * @param titolo titolo dell'alloggio da trovare.
-     * @return l'alloggio corrispondente al titolo specificato.
-     */
-    @Query("SELECT a FROM Alloggio a WHERE a.titolo = :titolo")
-    Alloggio findAllAlloggiWithTitolo(@Param("titolo") String titolo);
-
-    /**
      * Trova un alloggio in base al suo titolo utilizzando il metodo fornito da Spring Data JPA.
      *
      * @param titolo titolo dell'alloggio da trovare.
      * @return un {@link Optional} contenente l'alloggio se trovato, altrimenti vuoto.
      */
-    Optional<Alloggio>  findAlloggioByTitolo(String titolo);
+    Optional<Alloggio> findAlloggioByTitolo(String titolo);
 
     @Query("SELECT a FROM Alloggio a WHERE a.id =:id")
     Alloggio findAlloggioById(long id);

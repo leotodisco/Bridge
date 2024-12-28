@@ -158,34 +158,21 @@ public class AlloggioController {
     /**
      * Assegna un alloggio a un rifugiato specifico.
      *
-     * @param titolo         il titolo dell'alloggio
+     * @param idAlloggio l'id dell'alloggio
      * @param emailRifugiato l'email del rifugiato
      * @return ResponseEntity con lo stato dell'operazione
      */
     @PostMapping("/assegnazione")
-    public ResponseEntity<String> assegnazioneAlloggio(
-            @RequestParam final String titolo,
-            @RequestParam final String emailRifugiato) {
-        try {
-            // Recuperiamo l'alloggio in base al titolo
-            Alloggio alloggio = alloggioService.assegnazioneAlloggio(titolo, emailRifugiato);
-
-            // Verifica che il rifugiato scelto faccia parte della lista dei candidati
-            List<Rifugiato> candidati = alloggio.getListaCandidati();
-            boolean rifugiatoScelto = candidati.stream().anyMatch(r -> r.getEmail().equals(emailRifugiato));
-
-            if (!rifugiatoScelto) {
-                return new ResponseEntity<>("Il rifugiato scelto non ha manifestato interesse per questo alloggio.", HttpStatus.BAD_REQUEST);
-            }
-
-            // Se il rifugiato ha manifestato interesse, viene assegnato l'alloggio
-            alloggio.getListaCandidati().clear();  // Rimuoviamo gli altri candidati
-            alloggio.getListaCandidati().add(candidati.stream().filter(r -> r.getEmail().equals(emailRifugiato)).findFirst().get()); // Aggiungiamo solo il rifugiato scelto
-
-            alloggioService.addAlloggio(alloggio); // Salviamo l'alloggio aggiornato
-            return new ResponseEntity<>("Alloggio assegnato correttamente a " + emailRifugiato, HttpStatus.OK);
-        } catch (IllegalArgumentException e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+    public ResponseEntity<String> assegnazioneAlloggio(@RequestParam final long idAlloggio, @RequestParam final String emailRifugiato) {
+        try{
+            Alloggio a = alloggioService.assegnazioneAlloggio(idAlloggio, emailRifugiato);
+            return ResponseEntity.ok("L'alloggio '" + a.getTitolo() + "' è stato assegnato al rifugiato con email: " + emailRifugiato);
+        }catch (IllegalArgumentException e) {
+            // Gestione degli errori previsti
+            return ResponseEntity.badRequest().body("Errore: " + e.getMessage());
+        } catch (Exception e) {
+            // Gestione degli errori generici
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Si è verificato un errore durante l'assegnazione dell'alloggio.");
         }
     }
 
@@ -199,21 +186,37 @@ public class AlloggioController {
     @PostMapping("/interesse")
     public ResponseEntity<String> manifestaInteresse(@RequestParam String emailRifugiato, @RequestParam long idAlloggio) {
         try {
-            boolean success = alloggioService.interesse(emailRifugiato, idAlloggio);
-            if (success) {
-                return ResponseEntity.ok("Interesse manifestato con successo.");
-            } else {
-                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                        .body("Errore durante la manifestazione dell'interesse.");
+            Alloggio alloggio = alloggioDAO.findAlloggioById(idAlloggio);
+            if (alloggio == null) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Alloggio non trovato.");
             }
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+
+            // Aggiungi il rifugiato alla lista dei candidati
+            Rifugiato rifugiato = rifugiatoDAO.findByEmail(emailRifugiato);
+            if (rifugiato == null) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Rifugiato non trovato.");
+            }
+
+            // Se la lista candidati è null o vuota, inizializzala
+            if (alloggio.getListaCandidati() == null) {
+                alloggio.setListaCandidati(new ArrayList<>());
+            }
+
+            // Verifica se il rifugiato ha già manifestato interesse
+            if (alloggio.getListaCandidati().contains(rifugiato)) {
+                return ResponseEntity.ok("Hai già manifestato interesse per questo alloggio");
+            }
+
+            // Aggiungi il rifugiato alla lista dei candidati
+            alloggio.getListaCandidati().add(rifugiato);
+            alloggioDAO.save(alloggio); // Salva l'alloggio aggiornato nel database
+
+            return ResponseEntity.ok("Interesse manifestato con successo.");
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("Si è verificato un errore imprevisto: " + e.getMessage());
+            System.out.println("Errore interno del server: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Errore interno al server.");
         }
     }
-
 
     /**
      * Verifica se un rifugiato ha aggiunto un alloggio ai preferiti.
@@ -258,6 +261,7 @@ public class AlloggioController {
             List<Alloggio> alloggi = alloggioService.getAllAlloggio();
 
             // Restituiamo la lista con lo stato OK
+            System.out.println(ResponseEntity.ok(alloggi.size()));
             return new ResponseEntity<>(alloggi, HttpStatus.OK);
         } catch (Exception e) {
             // In caso di errore, restituiamo uno stato di errore con il messaggio
@@ -314,6 +318,16 @@ public class AlloggioController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
     }
-
-
+    @GetMapping("/interessati/{idAlloggio}")
+    public ResponseEntity<List<Rifugiato>> getInteressati(@PathVariable long idAlloggio) {
+        try {
+            List<Rifugiato> interessati = alloggioService.getInteressati(idAlloggio);
+            return ResponseEntity.ok(interessati);
+        } catch (Exception e) {
+            // Log dell'errore lato server
+            System.err.println("Errore durante il recupero dei rifugiati interessati: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(Collections.emptyList());
+        }
+    }
 }

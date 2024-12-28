@@ -2,6 +2,7 @@ package com.project.bridgebackend.GestioneAlloggio.Service;
 
 import com.project.bridgebackend.Model.Entity.Alloggio;
 import com.project.bridgebackend.Model.Entity.Indirizzo;
+import com.project.bridgebackend.Model.Entity.Rifugiato;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.List;
@@ -32,12 +33,11 @@ public interface AlloggioService {
 
     /**
      *Firma del metodo che assegna un alloggio a un rifugiato.
-     * @param titolo l'alloggio che è stato assegnato al rifugiato.
-     * @param emailRifugiato l'identificativo del rifugiato,
-     *                       a cui è stato assegnato un alloggio.
+     * @param id l'id dell'alloggio
+     * @param emailRifugiato l'identificativo del rifugiato a cui è stato assegnato un alloggio.
      * @return l'alloggio che è stato assegnato al rifugiato.
      */
-    Alloggio assegnazioneAlloggio(String titolo, String emailRifugiato);
+    Alloggio assegnazioneAlloggio(long id, String emailRifugiato);
 
     /**
      *Firma del metodo che notifica il volontario nel caso,
@@ -83,7 +83,17 @@ public interface AlloggioService {
     List<Alloggio> getRandomAlloggi();
 
     /**
-     * Firma del metodo per ottenere tutti gli alloggi di un proprietario
+     * Firma del metodo per ottenere tutti gli alloggi di un proprietario.
+     * @param email l'email del Volontario che ha caricato l'annuncio.
+     * @return La lista di tutti gli alloggi caricati
      */
     List<Alloggio> getAllAlloggiByEmail(String email);
+
+    /**
+     * Metodo per ottenere tutti i rifugiati che hanno manifestato interesse per un alloggio.
+     * @param id id dell'alloggio.
+     * @return Lista di rifugiati che hanno manifestato interesse
+     * */
+    List<Rifugiato> getInteressati(long id);
+
 }

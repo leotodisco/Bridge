@@ -1,6 +1,7 @@
 package com.project.bridgebackend.GestioneAlloggio.Service;
 
 import com.project.bridgebackend.Model.Entity.Alloggio;
+import com.project.bridgebackend.Model.Entity.Consulenza;
 import com.project.bridgebackend.Model.Entity.Indirizzo;
 import com.project.bridgebackend.Model.Entity.Rifugiato;
 import com.project.bridgebackend.Model.dao.RifugiatoDAO;
@@ -73,14 +74,12 @@ public class AlloggioServiceImplementazione implements AlloggioService {
      * @return un booleano che specifica lo stato dell'operazione. true andato a buon fine, false altrimenti
      */
     @Override
-    public boolean interesse(String emailRifugiato, long idAlloggio) {
-        // Validazione dei parametri
+    public boolean interesse(String emailRifugiato, long idAlloggio){
         if (emailRifugiato == null || emailRifugiato.trim().isEmpty()) {
             throw new IllegalArgumentException("Email vuota o nulla");
         }
-
         if (idAlloggio <= 0) {
-            throw new IllegalArgumentException("ID alloggio non valido");
+            throw new IllegalArgumentException("ID consulenza non valido");
         }
 
         // Recupera il rifugiato dal database
@@ -89,30 +88,22 @@ public class AlloggioServiceImplementazione implements AlloggioService {
             throw new IllegalArgumentException("Rifugiato non trovato");
         }
 
-        // Recupera l'alloggio dal database
         Alloggio a = alloggioDAO.findAlloggioById(idAlloggio);
-        if (a == null) {
+        if(a == null) {
             throw new IllegalArgumentException("Alloggio non trovato");
         }
 
         // Verifica se l'email del rifugiato è già nella lista candidati
-        if (a.getListaCandidati().stream().anyMatch(c -> c.getEmail().equals(emailRifugiato))) {
+        if (a.getListaCandidati().contains(r.getEmail())) {
             throw new IllegalArgumentException("Interesse già manifestato");
         }
 
-        // Aggiungi il rifugiato alla lista dei candidati
         a.getListaCandidati().add(r);
-
-        // Salva l'alloggio aggiornato
+        //aggiorno la consulenza
         alloggioDAO.save(a);
-
-        // Invia una notifica al volontario associato all'alloggio
-        sendEmailVolontario("Riuscito con l'id", "mariozurolo00@gmail.com");
-
-        // Ritorna true per indicare successo
+        sendEmailRifugiato("Interesse manifestat", "mariozurolo00@gmail.com");
         return true;
     }
-
 
     /**
      * Aggiunge un nuovo alloggio nel sistema.
@@ -157,7 +148,7 @@ public class AlloggioServiceImplementazione implements AlloggioService {
     /**
      * Metodo che gestisce l'assegnazione di un alloggio a un rifugiato.
      *
-     * @param titolo il titolo dell'alloggio.
+     * @param id l'id dell'alloggio.
      * @param emailRifugiato l'email del rifugiato.
      * @return l'alloggio assegnato o null se non viene,
      * trovato un alloggio valido.
@@ -165,36 +156,53 @@ public class AlloggioServiceImplementazione implements AlloggioService {
      * non ha mostrato interesse per l'alloggio.
      */
     @Override
-    public Alloggio assegnazioneAlloggio(
-            final String titolo,
-            final String emailRifugiato) {
+    public Alloggio assegnazioneAlloggio(final long id, final String emailRifugiato) {
+        if (id < 1) {
+            throw new IllegalArgumentException("ID non valido");
+        }
 
-        /*Optional<Alloggio> alloggioOptional = alloggioDAO.findByTitolo(titolo);
+        if (emailRifugiato == null || emailRifugiato.trim().isEmpty()) {
+            throw new IllegalArgumentException("Email vuota o nulla");
+        }
 
-        if (alloggioOptional == null || !alloggioOptional.isPresent()) {
+        // Recupera l'alloggio dal database
+        Alloggio alloggio = alloggioDAO.findAlloggioById(id);
+        if (alloggio == null) {
             throw new IllegalArgumentException("Alloggio non trovato");
         }
 
-        Rifugiato rifugiato = rifugiatoDAO.findByEmail(emailRifugiato);
-
-        if (rifugiato == null) {
-            throw new IllegalArgumentException("Il rifugiato non trovato");
+        // Recupera la lista dei candidati per l'alloggio
+        List<Rifugiato> listaCandidati = alloggio.getListaCandidati();
+        if (listaCandidati == null || listaCandidati.isEmpty()) {
+            throw new IllegalArgumentException("Nessun candidato disponibile per questo alloggio");
         }
 
-        Alloggio alloggio = alloggioOptional.get();
+        // Cerca il rifugiato nella lista dei candidati
+        Optional<Rifugiato> rifugiatoOpt = listaCandidati.stream()
+                .filter(r -> r.getEmail().equals(emailRifugiato))
+                .findFirst();
 
-        //Se non ha mostrato interesse per l'alloggio
-        if (!manifestazioneInteresse(rifugiato, alloggio)) {
-            throw new IllegalArgumentException("Il rifugiato non ha mostrato interesse per questo alloggio");
-        } else { // se ha mostrato interesse per l'alloggio
-            alloggio.getListaCandidati().clear();
-            alloggio.getListaCandidati().add(rifugiato);
+        if (rifugiatoOpt.isEmpty()) {
+            throw new IllegalArgumentException("Il rifugiato non ha manifestato interesse per questo alloggio");
+        }
 
-            alloggioDAO.save(alloggio);
-            return alloggio;
-            //throw new IllegalArgumentException("Già mostrato interesse");
-        }*/ return null;
+        Rifugiato rifugiato = rifugiatoOpt.get();
+
+        // Verifica se l'alloggio è già stato assegnato
+        if (alloggio.getAssegnatoA() != null) {
+            throw new IllegalArgumentException("L'alloggio è già stato assegnato a un altro rifugiato");
+        }
+
+        // Assegna l'alloggio al rifugiato
+        alloggio.setAssegnatoA(rifugiato);
+
+        // Salva l'alloggio aggiornato
+        alloggioDAO.save(alloggio);
+
+        return alloggio;
     }
+
+
 
     /**
      * Metodo asincrono che invia una email al volontario.
@@ -307,4 +315,26 @@ public class AlloggioServiceImplementazione implements AlloggioService {
             throw new IllegalArgumentException("Non trovati gli alloggi " + e.getMessage());
         }
     }
+
+    @Override
+    public List<Rifugiato> getInteressati(long id) {
+        try {
+            Optional<Alloggio> optionalAlloggio = alloggioDAO.findById(id);
+            if (!optionalAlloggio.isPresent()) {
+                throw new IllegalArgumentException("Alloggio non trovato");
+            }
+
+            Alloggio alloggio = optionalAlloggio.get();
+            List<Rifugiato> rifugiatiInteressati = alloggio.getListaCandidati();
+            if (rifugiatiInteressati.isEmpty()) {
+                throw new IllegalArgumentException("Lista dei interessati vuota");
+            }
+            return rifugiatiInteressati;
+        } catch (Exception e) {
+            // Log dell'errore lato server
+            System.err.println("Errore durante il recupero dei rifugiati interessati: " + e.getMessage());
+            throw new IllegalArgumentException("Non trovati i rifugiati: " + e.getMessage());
+        }
+    }
+
 }
