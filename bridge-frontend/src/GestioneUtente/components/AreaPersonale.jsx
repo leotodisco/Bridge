@@ -50,8 +50,8 @@ const AreaPersonale = ({ onLogout }) => {
             ]);
 
 
-            if (!userResponse.ok || !imgResponse.ok) {
-                throw new Error(`Errore HTTP: ${userResponse.status} o ${imgResponse.status}`);
+            if (!userResponse.ok) {
+                throw new Error(`Errore HTTP userResponse: ${userResponse.status}`);
             }
 
             const userData = await userResponse.json();
@@ -195,7 +195,7 @@ const AreaPersonale = ({ onLogout }) => {
                         <div className="profile-section">
                             {/* Foto Profilo */}
                             <img
-                                src={fotoProfilo || (imgData ? `data:image/jpeg;base64,${imgData}` : '/default-profile.png')}
+                                src={fotoProfilo || (imgData ? `data:image/jpeg;base64,${imgData}` : '/immagineProfiloVuota.jpg')}
                                 alt="Foto Profilo"
                                 className="profile-picture"
                             />
