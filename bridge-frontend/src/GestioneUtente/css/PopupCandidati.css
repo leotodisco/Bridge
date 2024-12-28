@@ -29,18 +29,19 @@
 }
 
 /* Stile per il titolo del popup */
-.popup h2 {
-    margin-top: 0;
-    font-size: 20px;
-    color: #333;
+.popup h2, .popup h3 {
     text-align: center;
+    color: #333;
     margin-bottom: 15px;
 }
 
+.popup h2 {
+    margin-top: 0;
+    font-size: 20px;
+}
+
 .popup h3 {
-    text-align: center;
     margin-bottom: 20px;
-    color: #333;
 }
 
 .profile-picture {
@@ -109,33 +110,53 @@
 }
 
 /* Layout per i pulsanti di accettazione e rifiuto a destra */
-.popup ul li .action-buttons {
+.popup ul li .candidate-buttons {
     display: flex;
-    flex-direction: column; /* Sovrappone i pulsanti */
-    align-items: flex-end;
+    gap:10px;
 }
 
-.popup ul li .action-buttons button {
-    margin: 5px 0; /* Spazio tra i pulsanti */
-    padding: 8px 15px;
-    font-size: 14px;
-    color: #fff;
-    background-color: #336a7e; /* Colore di sfondo */
+/* Pulsanti di azione per accettare e rifiutare */
+.popup ul li .candidate-buttons button.action {
+    width: 40px; /* Dimensioni più piccole */
+    height: 40px;
+    padding: 0; /* Rimuove il padding interno */
+    font-size: 16px; /* Dimensione dell'icona */
+    display: flex;
+    justify-content: center;
+    align-items: center;
     border: none;
-    border-radius: 3px;
+    border-radius: 5px; /* Angoli arrotondati */
+    color: #fff; /* Icone bianche */
     cursor: pointer;
     transition: background-color 0.3s ease-in-out;
 }
 
-/* Hover per i pulsanti di azione */
-.popup ul li .action-buttons button:hover {
-    background-color: #224f63; /* Colore al passaggio del mouse */
+.popup ul li .candidate-buttons button.accept {
+    background-color: #28a745; /* Verde */
+}
+
+.popup ul li .candidate-buttons button.accept:hover {
+    background-color: #218838; /* Verde scuro al passaggio del mouse */
+}
+
+.popup ul li .candidate-buttons button.reject {
+    background-color: #dc3545; /* Rosso */
+}
+
+.popup ul li .candidate-buttons button.reject:hover {
+    background-color: #c82333; /* Rosso scuro al passaggio del mouse */
+}
+
+/* Icone */
+.popup ul li .candidate-buttons button i {
+    font-size: 16px; /* Dimensione dell'icona */
+    color: #fff;
 }
 
 /* Stile per il pulsante di chiusura */
 .popup button {
     display: block;
-    margin: 20px auto 0; /* Centra il pulsante */
+    margin: 0px auto 0; /* Centra il pulsante */
     padding: 10px 20px;
     font-size: 16px;
     color: #fff;

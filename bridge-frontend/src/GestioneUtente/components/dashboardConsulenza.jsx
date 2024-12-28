@@ -77,7 +77,12 @@ const ConsulenzaUtente = () => {
     // Recupera l'email dell'utente loggato (esempio: salvata in localStorage)
     const email = localStorage.getItem('email'); // Assicurati che l'email sia salvata.
     const token = localStorage.getItem('authToken');
+    const ruolo = localStorage.getItem('ruolo');
 
+    //forzo update
+    const [isUpdated, setIsUpdated] = useState(false);
+
+    console.log(ruolo);
     useEffect(() => {
         const token = localStorage.getItem('authToken');
 
@@ -105,7 +110,7 @@ const ConsulenzaUtente = () => {
                 setError('Errore durante il recupero delle consulenze');
                 console.error(error);
             });
-    }, [email]);
+    }, [email, isUpdated]);
 
     // Funzione per gestire il click sul pulsante di maggiori informazioni
     const handleInfoClick = (consulenzaId) => {
@@ -129,29 +134,16 @@ const ConsulenzaUtente = () => {
 
     // Funzione per chiudere il popup dei candidati
     const closeCandidatesPopup = () => {
-        setSelectedCandidates(null); // Reset dei candidati selezionati
+        if (setSelectedCandidates){
+            setSelectedCandidates(null);
+        } // Reset dei candidati selezionati
+        setSelectedConsulenzaId(null);
     };
 
-    const updateConsulenza = (consulenzaId, candidateEmail, isAccepted) => {
-        setConsulenza((prevConsulenza) =>
-            prevConsulenza.map((event) =>
-                event.id === consulenzaId
-                    ? {
-                        ...event,
-                        candidati: event.candidati.map((candidate) =>
-                            candidate.email === candidateEmail
-                                ? { ...candidate, isAccepted }  // Aggiorna lo stato di accettato
-                                : candidate
-                        ),
-                    }
-                    : event
-            )
-        );
-    };
+
+
+
     const acceptCandidate = (candidateEmail) => {
-        // 1. Aggiorna lo stato nel frontend
-        updateConsulenza(selectedConsulenzaId, candidateEmail, true);  // Il candidato è accettato
-
         fetch(`http://localhost:8080/api/annunci/accetta/${selectedConsulenzaId}`, {
             method: 'POST',
             headers: {
@@ -165,25 +157,25 @@ const ConsulenzaUtente = () => {
             .then((response) => {
                 if (response.ok) {
                     toast.info("Candidato accettato");
-                    return response.text();
+                    return response.text(); // Continua con la catena di promesse
                 } else {
                     throw new Error('Errore durante l\'accettazione del candidato.');
                 }
             })
+            .then(() => {
+                setIsUpdated((prev) => !prev); // Forza il refresh
+            })
             .catch((error) => {
                 toast.error("Errore durante la sincronizzazione con il backend");
                 console.error(error);
-                updateConsulenza(selectedConsulenzaId, candidateEmail, false); // Reverti lo stato del candidato
-            });
-
-        closeCandidatesPopup(); // Chiudi il popup dei candidati dopo l'azione
+            })
+            .finally(() => {
+                closeCandidatesPopup(); // Chiudi il popup dei candidati dopo l'azione
+            });// Chiudi il popup dei candidati dopo l'azione
 
     };
 
     const removeCandidate = (candidateEmail) => {
-        // 1. Aggiorna lo stato nel frontend
-        updateConsulenza(selectedConsulenzaId, candidateEmail, false);  // Il candidato è rifiutato
-
         fetch(`http://localhost:8080/api/annunci/rifiuta/${selectedConsulenzaId}`, {
             method: 'POST',
             headers: {
@@ -197,22 +189,21 @@ const ConsulenzaUtente = () => {
             .then((response) => {
                 if (response.ok) {
                     toast.warning("Candidato rifiutato");
-                    return response.text();
+                    return response.text(); // Continua con la catena di promesse
                 } else {
                     throw new Error('Errore durante il rifiuto del candidato.');
                 }
             })
+            .then(() => {
+                setIsUpdated((prev) => !prev); // Forza il refresh
+            })
             .catch((error) => {
-                // Se si verifica un errore, annulla l'aggiornamento fatto nel frontend
                 toast.error("Errore durante la sincronizzazione con il backend");
                 console.error(error);
-                updateConsulenza(selectedConsulenzaId, candidateEmail, true); // Reverti lo stato del candidato
+            })
+            .finally(() => {
+                closeCandidatesPopup(); // Chiudi il popup dei candidati dopo l'azione
             });
-
-        closeCandidatesPopup(); Error('Errore durante il rifiuto del candidato.');
-
-
-
     };
 
 
@@ -250,12 +241,36 @@ const ConsulenzaUtente = () => {
             setCandidateDetails(userData);
             setImgData(imgBase64);
             setIsCandidatesDetail(true);
-            localStorage.setItem('ruolo', userData.ruoloUtente);
+            //localStorage.setItem('ruolo', userData.ruoloUtente);
         } catch (error) {
             console.error("Errore durante il recupero dei dati personali o immagine:", error);
             alert("Errore durante il caricamento dei dati.");
         }
     };
+
+    // const refreshConsulenzaData = (email) => {
+    //     fetch(`http://localhost:8080/api/annunci/pubblicati?email=${email}`, {
+    //         method: 'GET',
+    //         headers: {
+    //             'Authorization': `Bearer ${token}`,
+    //             'Content-Type': 'application/json',
+    //         },
+    //     })
+    //         .then((response) => {
+    //             if (!response.ok) {
+    //                 throw new Error('Errore durante il recupero dei dati aggiornati');
+    //             }
+    //             return response.json();
+    //         })
+    //         .then((updatedConsulenza) => {
+    //             setConsulenza((prevConsulenza) =>
+    //                 prevConsulenza.map((cons) =>
+    //                     cons.id === updatedConsulenza.id ? updatedConsulenza : cons
+    //                 )
+    //             );
+    //         })
+    //         .catch((error) => console.error('Errore durante l\'aggiornamento:', error));
+    // };
 
     const closeCandidateDetails = () => {
         setCandidateDetails(null);
@@ -311,9 +326,9 @@ const ConsulenzaUtente = () => {
             {selectedCandidates && (
                 <div className="popup">
                     <h2>Candidati</h2>
-                    {Object.keys(selectedCandidates).length > 0 ? (
+                    {Object.keys(selectedCandidates || {}).length > 0 ? (
                         <ul>
-                            {Object.entries(selectedCandidates).map(([email, isAccepted], index) => (
+                            {Object.entries(selectedCandidates  || {}).map(([email, isAccepted], index) => (
                                 <li key={index}>
                                     <div className="email-section">
                                         <span>{email}</span>
@@ -321,11 +336,20 @@ const ConsulenzaUtente = () => {
                                            onClick={() => handleShowCandidateDetails(email)}></i>
                                     </div>
                                     {isAccepted ? (
-                                        <span> (Candidato accettato)</span>
+                                        <div className="candidate-buttons">
+                                        <span>Candidato accettato</span>
+                                        <button className="candidate reject" onClick={() => removeCandidate(email)}>
+                                            <i className="fas fa-times"></i>
+                                        </button>
+                                        </div>
                                     ) : (
-                                        <div className="action-buttons">
-                                            <button onClick={() => acceptCandidate(email)}>Accetta</button>
-                                            <button onClick={() => removeCandidate(email)}>Rifiuta</button>
+                                        <div className="candidate-buttons">
+                                            <button className="candidate accept" onClick={() => acceptCandidate(email)}>
+                                                <i className="fas fa-check"></i>
+                                            </button>
+                                            <button className="candidate reject" onClick={() => removeCandidate(email)}>
+                                                <i className="fas fa-times"></i>
+                                            </button>
                                         </div>
                                     )}
                                 </li>
@@ -350,7 +374,19 @@ const ConsulenzaUtente = () => {
                 <div className="popupOverlay" onClick={(e) => e.target === e.currentTarget && closePopupForm()}>
                     <div className="popupContainer">
                         <button onClick={closePopupForm} className="closePopupButton">X</button>
-                        <FormConsulenza />
+                        <FormConsulenza onSubmitSuccess={() => {
+                            fetch(`http://localhost:8080/api/annunci/pubblicati?email=${email}`, {
+                                method: 'GET',
+                                headers: {
+                                    'Authorization': `Bearer ${token}`,
+                                    'Content-Type': 'application/json',
+                                },
+                            })
+                                .then((response) => response.json())
+                                .then((data) => setConsulenza(data)) // Aggiorna l'intera lista
+                                .catch((error) => console.error('Errore durante l\'aggiornamento:', error));
+                            closePopupForm(); // Chiudi il popup dopo l'aggiunta
+                        }} />
                     </div>
                 </div>
             )}

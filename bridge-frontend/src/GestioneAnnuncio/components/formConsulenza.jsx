@@ -1,5 +1,7 @@
 import { useState } from "react";
 import {useNavigate} from "react-router-dom";
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const Tipo = {
     SANITARIA: "SANITARIA",
@@ -133,11 +135,9 @@ const CreaConsulenza = () => {
         return valido;
     };
 
-    const handleSubmit = async (event) => {
-        event.preventDefault();
-
+    const handleSubmit = async () => {
         if (!emailUtenteLoggato) {
-            alert("Sessione scaduta. Esegui di nuovo il login.");
+            toast.error("Sessione scaduta. Esegui di nuovo il login.");
             return;
         }
 
@@ -180,7 +180,7 @@ const CreaConsulenza = () => {
             const token = localStorage.getItem("authToken");
             // check su token:
             if (!token) {
-                alert("Non sei autenticato. Effettua il login.");
+                toast.error("Non sei autenticato. Effettua il login.");
                 nav('/login');
                 return;
             }
@@ -188,9 +188,8 @@ const CreaConsulenza = () => {
             const response = await fetch("http://localhost:8080/api/annunci/creaConsulenza", {
                 method: "POST",
                 headers: {
-                    'Authentication': `Bearer ${token}`,
-                    "Content-Type": "application/json",
-                    "Accept": "application/json"
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`,
                 },
                 body: JSON.stringify(consulenzaDTO)
             });
@@ -201,10 +200,10 @@ const CreaConsulenza = () => {
 
             const result = await response.json();
             console.log("Consulenza creata con successo: ", result);
-            alert("Consulenza creata con successo!");
+            toast.info("Consulenza creata con successo!");
         } catch (error) {
             console.error("Errore durante la creazione della consulenza: ", error);
-            alert("Errore durante la creazione della consulenza: " + error.message);
+            toast.error("Errore durante la creazione della consulenza: " + error.message);
         }
     };
 

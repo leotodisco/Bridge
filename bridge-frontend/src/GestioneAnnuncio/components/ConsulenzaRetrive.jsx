@@ -168,7 +168,7 @@ const ConsulenzaView = ({ id, onClose, onUpdate }) => {
     useEffect(() => {
         const fetchData = async () => {
             await fetchConsulenza(id);
-            if (tipoUtente === 'Rifugiato' && emailUtenteLoggato) {
+            if (localStorage.getItem('ruolo') === 'Rifugiato' && emailUtenteLoggato) {
                 await checkIfUserIsRegistered(id);
             }
         };
