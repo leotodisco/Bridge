@@ -22,6 +22,9 @@ const DettaglioAlloggio = () => {
 
             const idAlloggio = alloggio.id;
 
+            console.log("Email Rifugiato:", emailRifugiato);
+            console.log("ID Alloggio:", idAlloggio);
+
             if (!emailRifugiato) {
                 setError("Email mancante.");
                 return;
@@ -46,6 +49,8 @@ const DettaglioAlloggio = () => {
                 },
             });
 
+            console.log("Response status:", response.status);
+
             if (response.ok) {
                 const newFavoritoState = !isFavorito; // Cambia lo stato
                 setIsFavorito(newFavoritoState);
@@ -56,15 +61,18 @@ const DettaglioAlloggio = () => {
                 } else {
                     localStorage.removeItem(`favorito_${idAlloggio}`);
                 }
+
+                console.log("Interesse manifestato con successo.");
             } else {
                 const errorData = await response.text();
                 setError(`Errore durante l'aggiunta ai preferiti: ${errorData}`);
+                console.error("Errore:", errorData);
             }
         } catch (error) {
             setError(`Errore: ${error.message}`);
+            console.error("Errore:", error.message);
         }
     };
-
 
     useEffect(() => {
         const checkFavorito = async () => {
@@ -72,10 +80,22 @@ const DettaglioAlloggio = () => {
                 const emailRifugiato = localStorage.getItem("email");
                 const idAlloggio = alloggio.id;
 
+                console.log("Email Rifugiato (checkFavorito):", emailRifugiato);
+                console.log("ID Alloggio (checkFavorito):", idAlloggio);
+
                 // Controlla se lo stato è già salvato nel localStorage
-                const favorito = localStorage.getItem(`favorito_${idAlloggio}`);
-                if (favorito === "true") {
-                    setIsFavorito(true);
+                    // Altrimenti, fai una richiesta API per verificare se è nei preferiti
+                const response = await fetch(`http://localhost:8080/alloggi/isFavorito?email=${emailRifugiato}&idAlloggio=${idAlloggio}`);
+                console.log("Response status (isFavorito):", response.status);
+
+                if (response.ok) {
+                    const isFavorito = await response.json();
+                    setIsFavorito(isFavorito);
+                    console.log("Favorito status from server:", isFavorito);
+                    // Salva il risultato nel localStorage per evitare future richieste
+                    if (isFavorito) {
+                       setIsFavorito(true);
+                    }
                 } else {
 
                     // check su token:
@@ -85,7 +105,7 @@ const DettaglioAlloggio = () => {
                         return;
                     }
 
-                    // Altrimenti, fai una richiesta API per verificare se è nei preferiti
+                    console.warn("Errore durante il controllo dello stato dei preferiti");
                     const response = await fetch(`http://localhost:8080/alloggi/isFavorito?email=${emailRifugiato}&idAlloggio=${idAlloggio}`, {
                         method: "GET",
                         headers: {
@@ -106,14 +126,16 @@ const DettaglioAlloggio = () => {
                         console.warn("Errore durante il controllo dello stato dei preferiti");
                     }
                 }
+
             } catch (error) {
                 console.error("Errore:", error.message);
             }
         };
 
-        checkFavorito();
+        if (alloggio.id) {
+            checkFavorito();
+        }
     }, [alloggio.id]); // Assicurati che alloggio.id sia disponibile prima di fare la chiamata
-
 
     useEffect(() => {
         const fetchAlloggio = async () => {
@@ -215,3 +237,4 @@ const DettaglioAlloggio = () => {
 };
 
 export default DettaglioAlloggio;
+

@@ -3,12 +3,13 @@ package com.project.bridgebackend.Model.Entity;
 import com.project.bridgebackend.Model.Entity.enumeration.Gender;
 import com.project.bridgebackend.Model.Entity.enumeration.Ruolo;
 import com.project.bridgebackend.Model.Entity.enumeration.TitoloDiStudio;
-import jakarta.persistence.Entity;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.*;
 import lombok.Data;
+import lombok.ToString;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 
 /**
@@ -20,9 +21,12 @@ import java.time.LocalDate;
 @Data
 public class Rifugiato extends Utente {
 
-    @ManyToOne
-    @JoinColumn(name = "alloggio_id", nullable = true) // nullable=true se la relazione è opzionale
-    private Alloggio alloggio;
+    @ManyToMany()
+    @JoinTable(
+            joinColumns = @JoinColumn(name = "rifugiato_email"), // Colonna che fa riferimento alla tabella rifugiato
+            inverseJoinColumns = @JoinColumn(name = "alloggio_id") // Colonna che fa riferimento alla tabella alloggio
+    )
+    private List<Alloggio> alloggi = new ArrayList<>();
     /**
      * Costruttore con tutti i campi dell'utente.
      * @param email
@@ -55,9 +59,20 @@ public class Rifugiato extends Utente {
                 dataNascita, titoloDiStudio, role,
                 gender, nazionalita, password);
     }
+
+    @Override
+    public String toString() {
+        return "Rifugiato{" +
+                "alloggi=" + alloggi +
+                ", email='" + email + '\'' +
+                '}';
+    }
+
     /**
      * costruttore vuoto.
      */
     public Rifugiato() {
     }
+
+
 }

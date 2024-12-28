@@ -4,6 +4,7 @@ import com.project.bridgebackend.Model.Entity.enumeration.Servizi;
 import jakarta.persistence.*;
 import lombok.Data;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 /**
  * @author: Mario Zurolo.
@@ -63,9 +64,8 @@ public class Alloggio implements Serializable {
      * Lista dei rifugiati che sono stati candidati per l'alloggio.
      * La lista può contenere uno o più rifugiati.
      */
-    @Column()
-    @OneToMany(mappedBy = "alloggio", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Rifugiato> listaCandidati;
+    @ManyToMany()
+    private List<Rifugiato> listaCandidati = new ArrayList<>();
 
     /**
      * Servizi offerti dall'alloggio, rappresentati tramite un tipo enumerato.
@@ -103,11 +103,37 @@ public class Alloggio implements Serializable {
     private Indirizzo indirizzo;
 
     /**
+     * Riferimento al rifugiato assegnato a questo alloggio.
+     * La chiave di riferimento è l'email del rifugiato.
+     * Può essere null, poiché l'alloggio potrebbe non essere assegnato.
+     */
+    @JoinColumn(name = "rifugiato_assegnato", referencedColumnName = "email", nullable = true)
+    @ManyToOne
+    private Rifugiato assegnatoA;
+
+    /**
      * Costruttore predefinito (senza argomenti) per inizializzare,
      * un oggetto Alloggio.
      * Questo costruttore viene utilizzato da JPA durante il caricamento,
      * dell'entità dal database.
      */
     public Alloggio() {
+    }
+
+    @Override
+    public String toString() {
+        return "Alloggio{" +
+                "id=" + id +
+                ", metratura=" + metratura +
+                ", maxPersone=" + maxPersone +
+                ", descrizione='" + descrizione + '\'' +
+                ", proprietario=" + proprietario +
+                ", listaCandidati=" + listaCandidati +
+                ", servizi=" + servizi +
+                ", foto=" + foto +
+                ", titolo='" + titolo + '\'' +
+                ", indirizzo=" + indirizzo +
+                ", assegnatoA=" + assegnatoA +
+                '}';
     }
 }

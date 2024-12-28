@@ -69,12 +69,12 @@ const CreaAlloggio = () => {
             nuoviErrori.titolo = "Il titolo deve essere tra 3 e 100 caratteri.";
         }
 
-        if (!descrizione || descrizione.length < 1 || descrizione.length > 1000) {
-            nuoviErrori.descrizione = "La descrizione deve essere tra 1 e 1000 caratteri.";
+        if (!descrizione || descrizione.length < 1 || descrizione.length > 400) {
+            nuoviErrori.descrizione = "La descrizione deve essere tra 1 e 400 caratteri.";
         }
 
-        if (maxPersone < 1 || maxPersone > 100) {
-            nuoviErrori.maxPersone = "Il numero massimo di persone deve essere tra 1 e 100.";
+        if (maxPersone < 1 || maxPersone > 99) {
+            nuoviErrori.maxPersone = "Il numero massimo di persone deve essere tra 1 e 99.";
         }
 
         if (!/^[0-9]+$/.test(metratura)) {
@@ -85,16 +85,16 @@ const CreaAlloggio = () => {
             nuoviErrori.servizi = "Devi selezionare un servizio.";
         }
 
-        if (!indirizzo.via || indirizzo.via.length < 2) {
-            nuoviErrori.via = "La via deve avere almeno 2 caratteri.";
+        if (!indirizzo.via || indirizzo.via.length < 2 || indirizzo.via > 51) {
+            nuoviErrori.via = "La via deve avere almeno 2 caratteri e massimo 50.";
         }
 
         if (!/^[0-9]+$/.test(indirizzo.numCivico)) {
             nuoviErrori.numCivico = "Il numero civico deve essere un numero valido.";
         }
 
-        if (!indirizzo.citta || indirizzo.citta.length < 2) {
-            nuoviErrori.citta = "La città deve avere almeno 2 caratteri.";
+        if (!indirizzo.citta || indirizzo.citta.length < 2 || indirizzo.citta.length >51) {
+            nuoviErrori.citta = "La città deve avere almeno 2 caratteri e massimo 50.";
         }
 
         if (!/^[0-9]{5}$/.test(indirizzo.cap)) {
@@ -102,7 +102,7 @@ const CreaAlloggio = () => {
         }
 
         if (!indirizzo.provincia || indirizzo.provincia.length < 2) {
-            nuoviErrori.provincia = "La provincia deve avere almeno 2 caratteri.";
+            nuoviErrori.provincia = "La provincia deve avere 2 caratteri.";
         }
 
         if (fotos.length === 0) {
@@ -117,7 +117,7 @@ const CreaAlloggio = () => {
     useEffect(() => {
         const ruoloUtente = localStorage.getItem('ruolo'); // Recupera il ruolo dal localStorage
 
-        if (ruoloUtente === 'Volontario') {
+        if (ruoloUtente === 'VOLONTARIO') {
             setVolontario(true); // Imposta che l'utente è un volontario
         }
     }, []);

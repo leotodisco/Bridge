@@ -8,51 +8,48 @@ const MostraAlloggi = () => {
     const [error, setError] = useState(null);
     const [userImages, setUserImages] = useState({}); // Stato per le immagini degli alloggi
     const navigate = useNavigate();
-    const nav = useNavigate();
 
     const handleInfoClick = (titolo) => {
         navigate(`/alloggi/SingoloAlloggio/${titolo}`);
     };
 
+    const handleGoToCreaAlloggi = () => {
+        navigate('/crea-Alloggio');
+    };
+
     const fetchAlloggi = async () => {
         try {
-
             const email = localStorage.getItem('email');
             const token = localStorage.getItem('authToken');
 
             if (!email || !token) {
                 alert("Non sei autenticato. Effettua il login.");
-                nav('/login');
+                navigate('/login');
                 return;
             }
 
-            const response = await
-                fetch("http://localhost:8080/alloggi/mostra", {
-                    method: 'GET',
-                    headers: {
-                        'Authorization': `Bearer ${token}`,
-                        'Content-Type': 'application/json',
-                    },
-                });
+            const response = await fetch("http://localhost:8080/alloggi/mostra", {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json',
+                },
+            });
 
             if (!response.ok) {
                 console.error("Errore HTTP durante il fetch degli alloggi:", response.status);
                 throw new Error(`Errore HTTP: ${response.status}`);
             }
             const data = await response.json();
-            console.log("Dati ricevuti dagli alloggi:", data);
-
             setAlloggi(data);
 
             const alloggioImagesData = {};
             for (const alloggio of data) {
-                console.log(`Recupero immagine per l'alloggio ID: ${alloggio.id}`);
                 const email = alloggio.proprietario.email;
                 try {
-                    // check su token:
                     if (!token) {
                         alert("Non sei autenticato. Effettua il login.");
-                        nav('/login');
+                        navigate('/login');
                         return;
                     }
 
@@ -66,20 +63,17 @@ const MostraAlloggi = () => {
 
                     if (imgResponse.ok) {
                         const imgBase64 = await imgResponse.text();
-                        console.log(`Immagine base64 ricevuta per l'alloggio ID ${alloggio.id}:`, imgBase64);
                         alloggioImagesData[email] = imgBase64;
                     } else {
-                        console.warn(`Immagine non trovata per l'alloggio ID ${alloggio.id}, utilizzo fallback.`);
                         alloggioImagesData[email] = "https://via.placeholder.com/150/cccccc/000000?text=No+Image";
                     }
                 } catch (error) {
-                    console.error(`Errore durante il recupero dell'immagine per l'alloggio ID ${alloggio.id}:`, error);
+                    console.log(error);
                     alloggioImagesData[alloggio.id] = "https://via.placeholder.com/150/cccccc/000000?text=No+Image";
                 }
             }
             setUserImages(alloggioImagesData);
         } catch (error) {
-            console.error("Errore generale durante il fetch degli alloggi:", error);
             setError(error.message);
         } finally {
             setLoading(false);
@@ -96,7 +90,7 @@ const MostraAlloggi = () => {
     return (
         <div>
             <h1>Tutti gli Alloggi</h1>
-            {error && <p>Errore durante il caricamento: {error}</p>}
+            <button onClick={handleGoToCreaAlloggi}>crea</button>
             {loading ? (
                 <p>Caricamento in corso...</p>
             ) : alloggi.length > 0 ? (
@@ -105,7 +99,6 @@ const MostraAlloggi = () => {
                         const alloggioImage = userImages[alloggio.proprietario.email]
                             ? `data:image/jpeg;base64,${userImages[alloggio.proprietario.email]}`
                             : "https://via.placeholder.com/150/cccccc/000000?text=No+Image";
-                        console.log("Immagine per l'alloggio:", alloggioImage);
                         return (
                             <Card
                                 key={alloggio.id}
