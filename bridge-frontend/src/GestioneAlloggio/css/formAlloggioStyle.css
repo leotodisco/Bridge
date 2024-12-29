@@ -1,12 +1,12 @@
-/* Corpo principale */
+/* Causa problemi
 body {
     display: flex;
     align-items: center;
     justify-content: center;
-    height: 100vh; /* Altezza del viewport */
+    height: 100vh;
     margin: 0;
     background: #f4f4f9;
-}
+}*/
 
 /* Contenitore principale del form */
 .formContainerAlloggio {
