@@ -195,122 +195,124 @@ const CreaAlloggio = () => {
     };
 
     return (
-        <form className="formContainer" onSubmit={handleSubmit}>
-            <h2>Crea un nuovo alloggio</h2>
+        <div className= "form-generale">
+            <form className="formContainer" onSubmit={handleSubmit}>
+                <h2>Crea un nuovo alloggio</h2>
 
-            <div className="formField">
-                <input
-                    type="text"
-                    placeholder="Titolo alloggio"
-                    value={titolo}
-                    onChange={aggiornaCampo(setTitolo)}
-                />
-                {errori.titolo && <span className="errore">{errori.titolo}</span>}
-            </div>
+                <div className="formField">
+                    <input
+                        type="text"
+                        placeholder="Titolo alloggio"
+                        value={titolo}
+                        onChange={aggiornaCampo(setTitolo)}
+                    />
+                    {errori.titolo && <span className="errore">{errori.titolo}</span>}
+                </div>
 
-            <div className="formField">
-                <textarea
-                    placeholder="Descrizione"
-                    value={descrizione}
-                    onChange={aggiornaCampo(setDescrizione)}
-                />
-                {errori.descrizione && <span className="errore">{errori.descrizione}</span>}
-            </div>
+                <div className="formField">
+                    <textarea
+                        placeholder="Descrizione"
+                        value={descrizione}
+                        onChange={aggiornaCampo(setDescrizione)}
+                    />
+                    {errori.descrizione && <span className="errore">{errori.descrizione}</span>}
+                </div>
 
-            <div className="formField">
-                <select value={servizi} onChange={aggiornaCampo(setServizi)}>
-                    <option value="" disabled>Seleziona un servizio</option>
-                    {Object.values(Servizi).map((servizio) => (
-                        <option key={servizio} value={servizio}>{servizio}</option>
-                    ))}
-                </select>
-                {errori.servizi && <span className="errore">{errori.servizi}</span>}
-            </div>
+                <div className="formField">
+                    <select value={servizi} onChange={aggiornaCampo(setServizi)}>
+                        <option value="" disabled>Seleziona un servizio</option>
+                        {Object.values(Servizi).map((servizio) => (
+                            <option key={servizio} value={servizio}>{servizio}</option>
+                        ))}
+                    </select>
+                    {errori.servizi && <span className="errore">{errori.servizi}</span>}
+                </div>
 
-            <div className="formField">
-                <input
-                    type="number"
-                    placeholder="Max persone"
-                    value={maxPersone}
-                    onChange={aggiornaCampo(setMaxPersone)}
-                />
-                {errori.maxPersone && <span className="errore">{errori.maxPersone}</span>}
-            </div>
+                <div className="formField">
+                    <input
+                        type="number"
+                        placeholder="Max persone"
+                        value={maxPersone}
+                        onChange={aggiornaCampo(setMaxPersone)}
+                    />
+                    {errori.maxPersone && <span className="errore">{errori.maxPersone}</span>}
+                </div>
 
-            <div className="formField">
-                <input
-                    type="number"
-                    placeholder="Metratura"
-                    value={metratura}
-                    onChange={aggiornaCampo(setMetratura)}
-                />
-                {errori.metratura && <span className="errore">{errori.metratura}</span>}
-            </div>
+                <div className="formField">
+                    <input
+                        type="number"
+                        placeholder="Metratura"
+                        value={metratura}
+                        onChange={aggiornaCampo(setMetratura)}
+                    />
+                    {errori.metratura && <span className="errore">{errori.metratura}</span>}
+                </div>
 
-            <h3>Indirizzo</h3>
+                <h3>Indirizzo</h3>
 
-            <div className="formField">
-                <input
-                    type="text"
-                    placeholder="Via"
-                    value={indirizzo.via}
-                    onChange={aggiornaIndirizzo("via")}
-                />
-                {errori.via && <span className="errore">{errori.via}</span>}
-            </div>
+                <div className="formField">
+                    <input
+                        type="text"
+                        placeholder="Via"
+                        value={indirizzo.via}
+                        onChange={aggiornaIndirizzo("via")}
+                    />
+                    {errori.via && <span className="errore">{errori.via}</span>}
+                </div>
 
-            <div className="formField">
-                <input
-                    type="text"
-                    placeholder="Numero Civico"
-                    value={indirizzo.numCivico}
-                    onChange={aggiornaIndirizzo("numCivico")}
-                />
-                {errori.numCivico && <span className="errore">{errori.numCivico}</span>}
-            </div>
+                <div className="formField">
+                    <input
+                        type="text"
+                        placeholder="Numero Civico"
+                        value={indirizzo.numCivico}
+                        onChange={aggiornaIndirizzo("numCivico")}
+                    />
+                    {errori.numCivico && <span className="errore">{errori.numCivico}</span>}
+                </div>
 
-            <div className="formField">
-                <input
-                    type="text"
-                    placeholder="Città"
-                    value={indirizzo.citta}
-                    onChange={aggiornaIndirizzo("citta")}
-                />
-                {errori.citta && <span className="errore">{errori.citta}</span>}
-            </div>
+                <div className="formField">
+                    <input
+                        type="text"
+                        placeholder="Città"
+                        value={indirizzo.citta}
+                        onChange={aggiornaIndirizzo("citta")}
+                    />
+                    {errori.citta && <span className="errore">{errori.citta}</span>}
+                </div>
 
-            <div className="formField">
-                <input
-                    type="text"
-                    placeholder="CAP"
-                    value={indirizzo.cap}
-                    onChange={aggiornaIndirizzo("cap")}
-                />
-                {errori.cap && <span className="errore">{errori.cap}</span>}
-            </div>
+                <div className="formField">
+                    <input
+                        type="text"
+                        placeholder="CAP"
+                        value={indirizzo.cap}
+                        onChange={aggiornaIndirizzo("cap")}
+                    />
+                    {errori.cap && <span className="errore">{errori.cap}</span>}
+                </div>
 
-            <div className="formField">
-                <input
-                    type="text"
-                    placeholder="Provincia"
-                    value={indirizzo.provincia}
-                    onChange={aggiornaIndirizzo("provincia")}
-                />
-                {errori.provincia && <span className="errore">{errori.provincia}</span>}
-            </div>
+                <div className="formField">
+                    <input
+                        type="text"
+                        placeholder="Provincia"
+                        value={indirizzo.provincia}
+                        onChange={aggiornaIndirizzo("provincia")}
+                    />
+                    {errori.provincia && <span className="errore">{errori.provincia}</span>}
+                </div>
 
-            <div className="formField">
-                <input
-                    type="file"
-                    multiple
-                    accept="image/*"
-                    onChange={aggiornaFotoAlloggio}
-                />
-                {errori.fotos && <span className="errore">{errori.fotos}</span>}
-            </div>
+                <div className="formField">
+                    <input
+                        type="file"
+                        multiple
+                        accept="image/*"
+                        onChange={aggiornaFotoAlloggio}
+                    />
+                    {errori.fotos && <span className="errore">{errori.fotos}</span>}
+                </div>
 
-            <button type="submit">Crea Alloggio</button>
-        </form>
+                <button type="submit">Crea Alloggio</button>
+            </form>
+        </div>
     );
 };
 

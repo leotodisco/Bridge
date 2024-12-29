@@ -1,12 +1,15 @@
 import { useEffect, useState } from "react";
-import Card from "../../GestioneEvento/components/Card.jsx";
 import { useNavigate } from "react-router-dom";
+import Card from "../../GestioneEvento/components/Card.jsx";
+import "../css/crea-alloggio.css";
+
 
 const MostraAlloggi = () => {
     const [alloggi, setAlloggi] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-    const [userImages, setUserImages] = useState({}); // Stato per le immagini degli alloggi
+    const [userImages, setUserImages] = useState({});
+    const [isVolontario, setIsVolontario] = useState(false); // Stato per verificare se l'utente è volontario
     const navigate = useNavigate();
 
     const handleInfoClick = (titolo) => {
@@ -82,6 +85,12 @@ const MostraAlloggi = () => {
 
     useEffect(() => {
         fetchAlloggi();
+
+        // Controllo del ruolo utente
+        const ruolo = localStorage.getItem('ruolo');
+        if (ruolo === 'Volontario') {
+            setIsVolontario(true);
+        }
     }, []);
 
     if (loading) return <p>Caricamento in corso...</p>;
@@ -90,7 +99,12 @@ const MostraAlloggi = () => {
     return (
         <div>
             <h1>Tutti gli Alloggi</h1>
-            <button onClick={handleGoToCreaAlloggi}>crea</button>
+
+            {/* Mostra il pulsante "Crea" solo se l'utente è un volontario */}
+            {isVolontario && (
+                <button className = "crea-alloggio-button" onClick={handleGoToCreaAlloggi}>Crea</button>
+            )}
+
             {loading ? (
                 <p>Caricamento in corso...</p>
             ) : alloggi.length > 0 ? (
