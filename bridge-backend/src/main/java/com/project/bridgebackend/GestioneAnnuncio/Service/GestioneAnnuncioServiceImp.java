@@ -195,6 +195,11 @@ public class GestioneAnnuncioServiceImp implements GestioneAnnuncioService {
         lavoroDAO.deleteById(idAnnuncio);
     }
 
+    @Override
+    public List<Lavoro> getLavoroByTipoContratto(TipoContratto tipo) {
+        return lavoroDAO.findByTipoContratto(tipo);
+    }
+
     //      **Implementazioni dei metodi per Consulenza**
 
     /**

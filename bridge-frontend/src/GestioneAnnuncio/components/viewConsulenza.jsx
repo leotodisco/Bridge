@@ -3,6 +3,7 @@ import '../css/ConsulenzeList.css';
 import '../css/PopUpForm.css';
 import Card from "../../GestioneEvento/components/Card.jsx";
 import "../../GestioneEvento/css/card.css";
+import "../css/filterBar.css";
 import ConsulenzaView from "./ConsulenzaRetrive.jsx";
 import FormConsulenza from "./formConsulenza.jsx";
 import {useNavigate} from "react-router-dom";
@@ -32,6 +33,7 @@ const AllConsulenzaView = () => {
     const [userImages, setUserImages] = useState({}); // Stato per le immagini dei profili
     const [tipoFiltro, setTipoFiltro] = useState("");
     const nav = useNavigate();
+    const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
     // Funzione per ottenere tutte le consulenze
     const fetchConsulenze = async (tipo = "") => {
@@ -128,11 +130,15 @@ const AllConsulenzaView = () => {
         }
     };
 
-    // Verifica se l'utente è loggato come FIGURASPECIALIZZA
+    const toggleDropdown = () => {
+        setIsDropdownOpen(!isDropdownOpen); // Apre o chiude il dropdown
+    };
+
     const handleFiltroChange = (event) => {
         const tipo = event.target.value;
         setTipoFiltro(tipo);
         fetchConsulenze(tipo); // Filtra i risultati
+        setIsDropdownOpen(false); // Chiude il menu a tendina
     };
 
     // Funzione per ottenere le consulenze di un proprietario specifico
@@ -152,6 +158,15 @@ const AllConsulenzaView = () => {
         return <p>Errore nel caricamento della consulenza: {error}</p>;
     }
 
+    const filterOptions = {
+        "": "Tutte",
+        SANITARIA: "Sanitaria",
+        LEGALE: "Legale",
+        COMMERCIALE: "Commerciale",
+        PSICOLOGICA: "Psicologica",
+        TRADUTTORE: "Traduttore",
+    };
+
     return (
         <div>
             <h1>Tutte le Consulenze</h1>
@@ -160,17 +175,41 @@ const AllConsulenzaView = () => {
                 <button onClick={() => setPopupVisible(true)} className="openPopupButton">Crea una Consulenza</button>
             )}
 
-            {/* Barra dei filtri */}
-            <div className="filter-bar">
-                <label>Filtra per tipo:</label>
-                <select value={tipoFiltro} onChange={handleFiltroChange}>
-                    <option value="">Tutte</option>
-                    <option value="SANITARIA">Sanitaria</option>
-                    <option value="LEGALE">Legale</option>
-                    <option value="COMMERCIALE">Commerciale</option>
-                    <option value="PSICOLOGICA">Psicologica</option>
-                    <option value="TRADUTTORE">Traduttore</option>
-                </select>
+
+            <div className="filter-container">
+                <button className="filter-button" onClick={toggleDropdown}>
+                    {filterOptions[tipoFiltro] || "Filtra per tipo"} {/* Mostra nome leggibile */}
+                    <span className={`icon ${isDropdownOpen ? "open" : ""}`}>
+            <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="16"
+                height="16"
+                fill="currentColor"
+                viewBox="0 0 16 16"
+            >
+                <path
+                    fillRule="evenodd"
+                    d="M1 4l7 8 7-8H1z"
+                />
+            </svg>
+        </span>
+                </button>
+
+                {isDropdownOpen && (
+                    <div className={`filter-dropdown ${isDropdownOpen ? "open" : ""}`}>
+                        <ul>
+                            {/* Generazione dinamica della lista con nomi leggibili */}
+                            {Object.entries(filterOptions).map(([value, label]) => (
+                                <li
+                                    key={value}
+                                    onClick={() => handleFiltroChange({target: {value}})}
+                                >
+                                    {label}
+                                </li>
+                            ))}
+                        </ul>
+                    </div>
+                )}
             </div>
 
             {consulenze.length > 0 ? (
@@ -220,7 +259,7 @@ const AllConsulenzaView = () => {
                 <div className="popupOverlay" onClick={(e) => e.target === e.currentTarget && closePopup()}>
                     <div className="popupContainer">
                         <button onClick={closePopup} className="closePopupButton">X</button>
-                        <FormConsulenza />
+                        <FormConsulenza/>
                     </div>
                 </div>
             )}

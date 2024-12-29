@@ -7,6 +7,7 @@ import com.project.bridgebackend.Model.Entity.Indirizzo;
 import com.project.bridgebackend.Model.Entity.Lavoro;
 import com.project.bridgebackend.Model.Entity.Utente;
 import com.project.bridgebackend.Model.Entity.enumeration.TipoConsulenza;
+import com.project.bridgebackend.Model.Entity.enumeration.TipoContratto;
 
 import java.util.HashMap;
 import java.util.List;
@@ -96,6 +97,14 @@ public interface GestioneAnnuncioService {
      *
      */
     List<Consulenza> getConsulenzeByTipo(TipoConsulenza tipo);
+
+    /**
+     * Funzione per la ricerca di un determinato lavoro,
+     * in base alla tipologia di contratto.
+     * @param tipo
+     *
+     */
+    List<Lavoro> getLavoroByTipoContratto(TipoContratto tipo);
 
     /**
      * Inserisce un nuovo annuncio di lavoro nel database.

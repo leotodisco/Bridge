@@ -23,12 +23,20 @@ const AllLavoroView = () => {
     const [error, setError] = useState(null); // Stato di errore
     const [selectedLavoroId, setSelectedLavoroId] = useState(null); // ID annuncio selezionato
     const nav = useNavigate();
+    const [tipoFiltro, setTipoFiltro] = useState("");
+    const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+
 
     // Funzione per recuperare gli annunci di lavoro
-    const fetchLavori = async () => {
+    const fetchLavori = async (tipo = "") => {
+        setLoading(true);
         try {
             const email = localStorage.getItem('email');
             const token = localStorage.getItem('authToken');
+
+            const url = tipo
+                ? `http://localhost:8080/api/annunci/view_lavori/filter?tipo=${tipo}`
+                : `http://localhost:8080/api/annunci/view_lavori`;
 
             if (!email || !token) {
                 alert("Non sei autenticato. Effettua il login.");
@@ -37,7 +45,7 @@ const AllLavoroView = () => {
             }
 
             const response = await
-                fetch("http://localhost:8080/api/annunci/view_lavori", {
+                fetch(url, {
                     method: 'GET',
                     headers: {
                         'Authorization': `Bearer ${token}`,
@@ -55,6 +63,17 @@ const AllLavoroView = () => {
         } finally {
             setLoading(false);
         }
+    };
+
+    const toggleDropdown = () => {
+        setIsDropdownOpen(!isDropdownOpen); // Apre o chiude il dropdown
+    };
+
+    const handleFiltroChange = (event) => {
+        const tipo = event.target.value;
+        setTipoFiltro(tipo);
+        fetchLavori(tipo); // Filtra i risultati
+        setIsDropdownOpen(false);
     };
 
     // Effettua il fetch degli annunci al primo rendering
@@ -75,9 +94,58 @@ const AllLavoroView = () => {
         return <p>Errore nel caricamento degli annunci: {error}</p>;
     }
 
+    const filterOptions = {
+        "": "Tutte",
+        FULL_TIME: "Full Time",
+        PART_TIME: "Part Time",
+        APPRENDISTATO: "Apprendistato",
+        INTERNSHIP: "Stage/Tirocinio",
+        PROGETTO: "Contratto a Progetto",
+        COLLABORAZIONE: "Collaborazione",
+        COOPERATIVA: "Cooperativa",
+        ALTRO: "Altro",
+    };
+
+
     return (
         <div>
             <h1>Tutti gli Annunci di Lavoro</h1>
+
+             <div className="filter-container">
+                <button className="filter-button" onClick={toggleDropdown}>
+                    {filterOptions[tipoFiltro] || "Filtra per tipo"} {/* Mostra nome leggibile */}
+                    <span className={`icon ${isDropdownOpen ? "open" : ""}`}>
+            <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="16"
+                height="16"
+                fill="currentColor"
+                viewBox="0 0 16 16"
+            >
+                <path
+                    fillRule="evenodd"
+                    d="M1 4l7 8 7-8H1z"
+                />
+            </svg>
+        </span>
+                </button>
+
+                {isDropdownOpen && (
+                    <div className={`filter-dropdown ${isDropdownOpen ? "open" : ""}`}>
+                        <ul>
+                            {/* Generazione dinamica della lista con nomi leggibili */}
+                            {Object.entries(filterOptions).map(([value, label]) => (
+                                <li
+                                    key={value}
+                                    onClick={() => handleFiltroChange({ target: { value } })}
+                                >
+                                    {label}
+                                </li>
+                            ))}
+                        </ul>
+                    </div>
+                )}
+            </div>
             {lavori.length > 0 ? (
                 <div className="cards-container">
                     {lavori.map((lavoro) => (

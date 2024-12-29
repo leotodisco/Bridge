@@ -1,0 +1,166 @@
+/* Container principale */
+.filter-container {
+    position: relative;
+    display: inline-block;
+}
+
+/* Bottone per aprire i filtri */
+.filter-button {
+    padding: 10px 20px;
+    font-size: 16px;
+    font-weight: bold;
+    color: #333;
+    background-color: #f9f9f9;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.filter-button:hover {
+    background-color: #f0f8ff;
+    border-color: #00BF62;
+    box-shadow: 0 0 8px rgba(0, 123, 255, 0.6);
+}
+
+/* Menu dropdown (inizialmente nascosto e correttamente posizionato) */
+.filter-dropdown {
+    position: absolute;
+    top: calc(100% + 10px); /* Posizionato sotto il pulsante */
+    left: 50%; /* Centra il menu orizzontalmente */
+    transform: translateX(-50%); /* Compensa lo spostamento per centrarlo */
+    width: auto; /* Larghezza dinamica basata sul contenuto */
+    background: #fff;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+    overflow: hidden;
+    opacity: 0; /* Inizialmente nascosto */
+    pointer-events: none; /* Disabilita clic mentre è nascosto */
+    transition: opacity 0.3s ease, transform 0.3s ease; /* Transizioni fluide */
+}
+
+/* Quando il menu è visibile */
+.filter-dropdown.open {
+    opacity: 1; /* Rende visibile */
+    pointer-events: auto; /* Abilita clic */
+}
+/* Lista dei filtri */
+.filter-dropdown ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    text-align: center;
+}
+
+/* Stile degli elementi del menu */
+.filter-dropdown li {
+    display: flex;
+    align-items: center;
+    padding: 10px 15px; /* Spaziatura interna */
+    font-size: 14px;
+    color: #333;
+    cursor: pointer;
+    transition: background-color 0.2s ease, padding-left 0.3s ease; /* Transizioni fluide */
+}
+
+/* Hover sugli elementi */
+.filter-dropdown li:hover {
+    background-color: #004b66; /* Sfondo al passaggio del mouse */
+    color: #fff; /* Cambia il colore del testo */
+    padding-left: 30px; /* Sposta leggermente a destra l'elemento */
+    transform: scale(1.02); /* Leggera espansione */
+    font-weight: bold;
+}
+
+/* Animazione ingresso lista */
+.filter-dropdown ul {
+    list-style: none; /* Rimuove i bullet */
+    padding: 0;
+    margin: 0;
+    animation: fadeIn 0.3s ease-in-out; /* Animazione di ingresso */
+}
+
+/* Animazione apertura */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Stile per l'icona SVG */
+.icon {
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    margin-left: 10px;
+    transition: transform 0.3s ease; /* Transizione per la rotazione */
+    transform-origin: center;
+}
+
+/* Rotazione quando il menu è aperto */
+.icon.open {
+    transform: rotate(180deg); /* Ruota verso il basso */
+}
+
+@media (max-width: 768px) {
+    .filter-container {
+        width: 80%; /* Contenitore ridimensionato */
+    }
+
+    .filter-button {
+        width: auto; /* Larghezza adattiva */
+        padding: 10px 15px;
+        font-size: 15px; /* Dimensione media del font */
+    }
+
+    .filter-dropdown {
+        width: 250px; /* Larghezza moderata */
+    }
+
+    .filter-dropdown li {
+        padding: 10px 12px;
+        font-size: 14px;
+    }
+
+    .icon {
+        width: 14px; /* Icona di dimensioni medie */
+        height: 14px;
+    }
+}
+
+/* Stile per schermi grandi (oltre 768px) */
+@media (min-width: 769px) {
+    .filter-container {
+        width: 50%; /* Contenitore centrato e ridimensionato */
+        margin: 0 auto;
+    }
+
+    .filter-button {
+        width: auto; /* Bottone con larghezza dinamica */
+        padding: 12px 20px;
+        font-size: 16px;
+    }
+
+    .filter-dropdown {
+        width: 300px; /* Menu con larghezza fissa */
+    }
+
+    .filter-dropdown li {
+        padding: 12px 15px;
+        font-size: 14px;
+    }
+
+    .icon {
+        width: 16px; /* Icona grande */
+        height: 16px;
+    }
+}
+

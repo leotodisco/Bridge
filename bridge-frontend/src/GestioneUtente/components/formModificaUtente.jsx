@@ -195,7 +195,7 @@ const ModificaUtente = ({ userData , setUserData, onSuccess  }) => {
 
         console.log(utenteDTO);
         try {
-            const token = localStorage.getItem("token");
+            const token = localStorage.getItem("authToken");
             if (!token) {
                 alert("Token non trovato. Effettua nuovamente il login.");
                 return;

@@ -1,7 +1,11 @@
 package com.project.bridgebackend.Model.dao;
 
+import com.project.bridgebackend.Model.Entity.Consulenza;
 import com.project.bridgebackend.Model.Entity.Lavoro;
+import com.project.bridgebackend.Model.Entity.enumeration.TipoConsulenza;
+import com.project.bridgebackend.Model.Entity.enumeration.TipoContratto;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 import com.project.bridgebackend.Model.Entity.Utente;
 import java.util.List;
@@ -30,4 +34,7 @@ public interface LavoroDAO extends JpaRepository<Lavoro, Long> {
      * vuota se non esistono lavori per il proprietario.
      */
     List<Lavoro> findByProprietario(Utente proprietario);
+
+    @Query("SELECT l FROM Lavoro l WHERE l.tipoContratto =:tipo")
+    List<Lavoro> findByTipoContratto(TipoContratto tipo);
 }

@@ -340,3 +340,54 @@ h3 {
 .sectionButtons button:focus {
     outline: none; /* Rimuove il bordo di focus predefinito */
 }
+
+.formRegistrazione {
+    max-height: 80vh; /* Imposta un'altezza massima relativa alla finestra */
+    overflow-y: auto; /* Aggiungi la barra di scorrimento verticale */
+    padding-right: 10px; /* Aggiungi spazio per evitare sovrapposizioni */
+    box-sizing: border-box; /* Per gestire padding e larghezza */
+}
+
+/* Scrollbar personalizzata */
+.popupContainer::-webkit-scrollbar {
+    width: 8px; /* Larghezza della scrollbar */
+}
+
+.popupContainer::-webkit-scrollbar-thumb {
+    background-color: #ccc; /* Colore della scrollbar */
+    border-radius: 4px; /* Arrotonda gli angoli della scrollbar */
+}
+
+.popupContainer::-webkit-scrollbar-thumb:hover {
+    background-color: #aaa; /* Colore al passaggio del mouse */
+}
+
+.popupContainer::-webkit-scrollbar-track {
+    background: transparent; /* Sfondo del binario della scrollbar */
+    margin-top: 8px;
+    margin-bottom: 8px;
+}
+
+/* Schermi tra 768px e 1024px */
+@media (min-width: 768px) and (max-width: 1400px) {
+    .formRegistrazione {
+        width: 500px;
+        height: 600px;
+    }
+}
+
+/* Schermi tra 480px e 768px */
+@media (min-width: 480px) and (max-width: 768px) {
+    .formRegistrazione {
+        width: 400px;
+        height: 500px;
+    }
+}
+
+/* Schermi sotto i 480px */
+@media (max-width: 480px) {
+    .formRegistrazione {
+        width: 300px;
+        height: 450px;
+    }
+}

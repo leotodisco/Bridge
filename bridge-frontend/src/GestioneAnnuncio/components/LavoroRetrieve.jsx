@@ -223,7 +223,7 @@ const LavoroView = ({ id, onClose }) => {
 
             alert("Annuncio eliminato con successo!");
             onClose(); // Chiudi il popup dopo l'eliminazione
-            fetchLavori(); // Aggiorna la lista degli annunci
+            fetchLavoro(); // Aggiorna la lista degli annunci
         } catch (err) {
             console.error("Errore durante l'eliminazione dell'annuncio:", err);
             alert(`Non è stato possibile eliminare l'annuncio. Dettagli: ${err.message}`);

@@ -3,6 +3,7 @@ package com.project.bridgebackend.GestioneAnnuncio.Controller;
 import com.project.bridgebackend.GestioneAnnuncio.Service.GestioneAnnuncioService;
 import com.project.bridgebackend.GestioneCorso.Controller.GestioneCorsoController;
 import com.project.bridgebackend.Model.Entity.*;
+import com.project.bridgebackend.Model.Entity.enumeration.TipoContratto;
 import com.project.bridgebackend.Model.dao.ConsulenzaDAO;
 import com.project.bridgebackend.Model.Entity.enumeration.TipoConsulenza;
 import com.project.bridgebackend.Model.dao.FiguraSpecializzataDAO;
@@ -524,6 +525,18 @@ public class GestioneAnnuncioController {
             consulenze = gestioneAnnuncioService.getAllConsulenze();
         }
         return ResponseEntity.ok(consulenze);
+    }
+
+    @GetMapping("/view_lavori/filter")
+    public ResponseEntity<List<Lavoro>> getLavoroByTipoContratto(
+            @RequestParam(required = false) TipoContratto tipo) {
+        List<Lavoro> lavori;
+        if (tipo != null) {
+            lavori = gestioneAnnuncioService.getLavoroByTipoContratto(tipo);
+        } else {
+            lavori = gestioneAnnuncioService.getAllLavori();
+        }
+        return ResponseEntity.ok(lavori);
     }
 
     /**

@@ -17,7 +17,7 @@ function LogoutButton({ onLogout }) {
             }
 
             const response = await
-                fetch('/authentication/logout', {
+                fetch('http://localhost:8080/authentication/logout', {
                     method: 'POST',
                     headers: {
                         'Authorization': `Bearer ${token}`,
