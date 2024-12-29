@@ -7,6 +7,7 @@ import { format } from "date-fns";
 import "../css/AllEventiStyle.css";
 import {useNavigate} from "react-router-dom";
 import CreaEvento from "./formEvento.jsx";
+import {toast} from "react-toastify";
 
 /*
  * @author Alessia De Filippo
@@ -45,7 +46,7 @@ const AllEventsView = () => {
             const token = localStorage.getItem('authToken');
 
             if (!email || !token) {
-                alert("Non sei autenticato. Effettua il login.");
+                toast.error("Non sei autenticato. Effettua il login.");
                 nav('/login');
                 return;
             }
@@ -82,10 +83,6 @@ const AllEventsView = () => {
     useEffect(() => {
         fetchEvents();
     }, []);
-
-    // Esempio di salvataggio del ruolo
-
-    console.log(localStorage.getItem('ruolo'));
 
     if (loading) {
         return <p>Caricamento in corso...</p>;

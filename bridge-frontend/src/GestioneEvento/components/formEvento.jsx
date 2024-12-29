@@ -2,6 +2,7 @@ import { useState } from "react";
 import '../../GestioneEvento/css/formEventoStyle.css';
 import { useNavigate } from "react-router-dom";
 import PropTypes from "prop-types";
+import {toast} from "react-toastify";
 
 
 // Oggetto contenente le lingue disponibili
@@ -40,12 +41,8 @@ const CreaEvento = ( {onClose} ) => {
 
     // Funzione per chiudere il popup o reindirizzare
     const handleClose = () => {
-        console.log("DEBUG: handleClose chiamato"); // Debug: verifica che handleClose venga chiamato
         if (onClose) {
-            console.log("DEBUG: onClose esiste, verrà chiamato"); // Debug: verifica che onClose sia definito
             onClose(); // Chiama la funzione di chiusura passata come prop
-        } else {
-            console.log("DEBUG: onClose non esiste!"); // Debug: onClose non è stato passato come prop
         }
     };
 
@@ -282,7 +279,7 @@ const CreaEvento = ( {onClose} ) => {
         console.log("Validazione campi: ", isNomeValido, isDataValida, isOraValida, isLinguaParlataValida, isDescrizioneValida, isMaxPartecipantiValido, isLuogoValido);
 
         if (!emailUtenteLoggato) {
-            alert("Sessione scaduta. Esegui di nuovo il login.");
+            toast.error("Sessione scaduta. Esegui di nuovo il login.");
             return;
         }
 
@@ -309,7 +306,7 @@ const CreaEvento = ( {onClose} ) => {
             const token = localStorage.getItem("authToken");
 
             if (!token) {
-                alert("Non sei autenticato. Effettua il login.");
+                toast.error("Sessione scaduta. Esegui di nuovo il login.");
                 nav('/login');
                 return;
             }
@@ -351,11 +348,12 @@ const CreaEvento = ( {onClose} ) => {
 
             // Se la richiesta va a buon fine, stampa il risultato
             const result = await response.json();
+            toast.success("Evento creato con successo!");
             console.log("Evento creato con successo: ", result);
             handleClose(); // Chiude il popup dopo la creazione
         } catch (error) {
             console.error("Errore durante la creazione dell'evento: ", error);
-            alert("Errore durante la creazione dell'evento");
+            toast.error("Errore nella creazione dell'evento. Riprova.");
         }
     };
 
