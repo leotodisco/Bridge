@@ -243,4 +243,18 @@ public class GestioneEventoServiceImpl implements GestioneEventoService {
         return evento.getListaPartecipanti();
     }
 
+
+    /**
+     * Restituisce la lista di eventi a cui un rifugiato è iscritto.
+     *
+     * @param email Email del rifugiato.
+     * @return Lista di eventi a cui il rifugiato è iscritto.
+     */
+    public List<Evento> getEventiIscritti(String email) {
+        List<Evento> eventi = eventoDAO.findEventiByRifugiatoEmail(email);
+        if (eventi.isEmpty()) {
+            return Collections.emptyList();
+        }
+        return eventi;
+    }
 }

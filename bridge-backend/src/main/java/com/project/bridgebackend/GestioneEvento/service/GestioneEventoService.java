@@ -84,4 +84,12 @@ public interface GestioneEventoService {
      * @return lista di eventi random.
      */
     List<Evento> getRandomEvents();
+
+    /**
+     * Restituisce la lista degli eventi a cui un rifugiato è iscritto.
+     *
+     * @param email Email del rifugiato
+     * @return Lista di ID degli eventi a cui il rifugiato è iscritto
+     */
+    List<Evento> getEventiIscritti(String email);
 }

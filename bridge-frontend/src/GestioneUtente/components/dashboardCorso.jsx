@@ -10,6 +10,8 @@ const CorsiUtente = () =>{
     // Recupera l'email dell'utente loggato (esempio: salvata in localStorage)
     const email = localStorage.getItem('email'); // Assicurati che l'email sia salvata.
 
+    const ruolo = localStorage.getItem('ruolo');
+
     useEffect(() => {
         const token = localStorage.getItem('authToken'); // Sostituisci con il tuo token
 
@@ -17,26 +19,24 @@ const CorsiUtente = () =>{
             alert("Token non trovato. Effettua nuovamente il login.");
             return;
         }
-
-        // Recupera gli eventi dell'utente
-        fetch(`http://localhost:8080/api/corsi/listaCorsiUtente/${email}`, {
-            method: 'GET',
-            headers: {
-                'Authorization': `Bearer ${token}`,
-                'Content-Type': 'application/json',
-            },
-        })
-            .then((response) => {
-                if (!response.ok) {
-                    throw new Error('Errore nella risposta del server');
-                }
-                return response.json();
+            fetch(`http://localhost:8080/api/corsi/listaCorsiUtente/${email}`, {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json',
+                },
             })
-            .then((data) => setCorsi(data))
-            .catch((error) => {
-                setError('Errore durante il recupero dei corsi');
-                console.error(error);
-            });
+                .then((response) => {
+                    if (!response.ok) {
+                        throw new Error('Errore nella risposta del server');
+                    }
+                    return response.json();
+                })
+                .then((data) => setCorsi(data))
+                .catch((error) => {
+                    setError('Errore durante il recupero dei corsi');
+                    console.error(error);
+                });
     }, [email]);
 
     // Funzione per chiudere il popup
@@ -44,9 +44,9 @@ const CorsiUtente = () =>{
         setSelectedCorsoId(null); // Reset dell'evento selezionato, chiudendo così il popup
     };
     return (
-        <div >
+        <div>
             <div className="dashboardContainer">
-                <h1>I miei Corsi</h1>
+                    <h1>I miei Corsi</h1>
                 <hr/>
                 {error && <p>{error}</p>}
                 {corsi.length > 0 ? (
@@ -75,9 +75,11 @@ const CorsiUtente = () =>{
                         ))}
                     </div>
                 ) : (
-                    <p>Non hai eventi pubblicati.</p>
+                    <p>Non hai corsi pubblicati</p>
                 )}
             </div>
+
+
             {/* Mostra il popup se selectedEventId è impostato */}
             {selectedCorsoId && (
                 <CorsoView id={selectedCorsoId} onClose={closePopup}/>

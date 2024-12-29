@@ -223,6 +223,25 @@ public class GestioneCorsoController {
         }
     }
 
+    /**
+     * Endpoint per ottenere la lista di tutti i corsi pubblicati da un utente.
+     * @param email
+     * @return ResponseEntity con la lista di corsi di un certo utente o errore
+     */
+    @GetMapping("/listaCorsiUtentePartecipazioni/{email}")
+    public ResponseEntity<List<Corso>> findAllPartecipazioniUtente(@PathVariable final String email) {
+        try {
+            List<Corso> corsi = corsoDAO.findByProprietario_Email(email);
+            if (corsi == null || corsi.isEmpty()) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+            }
+            return ResponseEntity.ok(corsi);
+        } catch (Exception e) {
+            log.error("Errore durante la ricerca dei corsi", e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        }
+    }
+
     @GetMapping("/download/{id}")
     public void downloadPDF(@PathVariable Long id, HttpServletResponse response) {
         try {

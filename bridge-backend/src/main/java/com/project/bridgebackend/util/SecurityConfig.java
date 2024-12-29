@@ -91,6 +91,7 @@ public class SecurityConfig {
                 "/api/eventi/pubblicati",
                 "/api/eventi/{id}/iscrizione",
                 "/api/eventi/random",
+                "/api/eventi/eventiIscritti",
 
                 // ANNUNCI (CONSULENZA E LAVORO)
                 "/api/annunci/creaConsulenza",
