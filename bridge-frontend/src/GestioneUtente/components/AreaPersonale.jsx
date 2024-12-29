@@ -4,6 +4,7 @@ import "../css/AreaPersonaleStyle.css";
 import '@fortawesome/fontawesome-free/css/all.min.css';
 import ModificaPassword from "./formModificaPassword.jsx";
 import ModificaUtente from "./formModificaUtente.jsx";
+import {toast} from "react-toastify";
 
 // eslint-disable-next-line react/prop-types
 const AreaPersonale = ({ onLogout }) => {
@@ -27,7 +28,7 @@ const AreaPersonale = ({ onLogout }) => {
             const token = localStorage.getItem('authToken');
 
             if (!email || !token) {
-                alert("Non sei autenticato. Effettua il login.");
+                toast.error("Non sei autenticato. Effettua il login.");
                 nav('/login');
                 return;
             }
@@ -62,7 +63,7 @@ const AreaPersonale = ({ onLogout }) => {
             localStorage.setItem('ruolo', userData.ruoloUtente);
         } catch (error) {
             console.error("Errore durante il recupero dei dati personali o immagine:", error);
-            alert("Errore durante il caricamento dei dati.");
+            toast.error("Errore durante il caricamento dei dati.");
         }
     };
 
@@ -84,7 +85,7 @@ const AreaPersonale = ({ onLogout }) => {
             const token = localStorage.getItem('authToken');
 
             if (!email || !token) {
-                alert("Non sei autenticato. Effettua il login.");
+                toast.error("Non sei autenticato. Effettua il login.");
                 nav('/login');
                 return;
             }
@@ -146,7 +147,7 @@ const AreaPersonale = ({ onLogout }) => {
 
     const handleSubmitImage = async () => {
         if (!imageFile) {
-            alert("Per favore seleziona un'immagine.");
+            toast.warning("Per favore seleziona un'immagine.");
             return;
         }
 
@@ -155,7 +156,7 @@ const AreaPersonale = ({ onLogout }) => {
             const token = localStorage.getItem('authToken');  // Assicurati che il token sia nel localStorage
 
             if (!token) {
-                alert("Token non trovato. Effettua nuovamente il login.");
+                toast.error("Token non trovato. Effettua nuovamente il login.");
                 return;
             }
 
@@ -179,7 +180,7 @@ const AreaPersonale = ({ onLogout }) => {
             setShowImageForm(false);  // Nasconde il form dopo il successo
         } catch (error) {
             console.error("Errore durante l'aggiornamento della foto del profilo:", error);
-            alert("Errore durante l'aggiornamento della foto.");
+            toast.error("Errore durante l'aggiornamento della foto.");
         }
     };
 
@@ -279,7 +280,7 @@ const AreaPersonale = ({ onLogout }) => {
                                         <button>Candidature Lavoro</button>
                                         <button onClick={() => navigate('/view-my-alloggi/:email')}>Richieste di alloggio</button>
                                         <button onClick={() => navigate('/eventi-utente')}>Partecipazione Eventi</button>
-                                        <button>Richieste di Consulenza</button>
+                                        <button onClick={() => navigate('/consulenze-candidato')}>Richieste di Consulenza</button>
                                     </div>
                                 ) : null}
 

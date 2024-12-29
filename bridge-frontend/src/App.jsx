@@ -19,6 +19,7 @@ import ListaCorsiView from "./GestioneCorso/components/listaCorsiView.jsx";
 import AreaPersonale from "./GestioneUtente/components/AreaPersonale.jsx";
 import AboutUs from "./Components/AboutUs/AboutUs.jsx";
 import EventiUtente from "./GestioneUtente/components/dashboardEventi.jsx";
+import ConsulenzeCandidate from "./GestioneUtente/components/dashboardCandidatureConsulenza.jsx";
 import Alloggio from "./GestioneAlloggio/components/Alloggio.jsx";
 import Chatbot from "./GestioneChatbot/components/Chatbot.jsx";
 import LavoriUtente from "./GestioneUtente/components/dashboardLavoro.jsx";
@@ -73,6 +74,7 @@ function App() {
                         <Routes>
                             <Route path="/" element={<Homepage />} />
                             <Route path="/eventi-utente" element={<EventiUtente />} />
+                            <Route path="/consulenze-candidato" element={<ConsulenzeCandidate />} />
                             <Route path="/corsi-utente" element={<CorsiUtente />} />
                             <Route path="/consuleza-utente" element={<ConsulenzaUtente />} />
                             <Route path="/crea-lavoro" element={<CreaLavoro />} />

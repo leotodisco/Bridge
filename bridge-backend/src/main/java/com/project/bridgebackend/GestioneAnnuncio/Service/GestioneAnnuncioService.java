@@ -83,11 +83,28 @@ public interface GestioneAnnuncioService {
 
     void eliminaConsulenza(long idConsulenza);
 
-    public void rimuoviInteresseConsulenza(final long idConsulenza, final String emailRifugiato);
+    void rimuoviInteresseConsulenza(final long idConsulenza, final String emailRifugiato);
 
-    public void accettaConsulenzaRifugiato(final long idConsulenza, final String emailRifugiato);
+    void accettaConsulenzaRifugiato(final long idConsulenza, final String emailRifugiato);
 
-        //      **Metodi per Lavoro**
+    List<Consulenza> getConsulenzeByCandidato(final Utente candidato);
+
+    /**
+     *Firma del metodo che notifica il volontario nel caso,
+     * in cui ci sia una nuova manifestazione di interesse per il suo annuncio.
+     * @param message messaggio che viene inviato al volontario.
+     * @param emailVolontario id del volontario da notificare.
+     */
+    void sendEmailVolontario(String message, String emailVolontario);
+
+    /**
+     *Firma del metodo che invia una email al Rifugiato.
+     * @param message messaggio che sarà mostrato nella email.
+     * @param emailRifugiato id del rifugiato a cui inviare l'email.
+     */
+    void sendEmailRifugiato(String message, String emailRifugiato);
+
+    //      **Metodi per Lavoro**
 
 
     /**

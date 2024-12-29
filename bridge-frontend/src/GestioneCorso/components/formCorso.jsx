@@ -3,6 +3,8 @@ import { useState } from "react";
 import { FaTimes } from 'react-icons/fa'; // Importa l'icona
 import { useNavigate } from 'react-router-dom'; // Importa useNavigate per la navigazione
 import "../../GestioneCorso/css/formCorsoStyle.css";
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const LINGUA = {
     ITALIANO: "ITALIANO",
@@ -109,7 +111,7 @@ const CreaCorso = ({ onClose }) => { // Accetta la prop onClose
             const token = localStorage.getItem('authToken');
 
             if (!token) {
-                alert("Non sei autenticato. Effettua il login.");
+                toast.wa("Non sei autenticato. Effettua il login.");
                 nav('/login');
                 return;
             }
@@ -134,14 +136,12 @@ const CreaCorso = ({ onClose }) => { // Accetta la prop onClose
             return pdfId;  // Restituire l'ID del PDF
         } catch (error) {
             console.error("Errore durante l'upload del PDF:", error);
-            alert(`Errore durante il caricamento del PDF: ${error.message}`);
+            toast.error(`Errore durante il caricamento del PDF: ${error.message}`);
             throw error;
         }
     };
 
-    const handleSubmit = async (event) => {
-        event.preventDefault();
-        //if (!validateForm()) return;
+    const handleSubmit = async () => {
 
         const isTitoloValid = validateTitolo();
         const isDescrizioneValid = validateDescrizione();
@@ -184,7 +184,7 @@ const CreaCorso = ({ onClose }) => { // Accetta la prop onClose
             console.log(localStorage.getItem("authToken"));
 
             if (!token) {
-                alert("Non sei autenticato. Effettua il login.");
+                toast.error("Non sei autenticato. Effettua il login.");
                 nav('/login');
                 return;
             }
@@ -213,10 +213,10 @@ const CreaCorso = ({ onClose }) => { // Accetta la prop onClose
             }
             const result = await response.json();
             console.log("Corso creato con successo:", result);  // Log del risultato
-            alert("Corso creato con successo!");
+            toast.info("Corso creato con successo!");
         } catch (error) {
             console.error("Errore durante la creazione del corso:", error);
-            alert(`Errore durante la creazione del corso: ${error.message}`);
+            toast.error(`Errore durante la creazione del corso: ${error.message}`);
         } finally {
             setLoading(false);
         }

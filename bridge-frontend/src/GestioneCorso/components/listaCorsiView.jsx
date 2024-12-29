@@ -6,6 +6,8 @@ import "../../GestioneEvento/css/card.css";
 import "../../GestioneCorso/css/listaCorsiStyle.css";
 import {FaPlus} from "react-icons/fa";
 import {useNavigate} from "react-router-dom";
+import {toast} from "react-toastify";
+
 
 const ListaCorsiView = () => {
     const [corsi, setCorsi] = useState([]);
@@ -21,7 +23,7 @@ const ListaCorsiView = () => {
             const token = localStorage.getItem('authToken');
 
             if (!token) {
-                alert("Non sei autenticato. Effettua il login.");
+                toast.error("Non sei autenticato. Effettua il login.");
                 nav('/login');
                 return;
             }

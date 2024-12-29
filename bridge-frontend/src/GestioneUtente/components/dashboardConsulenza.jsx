@@ -87,7 +87,7 @@ const ConsulenzaUtente = () => {
         const token = localStorage.getItem('authToken');
 
         if (!token) {
-            alert("Token non trovato. Effettua nuovamente il login.");
+            toast.error("Token non trovato. Effettua nuovamente il login.");
             return;
         }
 
@@ -210,7 +210,7 @@ const ConsulenzaUtente = () => {
     const handleShowCandidateDetails = async (candidateEmail) => {
         try {
             if (!email || !token) {
-                alert("Non sei autenticato. Effettua il login.");
+                toast.error("Non sei autenticato. Effettua il login.");
                 return;
             }
 
@@ -244,33 +244,9 @@ const ConsulenzaUtente = () => {
             //localStorage.setItem('ruolo', userData.ruoloUtente);
         } catch (error) {
             console.error("Errore durante il recupero dei dati personali o immagine:", error);
-            alert("Errore durante il caricamento dei dati.");
+            toast.error("Errore durante il caricamento dei dati.");
         }
     };
-
-    // const refreshConsulenzaData = (email) => {
-    //     fetch(`http://localhost:8080/api/annunci/pubblicati?email=${email}`, {
-    //         method: 'GET',
-    //         headers: {
-    //             'Authorization': `Bearer ${token}`,
-    //             'Content-Type': 'application/json',
-    //         },
-    //     })
-    //         .then((response) => {
-    //             if (!response.ok) {
-    //                 throw new Error('Errore durante il recupero dei dati aggiornati');
-    //             }
-    //             return response.json();
-    //         })
-    //         .then((updatedConsulenza) => {
-    //             setConsulenza((prevConsulenza) =>
-    //                 prevConsulenza.map((cons) =>
-    //                     cons.id === updatedConsulenza.id ? updatedConsulenza : cons
-    //                 )
-    //             );
-    //         })
-    //         .catch((error) => console.error('Errore durante l\'aggiornamento:', error));
-    // };
 
     const closeCandidateDetails = () => {
         setCandidateDetails(null);
@@ -316,7 +292,11 @@ const ConsulenzaUtente = () => {
                     })}
                 </div>
             ) : (
-                <p>Non hai ancora Consulenza pubblicati.</p>
+                <div>
+                    <p>Non hai ancora Consulenza pubblicate.</p>
+                    <hr/>
+                    <p>Dai il tuo supporto caricando un annuncio</p>
+                </div>
             )}
             {/* Mostra il popup dei dettagli */}
             {isDetailPopupOpen && (

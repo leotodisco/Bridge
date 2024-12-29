@@ -4,11 +4,8 @@ import com.project.bridgebackend.GestioneAnnuncio.Service.GestioneAnnuncioServic
 import com.project.bridgebackend.GestioneCorso.Controller.GestioneCorsoController;
 import com.project.bridgebackend.Model.Entity.*;
 import com.project.bridgebackend.Model.Entity.enumeration.TipoContratto;
-import com.project.bridgebackend.Model.dao.ConsulenzaDAO;
+import com.project.bridgebackend.Model.dao.*;
 import com.project.bridgebackend.Model.Entity.enumeration.TipoConsulenza;
-import com.project.bridgebackend.Model.dao.FiguraSpecializzataDAO;
-import com.project.bridgebackend.Model.dao.IndirizzoDAO;
-import com.project.bridgebackend.Model.dao.VolontarioDAO;
 import com.project.bridgebackend.Model.dto.ConsulenzaDTO;
 import com.project.bridgebackend.Model.dto.LavoroDTO;
 import com.project.bridgebackend.util.JwtService;
@@ -62,6 +59,12 @@ public class GestioneAnnuncioController {
      */
     @Autowired
     private VolontarioDAO volontarioDAO;
+
+    /**
+     * DAO per accedere ai dati dei rifugiati.
+     */
+    @Autowired
+    private RifugiatoDAO rifugiatoDAO;
 
     /**
      * DAO per accedere ai dati degli indirizzi.
@@ -322,6 +325,8 @@ public class GestioneAnnuncioController {
 
         try {
             gestioneAnnuncioService.interesseConsulenza(idConsulenza, emailUtenteLoggato);
+            //invio l'email
+            gestioneAnnuncioService.sendEmailVolontario("Hai ricevuto una nuova candidatura", "geraldinemontella2@gmail.com");
             return ResponseEntity.ok("Interesse manifestato con successo");
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
@@ -510,6 +515,27 @@ public class GestioneAnnuncioController {
         consulenze.forEach(System.out::println);
         if (consulenze.isEmpty()) {
             System.out.println("Nessun evento trovato per questa figura specializzata");
+            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(consulenze, HttpStatus.OK);
+    }
+
+    @GetMapping("/candidature")
+    public ResponseEntity<List<Consulenza>> getConsulezeCandidate(
+            @RequestParam("email") final String email) {
+
+        // Recupera il volontario tramite email
+        Rifugiato candidato = rifugiatoDAO.findByEmail(email);
+        System.out.println("Rifugiato trovato: " + candidato);
+        if (candidato == null) {
+            System.out.println("Rifugiato non trovato");
+            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+        }
+
+        List<Consulenza> consulenze = gestioneAnnuncioService.getConsulenzeByCandidato(candidato);
+        consulenze.forEach(System.out::println);
+        if (consulenze.isEmpty()) {
+            System.out.println("Nessuna consulenza trovata in cui il rifugiato risulta candidato");
             return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
         }
         return new ResponseEntity<>(consulenze, HttpStatus.OK);
@@ -713,7 +739,10 @@ public class GestioneAnnuncioController {
             gestioneAnnuncioService.rimuoviInteresseConsulenza(idConsulenza,emailRifugiato);
 
             gestioneAnnuncioService.accettaConsulenzaRifugiato(idConsulenza, emailRifugiato);
-
+            //invia email al rifugiato per notificare che è stato selezionato
+            gestioneAnnuncioService.sendEmailRifugiato("La tua candidatura per la consulenza '"
+            + c.getTitolo() + "' è stata accettata\n"
+            + "verrai contattato per ulteriore supporto", "geraldinemontella2@gmail.com");
             return ResponseEntity.ok("Rifugiato " + emailRifugiato
                     + " rimosso tra i candidati della consulenza");
         } catch (IllegalArgumentException e) {
@@ -758,6 +787,9 @@ public class GestioneAnnuncioController {
 
             //metodo per rimuovere l'interesse di un rifugiato da una candidatura
             gestioneAnnuncioService.rimuoviInteresseConsulenza(idConsulenza,emailRifugiato);
+            gestioneAnnuncioService.sendEmailRifugiato("La tua candidatura per la consulenza '"
+                    + c.getTitolo() + "' è stata rifiutata.\n"
+                    + "Ci dispiace.", "geraldinemontella2@gmail.com");
 
             return ResponseEntity.ok("Rifugiato " + emailRifugiato
                     + " rimosso tra i candidati della consulenza");

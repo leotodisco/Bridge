@@ -1,5 +1,6 @@
 package com.project.bridgebackend.GestioneAnnuncio.Service;
 
+import com.project.bridgebackend.GestioneAlloggio.Service.AlloggioServiceImplementazione;
 import com.project.bridgebackend.Model.Entity.*;
 import com.project.bridgebackend.Model.Entity.enumeration.TipoConsulenza;
 import com.project.bridgebackend.Model.Entity.enumeration.TipoContratto;
@@ -8,7 +9,11 @@ import com.project.bridgebackend.Model.dao.IndirizzoDAO;
 import com.project.bridgebackend.Model.dao.LavoroDAO;
 import com.project.bridgebackend.Model.dao.RifugiatoDAO;
 import com.project.bridgebackend.util.Indirizzo.service.IndirizzoService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 import jakarta.validation.Valid;
 
@@ -55,6 +60,17 @@ public class GestioneAnnuncioServiceImp implements GestioneAnnuncioService {
      */
     @Autowired
     private IndirizzoService indirizzoService;
+
+    /**
+     * Bean per l'invio di email tramite JavaMailSender.
+     * Utilizzato per inviare email al rifugiato e,
+     * al volontario nel sistema.
+     */
+
+    @Autowired
+    private JavaMailSender mailSender;
+
+    private static final Logger logger = LoggerFactory.getLogger(AlloggioServiceImplementazione.class);
 
     // Implementazioni dei metodi per Consulenza
 
@@ -235,6 +251,64 @@ public class GestioneAnnuncioServiceImp implements GestioneAnnuncioService {
         return consulenzaDAO.findByProprietario(proprietario);
     }
 
+    /**
+     * Prelevare tutti gli annunci di una consulenza,
+     * per cui il rifugiato si è candidato.
+     *
+     * @param candidato l'utente candidato alle consulenze.
+     *
+     * @return le consulenze di cui l'utente risulta candidato.
+     */
+    @Override
+    public List<Consulenza> getConsulenzeByCandidato(final Utente candidato) {
+        return consulenzaDAO.findAllByRifugiatoEmail(candidato.getEmail());
+    }
+
+    /**
+     * Metodo asincrono che invia una email al volontario.
+     *
+     * @param messaggio il messaggio da inviare.
+     * @param emailVolontario l'email del destinatario.
+     */
+    @Override
+    public void sendEmailVolontario(final String messaggio, final String emailVolontario) {
+        logger.info("Invio email a: {}, con messaggio: {}", emailVolontario, messaggio);
+        try {
+            SimpleMailMessage message = new SimpleMailMessage();
+            message.setFrom("beehaveofficial@gmail.com");
+            message.setTo(emailVolontario);
+            message.setSubject("Notifica Candidatura Consulenza");
+            message.setText(messaggio);
+            mailSender.send(message);
+            logger.info("Email inviata con successo a: {}", emailVolontario);
+        } catch (Exception e) {
+            logger.error("Errore nell'invio dell'email a: {} - {}", emailVolontario, e.getMessage(), e);
+        }
+    }
+
+    /**
+     * Metodo che invia una email al rifugiato.
+     *
+     * @param messaggio il messaggio da inviare
+     * @param emailRifugiato l'email del rifugiato destinatario
+     */
+    @Override
+    public void sendEmailRifugiato(final String messaggio,
+                                   final String emailRifugiato) {
+
+        try {
+            SimpleMailMessage message = new SimpleMailMessage();
+            message.setFrom("beehaveofficial@gmail.com");
+            message.setTo(emailRifugiato);
+            message.setSubject("PROVA");
+            message.setText(messaggio);
+            mailSender.send(message);
+            System.out.println("email inviata");
+        } catch (Exception e) {
+            System.out.println("Errore nell invio dell'email a: " + emailRifugiato + e.getMessage());
+        }
+
+    }
     @Override
     public List<Consulenza> getConsulenzeByTipo(TipoConsulenza tipo) {
         return consulenzaDAO.findByTipo(tipo);

@@ -2,7 +2,8 @@ import { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import "../../GestioneCorso/css/corsoView.css"; // Import del file CSS
 import "../../GestioneCorso/css/formCorsoStyle.css";
-import {useNavigate} from "react-router-dom"; // Import del file CSS
+import {useNavigate} from "react-router-dom";
+import {toast} from "react-toastify"; // Import del file CSS
 
 const LINGUA = {
     ITALIANO: "ITALIANO",
@@ -54,7 +55,7 @@ const CorsoView = ({ id, onClose }) => {
             const token = localStorage.getItem('authToken');
 
             if (!token) {
-                alert("Non sei autenticato. Effettua il login.");
+                toast.error("Non sei autenticato. Effettua il login.");
                 nav('/login');
                 return;
             }
@@ -145,7 +146,7 @@ const CorsoView = ({ id, onClose }) => {
             const token = localStorage.getItem('authToken');
 
             if (!token) {
-                alert("Non sei autenticato. Effettua il login.");
+                toast.error("Non sei autenticato. Effettua il login.");
                 nav('/login');
                 return;
             }
@@ -166,7 +167,7 @@ const CorsoView = ({ id, onClose }) => {
             return await response.text();
         } catch (error) {
             console.error("Errore durante l'upload del PDF:", error);
-            alert(`Errore durante il caricamento del PDF: ${error.message}`);
+            toast.error(`Errore durante il caricamento del PDF: ${error.message}`);
             throw error;
         }
     };
@@ -203,7 +204,7 @@ const CorsoView = ({ id, onClose }) => {
             const updatedCorso = await response.json();
             setCorso(updatedCorso);
             setEditMode(false);
-            alert("Corso modificato con successo!");
+            toast.info("Corso modificato con successo!");
         } catch (error) {
             setError(error.message);
         }
@@ -216,7 +217,7 @@ const CorsoView = ({ id, onClose }) => {
             const token = localStorage.getItem('authToken');
 
             if (!token) {
-                alert("Non sei autenticato. Effettua il login.");
+                toast.error("Non sei autenticato. Effettua il login.");
                 nav('/login');
                 return;
             }
@@ -248,7 +249,7 @@ const CorsoView = ({ id, onClose }) => {
             window.URL.revokeObjectURL(url);
         } catch (error) {
             console.error("Errore durante il download del PDF:", error);
-            alert(`Errore durante il download del PDF: ${error.message}`);
+            toast.error(`Errore durante il download del PDF: ${error.message}`);
         }
     };
 

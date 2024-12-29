@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react';
 import Card from "../../GestioneEvento/components/Card.jsx";
 import EventView from "../../GestioneEvento/components/EventoRetrieveView.jsx";
+import {toast} from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css'; // Importa lo stile di default
 
 const EventiUtente = () => {
     const [eventi, setEventi] = useState([]);
@@ -16,7 +18,7 @@ const EventiUtente = () => {
         const token = localStorage.getItem('authToken'); // Sostituisci con il tuo token
 
         if (!token) {
-            alert("Token non trovato. Effettua nuovamente il login.");
+            toast.error("Token non trovato. Effettua nuovamente il login.");
             return;
         }
 

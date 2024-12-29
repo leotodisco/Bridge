@@ -1,10 +1,17 @@
-import { useState, useEffect } from "react";
+import {useEffect, useState} from "react";
 import PropTypes from "prop-types"; // Per validare le props
 import "../../GestioneEvento/css/eventoView.css";
-
-import { toast } from 'react-toastify';
+import {toast} from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css'; // Importa lo stile di default
 
+const giorniSettimana = ["Lunedi", "Martedi", "Mercoledi", "Giovedi", "Venerdi", "Sabato", "Domenica"];
+const Tipo = {
+    SANITARIA: "SANITARIA",
+    LEGALE: "LEGALE",
+    COMMERCIALE: "COMMERCIALE",
+    PSICOLOGICA: "PSICOLOGICA",
+    TRADUTTORE: "TRADUTTORE"
+};
 //pop up per chiedere conferma prima di eliminare
 const ConfirmDeletePopup = ({ onConfirm, onCancel }) => (
     <div className="popup-overlay">
@@ -21,6 +28,23 @@ const ConfirmDeletePopup = ({ onConfirm, onCancel }) => (
         </div>
     </div>
 );
+
+const parseOrariDisponibili = (orariStringa) => {
+    if (!orariStringa) return []; // Restituisce un array vuoto se la stringa è vuota o non definita
+
+    try {
+        const orariArray = orariStringa.split(',').map((orario) => {
+            const [giorno, rangeOrario] = orario.trim().split(' ');
+            if (!giorno || !rangeOrario) return null; // Gestione di errori in input malformati
+            const [start, end] = rangeOrario.split('-');
+            return { giorno, start, end };
+        });
+        return orariArray.filter(Boolean); // Rimuove eventuali valori nulli
+    } catch (error) {
+        console.error("Errore nel parsing degli orari disponibili:", error);
+        return [];
+    }
+};
 
 const ConsulenzaView = ({ id, onClose, onUpdate }) => {
     const [consulenzaData, setConsulenzaData] = useState(null);
@@ -40,7 +64,7 @@ const ConsulenzaView = ({ id, onClose, onUpdate }) => {
         num_civico: "",
         provincia: ""
     });
-    const [orariDisponibili, setOrariDisponibili] = useState("");
+    const [orariDisponibili, setOrariDisponibili] = useState([]);
     const [numero, setNumero] = useState("");
     const [tipo, setTipo] = useState("");
 
@@ -76,7 +100,12 @@ const ConsulenzaView = ({ id, onClose, onUpdate }) => {
                 num_civico: data.indirizzo.numCivico,
                 provincia: data.indirizzo.provincia
             });
-            setOrariDisponibili(data.orariDisponibili);
+            // Parsing degli orari disponibili
+            const parsedOrariDisponibili = data.orariDisponibili
+                ? parseOrariDisponibili(data.orariDisponibili)
+                : []; // Se `orariDisponibili` è null o undefined, usa un array vuoto
+            setOrariDisponibili(parsedOrariDisponibili);
+
             setNumero(data.numero);
             setTipo(data.tipo);
 
@@ -205,18 +234,22 @@ const ConsulenzaView = ({ id, onClose, onUpdate }) => {
            ${consulenzaData.indirizzo.cap}`
         : "";
 
+    const rimuoviOrario = (index) => {
+        setOrariDisponibili(orariDisponibili.filter((_, i) => i !== index));
+    };
     // Funzione per modificare la consulenza
     const handleEdit = async () => {
+
         const aggiornamenti = {
             titolo,
             descrizione,
             indirizzo,
-            orariDisponibili,
+            orariDisponibili:salvaOrariDisponibili(),
             numero,
             tipo,
         };
         try {
-            const token = localStorage.getItem('token');
+            const token = localStorage.getItem('authToken');
             const response = await fetch(`http://localhost:8080/api/annunci/modifica_consulenza/${id}`, {
                 method: 'POST',
                 headers: {
@@ -245,6 +278,29 @@ const ConsulenzaView = ({ id, onClose, onUpdate }) => {
             console.error(err);
             toast.error("Non è stato possibile modificare la consulenza.");
         }
+    };
+
+    const salvaOrariDisponibili = () => {
+        return orariDisponibili
+            .map(orario => `${orario.giorno} ${orario.start}-${orario.end}`)
+            .join(", ")
+            .replace(/\s*,\s*/g, ',')
+            .trim();
+    };
+
+    const aggiornaOrario = (index, field, value) => {
+        setOrariDisponibili(prevOrari => {
+            const newOrari = [...prevOrari];
+            newOrari[index] = { ...newOrari[index], [field]: value };
+            return newOrari;
+        });
+    };
+
+    const aggiungiOrario = () => {
+        setOrariDisponibili(prevOrari => [
+            ...prevOrari,
+            { giorno: '', start: '', end: '' }
+        ]);
     };
 
 
@@ -433,11 +489,32 @@ const ConsulenzaView = ({ id, onClose, onUpdate }) => {
                         </div>
                         <div className="form-group">
                             <label>Orari Disponibili</label>
-                            <input
-                                type="text"
-                                value={orariDisponibili}
-                                onChange={(e) => setOrariDisponibili(e.target.value)}
-                            />
+                            {orariDisponibili.map((orario, index) => (
+                                <div key={index}>
+                                    <div className="inlineCityDetails">
+                                        <select value={orario.giorno || ""}
+                                                onChange={(e) => aggiornaOrario(index, "giorno", e.target.value)}>
+                                            <option value="">Seleziona Giorno</option>
+                                            {giorniSettimana.map(giorno => (
+                                                <option key={giorno} value={giorno}>{giorno}</option>
+                                            ))}
+                                        </select>
+                                        <input type="time" value={orario.start || ""}
+                                               onChange={(e) => aggiornaOrario(index, "start", e.target.value)}/>
+                                        <input type="time" value={orario.end || ""}
+                                               onChange={(e) => aggiornaOrario(index, "end", e.target.value)}/>
+                                    </div>
+
+                                    <button type="button" onClick={() => rimuoviOrario(index)}>Rimuovi</button>
+                                </div>
+                            ))}
+                            <button
+                                type="button"
+                                onClick={aggiungiOrario}
+                                disabled={orariDisponibili.some(orario => !orario.giorno || !orario.start || !orario.end)}
+                                className={orariDisponibili.some(orario => !orario.giorno || !orario.start || !orario.end) ? "buttonDisabled" : ""}>
+                                Aggiungi Orario
+                            </button>
                         </div>
                         <div className="form-group">
                             <label>Numero</label>
@@ -449,11 +526,16 @@ const ConsulenzaView = ({ id, onClose, onUpdate }) => {
                         </div>
                         <div className="form-group">
                             <label>Tipo</label>
-                            <input
-                                type="text"
+                            <select
                                 value={tipo}
                                 onChange={(e) => setTipo(e.target.value)}
-                            />
+                            >
+                                {Object.keys(Tipo).map((key) => (
+                                    <option key={key} value={Tipo[key]}>
+                                        {[Tipo[key]]}
+                                    </option>
+                                ))}
+                            </select>
                         </div>
                         <button onClick={handleEdit} className="save-button">
                             Salva Modifiche
@@ -470,7 +552,7 @@ const ConsulenzaView = ({ id, onClose, onUpdate }) => {
                                 num_civico: consulenzaData.indirizzo.numCivico,
                                 provincia: consulenzaData.indirizzo.provincia
                             });
-                            setOrariDisponibili(consulenzaData.orariDisponibili);
+                            setOrariDisponibili(parseOrariDisponibili(consulenzaData.orariDisponibili));
                             setNumero(consulenzaData.numero);
                             setTipo(consulenzaData.tipo);
                         }}
@@ -490,9 +572,9 @@ ConsulenzaView.propTypes = {
     onUpdate: PropTypes.func.isRequired, //mi serve per aggiornare la view con tutte le card
 };
 
-ConfirmDeletePopup.prototype={
-    onConfirm:PropTypes.func.isRequired,
-    onCancel: PropTypes.func.isRequired,
+ConfirmDeletePopup.prototype ={
+    onConfirm:PropTypes.func.isRequired, //funzione per confermare la cancellazione
+    onCancel: PropTypes.func.isRequired, //funzione per annullare la cancellazione
 };
 
 export default ConsulenzaView;

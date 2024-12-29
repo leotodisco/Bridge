@@ -1,5 +1,6 @@
 import {useEffect, useState} from "react";
 import PropTypes from "prop-types";
+import {toast} from "react-toastify";
 
 const TitolodiStudio = {
     ScuolaPrimaria: "Scuola Primaria",
@@ -14,6 +15,24 @@ const Genere = {
     Femmina: "Femmina",
     NonSpecificato: "Non Specificato"
 };
+
+const parseOrariDisponibili = (orariStringa) => {
+    if (!orariStringa) return []; // Restituisce un array vuoto se la stringa è vuota o non definita
+
+    try {
+        const orariArray = orariStringa.split(',').map((orario) => {
+            const [giorno, rangeOrario] = orario.trim().split(' ');
+            if (!giorno || !rangeOrario) return null; // Gestione di errori in input malformati
+            const [start, end] = rangeOrario.split('-');
+            return { giorno, start, end };
+        });
+        return orariArray.filter(Boolean); // Rimuove eventuali valori nulli
+    } catch (error) {
+        console.error("Errore nel parsing degli orari disponibili:", error);
+        return [];
+    }
+};
+
 
 const giorniSettimana = ["Lunedi", "Martedi", "Mercoledi", "Giovedi", "Venerdi", "Sabato", "Domenica"];
 
@@ -47,10 +66,16 @@ const ModificaUtente = ({ userData , setUserData, onSuccess  }) => {
         setGenere(userData?.genderUtente || "");
         setSkill(userData?.skillUtente || "");
         setLingue(userData?.lingueParlateUtente || "");
-        setOrariDisponibili(userData?.disponibilitaUtente || []);
         setDataDiNascita(userData?.dataNascitaUtente || "");
-    }, [userData]);
+        // Parsing degli orari disponibili
+        if (userData?.disponibilitaUtente) {
+            const parsedOrariDisponibili = userData.disponibilitaUtente
+                ? parseOrariDisponibili(userData.disponibilitaUtente)
+                : []; // Se `orariDisponibili` è null o undefined, usa un array vuoto
+            setOrariDisponibili(parsedOrariDisponibili);
+        }else setOrariDisponibili([]);
 
+    }, [userData]);
     const aggiornaDataDiNascita = (event) => {
         const value = event.target.value;
         setDataDiNascita(value);
@@ -116,16 +141,28 @@ const ModificaUtente = ({ userData , setUserData, onSuccess  }) => {
     };
 
     const aggiungiOrario = () => {
-        setOrariDisponibili([...orariDisponibili, { giorno: "", start: "", end: "" }]);
+        setOrariDisponibili(prevOrari => [
+            ...prevOrari,
+            { giorno: '', start: '', end: '' }
+        ]);
     };
 
 
-    const aggiornaOrario = (index, campo, valore) => {
-        const nuoviOrari = [...orariDisponibili];  // Copia lo stato esistente
-        nuoviOrari[index][campo] = valore;  // Modifica il campo specificato
-        setOrariDisponibili(nuoviOrari);  // Aggiorna lo stato
+    const salvaOrariDisponibili = () => {
+        return orariDisponibili
+            .map(orario => `${orario.giorno} ${orario.start}-${orario.end}`)
+            .join(", ")
+            .replace(/\s*,\s*/g, ',')
+            .trim();
     };
 
+    const aggiornaOrario = (index, field, value) => {
+        setOrariDisponibili(prevOrari => {
+            const newOrari = [...prevOrari];
+            newOrari[index] = { ...newOrari[index], [field]: value };
+            return newOrari;
+        });
+    };
 
     const rimuoviOrario = (index) => {
         setOrariDisponibili(orariDisponibili.filter((_, i) => i !== index));
@@ -161,20 +198,8 @@ const ModificaUtente = ({ userData , setUserData, onSuccess  }) => {
     console.log(ruolo);
     const gestisciSubmit = async (event) => {
         if (!isFormValid()) {
-            alert("Correggi i campi non validi prima di continuare.");
+            toast.warning("Correggi i campi non validi prima di continuare.");
             return;
-        }
-
-        let orariStringa = null;
-
-        // Se il ruolo è "Figura Specializzata", costruisco la stringa degli orari
-        if (ruolo === "FiguraSpecializzata") {
-            orariStringa = orariDisponibili
-                .map(orario => `${orario.giorno} ${orario.start}-${orario.end}`)
-                .join(", ")
-                .replace(/\s*,\s*/g, ',')
-                .trim();
-            console.log(orariStringa);
         }
 
         event.preventDefault();
@@ -187,7 +212,7 @@ const ModificaUtente = ({ userData , setUserData, onSuccess  }) => {
             nazionalitaUtente: nazionalita,
             lingueParlateUtente: lingueParlate,
             dataNascitaUtente: dataDiNascita,
-            disponibilitaUtente: orariStringa
+            disponibilitaUtente: salvaOrariDisponibili()
         };
 
 
@@ -197,7 +222,7 @@ const ModificaUtente = ({ userData , setUserData, onSuccess  }) => {
         try {
             const token = localStorage.getItem("authToken");
             if (!token) {
-                alert("Token non trovato. Effettua nuovamente il login.");
+                toast.warning("Token non trovato. Effettua nuovamente il login.");
                 return;
             }
             const response = await fetch(`http://localhost:8080/areaPersonale/modificaUtente/${email}`, {
@@ -214,14 +239,15 @@ const ModificaUtente = ({ userData , setUserData, onSuccess  }) => {
                 const data = await response.text();
                 setUserData(data);
                 onSuccess();
+                toast.info("Modifica dati avvenuta con successo")
                 console.log("Modifica dati avvenuta con successo:", data);
             } else {
                 console.error("Errore durante la modifica");
-                alert("Errore, riprova!");
+                toast.error("Errore, riprova!");
             }
         } catch (error) {
             console.error("Errore nella richiesta di modifica dati:", error);
-            alert("Errore nel collegamento al server.");
+            toast.error("Errore nel collegamento al server.");
         }
     };
 
@@ -232,22 +258,22 @@ const ModificaUtente = ({ userData , setUserData, onSuccess  }) => {
                 <label>Nome</label>
                 <input
                     type="text"
-                    placeholder={"Nome"}
+                    placeholder="Nome"
                     className={`formEditText field ${errorMessages.nome ? 'error-field' : ''}`}
                     value={nome}
                     onChange={aggiornaNome}
-                    required={true}
+                    required
                 />
                 {errorMessages.nome && <p className="error">{errorMessages.nome}</p>}
 
                 <label>Cognome</label>
                 <input
                     type="text"
-                    placeholder={"Cognome"}
+                    placeholder="Cognome"
                     className={`formEditText field ${errorMessages.cognome ? 'error-field' : ''}`}
                     value={cognome}
                     onChange={aggiornaCognome}
-                    required={true}
+                    required
                 />
                 {errorMessages.cognome && <p className="error">{errorMessages.cognome}</p>}
 
@@ -257,16 +283,16 @@ const ModificaUtente = ({ userData , setUserData, onSuccess  }) => {
                     className={`formEditText field ${errorMessages.dataNascita ? 'error-field' : ''}`}
                     value={dataDiNascita}
                     onChange={aggiornaDataDiNascita}
-                    required={true}
+                    required
                 />
                 {errorMessages.dataNascita && <p className="error">{errorMessages.dataNascita}</p>}
 
                 <label>Genere</label>
                 <select
-                    className={"formEditText selectMulti"}
+                    className="formEditText selectMulti"
                     value={genere}
                     onChange={(event) => setGenere(event.target.value)}
-                    required={true}
+                    required
                 >
                     <option value="">Seleziona Genere</option>
                     {Object.entries(Genere).map(([value, label]) => (
@@ -279,44 +305,44 @@ const ModificaUtente = ({ userData , setUserData, onSuccess  }) => {
                 <label>Nazionalità</label>
                 <input
                     type="text"
-                    placeholder={"Nazionalità"}
+                    placeholder="Nazionalità"
                     className={`formEditText field ${errorMessages.nazionalita ? 'error-field' : ''}`}
                     value={nazionalita}
                     onChange={aggiornaNazionalita}
                 />
                 {errorMessages.nazionalita && <p className="error">{errorMessages.nazionalita}</p>}
+
                 <label>Lingue Parlate</label>
                 <input
                     type="text"
-                    placeholder={"Lingue Parlate"}
+                    placeholder="Lingue Parlate"
                     className={`formEditText field ${errorMessages.lingueParlate ? 'error-field' : ''}`}
                     value={lingueParlate}
                     onChange={aggiornaLingueParlate}
-                    required={true}
+                    required
                 />
                 {errorMessages.lingueParlate && <p className="error">{errorMessages.lingueParlate}</p>}
+
                 <label>Skill</label>
                 <input
                     type="text"
-                    placeholder={"Skill"}
+                    placeholder="Skill"
                     className={`formEditText field ${errorMessages.skill ? 'error-field' : ''}`}
                     value={skill}
                     onChange={aggiornaSkill}
-                    required={true}
+                    required
                 />
                 {errorMessages.skill && <p className="error">{errorMessages.skill}</p>}
 
                 {ruolo === "FiguraSpecializzata" && (
-                    <>
+                    <div>
                         <h3>Disponibilità Settimanali</h3>
-                        <hr/>
+                        <hr />
                         {orariDisponibili.map((orario, index) => (
                             <div key={index}>
-
                                 <div className="inlineCityDetails">
-
                                     <select
-                                        value={orario.giorno}
+                                        value={orario.giorno || ""}
                                         onChange={(e) => aggiornaOrario(index, "giorno", e.target.value)}
                                     >
                                         <option value="">Seleziona Giorno</option>
@@ -328,45 +354,58 @@ const ModificaUtente = ({ userData , setUserData, onSuccess  }) => {
                                     </select>
                                     <input
                                         type="time"
-                                        value={orario.start}
+                                        value={orario.start || ""}
                                         onChange={(e) => aggiornaOrario(index, "start", e.target.value)}
                                     />
                                     <input
                                         type="time"
-                                        value={orario.end}
+                                        value={orario.end || ""}
                                         onChange={(e) => aggiornaOrario(index, "end", e.target.value)}
                                     />
                                 </div>
-                                <div className="buttonContainer">
-                                    <button type="button" className="disponibilitaButton"
-                                            onClick={() => rimuoviOrario(index)}>
-                                        Rimuovi
-                                    </button>
-                                    {/* Pulsante "Aggiungi Orario" interno */}
-                                    <button type="button" className="disponibilitaButton" onClick={aggiungiOrario}>
-                                        Aggiungi Orario
-                                    </button>
-                                </div>
-                            </div>
-                        ))}
-                        {/* Pulsante "Aggiungi Orario" esterno (visibile solo se orariDisponibili è vuoto) */}
-                        {orariDisponibili.length === 0 && (
-                            <div className="buttonContainer">
-                                <button type="button" className="disponibilitaButton" onClick={aggiungiOrario}>
-                                    Aggiungi Orario
+                                <button type="button" onClick={() => rimuoviOrario(index)}>
+                                    Rimuovi
                                 </button>
                             </div>
-                        )}
-                    </>
+                        ))}
+                        <button
+                            type="button"
+                            onClick={aggiungiOrario}
+                            disabled={orariDisponibili.some(
+                                (orario) => !orario.giorno || !orario.start || !orario.end
+                            )}
+                            className={
+                                orariDisponibili.some(
+                                    (orario) => !orario.giorno || !orario.start || !orario.end
+                                )
+                                    ? "buttonDisabled"
+                                    : ""
+                            }
+                        >
+                            Aggiungi Orario
+                        </button>
+                    </div>
+                )}
+
+                {orariDisponibili.length === 0 && (
+                    <div className="buttonContainer">
+                        <button
+                            type="button"
+                            className="disponibilitaButton"
+                            onClick={aggiungiOrario}
+                        >
+                            Aggiungi Orario
+                        </button>
+                    </div>
                 )}
                 {errorMessages.disponibilita && <p className="error">{errorMessages.disponibilita}</p>}
 
                 <label>Titolo di Studio</label>
                 <select
-                    className={"formEditText selectMulti"}
+                    className="formEditText selectMulti"
                     value={titolodistudio}
                     onChange={(event) => setTitolodistudio(event.target.value)}
-                    required={true}
+                    required
                 >
                     <option value="">Seleziona Titolo di Studio</option>
                     {Object.entries(TitolodiStudio).map(([value, label]) => (
@@ -381,7 +420,8 @@ const ModificaUtente = ({ userData , setUserData, onSuccess  }) => {
                 </button>
             </form>
         </div>
-    )
+    );
+
 };
 
 ModificaUtente.propTypes = {

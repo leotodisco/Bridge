@@ -106,6 +106,7 @@ public class SecurityConfig {
                 "/api/annunci/accetta/{idConsulenza}",
                 "/api/annunci/rifiuta/{idConsulenza}",
                 "/api/annunci/pubblicati",
+                "/api/annunci/candidature",
                 "/api/annunci/creaLavoro",
                 "/api/annunci/view_lavori",
                 "/api/annunci/view_lavori/proprietario/{id}",
