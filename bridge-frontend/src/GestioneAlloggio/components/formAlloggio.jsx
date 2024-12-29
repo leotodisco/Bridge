@@ -70,44 +70,45 @@ const CreaAlloggio = () => {
             nuoviErrori.titolo = "Il titolo deve essere tra 3 e 100 caratteri.";
         }
 
-        if (!descrizione || descrizione.length < 1 || descrizione.length > 400) {
+        if (!/^[A-Za-z0-9]{0,400}$/.test(descrizione)) {
             nuoviErrori.descrizione = "La descrizione deve essere tra 1 e 400 caratteri.";
         }
 
-        if (maxPersone < 1 || maxPersone > 99) {
+        if (!/^\d{1,2}$/.test(maxPersone)) {
             nuoviErrori.maxPersone = "Il numero massimo di persone deve essere tra 1 e 99.";
         }
 
-        if (!/^[0-9]+$/.test(metratura)) {
+        if (!/^\d{1,5}$/.test(metratura)) {
             nuoviErrori.metratura = "La metratura deve essere un numero valido.";
         }
+
 
         if (!servizi) {
             nuoviErrori.servizi = "Devi selezionare un servizio.";
         }
 
-        if (!indirizzo.via || indirizzo.via.length < 2 || indirizzo.via > 51) {
+        if (!/^[A-zÀ-ù ‘]{2,50}$/.test(indirizzo.via)) {
             nuoviErrori.via = "La via deve avere almeno 2 caratteri e massimo 50.";
         }
 
-        if (!/^[0-9]+$/.test(indirizzo.numCivico)) {
+        if (!/^\d{1,3}$/.test(indirizzo.numCivico)) {
             nuoviErrori.numCivico = "Il numero civico deve essere un numero valido.";
         }
 
-        if (!indirizzo.citta || indirizzo.citta.length < 2 || indirizzo.citta.length >51) {
-            nuoviErrori.citta = "La città deve avere almeno 2 caratteri e massimo 50.";
+        if (!/^[A-zÀ-ù ‘]{2,50}$/.test(indirizzo.citta)) {
+            nuoviErrori.citta = "Errore nell'inserimento della cità.";
         }
 
         if (!/^[0-9]{5}$/.test(indirizzo.cap)) {
             nuoviErrori.cap = "Il CAP deve essere di 5 cifre.";
         }
 
-        if (!indirizzo.provincia || indirizzo.provincia.length < 2) {
-            nuoviErrori.provincia = "La provincia deve avere 2 caratteri.";
+        if (!/^[A-Za-z]{2}$/.test(indirizzo.provincia)) {
+            nuoviErrori.provincia = "La provincia deve avere esattamente 2 caratteri alfabetici.";
         }
 
-        if (fotos.length === 0) {
-            nuoviErrori.fotos = "Devi caricare almeno 1 foto.";
+        if (fotos.length === 0 && !/^.+\.jpeg$/.test(fotos)) {
+            nuoviErrori.fotos = "Devi caricare almeno 1 foto in formato JPEG.";
         }
 
         setErrori(nuoviErrori);
@@ -185,6 +186,8 @@ const CreaAlloggio = () => {
 
             const result = await response.text();
             alert("Alloggio creato con successo: " + result);
+
+            nav("/area-personale");
         } catch (error) {
             console.error("Errore creazione alloggio: ", error);
             alert("Errore durante la creazione dell'alloggio: " + error.message);
