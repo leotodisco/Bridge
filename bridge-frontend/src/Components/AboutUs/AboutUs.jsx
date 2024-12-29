@@ -46,12 +46,13 @@ const AboutUs = ({ onClose }) => {
 
                     {/* Sezione Contatti */}
                     <section className="about-us-section">
-                        <h2>Contattaci</h2>
+                        <h2>Supporto</h2>
                         <p>
-                            Per domande o suggerimenti, scrivici a:{" "}
-                            <a href="mailto:contact@bridgeplatform.com">contact@bridgeplatform.com</a>.
+                            Hai domande o suggerimenti? Clicca sull&apos;icona dell&apos;assistente in basso a destra per ricevere
+                            assistenza immediata. Siamo qui per aiutarti!
                         </p>
                     </section>
+
                 </main>
             </div>
         </div>

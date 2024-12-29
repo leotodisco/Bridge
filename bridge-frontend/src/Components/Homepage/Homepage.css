@@ -1,5 +1,6 @@
 /* Stile generale */
 .welcome-banner {
+    margin-top: 400px; /* Aggiungi spazio sopra il banner */
     width: 1200px;
     text-align: center;
     background-color: #0C3444;

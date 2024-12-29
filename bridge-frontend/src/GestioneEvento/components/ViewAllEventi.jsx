@@ -5,7 +5,7 @@ import EventView from "./EventoRetrieveView.jsx";
 //Per installare la libreria: npm install date-fns
 import { format } from "date-fns";
 import "../css/AllEventiStyle.css";
-import {Link, useNavigate} from "react-router-dom";
+import {useNavigate} from "react-router-dom";
 import CreaEvento from "./formEvento.jsx";
 
 /*
@@ -87,17 +87,6 @@ const AllEventsView = () => {
 
     console.log(localStorage.getItem('ruolo'));
 
-
-    // Verifica se l'utente è loggato come Volontario
-    /*useEffect(() => {
-        const ruoloUtente = localStorage.getItem('ruolo');
-        console.log(ruoloUtente);
-        if (ruoloUtente === 'VOLONTARIO') {
-            setIsVolontario(true);
-        }
-        fetchEvents();
-    }, []);*/
-
     if (loading) {
         return <p>Caricamento in corso...</p>;
     }
@@ -112,11 +101,12 @@ const AllEventsView = () => {
             <div className="headerForm-container">
                 <h1 className="header-title">Tutti gli Eventi</h1>
                 {/* Pulsante per aggiungere un nuovo evento */}
-                {ruolo === "VOLONTARIO" && (
-                    <button className="btn btn-circle">
-                        <Link to="/crea-evento">
-                            +
-                        </Link>
+                {ruolo === "Volontario" && (
+                    <button
+                        className="btn btn-circle"
+                        onClick={() => setShowCreatePopup(true)} // Apri il popup
+                    >
+                        +
                     </button>
                 )}
             </div>

@@ -244,7 +244,7 @@ const EventView = ({ id, onClose }) => {
                                 <span className="popup-value">{eventData.organizzatore.nome} {eventData.organizzatore.cognome}</span>
                             </div>
                         </div>
-                        {ruoloPartecipante === "RIFUGIATO" && emailPartecipante !== eventData.organizzatore.email && (
+                        {ruoloPartecipante === "Rifugiato" && emailPartecipante !== eventData.organizzatore.email && (
                             <div className="popup-actions">
                                 {isSubscribed ? (
                                     <button className="popup-button" onClick={handleUnsubscription}>

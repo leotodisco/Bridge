@@ -19,7 +19,7 @@ const Lingua = {
 };
 
 // Funzione per creare l'evento
-const CreaEvento = (  ) => {
+const CreaEvento = ( {onClose} ) => {
     const nav = useNavigate();
     // Stato per gestire i dati del modulo
     const [nome, setNome] = useState(""); // Nome dell'evento
@@ -37,12 +37,15 @@ const CreaEvento = (  ) => {
     const [maxPartecipanti, setMaxPartecipanti] = useState(1); // Numero massimo di partecipanti
 
     const emailUtenteLoggato = localStorage.getItem("email");
-    const navigate = useNavigate();
 
     // Funzione per chiudere il popup o reindirizzare
     const handleClose = () => {
-        if (emailUtenteLoggato) {
-            navigate('/view-eventi'); // Reindirizza a /view-listacorsi
+        console.log("DEBUG: handleClose chiamato"); // Debug: verifica che handleClose venga chiamato
+        if (onClose) {
+            console.log("DEBUG: onClose esiste, verrà chiamato"); // Debug: verifica che onClose sia definito
+            onClose(); // Chiama la funzione di chiusura passata come prop
+        } else {
+            console.log("DEBUG: onClose non esiste!"); // Debug: onClose non è stato passato come prop
         }
     };
 
@@ -536,8 +539,9 @@ const CreaEvento = (  ) => {
     );
 };
 
+// Definizione del tipo di prop richiesto
 CreaEvento.propTypes = {
-    onClose: PropTypes.func.isRequired,
+    onClose: PropTypes.func.isRequired, // onClose è obbligatorio
 };
 
 // Esporta il componente CreaEvento
