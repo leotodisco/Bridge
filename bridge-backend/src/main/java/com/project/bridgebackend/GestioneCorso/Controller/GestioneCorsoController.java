@@ -5,8 +5,10 @@ import com.project.bridgebackend.GestioneCorso.pdf.PDFDoc;
 import com.project.bridgebackend.GestioneCorso.pdf.PDFService;
 import com.project.bridgebackend.Model.Entity.Corso;
 import com.project.bridgebackend.Model.Entity.FiguraSpecializzata;
+import com.project.bridgebackend.Model.Entity.Utente;
 import com.project.bridgebackend.Model.dao.CorsoDAO;
 import com.project.bridgebackend.Model.dao.FiguraSpecializzataDAO;
+import com.project.bridgebackend.Model.dao.UtenteDAO;
 import com.project.bridgebackend.Model.dto.CorsoDTO;
 import com.project.bridgebackend.util.JwtService;
 import jakarta.servlet.http.HttpServletResponse;
@@ -14,6 +16,7 @@ import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -45,6 +48,9 @@ public class GestioneCorsoController {
     private PDFService pdfService;
     @Autowired
     private JwtService jwtService;
+    @Qualifier("utenteDAO")
+    @Autowired
+    private UtenteDAO utenteDAO;
 
     /**
      * Endpoint per creare un nuovo corso.
@@ -200,23 +206,22 @@ public class GestioneCorsoController {
 
     /**
      * Endpoint per ottenere la lista di tutti i corsi pubblicati da un utente.
-     * @param
+     * @param email
      * @return ResponseEntity con la lista di corsi di un certo utente o errore
      */
-    /*
     @GetMapping("/listaCorsiUtente/{email}")
     public ResponseEntity<List<Corso>> findAllUtente(@PathVariable final String email) {
         try {
-            List<Corso> corsi = corsoDAO.findByProprietario(email);
+            List<Corso> corsi = corsoDAO.findByProprietario_Email(email);
             if (corsi == null || corsi.isEmpty()) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
             }
             return ResponseEntity.ok(corsi);
         } catch (Exception e) {
-            LOGGER.error("Errore durante la ricerca dei corsi", e);
+            log.error("Errore durante la ricerca dei corsi", e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
-    }*/
+    }
 
     @GetMapping("/download/{id}")
     public void downloadPDF(@PathVariable Long id, HttpServletResponse response) {

@@ -256,16 +256,17 @@ const AreaPersonale = ({ onLogout }) => {
 
                             <div className="sectionButtons">
                                 {ruolo=="Volontario" ? (
-                                <button onClick={() => navigate('/eventi-utente')}>I miei Eventi</button>
-                                ) : null}
-                                <button>I miei Corsi</button>
-
-                                {ruolo=="Volontario" ? (
+                                    <div>
+                                        <button onClick={() => navigate('/eventi-utente')}>I miei Eventi</button>
                                     <button onClick={() => navigate('/view-my-alloggi/:email')}>I miei Alloggi</button>
+                                    </div>
                                 ) : null}
 
                                 {ruolo == "FiguraSpecializzata" ? (
+                                    <div>
+                                        <button onClick={() => navigate('/corsi-utente')}>I miei Corsi</button>
                                     <button onClick={() => navigate('/consuleza-utente')}>Le mie Consulenze</button>
+                                    </div>
                                 ) : null}
                                 <button onClick={() => navigate('/lavori-utente')}>I miei Annunci di Lavoro</button>
                             </div>

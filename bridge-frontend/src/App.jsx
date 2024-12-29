@@ -26,6 +26,7 @@ import AlloggiByProprietario from "./GestioneAlloggio/components/AlloggiByPropri
 import "./GestioneChatbot/css/Chatbot.css"
 import {FaRobot} from "react-icons/fa";
 import { ToastContainer } from 'react-toastify';
+import CorsiUtente from "./GestioneUtente/components/dashboardCorso.jsx";
 
 function App() {
     const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -72,6 +73,7 @@ function App() {
                         <Routes>
                             <Route path="/" element={<Homepage />} />
                             <Route path="/eventi-utente" element={<EventiUtente />} />
+                            <Route path="/corsi-utente" element={<CorsiUtente />} />
                             <Route path="/consuleza-utente" element={<ConsulenzaUtente />} />
                             <Route path="/crea-lavoro" element={<CreaLavoro />} />
                             <Route path="/view-eventi" element={<AllEventsView />} />
