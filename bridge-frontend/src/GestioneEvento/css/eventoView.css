@@ -460,9 +460,12 @@ textarea {
 @media screen and (max-width: 768px) {
     /* Posizione del popup secondario sotto il popup principale */
     .second-popup {
-        top: 10%; /* Spostato più in basso */
-        left: 50%; /* Centra il popup orizzontalmente */
-        transform: translateX(-50%); /* Centra rispetto alla larghezza */
+        top: 120%; /* Spostato più in basso */
         width: 90%; /* Occupa il 90% della larghezza dello schermo */
+        transform: translateX(-50%);
+    }
+
+    .popup-container{
+        transform: translateX(0%);
     }
 }

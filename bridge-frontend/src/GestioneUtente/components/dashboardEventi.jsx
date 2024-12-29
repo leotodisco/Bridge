@@ -51,8 +51,10 @@ const EventiUtente = () => {
     };
 
     return (
-        <div>
+        <div >
+            <div className="dashboardContainer">
             <h1>I miei Eventi</h1>
+            <hr/>
             {error && <p>{error}</p>}
             {eventi.length > 0 ? (
                 <div className="cards-container">
@@ -81,11 +83,13 @@ const EventiUtente = () => {
             ) : (
                 <p>Non hai eventi pubblicati.</p>
             )}
+            </div>
             {/* Mostra il popup se selectedEventId è impostato */}
             {selectedEventId && (
-                <EventView id={selectedEventId} onClose={closePopup} />
+                <EventView id={selectedEventId} onClose={closePopup}/>
             )}
         </div>
+
     );
 };
 

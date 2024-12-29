@@ -347,6 +347,17 @@ h3 {
     padding-right: 10px; /* Aggiungi spazio per evitare sovrapposizioni */
     box-sizing: border-box; /* Per gestire padding e larghezza */
 }
+.dashboardContainer {
+    align-items: center; /* Centra verticalmente */
+    justify-content: center; /* Centra orizzontalmente */
+    position: absolute; /* Mantieni la posizione assoluta se necessaria */
+    top: 50%; /* Sposta il contenitore al centro verticalmente */
+    left: 50%; /* Sposta il contenitore al centro orizzontalmente */
+    transform: translate(-50%, -50%); /* Correggi l'offset */
+    width: 60%; /* Assicurati che il contenitore occupi l'intera larghezza se necessario */
+    height: auto; /* Imposta un'altezza adeguata */
+}
+
 
 /* Scrollbar personalizzata */
 .popupContainer::-webkit-scrollbar {
@@ -380,7 +391,7 @@ h3 {
 @media (min-width: 480px) and (max-width: 768px) {
     .formRegistrazione {
         width: 400px;
-        height: 500px;
+        height: 350px;
     }
 }
 
