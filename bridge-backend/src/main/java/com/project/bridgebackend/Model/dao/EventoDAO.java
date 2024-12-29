@@ -95,4 +95,14 @@ public interface EventoDAO extends JpaRepository<Evento, Long> {
      */
     @Query("SELECT e FROM Evento e JOIN Fetch e.organizzatore")
     List<Evento> findAllWithOrganizzatore();
+
+    /**
+     * Restituisce una lista di eventi in base alla lista degli ID dei partecipanti
+     *
+     * @param email Email del rifugiato
+     * @return Lista di eventi
+     */
+    @Query("SELECT e FROM Evento e JOIN e.listaPartecipanti r WHERE r.email = :email")
+    List<Evento> findEventiByRifugiatoEmail(String email);
+
 }

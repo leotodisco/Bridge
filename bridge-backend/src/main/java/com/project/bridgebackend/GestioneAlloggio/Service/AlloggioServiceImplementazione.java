@@ -362,4 +362,8 @@ public class AlloggioServiceImplementazione implements AlloggioService {
             throw new IllegalArgumentException("Non trovati i rifugiati: " + e.getMessage());
         }
     }
+
+    public List<Alloggio> getAllAlloggiByRifugiatoEmail(String email) {
+        return alloggioDAO.findAllAlloggiByRifugiatoEmail(email);
+    }
 }

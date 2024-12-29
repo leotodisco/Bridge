@@ -371,4 +371,10 @@ public class AlloggioController {
                     .body(Collections.emptyList());
         }
     }
+
+    @GetMapping("/alloggiPreferitiUtente/{email}")
+    public List<Alloggio> getAllAlloggiByRifugiatoEmail(@PathVariable String email) {
+        return alloggioService.getAllAlloggiByRifugiatoEmail(email);
+    }
+
 }

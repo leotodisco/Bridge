@@ -41,4 +41,7 @@ public interface AlloggioDAO extends JpaRepository<Alloggio, Long> {
 
     @Query("SELECT a FROM Alloggio a WHERE a.proprietario.email = :email")
     List<Alloggio> getAllAlloggiByEmail(@Param("email") String email);
+
+    @Query("SELECT a FROM Alloggio a JOIN a.listaCandidati r WHERE r.email = :email")
+    List<Alloggio> findAllAlloggiByRifugiatoEmail(@Param("email") String email);
 }

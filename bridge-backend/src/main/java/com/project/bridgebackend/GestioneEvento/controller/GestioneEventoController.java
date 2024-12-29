@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.sql.SQLOutput;
 import java.time.LocalDate;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -347,4 +348,15 @@ public class GestioneEventoController {
     }
 
 
+    /**
+     * Restituisce la lista di eventi a cui il rifugiato è iscritto.
+     *
+     * @param email L'email del rifugiato
+     * @return Lista di eventi a cui il rifugiato è iscritto
+     */
+    @GetMapping("/eventiIscritti")
+    public ResponseEntity<List<Evento>> getEventiIscritti(@RequestParam String email) {
+        List<Evento> eventiIscritti = gestioneEventoService.getEventiIscritti(email);
+        return ResponseEntity.ok(eventiIscritti);
+    }
 }

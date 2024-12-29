@@ -91,6 +91,7 @@ public class SecurityConfig {
                 "/api/eventi/pubblicati",
                 "/api/eventi/{id}/iscrizione",
                 "/api/eventi/random",
+                "/api/eventi/eventiIscritti",
 
                 // ANNUNCI (CONSULENZA E LAVORO)
                 "/api/annunci/creaConsulenza",
@@ -131,6 +132,7 @@ public class SecurityConfig {
                 "/alloggi/SingoloAlloggio/{titolo}",
                 "/alloggi/interesse",
                 "/api/alloggi/random",
+                "/alloggi/alloggiPreferitiUtente/{email}",
 
                 // AREA PERSONALE
                 "/areaPersonale/DatiUtente/{email}",
