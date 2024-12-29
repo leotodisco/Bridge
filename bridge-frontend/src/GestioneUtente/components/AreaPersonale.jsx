@@ -277,7 +277,7 @@ const AreaPersonale = ({ onLogout }) => {
                                 {ruolo === "Rifugiato" ? (
                                     <div>
                                         <button>Candidature Lavoro</button>
-                                        <button>Richieste di alloggio</button>
+                                        <button onClick={() => navigate('/view-my-alloggi/:email')}>Richieste di alloggio</button>
                                         <button onClick={() => navigate('/eventi-utente')}>Partecipazione Eventi</button>
                                         <button>Richieste di Consulenza</button>
                                     </div>

@@ -96,4 +96,5 @@ public interface AlloggioService {
      * */
     List<Rifugiato> getInteressati(long id);
 
+    List<Alloggio> getAllAlloggiByRifugiatoEmail(String email);
 }
