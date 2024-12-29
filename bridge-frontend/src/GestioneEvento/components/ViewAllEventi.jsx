@@ -96,59 +96,61 @@ const AllEventsView = () => {
     }
 
     return (
-        <div>
-            {/* Contenitore del titolo e del pulsante */}
-            <div className="headerForm-container">
-                <h1 className="header-title">Tutti gli Eventi</h1>
-                {/* Pulsante per aggiungere un nuovo evento */}
-                {ruolo === "Volontario" && (
-                    <button
-                        className="btn btn-circle"
-                        onClick={() => setShowCreatePopup(true)} // Apri il popup
-                    >
-                        +
-                    </button>
+        <div id="allEventsView">
+            <div>
+                {/* Contenitore del titolo e del pulsante */}
+                <div className="headerForm-container">
+                    <h1 className="header-title">Tutti gli Eventi</h1>
+                    {/* Pulsante per aggiungere un nuovo evento */}
+                    {ruolo === "Volontario" && (
+                        <button
+                            className="btn btn-circle"
+                            onClick={() => setShowCreatePopup(true)} // Apri il popup
+                        >
+                            +
+                        </button>
+                    )}
+                </div>
+
+                {events.length > 0 ? (
+                    <div className="cards-container">
+                        {events.map((event) => (
+                            <Card
+                                key={event.id}
+                                data={{
+                                    title: event.nome,
+                                    image: event.organizzatore.fotoUtente
+                                        ? event.organizzatore.fotoUtente
+                                        : "https://via.placeholder.com/150/cccccc/000000?text=No+Image",
+                                    userName: `${event.organizzatore.nome} ${event.organizzatore.cognome}`,
+                                    parameter1: formatDate(event.data), // Questo è Parametro 1
+                                    parameter2: formatTime(event.ora),  // Questo è Parametro 2
+                                    parameter3: event.linguaParlata, // Questo è Parametro 3
+                                }}
+                                labels={{
+                                    parameter1: "Data",
+                                    parameter2: "Ora",
+                                    parameter3: "Lingua",
+                                }}
+                                onClick={() => console.log(`Cliccato su evento: ${event.nome}`)}
+                                onInfoClick={() => setSelectedEventId(event.id)} // Mostra il popup
+                            />
+                        ))}
+                    </div>
+                ) : (
+                    <p>Nessun evento trovato.</p>
+                )}
+
+                {/* Mostra il popup se selectedEventId è impostato */}
+                {selectedEventId && (
+                    <EventView id={selectedEventId} onClose={closePopup} />
+                )}
+
+                {/* Popup creazione evento */}
+                {showCreatePopup && (
+                    <CreaEvento onClose={closeCreatePopup} />
                 )}
             </div>
-
-            {events.length > 0 ? (
-                <div className="cards-container">
-                    {events.map((event) => (
-                        <Card
-                            key={event.id}
-                            data={{
-                                title: event.nome,
-                                image: event.organizzatore.fotoUtente
-                                    ? event.organizzatore.fotoUtente
-                                    : "https://via.placeholder.com/150/cccccc/000000?text=No+Image",
-                                userName: `${event.organizzatore.nome} ${event.organizzatore.cognome}`,
-                                parameter1: formatDate(event.data), // Questo è Parametro 1
-                                parameter2: formatTime(event.ora),  // Questo è Parametro 2
-                                parameter3: event.linguaParlata, // Questo è Parametro 3
-                            }}
-                            labels={{
-                                parameter1: "Data",
-                                parameter2: "Ora",
-                                parameter3: "Lingua",
-                            }}
-                            onClick={() => console.log(`Cliccato su evento: ${event.nome}`)}
-                            onInfoClick={() => setSelectedEventId(event.id)} // Mostra il popup
-                        />
-                    ))}
-                </div>
-            ) : (
-                <p>Nessun evento trovato.</p>
-            )}
-
-            {/* Mostra il popup se selectedEventId è impostato */}
-            {selectedEventId && (
-                <EventView id={selectedEventId} onClose={closePopup} />
-            )}
-
-            {/* Popup creazione evento */}
-            {showCreatePopup && (
-                <CreaEvento onClose={closeCreatePopup} />
-            )}
         </div>
     );
 };

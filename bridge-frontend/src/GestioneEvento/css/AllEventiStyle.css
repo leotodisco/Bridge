@@ -1,3 +1,30 @@
+#allEventsView {
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Centra gli elementi orizzontalmente */
+    justify-content: flex-start; /* Allinea gli elementi in alto */
+    padding: 20px;
+    margin: 0 auto; /* Centra l'intero contenitore */
+    max-width: 1200px; /* Larghezza massima */
+    box-sizing: border-box;
+}
+
+main.main-content {
+    all: unset; /* Rimuove tutti gli stili applicati */
+    display: contents; /* Rimuove l'influenza del layout */
+}
+
+
+#allEventsView main.main-content {
+    margin: 0; /* Rimuove margini */
+    padding: 0; /* Rimuove padding */
+    display: flex; /* Personalizza il layout */
+    justify-content: center;
+    align-items: center;
+}
+
+
+
 /* Contenitore dell'header */
 .headerForm-container {
     display: flex;
