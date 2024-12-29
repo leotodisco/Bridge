@@ -99,9 +99,10 @@ public class AlloggioServiceImplementazione implements AlloggioService {
         }
 
         a.getListaCandidati().add(r);
+        sendEmailRifugiato("Interesse manifestato", "mariozurolo00@gmail.com");
+
         //aggiorno la consulenza
         alloggioDAO.save(a);
-        sendEmailRifugiato("Interesse manifestat", "mariozurolo00@gmail.com");
         return true;
     }
 
@@ -171,9 +172,15 @@ public class AlloggioServiceImplementazione implements AlloggioService {
             throw new IllegalArgumentException("Alloggio non trovato");
         }
 
+        // Verifica se l'alloggio è già stato assegnato
+        if (alloggio.getAssegnatoA() != null) {
+            throw new IllegalArgumentException("L'alloggio è già stato assegnato a un altro rifugiato");
+        }
+
         // Recupera la lista dei candidati per l'alloggio
         List<Rifugiato> listaCandidati = alloggio.getListaCandidati();
         if (listaCandidati == null || listaCandidati.isEmpty()) {
+            // Gestisci il caso in cui la lista è vuota
             throw new IllegalArgumentException("Nessun candidato disponibile per questo alloggio");
         }
 
@@ -188,17 +195,16 @@ public class AlloggioServiceImplementazione implements AlloggioService {
 
         Rifugiato rifugiato = rifugiatoOpt.get();
 
-        // Verifica se l'alloggio è già stato assegnato
-        if (alloggio.getAssegnatoA() != null) {
-            throw new IllegalArgumentException("L'alloggio è già stato assegnato a un altro rifugiato");
-        }
-
         // Assegna l'alloggio al rifugiato
         alloggio.setAssegnatoA(rifugiato);
 
+        // Svuota la lista dei candidati
+        alloggio.getListaCandidati().clear();
+
+        sendEmailRifugiato("Sei stato selezionato", rifugiato.getEmail());
+
         // Salva l'alloggio aggiornato
         alloggioDAO.save(alloggio);
-
         return alloggio;
     }
 
@@ -336,5 +342,4 @@ public class AlloggioServiceImplementazione implements AlloggioService {
             throw new IllegalArgumentException("Non trovati i rifugiati: " + e.getMessage());
         }
     }
-
 }

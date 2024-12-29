@@ -1,29 +1,111 @@
 import { useEffect, useState } from "react";
 import Card from "../../GestioneEvento/components/Card.jsx";
+import "../css/PopUp.css";
 import { useNavigate } from "react-router-dom";
 
 const MostraMyAlloggi = () => {
     const [alloggi, setAlloggi] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-    const [userImages, setUserImages] = useState({}); // Stato per le immagini degli alloggi
-    const navigate = useNavigate();
+    const [userImages, setUserImages] = useState({});
+    const [interessati, setInteressati] = useState([]);
+    const [showPopup, setShowPopup] = useState(false);
+    const [selectedAlloggio, setSelectedAlloggio] = useState(null);
+    const nav = useNavigate();
 
+    const handleGoToAssegnaAlloggi = async (emailRifugiato) => {
+        if (!selectedAlloggio) {
+            alert("Errore: nessun alloggio selezionato.");
+            return;
+        }
 
-    //inserire pop up con tutte le persone che hanno manifestato interesse
-    const handleInfoClick = (titolo) => {
-        navigate(`/alloggi/SingoloAlloggio/${titolo}`);
+        if (!emailRifugiato || emailRifugiato.trim() === "") {
+            alert("Errore: nessuna email del rifugiato fornita.");
+            return;
+        }
+
+        const token = localStorage.getItem('authToken');
+        if (!token) {
+            setError("Errore: token di autenticazione mancante.");
+            return;
+        }
+
+        try {
+            const response = await fetch(`http://localhost:8080/alloggi/assegnazione/${selectedAlloggio}?emailRifugiato=${emailRifugiato}`, {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json',
+                },
+            });
+
+            if (!response.ok) {
+                const errorMessage = await response.text();
+                throw new Error(errorMessage);
+            }
+
+            const responseData = await response.json();
+            alert(`Assegnazione completata: ${responseData.titolo}`);
+
+            // Svuota la lista dei rifugiati e chiudi il popup
+            setInteressati([]);
+            setShowPopup(false);
+
+            // Ricarica gli alloggi per riflettere i cambiamenti
+            fetchAlloggi();
+        } catch (error) {
+            console.error("Errore durante l'assegnazione dell'alloggio:", error);
+            alert(`Errore durante l'assegnazione: ${error.message}`);
+        }
     };
+
+
+    const handleInfoClick = async (idAlloggio) => {
+        try {
+            const token = localStorage.getItem('authToken');
+
+            if (!token) {
+                setError("Token di autenticazione mancante.");
+                return;
+            }
+
+            const response = await fetch(`http://localhost:8080/alloggi/interessati/${idAlloggio}`, {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json',
+                },
+            });
+
+            const data = await response.json();
+
+            // Se la lista dei rifugiati è vuota, mostra un alert e non aprire il pop-up
+            if (data.length === 0) {
+                alert("Non ci sono rifugiati candidati per questo alloggio.");
+                return; // Esci dalla funzione
+            }
+
+            // Altrimenti, mostra il pop-up con la lista dei rifugiati
+            setInteressati(data);
+            setSelectedAlloggio(idAlloggio);
+            setShowPopup(true);
+
+        } catch (error) {
+            console.error("Errore durante il caricamento dei rifugiati interessati:", error);
+            setError(error.message);
+        }
+    };
+
 
     const fetchAlloggi = async () => {
         try {
             const token = localStorage.getItem('authToken');
             const proprietarioEmail = localStorage.getItem("email");
 
-            // check su token:
             if (!token) {
                 alert("Non sei autenticato. Effettua il login.");
-                navigate('/login');
+                nav('/login');
                 return;
             }
 
@@ -47,17 +129,12 @@ const MostraMyAlloggi = () => {
             }
 
             const data = await response.json();
-            console.log("Dati ricevuti:", data);
-
             const alloggi = Array.isArray(data) ? data : data.alloggi || [];
             setAlloggi(alloggi);
 
-            // Recupera le immagini per ogni alloggio
             const alloggioImagesData = {};
             for (const alloggio of alloggi) {
-                console.log(`Recupero immagine per l'alloggio ID: ${alloggio.id}`);
                 const email = alloggio.proprietario.email;
-
                 try {
                     const imgResponse = await fetch(`http://localhost:8080/areaPersonale/DatiFotoUtente/${email}`, {
                         method: 'GET',
@@ -74,14 +151,13 @@ const MostraMyAlloggi = () => {
                         alloggioImagesData[alloggio.id] = "https://via.placeholder.com/150/cccccc/000000?text=No+Image";
                     }
                 } catch (error) {
-                    console.error(`Errore durante il recupero dell'immagine per l'alloggio ID ${alloggio.id}:`, error);
+                    setError(error.message);
                     alloggioImagesData[alloggio.id] = "https://via.placeholder.com/150/cccccc/000000?text=No+Image";
                 }
             }
 
-            setUserImages(alloggioImagesData); // Salva le immagini nello stato
+            setUserImages(alloggioImagesData);
         } catch (error) {
-            console.error("Errore durante il fetch degli alloggi:", error);
             setError(error.message);
         } finally {
             setLoading(false);
@@ -91,6 +167,11 @@ const MostraMyAlloggi = () => {
     useEffect(() => {
         fetchAlloggi();
     }, []);
+
+    const closePopup = () => {
+        setShowPopup(false);
+        setInteressati([]);
+    };
 
     if (loading) return <p>Caricamento in corso...</p>;
     if (error) return <p>Errore durante il caricamento degli alloggi: {error}</p>;
@@ -120,13 +201,39 @@ const MostraMyAlloggi = () => {
                                     parameter2: "Metratura",
                                     parameter3: "Servizi",
                                 }}
-                                onClick={() => handleInfoClick(alloggio.titolo)}
+                                onClick={() => handleInfoClick(alloggio.id)}
                             />
                         );
                     })}
                 </div>
             ) : (
                 <p>Nessun alloggio trovato.</p>
+            )}
+
+            {showPopup && selectedAlloggio && (
+                <div className="popup">
+                    <div className="popup-content">
+                        <h2>Rifugiati che hanno manifestato interesse</h2>
+                        <button onClick={closePopup}>Chiudi</button>
+                        {interessati.length > 0 ? (
+                            <ul>
+                                {interessati.map((rifugiato, index) => (
+                                    <li key={index} className="rifugiato-item">
+                                        <span>{rifugiato.nome} - {rifugiato.email}</span>
+                                        <button
+                                            className="assegna-button"
+                                            onClick={() => handleGoToAssegnaAlloggi(rifugiato.email)}
+                                        >
+                                            Assegna
+                                        </button>
+                                    </li>
+                                ))}
+                            </ul>
+                        ) : (
+                            <p>Nessun rifugiato ha manifestato interesse per questo alloggio.</p>
+                        )}
+                    </div>
+                </div>
             )}
         </div>
     );
