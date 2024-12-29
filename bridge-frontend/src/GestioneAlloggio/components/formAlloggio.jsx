@@ -1,5 +1,6 @@
 import {useEffect, useState} from "react";
 import {useNavigate} from "react-router-dom";
+import "../css/formAlloggioStyle.css";
 
 const Servizi = {
     WIFI: "WIFI",
@@ -117,7 +118,7 @@ const CreaAlloggio = () => {
     useEffect(() => {
         const ruoloUtente = localStorage.getItem('ruolo'); // Recupera il ruolo dal localStorage
 
-        if (ruoloUtente === 'VOLONTARIO') {
+        if (ruoloUtente === 'Volontario') {
             setVolontario(true); // Imposta che l'utente è un volontario
         }
     }, []);

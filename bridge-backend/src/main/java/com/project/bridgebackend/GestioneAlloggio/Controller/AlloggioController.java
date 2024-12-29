@@ -162,19 +162,22 @@ public class AlloggioController {
      * @param emailRifugiato l'email del rifugiato
      * @return ResponseEntity con lo stato dell'operazione
      */
-    @PostMapping("/assegnazione")
-    public ResponseEntity<String> assegnazioneAlloggio(@RequestParam final long idAlloggio, @RequestParam final String emailRifugiato) {
-        try{
+    @PostMapping("/assegnazione/{idAlloggio}")
+    public ResponseEntity<?> assegnazioneAlloggio(@PathVariable long idAlloggio, @RequestParam String emailRifugiato) {
+        try {
+            if (idAlloggio < 1 || emailRifugiato == null || emailRifugiato.trim().isEmpty()) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Dati mancanti.");
+            }
             Alloggio a = alloggioService.assegnazioneAlloggio(idAlloggio, emailRifugiato);
-            return ResponseEntity.ok("L'alloggio '" + a.getTitolo() + "' è stato assegnato al rifugiato con email: " + emailRifugiato);
-        }catch (IllegalArgumentException e) {
-            // Gestione degli errori previsti
-            return ResponseEntity.badRequest().body("Errore: " + e.getMessage());
+            return ResponseEntity.ok(a); // Restituisci l'alloggio aggiornato
+        } catch (IllegalArgumentException e) {
+            // Se la lista dei rifugiati è vuota, restituire un errore 404 con un messaggio chiaro
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Nessun rifugiato disponibile per l'assegnazione.");
         } catch (Exception e) {
-            // Gestione degli errori generici
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Si è verificato un errore durante l'assegnazione dell'alloggio.");
         }
     }
+
 
     /** Metodo che permette ad un rifugiato di manifesare interesse per un'alloggio
      * @param emailRifugiato l'email del rifugiato
@@ -210,6 +213,8 @@ public class AlloggioController {
             // Aggiungi il rifugiato alla lista dei candidati
             alloggio.getListaCandidati().add(rifugiato);
             alloggioDAO.save(alloggio); // Salva l'alloggio aggiornato nel database
+
+
 
             return ResponseEntity.ok("Interesse manifestato con successo.");
         } catch (Exception e) {

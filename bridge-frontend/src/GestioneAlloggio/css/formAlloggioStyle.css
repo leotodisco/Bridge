@@ -1,24 +1,11 @@
-/* Reset di base */
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: 'Montserrat', sans-serif;
-}
-
-/* Stile per lo scrolling fluido */
-html {
-    scroll-behavior: smooth;
-}
-
 /* Corpo principale */
 body {
     display: flex;
     align-items: center;
     justify-content: center;
-    min-height: 100vh;
+    height: 100vh; /* Altezza del viewport */
+    margin: 0;
     background: #f4f4f9;
-    padding: 1rem;
 }
 
 /* Contenitore principale del form */

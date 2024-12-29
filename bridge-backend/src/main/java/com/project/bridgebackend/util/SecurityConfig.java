@@ -127,6 +127,7 @@ public class SecurityConfig {
                 "/alloggi/mostra",
                 "/alloggi/preferiti",
                 "/alloggi/isFavorito",
+                "alloggi/assegnazione",
                 "/alloggi/SingoloAlloggio/{titolo}",
                 "/alloggi/interesse",
                 "/api/alloggi/random",
