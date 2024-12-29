@@ -8,6 +8,8 @@ import com.project.bridgebackend.Model.dao.RifugiatoDAO;
 import com.project.bridgebackend.Model.dao.VolontarioDAO;
 import com.project.bridgebackend.Model.dao.AlloggioDAO;
 import com.project.bridgebackend.Model.dao.IndirizzoDAO;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -66,6 +68,9 @@ public class AlloggioServiceImplementazione implements AlloggioService {
     @Autowired
     private JavaMailSender mailSender;
 
+    private static final Logger logger = LoggerFactory.getLogger(AlloggioServiceImplementazione.class);
+
+
 
     /** Metodo che permette ad un rifugiato di manifesare interesse per un'alloggio
      * @param emailRifugiato l'email del rifugiato
@@ -74,37 +79,52 @@ public class AlloggioServiceImplementazione implements AlloggioService {
      * @return un booleano che specifica lo stato dell'operazione. true andato a buon fine, false altrimenti
      */
     @Override
-    public boolean interesse(String emailRifugiato, long idAlloggio){
+    public boolean interesse(String emailRifugiato, long idAlloggio) {
+        logger.info("Inizio metodo interesse");
+        System.out.println("inizio metodo interesse da Syout");
+
         if (emailRifugiato == null || emailRifugiato.trim().isEmpty()) {
             throw new IllegalArgumentException("Email vuota o nulla");
         }
         if (idAlloggio <= 0) {
-            throw new IllegalArgumentException("ID consulenza non valido");
+            throw new IllegalArgumentException("ID alloggio non valido");
         }
 
-        // Recupera il rifugiato dal database
         Rifugiato r = rifugiatoDAO.findByEmail(emailRifugiato);
         if (r == null) {
             throw new IllegalArgumentException("Rifugiato non trovato");
         }
+        logger.info("Rifugiato trovato: {}", r);
 
         Alloggio a = alloggioDAO.findAlloggioById(idAlloggio);
-        if(a == null) {
+        if (a == null) {
             throw new IllegalArgumentException("Alloggio non trovato");
         }
+        logger.info("Alloggio trovato: {}", a);
 
-        // Verifica se l'email del rifugiato è già nella lista candidati
         if (a.getListaCandidati().contains(r.getEmail())) {
             throw new IllegalArgumentException("Interesse già manifestato");
         }
 
         a.getListaCandidati().add(r);
-        sendEmailRifugiato("Interesse manifestato", "mariozurolo00@gmail.com");
+        logger.info("Rifugiato aggiunto alla lista candidati");
 
-        //aggiorno la consulenza
+        String messaggio = String.format("Il rifugiato %s (%s) ha manifestato interesse per l'alloggio '%s'.",
+                r.getNome(), r.getEmail(), a.getTitolo());
+        logger.info("Messaggio generato: {}", messaggio);
+
+        try {
+            sendEmailVolontario(messaggio, "mariozurolo00@gmail.com");
+        } catch (Exception e) {
+            logger.error("Errore durante l'invio dell'email: {}", e.getMessage(), e);
+        }
+
         alloggioDAO.save(a);
+        logger.info("Alloggio aggiornato con successo");
+
         return true;
     }
+
 
     /**
      * Aggiunge un nuovo alloggio nel sistema.
@@ -201,7 +221,7 @@ public class AlloggioServiceImplementazione implements AlloggioService {
         // Svuota la lista dei candidati
         alloggio.getListaCandidati().clear();
 
-        sendEmailRifugiato("Sei stato selezionato", rifugiato.getEmail());
+        sendEmailRifugiato("Sei stato selezionato", "mariozurolo00@gmail.com");
 
         // Salva l'alloggio aggiornato
         alloggioDAO.save(alloggio);
@@ -214,25 +234,25 @@ public class AlloggioServiceImplementazione implements AlloggioService {
      * Metodo asincrono che invia una email al volontario.
      *
      * @param messaggio il messaggio da inviare.
-     * @param emailDestinatario l'email del destinatario.
+     * @param emailVolontario l'email del destinatario.
      */
     @Override
-    @Async
-    public void sendEmailVolontario(
-            final String messaggio,
-            final String emailDestinatario) {
+    public void sendEmailVolontario(final String messaggio, final String emailVolontario) {
+        logger.info("Invio email a: {}, con messaggio: {}", emailVolontario, messaggio);
         try {
             SimpleMailMessage message = new SimpleMailMessage();
             message.setFrom("beehaveofficial@gmail.com");
-            message.setTo("mariozurolo00@gmail.com");
-            message.setSubject("PROVA");
+            message.setTo(emailVolontario);
+            message.setSubject("Notifica Interesse Alloggio");
             message.setText(messaggio);
             mailSender.send(message);
-            System.out.println("email inviata");
+            logger.info("Email inviata con successo a: {}", emailVolontario);
         } catch (Exception e) {
-            System.out.println("Errore nell invio dell'email a: " + emailDestinatario + e.getMessage());
+            logger.error("Errore nell'invio dell'email a: {} - {}", emailVolontario, e.getMessage(), e);
         }
     }
+
+
 
     /**
      * Restituisce la lista di tutti gli alloggi.

@@ -76,6 +76,42 @@ public class AlloggioController {
     @Autowired
     private RifugiatoDAO rifugiatoDAO;
 
+
+    /**
+     * Metodo per rimuovere interesse per un alloggio.
+     * @param emailRifugiato email del rifugiato che ha rimosso l'interesse.
+     * @param idAlloggio identificativo dell'alloggio a cui è stato rimosso l'interesse.
+     * @return ResponseEntity con lo stato dell'operazione.
+     */
+    @PostMapping("/rimuoviInteresse")
+    public ResponseEntity<String> rimuoviInteresse(@RequestParam String emailRifugiato, @RequestParam long idAlloggio) {
+        try {
+            Alloggio alloggio = alloggioDAO.findAlloggioById(idAlloggio);
+            if (alloggio == null) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Alloggio non trovato.");
+            }
+
+            Rifugiato rifugiato = rifugiatoDAO.findByEmail(emailRifugiato);
+            if (rifugiato == null) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Rifugiato non trovato.");
+            }
+
+            if (alloggio.getListaCandidati() == null || !alloggio.getListaCandidati().contains(rifugiato)) {
+                return ResponseEntity.ok("Interesse non trovato per questo alloggio.");
+            }
+
+            // Rimuovi il rifugiato dalla lista dei candidati
+            alloggio.getListaCandidati().remove(rifugiato);
+            alloggioDAO.save(alloggio);
+
+            return ResponseEntity.ok("Interesse rimosso con successo.");
+        } catch (Exception e) {
+            System.out.println("Errore interno del server: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Errore interno al server.");
+        }
+    }
+
+
     /**
      * Aggiungi un nuovo alloggio nel sistema.
      *
@@ -212,9 +248,9 @@ public class AlloggioController {
 
             // Aggiungi il rifugiato alla lista dei candidati
             alloggio.getListaCandidati().add(rifugiato);
+
+            alloggioService.sendEmailVolontario("Hai ricevuto una nuova manifestazione", "mariozurolo00@gmail.com");
             alloggioDAO.save(alloggio); // Salva l'alloggio aggiornato nel database
-
-
 
             return ResponseEntity.ok("Interesse manifestato con successo.");
         } catch (Exception e) {

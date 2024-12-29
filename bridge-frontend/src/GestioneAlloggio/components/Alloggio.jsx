@@ -18,22 +18,8 @@ const DettaglioAlloggio = () => {
 
     // Funzione per gestire il click sull'icona del cuore
     const handleClickCuore2 = async () => {
-            try {
-
+        try {
             const idAlloggio = alloggio.id;
-
-            console.log("Email Rifugiato:", emailRifugiato);
-            console.log("ID Alloggio:", idAlloggio);
-
-            if (!emailRifugiato) {
-                setError("Email mancante.");
-                return;
-            }
-
-            if (!idAlloggio || isNaN(idAlloggio)) {
-                setError("ID alloggio non valido.");
-                return;
-            }
 
             if (!emailRifugiato || !token) {
                 alert("Non sei autenticato. Effettua il login.");
@@ -41,7 +27,11 @@ const DettaglioAlloggio = () => {
                 return;
             }
 
-            const response = await fetch(`http://localhost:8080/alloggi/interesse?emailRifugiato=${encodeURIComponent(emailRifugiato)}&idAlloggio=${idAlloggio}`, {
+            const url = isFavorito
+                ? `http://localhost:8080/alloggi/rimuoviInteresse?emailRifugiato=${encodeURIComponent(emailRifugiato)}&idAlloggio=${idAlloggio}`
+                : `http://localhost:8080/alloggi/interesse?emailRifugiato=${encodeURIComponent(emailRifugiato)}&idAlloggio=${idAlloggio}`;
+
+            const response = await fetch(url, {
                 method: "POST",
                 headers: {
                     Authorization: `Bearer ${token}`,
@@ -49,23 +39,20 @@ const DettaglioAlloggio = () => {
                 },
             });
 
-            console.log("Response status:", response.status);
-
             if (response.ok) {
-                const newFavoritoState = !isFavorito; // Cambia lo stato
+                const newFavoritoState = !isFavorito;
                 setIsFavorito(newFavoritoState);
 
-                // Salva o rimuovi lo stato nel localStorage
                 if (newFavoritoState) {
                     localStorage.setItem(`favorito_${idAlloggio}`, "true");
                 } else {
                     localStorage.removeItem(`favorito_${idAlloggio}`);
                 }
 
-                console.log("Interesse manifestato con successo.");
+                console.log(newFavoritoState ? "Interesse aggiunto" : "Interesse rimosso");
             } else {
                 const errorData = await response.text();
-                setError(`Errore durante l'aggiunta ai preferiti: ${errorData}`);
+                setError(`Errore durante l'operazione: ${errorData}`);
                 console.error("Errore:", errorData);
             }
         } catch (error) {
@@ -74,59 +61,22 @@ const DettaglioAlloggio = () => {
         }
     };
 
+
     useEffect(() => {
         const checkFavorito = async () => {
             try {
-                const emailRifugiato = localStorage.getItem("email");
-                const idAlloggio = alloggio.id;
-
-                console.log("Email Rifugiato (checkFavorito):", emailRifugiato);
-                console.log("ID Alloggio (checkFavorito):", idAlloggio);
-
-                // Controlla se lo stato è già salvato nel localStorage
-                    // Altrimenti, fai una richiesta API per verificare se è nei preferiti
-                const response = await fetch(`http://localhost:8080/alloggi/isFavorito?email=${emailRifugiato}&idAlloggio=${idAlloggio}`);
-                console.log("Response status (isFavorito):", response.status);
+                const response = await fetch(`http://localhost:8080/alloggi/isFavorito?email=${emailRifugiato}&idAlloggio=${alloggio.id}`, {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                });
 
                 if (response.ok) {
                     const isFavorito = await response.json();
                     setIsFavorito(isFavorito);
-                    console.log("Favorito status from server:", isFavorito);
-                    // Salva il risultato nel localStorage per evitare future richieste
-                    if (isFavorito) {
-                       setIsFavorito(true);
-                    }
                 } else {
-
-                    // check su token:
-                    if (!token) {
-                        alert("Non sei autenticato. Effettua il login.");
-                        nav('/login');
-                        return;
-                    }
-
-                    console.warn("Errore durante il controllo dello stato dei preferiti");
-                    const response = await fetch(`http://localhost:8080/alloggi/isFavorito?email=${emailRifugiato}&idAlloggio=${idAlloggio}`, {
-                        method: "GET",
-                        headers: {
-                            'Authorization': `Bearer ${token}`,
-                            "Content-Type": "application/json",
-                            "Accept": "application/json"
-                        },
-                    });
-
-                    if (response.ok) {
-                        const isFavorito = await response.json();
-                        setIsFavorito(isFavorito);
-                        // Salva il risultato nel localStorage per evitare future richieste
-                        if (isFavorito) {
-                            localStorage.setItem(`favorito_${idAlloggio}`, "true");
-                        }
-                    } else {
-                        console.warn("Errore durante il controllo dello stato dei preferiti");
-                    }
+                    console.warn("Errore durante il controllo dello stato dei preferiti.");
                 }
-
             } catch (error) {
                 console.error("Errore:", error.message);
             }
@@ -135,7 +85,8 @@ const DettaglioAlloggio = () => {
         if (alloggio.id) {
             checkFavorito();
         }
-    }, [alloggio.id]); // Assicurati che alloggio.id sia disponibile prima di fare la chiamata
+    }, [alloggio.id]);
+    [alloggio.id]; // Assicurati che alloggio.id sia disponibile prima di fare la chiamata
 
     useEffect(() => {
         const fetchAlloggio = async () => {
