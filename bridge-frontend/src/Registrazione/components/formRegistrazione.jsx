@@ -1,7 +1,8 @@
 import {useEffect, useState} from "react";
 import '../css/CreaUtente.css';
 import {useNavigate} from "react-router";
-
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const TitolodiStudio = {
     ScuolaPrimaria: "Scuola Primaria",
@@ -115,6 +116,7 @@ const CreaUtente = () => {
         const value = event.target.value;
         setNome(value);
         validateField("nome", value);
+        console.log(errorMessages);
     };
 
     const aggiornaCognome = (event) => {
@@ -253,14 +255,10 @@ const CreaUtente = () => {
         setOrariDisponibili(orariDisponibili.filter((_, i) => i !== index));
     };
 
-    const isFormValid = () => {
-        return Object.keys(errorMessages).length === 0;
-    };
 
     const gestisciSubmit = async (event) => {
-            if (!isFormValid()) {
-                alert("Correggi i campi non validi prima di continuare.");
-                return;
+            if (Object.keys(errorMessages).length > 0) {
+                toast.warning("Correggi i campi non validi prima di continuare.");
             }
         event.preventDefault();
 
@@ -304,15 +302,15 @@ const CreaUtente = () => {
             if (response.ok) {
                 const data = await response.text();
                 console.log("Registrazione avvenuta con successo:", data);
-                alert("Registrazione avvenuta con successo");
+                toast.success("Registrazione avvenuta con successo");
                 navigate('/login');
             } else {
                 console.error("Errore durante la registrazione");
-                alert("Errore, riprova!");
+                toast.error("Errore, riprova!");
             }
         } catch (error) {
             console.error("Errore nella richiesta di registrazione:", error);
-            alert("Errore nel collegamento al server.");
+            toast.error("Errore nel collegamento al server.");
         }
     };
 

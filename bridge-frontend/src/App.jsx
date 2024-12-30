@@ -68,9 +68,9 @@ function App() {
         <Router>
             <Sidebar isOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />
             <main className={`main-content ${isSidebarOpen ? 'shifted' : ''}`}>
+                <ToastContainer />
                 {isAuthenticated ? (
                     <>
-                        <ToastContainer />
                         <Routes>
                             <Route path="/" element={<Homepage />} />
                             <Route path="/eventi-utente" element={<EventiUtente />} />
