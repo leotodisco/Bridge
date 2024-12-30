@@ -169,12 +169,18 @@ const AllConsulenzaView = () => {
 
     return (
         <div>
-            <h1>Tutte le Consulenze</h1>
-            <hr/>
-            {isFiguraSpecializzata && (
-                <button onClick={() => setPopupVisible(true)} className="openPopupButton">Crea una Consulenza</button>
-            )}
 
+            {isFiguraSpecializzata  && (
+                <div className="headerForm-container">
+                    <h1 className="header-title">Tutte le consulenze</h1>
+                    <button
+                        className="btn btn-circle"
+                        onClick={() => setPopupVisible(true)}  // Apri il popup
+                    >
+                        +
+                    </button>
+                </div>
+            )}
 
             <div className="filter-container">
                 <button className="filter-button" onClick={toggleDropdown}>

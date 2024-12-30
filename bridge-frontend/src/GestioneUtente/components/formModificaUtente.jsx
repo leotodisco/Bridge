@@ -197,12 +197,13 @@ const ModificaUtente = ({ userData , setUserData, onSuccess  }) => {
 
     console.log(ruolo);
     const gestisciSubmit = async (event) => {
+
+        event.preventDefault();
         if (!isFormValid()) {
             toast.warning("Correggi i campi non validi prima di continuare.");
             return;
         }
 
-        event.preventDefault();
         const utenteDTO = {
             nomeUtente: nome,
             cognomeUtente: cognome,
@@ -368,7 +369,8 @@ const ModificaUtente = ({ userData , setUserData, onSuccess  }) => {
                                 </button>
                             </div>
                         ))}
-                        <button
+                        {ruolo === "FiguraSpecializzata" ? (
+                            <button
                             type="button"
                             onClick={aggiungiOrario}
                             disabled={orariDisponibili.some(
@@ -383,11 +385,11 @@ const ModificaUtente = ({ userData , setUserData, onSuccess  }) => {
                             }
                         >
                             Aggiungi Orario
-                        </button>
+                        </button>) : null}
                     </div>
                 )}
 
-                {orariDisponibili.length === 0 && (
+                {orariDisponibili.length === 0 && ruolo === "FiguraSpecializzata" && (
                     <div className="buttonContainer">
                         <button
                             type="button"

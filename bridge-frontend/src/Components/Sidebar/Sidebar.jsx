@@ -17,6 +17,8 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
         setIsServicesExpanded(!isServicesExpanded);
     };
 
+    const token = localStorage.getItem('authToken');
+
     // Funzione per chiudere la sidebar quando si clicca fuori
     const handleOverlayClick = () => {
         if (isOpen) toggleSidebar();
@@ -52,11 +54,12 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
                     </li>
 
                     {/* Voce di menu: Preferiti */}
+                    {token !== null && (
                     <li>
                         <Link to="/area-personale">
                             <FaUser className="icon"/> <span>Area Personale</span>
                         </Link>
-                    </li>
+                    </li>)}
 
 
                     {/* Voce di menu: Servizi */}

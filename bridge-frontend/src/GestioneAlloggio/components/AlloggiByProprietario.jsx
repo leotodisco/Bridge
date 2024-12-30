@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import Card from "../../GestioneEvento/components/Card.jsx";
 import "../css/PopUp.css";
 import { useNavigate } from "react-router-dom";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const MostraMyAlloggi = () => {
     const [alloggi, setAlloggi] = useState([]);
@@ -16,12 +18,12 @@ const MostraMyAlloggi = () => {
 
     const handleGoToAssegnaAlloggi = async (emailRifugiato) => {
         if (!selectedAlloggio) {
-            alert("Errore: nessun alloggio selezionato.");
+            toast.error("Errore: nessun alloggio selezionato.");
             return;
         }
 
         if (!emailRifugiato || emailRifugiato.trim() === "") {
-            alert("Errore: nessuna email del rifugiato fornita.");
+            toast.error("Errore: nessuna email del rifugiato fornita.");
             return;
         }
 
@@ -47,7 +49,7 @@ const MostraMyAlloggi = () => {
             }
 
             const responseData = await response.json();
-            alert(`Assegnazione completata: ${responseData.titolo}`);
+            toast.info(`Assegnazione completata: ${responseData.titolo}`);
 
             // Svuota la lista dei rifugiati e chiudi il popup
             setInteressati([]);
@@ -57,7 +59,7 @@ const MostraMyAlloggi = () => {
             fetchAlloggi();
         } catch (error) {
             console.error("Errore durante l'assegnazione dell'alloggio:", error);
-            alert(`Errore durante l'assegnazione: ${error.message}`);
+            toast.error(`Errore durante l'assegnazione: ${error.message}`);
         }
     };
 
@@ -83,7 +85,7 @@ const MostraMyAlloggi = () => {
 
             // Se la lista dei rifugiati è vuota, mostra un alert e non aprire il pop-up
             if (data.length === 0) {
-                alert("Non ci sono rifugiati candidati per questo alloggio.");
+                toast.error("Non ci sono rifugiati candidati per questo alloggio.");
                 return; // Esci dalla funzione
             }
 
@@ -104,7 +106,7 @@ const MostraMyAlloggi = () => {
             const proprietarioEmail = localStorage.getItem("email");
 
             if (!token) {
-                alert("Non sei autenticato. Effettua il login.");
+                toast.error("Non sei autenticato. Effettua il login.");
                 nav('/login');
                 return;
             }
@@ -170,7 +172,7 @@ const MostraMyAlloggi = () => {
         const email = localStorage.getItem("email");
         console.log(email);
         if (!token) {
-            alert("Non sei autenticato. Effettua il login.");
+            toast.error("Non sei autenticato. Effettua il login.");
             nav('/login');
             return;
         }

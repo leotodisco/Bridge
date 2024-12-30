@@ -236,6 +236,8 @@ h3 {
 }
 
 .popup-content {
+    overflow-y: auto; /* Abilita lo scrolling verticale */
+    overflow-x: hidden; /* Evita lo scrolling orizzontale */
     position: relative; /* Aggiunto per fare in modo che la X sia posizionata rispetto a questo contenitore */
     max-width: 100%; /* Limita la larghezza */
     max-height: 99%; /* Limita l'altezza al 80% dell'altezza della finestra */
@@ -245,6 +247,26 @@ h3 {
     flex-direction: column;
     align-items: flex-start;
     background-color: white; /* Aggiungi un background bianco per la parte del contenuto */
+}
+
+.popup-content button[type = "submit"]{
+    background-color: #00BF62;
+}
+
+.popup-content button[type = "submit"]:hover{
+    background-color: #008C4A;
+}
+
+.password-field button{
+    position: absolute !important;
+    top: 25% !important;
+    right: 10px !important;
+    transform: none !important;
+    background: transparent !important;
+    border: none !important;
+    color: #00BF62 !important;
+    cursor: pointer !important;
+    font-size: 0.9em !important;
 }
 
 /* Stili per il Popup di Eliminazione */
@@ -259,19 +281,20 @@ h3 {
 
 /* Stili per il pulsante di chiusura */
 .close-popup {
-    position: absolute; /* Posiziona la X in alto a destra */
-    top: 10px;
-    right: 10px;
-    font-size: 18px;
-    background: none;
-    border: none;
-    cursor: pointer;
-    color: #333; /* Colore del testo della X */
-    z-index: 2; /* Assicurati che sia sopra gli altri contenuti */
+    position: absolute !important; /* Posiziona la X in alto a destra */
+    top: 10px !important;
+    right: 30px !important;
+    font-size: 18px !important;
+    background: none !important;
+    border: none !important;
+    cursor: pointer !important;
+    color: #333 !important; /* Colore del testo della X */
+    z-index: 2 !important; /* Assicurati che sia sopra gli altri contenuti */
 }
 
 .close-popup:hover {
-    color: #00BF62; /* Colore verde al passaggio del mouse */
+    color: #00BF62 !important; /* Colore verde al passaggio del mouse */
+
 }
 
 /* Stili per i pulsanti nel popup di eliminazione */
@@ -314,6 +337,12 @@ h3 {
     flex-direction: column; /* Dispone i pulsanti in colonna */
     gap: 10px; /* Distanza tra i pulsanti */
     margin-top: 20px; /* Distanza dalla sezione superiore */
+}
+
+button{
+    width: auto;
+    margin-top: 0 !important;
+    border: none;
 }
 
 .sectionButtons button {

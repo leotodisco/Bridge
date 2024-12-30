@@ -20,12 +20,11 @@ const AreaPersonale = ({ onLogout }) => {
     const [showDeletePopup, setShowDeletePopup] = useState(false);
 
     const ruolo = localStorage.getItem('ruolo');
-    console.log('Ruolo letto:', ruolo);
-
+    const token = localStorage.getItem('authToken');
     const fetchUserData = async () => {
         try {
             const email = localStorage.getItem('email');
-            const token = localStorage.getItem('authToken');
+
 
             if (!email || !token) {
                 toast.error("Non sei autenticato. Effettua il login.");
@@ -68,7 +67,16 @@ const AreaPersonale = ({ onLogout }) => {
     };
 
     useEffect(() => {
-        fetchUserData();
+        const email = localStorage.getItem('email');
+        const token = localStorage.getItem('authToken');
+
+        // Controlla se l'utente è autenticato
+        if (!email || !token) {
+            toast.error("Non sei autenticato. Effettua il login.");
+            nav('/login');
+        } else {
+            fetchUserData();
+        }
     }, [nav]);
 
     const updateUserData = (newUserData) => {
@@ -229,7 +237,7 @@ const AreaPersonale = ({ onLogout }) => {
                                 </button>
 
                                 {/* Pulsante Delete Account */}
-                                <button onClick={() => setShowDeletePopup(true)} className="deleteButton"
+                                <button onClick={() => setShowDeletePopup(true)  } className="deleteButton"
                                         title="Elimina Account">
                                     <i className="fas fa-trash-alt"></i>
                                 </button>

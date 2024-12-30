@@ -165,7 +165,6 @@ public class UtenteController {
     public ResponseEntity<String> editPassword(
             @RequestBody final String password,
             @PathVariable final String email) throws IOException {
-        System.out.println("yyy");
         try {
             utenteService.modificaPassword(email, password);
             return ResponseEntity.ok("Password aggiornata con successo");

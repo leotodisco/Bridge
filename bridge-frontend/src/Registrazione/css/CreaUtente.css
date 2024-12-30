@@ -50,7 +50,7 @@ h3{
 
 .password-field button{
     position: absolute !important;
-    top: 25% !important;
+    top: 5% !important;
     right: 10px !important;
     transform: none !important;
     background: transparent !important;
@@ -58,8 +58,9 @@ h3{
     color: #00BF62 !important;
     cursor: pointer !important;
     font-size: 0.9em !important;
+    transition: none !important;
+    box-shadow: none !important;
 }
-
 
 .error {
     color: red;
@@ -88,7 +89,7 @@ select.selectMulti {
 
 /* Cambia colore del pulsante al passaggio del mouse */
 .formButton:hover {
-    background-color: #0056b3;
+    background-color: #008C4A;
 }
 
 /* Padding extra per il div contenitore */

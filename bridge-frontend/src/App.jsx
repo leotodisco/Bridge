@@ -32,7 +32,6 @@ import CorsiUtente from "./GestioneUtente/components/dashboardCorso.jsx";
 function App() {
     const [isAuthenticated, setIsAuthenticated] = useState(false);
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-
     // Stato per il chatbot
     const [isChatbotOpen, setIsChatbotOpen] = useState(false);
 
@@ -51,6 +50,7 @@ function App() {
         setIsAuthenticated(false);
         localStorage.clear();
         sessionStorage.clear();
+        window.location.href = "/login";
     };
 
     const toggleSidebar = () => {

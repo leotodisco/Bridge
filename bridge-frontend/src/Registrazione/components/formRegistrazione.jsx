@@ -541,7 +541,7 @@ const CreaUtente = () => {
                         onChange={aggiornaPassword}
                         required={true}
                     />
-                    <button type="button"  onClick={togglePasswordVisibility}>
+                    <button type="button" className= "showPW"  onClick={togglePasswordVisibility}>
                         {showPassword ? "Nascondi Password" : "Mostra Password"}
                     </button>
                 </div>

@@ -3,6 +3,8 @@ import LavoroView from "./LavoroRetrieve.jsx";
 import Card from "../../GestioneEvento/components/Card.jsx";
 import "../../GestioneEvento/css/card.css";
 import {useNavigate} from "react-router-dom";
+import CreaEvento from "../../GestioneEvento/components/formEvento.jsx";
+import CreaLavoro from "./formLavoro.jsx";
 
 /**
  * @author Vito Vernellati
@@ -25,7 +27,12 @@ const AllLavoroView = () => {
     const nav = useNavigate();
     const [tipoFiltro, setTipoFiltro] = useState("");
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+    const ruolo = localStorage.getItem("ruolo");
+    const [showCreatePopup, setShowCreatePopup] = useState(false);
 
+    const closeCreatePopup = () => {
+        setShowCreatePopup(false); // Chiudi il popup di creazione evento
+    };
 
     // Funzione per recuperare gli annunci di lavoro
     const fetchLavori = async (tipo = "") => {
@@ -109,9 +116,22 @@ const AllLavoroView = () => {
 
     return (
         <div>
-            <h1>Tutti gli Annunci di Lavoro</h1>
+            <h1></h1>
 
-             <div className="filter-container">
+            <div className="headerForm-container">
+                <h1 className="header-title">Tutti gli Annunci di Lavoro</h1>
+                {/* Pulsante per aggiungere un nuovo evento */}
+                {ruolo !== "Rifugiato" && (
+                    <button
+                        className="btn btn-circle"
+                        onClick={() => setShowCreatePopup(true)}
+                    >
+                        +
+                    </button>
+                )}
+            </div>
+
+            <div className="filter-container">
                 <button className="filter-button" onClick={toggleDropdown}>
                     {filterOptions[tipoFiltro] || "Filtra per tipo"} {/* Mostra nome leggibile */}
                     <span className={`icon ${isDropdownOpen ? "open" : ""}`}>
@@ -137,7 +157,7 @@ const AllLavoroView = () => {
                             {Object.entries(filterOptions).map(([value, label]) => (
                                 <li
                                     key={value}
-                                    onClick={() => handleFiltroChange({ target: { value } })}
+                                    onClick={() => handleFiltroChange({target: {value}})}
                                 >
                                     {label}
                                 </li>
@@ -182,6 +202,18 @@ const AllLavoroView = () => {
                     onClose={closePopup}
                 />
             )}
+
+            {showCreatePopup && (
+                <div className="popup-overlay show">
+                    <div className="popup-content">
+                        <button className="close-popup" onClick={closeCreatePopup}>
+                            &times;
+                        </button>
+                        <CreaLavoro onClose={closeCreatePopup} />
+                    </div>
+                </div>
+            )}
+
         </div>
     );
 };

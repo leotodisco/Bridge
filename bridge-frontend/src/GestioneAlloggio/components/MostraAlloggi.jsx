@@ -98,13 +98,18 @@ const MostraAlloggi = () => {
 
     return (
         <div>
-            <h1>Tutti gli Alloggi</h1>
-
             {/* Mostra il pulsante "Crea" solo se l'utente è un volontario */}
             {isVolontario && (
-                <button className = "crea-alloggio-button" onClick={handleGoToCreaAlloggi}>Crea</button>
+            <div className="headerForm-container">
+                <h1 className="header-title">Tutti gli Alloggi</h1>
+                    <button
+                        className="btn btn-circle"
+                        onClick={handleGoToCreaAlloggi} // Apri il popup
+                    >
+                        +
+                    </button>
+            </div>
             )}
-
             {loading ? (
                 <p>Caricamento in corso...</p>
             ) : alloggi.length > 0 ? (
