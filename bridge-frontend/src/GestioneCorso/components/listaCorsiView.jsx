@@ -66,6 +66,10 @@ const ListaCorsiView = () => {
 
     const toggleModal = () => setShowModal(!showModal);
 
+    const handleCourseAdded = () => {
+        fetchCorsi(); // Ricarica i corsi
+        toggleModal(); // Chiude il modal
+    };
     if (loading) {
         return <p>Caricamento in corso...</p>;
     }
@@ -121,7 +125,7 @@ const ListaCorsiView = () => {
             {showModal && (
                 <div className="modal">
                     <div >
-                        <CreaCorso onClose={toggleModal} />
+                        <CreaCorso onClose={toggleModal} onCourseAdded={handleCourseAdded} />
                     </div>
                 </div>
             )}
