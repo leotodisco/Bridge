@@ -110,7 +110,7 @@ public class SecurityConfig {
                 "/api/annunci/creaLavoro",
                 "/api/annunci/view_lavori",
                 "/api/annunci/view_lavori/proprietario/{id}",
-                "/api/annunci/view_lavori/retrive/{id}",
+                "/api/annunci/view_lavori/retrieve/{id}",
                 "/api/annunci/modifica_lavoro/{id}",
                 "/api/annunci/elimina_lavoro/{id}",
                 "/api/annunci/random",

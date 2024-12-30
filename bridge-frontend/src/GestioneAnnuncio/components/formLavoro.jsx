@@ -1,6 +1,8 @@
 import { useState } from "react";
 import "../css/formLavoro.css";
 import {useNavigate} from "react-router-dom";
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const TipoContratto = {
     FULL_TIME: "Full Time",
@@ -61,7 +63,7 @@ const CreaLavoro = () => {
 
         // Validazione del CAP
         if (indirizzo.cap && !/^\d{5}$/.test(indirizzo.cap)) {
-            alert("Il CAP deve contenere esattamente 5 cifre.");
+            toast.warning("Il CAP deve contenere esattamente 5 cifre.");
             return;
         }
 
@@ -69,7 +71,7 @@ const CreaLavoro = () => {
         const retribuzioneNumerica = parseFloat(retribuzione.replace(",", "."));
 
         if (isNaN(retribuzioneNumerica) || retribuzioneNumerica <= 0) {
-            alert("La retribuzione deve essere un numero valido e positivo.");
+            toast.warning("La retribuzione deve essere un numero valido e positivo.");
             return;
         }
 
@@ -82,7 +84,7 @@ const CreaLavoro = () => {
         console.log("Orario Formattato:", orarioLavoroFormatted);
 
         if (!orarioLavoroFormatted) {
-            alert("Devi inserire almeno un intervallo di orario di lavoro completo.");
+            toast.warning("Devi inserire almeno un intervallo di orario di lavoro completo.");
             return;
         }
 
@@ -108,10 +110,10 @@ const CreaLavoro = () => {
         console.log("Dati dell'annuncio di lavoro: ", lavoroDTO);
 
         try {
-            const token = localStorage.getItem("token");
+            const token = localStorage.getItem("authToken");
             // check su token:
             if (!token) {
-                alert("Non sei autenticato. Effettua il login.");
+                toast.warning("Non sei autenticato. Effettua il login.");
                 nav('/login');
                 return;
             }
@@ -132,11 +134,11 @@ const CreaLavoro = () => {
 
             const result = await response.json();
             console.log("Annuncio di lavoro creato con successo!", result);
-            alert("Annuncio di lavoro creato con successo!");
+            toast.info("Annuncio di lavoro creato con successo!");
             resetForm();
         } catch (error) {
             console.error("Errore durante la creazione del lavoro: ", error);
-            alert("Errore durante la creazione del lavoro: " + error.message);
+            toast.error("Errore durante la creazione del lavoro: " + error.message);
         }
     };
 
@@ -147,7 +149,7 @@ const CreaLavoro = () => {
         setCandidati([]);
         setPosizioneLavorativa("");
         setNomeAzienda("");
-        setOrarioLavoro([{ start: "", end: "" }]); // Reset degli orari di lavoro
+        setOrariLavoro([{ start: "", end: "" }]); // Reset degli orari di lavoro
         setTipoContratto("");
         setRetribuzione("");
         setNomeSede("");

@@ -120,7 +120,7 @@ const ListaCorsiView = () => {
             {selectedCorsoId && <CorsoView id={selectedCorsoId} onClose={() => setSelectedCorsoId(null)} />}
             {showModal && (
                 <div className="modal">
-                    <div >
+                    <div>
                         <CreaCorso onClose={toggleModal} />
                     </div>
                 </div>

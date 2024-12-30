@@ -121,7 +121,7 @@ const AllLavoroView = () => {
             <div className="headerForm-container">
                 <h1 className="header-title">Tutti gli Annunci di Lavoro</h1>
                 {/* Pulsante per aggiungere un nuovo evento */}
-                {ruolo !== "Rifugiato" && (
+                {ruolo === "Volontario" && (
                     <button
                         className="btn btn-circle"
                         onClick={() => setShowCreatePopup(true)}

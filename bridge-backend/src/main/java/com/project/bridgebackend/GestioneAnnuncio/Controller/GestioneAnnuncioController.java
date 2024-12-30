@@ -584,7 +584,7 @@ public class GestioneAnnuncioController {
      * @param id ID dell'annuncio di lavoro.
      * @return ResponseEntity contenente l'annuncio di lavoro specificato.
      */
-    @GetMapping("/view_lavori/retrive/{id}")
+    @GetMapping("/view_lavori/retrieve/{id}")
     public ResponseEntity<Lavoro> getLavoroById(@PathVariable final long id) {
         Lavoro lavoro = gestioneAnnuncioService.getLavori(id);
         System.out.println(lavoro);
