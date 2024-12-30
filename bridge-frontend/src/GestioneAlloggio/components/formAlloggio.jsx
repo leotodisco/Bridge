@@ -1,6 +1,8 @@
 import {useEffect, useState} from "react";
 import {useNavigate} from "react-router-dom";
 import "../css/formAlloggioStyle.css";
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const Servizi = {
     WIFI: "WIFI",
@@ -70,9 +72,10 @@ const CreaAlloggio = () => {
             nuoviErrori.titolo = "Il titolo deve essere tra 3 e 100 caratteri.";
         }
 
-        if (!/^[A-Za-z0-9]{0,400}$/.test(descrizione)) {
+        if (!/^[A-Za-z0-9 ]{1,400}$/.test(descrizione)) {
             nuoviErrori.descrizione = "La descrizione deve essere tra 1 e 400 caratteri.";
         }
+
 
         if (!/^\d{1,2}$/.test(maxPersone)) {
             nuoviErrori.maxPersone = "Il numero massimo di persone deve essere tra 1 e 99.";
@@ -149,7 +152,7 @@ const CreaAlloggio = () => {
             const token = localStorage.getItem('authToken');
 
             if (!email || !token) {
-                alert("Non sei autenticato. Effettua il login.");
+                toast.error("Non sei autenticato. Effettua il login.");
                 nav('/login');
                 return;
             }
@@ -185,12 +188,12 @@ const CreaAlloggio = () => {
             }
 
             const result = await response.text();
-            alert("Alloggio creato con successo: " + result);
+           toast.error("Alloggio creato con successo: " + result);
 
             nav("/area-personale");
-        } catch (error) {
-            console.error("Errore creazione alloggio: ", error);
-            alert("Errore durante la creazione dell'alloggio: " + error.message);
+        } catch (errore) {
+            console.error("Errore creazione alloggio: ", errore);
+            toast.error("Errore durante la creazione dell'alloggio: " + errore.message);
         }
     };
 

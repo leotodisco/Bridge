@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Card from "../../GestioneEvento/components/Card.jsx";
 import "../css/crea-alloggio.css";
+import "../../GestioneAnnuncio/css/PopUpForm.css";
 
 
 const MostraAlloggi = () => {

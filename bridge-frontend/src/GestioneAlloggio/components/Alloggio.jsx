@@ -3,13 +3,15 @@ import {useNavigate, useParams} from "react-router-dom";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faHeart, faHeartBroken } from '@fortawesome/free-solid-svg-icons'; // Importa le icone del cuore
 import "../css/alloggio.css";
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const DettaglioAlloggio = () => {
     const { titolo } = useParams();
     const [alloggio, setAlloggio] = useState({});
     const [fotoAlloggio, setFotoAlloggio] = useState([]);
     const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
+    const [errore, setError] = useState(null);
     const [fotoIngrandita, setFotoIngrandita] = useState(null); // Stato per foto ingrandita
     const [isFavorito, setIsFavorito] = useState(false); // Stato per tracciare se l'alloggio è nei preferiti
     const nav = useNavigate();
@@ -22,7 +24,7 @@ const DettaglioAlloggio = () => {
             const idAlloggio = alloggio.id;
 
             if (!emailRifugiato || !token) {
-                alert("Non sei autenticato. Effettua il login.");
+                toast.error("Non sei autenticato. Effettua il login.");
                 nav('/login');
                 return;
             }
@@ -45,8 +47,10 @@ const DettaglioAlloggio = () => {
 
                 if (newFavoritoState) {
                     localStorage.setItem(`favorito_${idAlloggio}`, "true");
+                    toast.error("Manifestazione interesse aggiunta con successo");
                 } else {
                     localStorage.removeItem(`favorito_${idAlloggio}`);
+                    toast.error("Manifestazione interesse rimossa con successo");
                 }
 
                 console.log(newFavoritoState ? "Interesse aggiunto" : "Interesse rimosso");
@@ -55,9 +59,9 @@ const DettaglioAlloggio = () => {
                 setError(`Errore durante l'operazione: ${errorData}`);
                 console.error("Errore:", errorData);
             }
-        } catch (error) {
-            setError(`Errore: ${error.message}`);
-            console.error("Errore:", error.message);
+        } catch (errore) {
+            setError(`Errore: ${errore.message}`);
+            console.error("Errore:", errore.message);
         }
     };
 
@@ -77,8 +81,8 @@ const DettaglioAlloggio = () => {
                 } else {
                     console.warn("Errore durante il controllo dello stato dei preferiti.");
                 }
-            } catch (error) {
-                console.error("Errore:", error.message);
+            } catch (errore) {
+                console.error("Errore:", errore.message);
             }
         };
 
@@ -93,7 +97,7 @@ const DettaglioAlloggio = () => {
             try {
                 // check su token:
                 if (!token) {
-                    alert("Non sei autenticato. Effettua il login.");
+                   toast.error("Non sei autenticato. Effettua il login.");
                     nav('/login');
                     return;
                 }
@@ -112,8 +116,8 @@ const DettaglioAlloggio = () => {
                 const data = await response.json();
                 setAlloggio(data);
                 setFotoAlloggio(data.foto);
-            } catch (error) {
-                setError(error.message);
+            } catch (errore) {
+                setError(errore.message);
             } finally {
                 setLoading(false);
             }
@@ -131,7 +135,7 @@ const DettaglioAlloggio = () => {
     };
 
     if (loading) return <p>Caricamento in corso...</p>;
-    if (error) return <p>Errore: {error}</p>;
+    if (errore) return <p>Errore: {errore}</p>;
     if (!alloggio) return <p>Dettagli non disponibili.</p>;
 
     return (
