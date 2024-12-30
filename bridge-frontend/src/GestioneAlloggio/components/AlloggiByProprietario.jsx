@@ -2,8 +2,9 @@ import { useEffect, useState } from "react";
 import Card from "../../GestioneEvento/components/Card.jsx";
 import "../css/PopUp.css";
 import { useNavigate } from "react-router-dom";
-import { ToastContainer, toast } from 'react-toastify';
+import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import "../../GestioneAnnuncio/css/PopUpForm.css";
 
 const MostraMyAlloggi = () => {
     const [alloggi, setAlloggi] = useState([]);

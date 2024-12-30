@@ -278,8 +278,6 @@ const AreaPersonale = ({ onLogout }) => {
                                     <div>
                                         <button onClick={() => navigate('/corsi-utente')}>I miei Corsi</button>
                                         <button onClick={() => navigate('/consuleza-utente')}>Le mie Consulenze</button>
-                                        <button onClick={() => navigate('/lavori-utente')}>I miei Annunci di Lavoro
-                                        </button>
                                     </div>
                                 ) : null}
 

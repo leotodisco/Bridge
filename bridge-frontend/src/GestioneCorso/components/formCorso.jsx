@@ -1,10 +1,6 @@
-// CreaCorso.jsx
 import { useState } from "react";
-import { FaTimes } from 'react-icons/fa'; // Importa l'icona
-import { useNavigate } from 'react-router-dom'; // Importa useNavigate per la navigazione
+import { FaTimes } from 'react-icons/fa';
 import "../../GestioneCorso/css/formCorsoStyle.css";
-import { toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
 
 const LINGUA = {
     ITALIANO: "ITALIANO",
@@ -26,218 +22,103 @@ const CATEGORIA = {
 };
 
 // eslint-disable-next-line react/prop-types
-const CreaCorso = ({ onClose }) => { // Accetta la prop onClose
+const CreaCorso = ({ onClose }) => {
     const [titolo, setTitolo] = useState("");
     const [descrizione, setDescrizione] = useState("");
     const [categoria, setCategoria] = useState("");
     const [lingua, setLingua] = useState("");
     const [pdfFile, setPdfFile] = useState(null);
-    const [pdfId, setPdfId] = useState(null);
     const [loading, setLoading] = useState(false);
-    const nav= useNavigate();
+
     const aggiornaTitolo = (e) => setTitolo(e.target.value);
     const aggiornaDescrizione = (e) => setDescrizione(e.target.value);
     const aggiornaCategoria = (e) => setCategoria(e.target.value);
     const aggiornaLingua = (e) => setLingua(e.target.value);
     const aggiornaPdfFile = (e) => setPdfFile(e.target.files[0]);
+
     const emailUtenteLoggato = localStorage.getItem("email");
-    console.log(emailUtenteLoggato);
 
-    const [titoloError, setTitoloError] = useState("");
-    const [descrizioneError, setDescrizioneError] = useState("");
-    const [categoriaError, setCategoriaError] = useState("");
-    const [linguaError, setLinguaError] = useState("");
-    const [pdfFileError, setPdfFileError] = useState("");
-
-    const validateTitolo = () => {
-        const titoloRegex = /^[A-Za-z0-9À-ÿ .,'-]{3,100}$/;
-        if (!titoloRegex.test(titolo)) {
-            setTitoloError("Il titolo deve contenere da 3 a 100 caratteri alfanumerici");
-            return false;
-        }
-        setTitoloError("");
-        return true;
-    }
-
-    const validateDescrizione = () => {
-        const descrizioneRegex = /^[A-Za-z0-9À-ÿ .,'-]{3,500}$/;
-        if (!descrizioneRegex.test(descrizione)) {
-            setDescrizioneError("La descrizione deve contenere da 3 a 500 caratteri alfanumerici");
-            return false;
-        }
-        setDescrizioneError("");
-        return true;
-    }
-
-    const validateCategoria = () => {
-        const categoriaRegex = /^[A-Za-zÀ-ÿ' -]{3,50}$/;
-        if (!categoriaRegex.test(categoria)) {
-            setCategoriaError("La categoria deve contenere da 3 a 50 caratteri alfabetici");
-            return false;
-        }
-        setCategoriaError("");
-        return true;
-    }
-
-    const validateLingua = () => {
-        if (lingua.trim() === ""){
-            setLinguaError("Seleziona una lingua");
-            return false;
-        }
-
-        setLinguaError("");
-        return true;
-    }
-
-    const validatePdfFile = () => {
-        if (!pdfFile) {
-            setPdfFileError("Nessun file selezionato");
-            return false;
-        }
-        if (pdfFile.type !== "application/pdf") {
-            setPdfFileError("Il file deve essere un PDF valido");
-            return false;
-        }
-        setPdfFileError("");
-        return true;
-    }
+    const validateFields = () => {
+        const errors = [];
+        if (!titolo.trim()) errors.push("Titolo non valido");
+        if (!descrizione.trim()) errors.push("Descrizione non valida");
+        if (!categoria.trim()) errors.push("Categoria non valida");
+        if (!lingua.trim()) errors.push("Lingua non valida");
+        if (!pdfFile || pdfFile.type !== "application/pdf") errors.push("File PDF non valido");
+        return errors;
+    };
 
     const handlePdfUpload = async (file) => {
         const formData = new FormData();
-        formData.append("nome", file.name);  // nome del file
-        formData.append("pdf", file);  // il file stesso
+        formData.append("nome", file.name);
+        formData.append("pdf", file);
 
-        try {
-            const token = localStorage.getItem('authToken');
+        const token = localStorage.getItem('authToken');
+        const response = await fetch("http://localhost:8080/api/corsi/upload", {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'Authorization': `Bearer ${token}`,
+            },
+        });
 
-            if (!token) {
-                toast.wa("Non sei autenticato. Effettua il login.");
-                nav('/login');
-                return;
-            }
-
-            const response = await
-                fetch("http://localhost:8080/api/corsi/upload", {
-                    method: 'POST',
-                    body: formData,
-                    headers: {
-                        'Authorization': `Bearer ${token}`,
-                    },
-                });
-
-            if (!response.ok) {
-                const errorMessage = await response.text(); // Leggi il corpo della risposta
-                throw new Error(`Errore durante il caricamento del PDF: ${errorMessage}`);
-            }
-
-            // Leggi il corpo della risposta solo una volta
-            const pdfId = await response.text();  // Ottenere l'ID del PDF dal corpo della risposta
-            console.log("ID del PDF caricato:", pdfId);  // Stampare l'ID del PDF
-            return pdfId;  // Restituire l'ID del PDF
-        } catch (error) {
-            console.error("Errore durante l'upload del PDF:", error);
-            toast.error(`Errore durante il caricamento del PDF: ${error.message}`);
-            throw error;
+        if (!response.ok) {
+            throw new Error("Errore durante l'upload del PDF");
         }
+
+        return await response.text();
     };
 
-    const handleSubmit = async () => {
+    const handleSubmit = async (event) => {
+        event.preventDefault();
 
-        const isTitoloValid = validateTitolo();
-        const isDescrizioneValid = validateDescrizione();
-        const isCategoriaValid = validateCategoria();
-        const isLinguaValid = validateLingua();
-        const isPdfFileValid = validatePdfFile();
-
-        console.log("Validazione campi:", isTitoloValid, isDescrizioneValid, isCategoriaValid, isLinguaValid, isPdfFileValid);
-
-        if (!isTitoloValid || !isDescrizioneValid || !isCategoriaValid || !isLinguaValid || !isPdfFileValid) {
-            console.log("Campi non validi, non posso procedere con la creazione del corso");
+        const errors = validateFields();
+        if (errors.length > 0) {
+            alert(errors.join("\n"));
             return;
         }
 
         setLoading(true);
-        let uploadedPdfId = pdfId;
 
-        if (pdfFile && !pdfId) {
-            console.log("PDF non ancora caricato, procedo con l'upload");
-            try {
-                uploadedPdfId = await handlePdfUpload(pdfFile);
-                setPdfId(uploadedPdfId);
-            } catch {
-                setLoading(false);
-                return;
-            }
-        }
-
-        const corsoDTO = {
-            titolo,
-            descrizione,
-            categoria,
-            lingua,
-            pdf: uploadedPdfId,
-        };
-
-        console.log("Corso da creare:", corsoDTO);  // Log dei dettagli del corso da creare
         try {
-            const token = localStorage.getItem("authToken");  // Recupera il token JWT
-            console.log(localStorage.getItem("authToken"));
+            const pdfId = await handlePdfUpload(pdfFile);
 
-            if (!token) {
-                toast.error("Non sei autenticato. Effettua il login.");
-                nav('/login');
-                return;
-            }
-
+            const token = localStorage.getItem("authToken");
             const response = await fetch("http://localhost:8080/api/corsi/crea", {
                 method: "POST",
                 headers: {
-                    "Content-Type": "application/json" ,
-                    "Accept": "application/json",
-                    "Authorization": `Bearer ${token}`  // Invia il token JWT nell'intestazione
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${token}`
                 },
                 body: JSON.stringify({
-                    titolo: titolo,
-                    descrizione: descrizione,
-                    categoria: categoria,
-                    lingua: lingua,
-                    pdf: uploadedPdfId,
+                    titolo,
+                    descrizione,
+                    categoria,
+                    lingua,
+                    pdf: pdfId,
                     proprietario: emailUtenteLoggato
                 }),
             });
 
             if (!response.ok) {
-                const errorDetails = await response.text(); // Leggi il corpo della risposta
-                console.error("Errore 403:", errorDetails);  // Log dei dettagli dell'errore
-                throw new Error("Errore durante la creazione del corso: " + errorDetails);
+                const errorDetails = await response.text();
+                throw new Error(errorDetails);
             }
-            const result = await response.json();
-            console.log("Corso creato con successo:", result);  // Log del risultato
-            toast.info("Corso creato con successo!");
+
+            window.location.reload(); // Ricarica la pagina
         } catch (error) {
             console.error("Errore durante la creazione del corso:", error);
-            toast.error(`Errore durante la creazione del corso: ${error.message}`);
         } finally {
             setLoading(false);
         }
     };
 
-    const handleClose = () => {
-        console.log("Pulsante di chiusura cliccato"); // Log di debug
-        if (onClose) {
-            onClose(); // Chiude il modal se onClose è fornito
-        } else {
-            nav('/view-listacorsi'); // Reindirizza a /view-listacorsi
-        }
-    };
-
     return (
         <div className="formContainer">
-            {/* Pulsante di chiusura */}
             <button
-                type="button" // Specifica il tipo del pulsante
+                type="button"
                 className="closeIcon"
-                onClick={handleClose}
+                onClick={onClose}
                 aria-label="Chiudi"
             >
                 <FaTimes />
@@ -247,30 +128,28 @@ const CreaCorso = ({ onClose }) => { // Accetta la prop onClose
             <form onSubmit={handleSubmit}>
                 <div className="formField">
                     <input
-                        className={`InputField ${titoloError ? "error" : ""}`}
+                        className="InputField"
                         type="text"
                         placeholder="Titolo del corso"
                         value={titolo}
                         onChange={aggiornaTitolo}
                         required
                     />
-                    {titoloError && <p className="errorText">{titoloError}</p>}
                 </div>
 
                 <div className="formField">
                     <textarea
-                        className={`InputField ${descrizioneError ? "error" : ""}`}
+                        className="InputField"
                         placeholder="Descrizione"
                         value={descrizione}
                         onChange={aggiornaDescrizione}
                         required
                     />
-                    {descrizioneError && <p className="errorText">{descrizioneError}</p>}
                 </div>
 
                 <div className="formField">
                     <select
-                        className={`InputField ${categoriaError ? "error" : ""}`}
+                        className="InputField"
                         value={categoria}
                         onChange={aggiornaCategoria}
                         required
@@ -282,12 +161,11 @@ const CreaCorso = ({ onClose }) => { // Accetta la prop onClose
                             </option>
                         ))}
                     </select>
-                    {categoriaError && <p className="errorText">{categoriaError}</p>}
                 </div>
 
                 <div className="formField">
                     <select
-                        className={`InputField ${linguaError ? "error" : ""}`}
+                        className="InputField"
                         value={lingua}
                         onChange={aggiornaLingua}
                         required
@@ -300,7 +178,6 @@ const CreaCorso = ({ onClose }) => { // Accetta la prop onClose
                         ))}
                     </select>
                 </div>
-                {linguaError && <p className="errorText">{linguaError}</p>}
 
                 <div className="formField">
                     <div className="fileInputWrapper">
@@ -313,15 +190,13 @@ const CreaCorso = ({ onClose }) => { // Accetta la prop onClose
                                 style={{ display: "none" }}
                             />
                         </label>
-                        {pdfFile && (
-                            <p className="filePreview">File selezionato: {pdfFile.name}</p>
-                        )}
+                        {pdfFile && <p className="filePreview">File selezionato: {pdfFile.name}</p>}
                     </div>
-                    <button className="fileButton" type="submit" disabled={loading}>
-                        {loading ? "Caricamento..." : "Crea Corso"}
-                    </button>
-                    {pdfFileError && <p className="errorText">{pdfFileError}</p>}
                 </div>
+
+                <button className="fileButton" type="submit" disabled={loading}>
+                    {loading ? "Caricamento..." : "Crea Corso"}
+                </button>
             </form>
         </div>
     );

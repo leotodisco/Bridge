@@ -1,6 +1,8 @@
 import {useEffect, useState} from "react";
 import {useNavigate} from "react-router-dom";
 import "../css/formAlloggioStyle.css";
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const Servizi = {
     WIFI: "WIFI",
@@ -16,6 +18,7 @@ const CreaAlloggio = () => {
     const [fotos, setFotos] = useState([]);
     const [servizi, setServizi] = useState("");
     const [titolo, setTitolo] = useState("");
+    const [isDisabled, setButton] = useState(false);
     const [volontario, setVolontario] = useState(false);
     const [indirizzo, setIndirizzo] = useState({
         via: "",
@@ -43,6 +46,18 @@ const CreaAlloggio = () => {
             return;
         }
 
+        const validFormats = ["image/jpeg", "image/jpg"];
+        const invalidFiles = files.filter((file) => !validFormats.includes(file.type));
+
+        if (invalidFiles.length > 0) {
+            setErrori((prev) => ({ ...prev, fotos: "Tutte le immagini devono essere in formato JPG o JPEG." }));
+            setButton(true);
+            return;
+        }
+        else{
+            setButton(false);
+        }
+
         const readers = files.map((file) => {
             return new Promise((resolve, reject) => {
                 const reader = new FileReader();
@@ -55,13 +70,14 @@ const CreaAlloggio = () => {
         Promise.all(readers)
             .then((base64Images) => {
                 setFotos(base64Images);
-                setErrori((prev) => ({ ...prev, fotos: "" }));
+                setErrori((prev) => ({ ...prev, fotos: "" })); // Rimuove gli errori in caso di successo
             })
             .catch((error) => {
                 console.error("Errore nella lettura delle immagini:", error);
                 setErrori((prev) => ({ ...prev, fotos: "Errore nella lettura delle immagini." }));
             });
     };
+
 
     const validaCampi = () => {
         const nuoviErrori = {};
@@ -70,9 +86,10 @@ const CreaAlloggio = () => {
             nuoviErrori.titolo = "Il titolo deve essere tra 3 e 100 caratteri.";
         }
 
-        if (!/^[A-Za-z0-9]{0,400}$/.test(descrizione)) {
+        if (!/^[A-Za-z0-9 ]{1,400}$/.test(descrizione)) {
             nuoviErrori.descrizione = "La descrizione deve essere tra 1 e 400 caratteri.";
         }
+
 
         if (!/^\d{1,2}$/.test(maxPersone)) {
             nuoviErrori.maxPersone = "Il numero massimo di persone deve essere tra 1 e 99.";
@@ -107,9 +124,10 @@ const CreaAlloggio = () => {
             nuoviErrori.provincia = "La provincia deve avere esattamente 2 caratteri alfabetici.";
         }
 
-        if (fotos.length === 0 && !/^.+\.jpeg$/.test(fotos)) {
-            nuoviErrori.fotos = "Devi caricare almeno 1 foto in formato JPEG.";
-        }
+        /*if (fotos.length === 0 || !(fotos.type === "image/jpeg" || fotos.type === "image/jpg")) {
+            console.log("L'estensione delle foto ", fotos.type);
+            nuoviErrori.fotos = "Devi caricare almeno 1 foto in formato JPG o JPEG.";
+        }*/
 
         setErrori(nuoviErrori);
         return Object.keys(nuoviErrori).length === 0;
@@ -149,7 +167,7 @@ const CreaAlloggio = () => {
             const token = localStorage.getItem('authToken');
 
             if (!email || !token) {
-                alert("Non sei autenticato. Effettua il login.");
+                toast.error("Non sei autenticato. Effettua il login.");
                 nav('/login');
                 return;
             }
@@ -185,12 +203,12 @@ const CreaAlloggio = () => {
             }
 
             const result = await response.text();
-            alert("Alloggio creato con successo: " + result);
+           toast.error("Alloggio creato con successo: " + result);
 
             nav("/area-personale");
-        } catch (error) {
-            console.error("Errore creazione alloggio: ", error);
-            alert("Errore durante la creazione dell'alloggio: " + error.message);
+        } catch (errore) {
+            console.error("Errore creazione alloggio: ", errore);
+            toast.error("Errore durante la creazione dell'alloggio: " + errore.message);
         }
     };
 
@@ -310,7 +328,7 @@ const CreaAlloggio = () => {
                     {errori.fotos && <span className="errore">{errori.fotos}</span>}
                 </div>
 
-                <button type="submit">Crea Alloggio</button>
+                <button type="submit" disabled={isDisabled}>Crea Alloggio</button>
             </form>
         </div>
     );
