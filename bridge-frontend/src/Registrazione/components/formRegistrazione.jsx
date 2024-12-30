@@ -55,6 +55,7 @@ const CreaUtente = () => {
     const [errorMessages, setErrorMessages] = useState({});
     const [orariDisponibili, setOrariDisponibili] = useState([]);
     const navigate = useNavigate();
+    const [isDisabled, setButton] = useState(false);
 
     const aggiornaDataDiNascita = (event) => {
         const value = event.target.value;
@@ -209,6 +210,7 @@ const CreaUtente = () => {
             // Controlla se il file è di tipo JPEG/JPG
             if (file.type === "image/jpeg" || file.type === "image/jpg") {
                 const reader = new FileReader();
+                setButton(false);
                 reader.onload = () => {
                     setFotoProfilo(reader.result); // Aggiorna l'immagine con il file caricato
                 };
@@ -221,6 +223,7 @@ const CreaUtente = () => {
                     return updatedErrors;
                 });
             } else {
+                setButton(true);
                 // Imposta un messaggio di errore per tipi di file non validi
                 setErrorMessages((prev) => ({
                     ...prev,
@@ -573,7 +576,7 @@ const CreaUtente = () => {
                 />
                 {errorMessages.fotoProfilo && <p className="error">{errorMessages.fotoProfilo}</p>}
 
-                <button type="submit" className="formButton">
+                <button type="submit" className="formButton" disabled={isDisabled}>
                     Invio
                 </button>
             </form>
