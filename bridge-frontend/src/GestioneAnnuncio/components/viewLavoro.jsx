@@ -2,8 +2,7 @@ import { useState, useEffect } from "react";
 import LavoroView from "./LavoroRetrieve.jsx";
 import Card from "../../GestioneEvento/components/Card.jsx";
 import "../../GestioneEvento/css/card.css";
-import {useNavigate} from "react-router-dom";
-import CreaEvento from "../../GestioneEvento/components/formEvento.jsx";
+import { useNavigate } from "react-router-dom";
 import CreaLavoro from "./formLavoro.jsx";
 
 /**
@@ -29,6 +28,7 @@ const AllLavoroView = () => {
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
     const ruolo = localStorage.getItem("ruolo");
     const [showCreatePopup, setShowCreatePopup] = useState(false);
+    const [userImages, setUserImages] = useState({}); // Stato per immagini degli utenti
 
     const closeCreatePopup = () => {
         setShowCreatePopup(false); // Chiudi il popup di creazione evento
@@ -65,6 +65,32 @@ const AllLavoroView = () => {
             }
             const data = await response.json();
             setLavori(data);
+
+            // Recupera le immagini degli utenti
+            const imagesData = {};
+            for (const lavoro of data) {
+                const emailProprietario = lavoro.proprietario.email;
+                try {
+                    const imgResponse = await fetch(`http://localhost:8080/areaPersonale/DatiFotoUtente/${emailProprietario}`, {
+                        method: 'GET',
+                        headers: {
+                            'Authorization': `Bearer ${token}`,
+                            'Content-Type': 'application/json',
+                        },
+                    });
+
+                    if (imgResponse.ok) {
+                        const imgBase64 = await imgResponse.text();
+                        imagesData[emailProprietario] = `data:image/jpeg;base64,${imgBase64}`;
+                    } else {
+                        imagesData[emailProprietario] = "https://via.placeholder.com/150/cccccc/000000?text=No+Image";
+                    }
+                } catch (error) {
+                    console.error("Errore nel recupero dell'immagine utente:", error);
+                    imagesData[emailProprietario] = "https://via.placeholder.com/150/cccccc/000000?text=No+Image";
+                }
+            }
+            setUserImages(imagesData);
         } catch (err) {
             setError("Si è verificato un errore nel recupero degli annunci: " + err.message);
         } finally {
@@ -173,9 +199,7 @@ const AllLavoroView = () => {
                             key={lavoro.id}
                             data={{
                                 title: lavoro.titolo,
-                                image: lavoro.proprietario.fotoProfilo
-                                    ? lavoro.proprietario.fotoProfilo
-                                    : "https://via.placeholder.com/150/cccccc/000000?text=No+Image",
+                                image: userImages[lavoro.proprietario.email] || "https://via.placeholder.com/150/cccccc/000000?text=No+Image",
                                 userName: `${lavoro.proprietario.nome} ${lavoro.proprietario.cognome}`,
                                 parameter1: lavoro.posizioneLavorativa,
                                 parameter2: lavoro.retribuzione ? `€ ${lavoro.retribuzione}` : "Non specificata",
@@ -219,3 +243,4 @@ const AllLavoroView = () => {
 };
 
 export default AllLavoroView;
+
