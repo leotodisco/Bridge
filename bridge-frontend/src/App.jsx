@@ -46,6 +46,7 @@ function App() {
         setIsAuthenticated(true);
     };
 
+    // Gestione del logout
     const handleLogout = () => {
         setIsAuthenticated(false);
         localStorage.clear();
@@ -53,10 +54,10 @@ function App() {
         window.location.href = "/login";
     };
 
+    // Funzione per aprire e chiudere la sidebar
     const toggleSidebar = () => {
         setIsSidebarOpen(!isSidebarOpen);
     };
-
 
     // Funzione toggle
     const toggleChatbotPopup = () => {
