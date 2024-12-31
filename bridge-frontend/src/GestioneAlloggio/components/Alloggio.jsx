@@ -180,6 +180,9 @@ const DettaglioAlloggio = () => {
                 <div className="colonna-sinistra">
                     <p><strong>Proprietario:</strong> {alloggio.proprietario.nome}</p>
                     <p><strong>Email:</strong> {alloggio.proprietario.email}</p>
+                    <p><strong>Metratura: </strong> {alloggio.metratura} </p>
+                    <p><strong>Max Persone: </strong> {alloggio.maxPersone} </p>
+                    <p><strong>Servizi: </strong> {alloggio.servizi} </p>
                 </div>
 
                 <div className="colonna-destra">

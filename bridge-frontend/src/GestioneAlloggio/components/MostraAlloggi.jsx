@@ -4,7 +4,6 @@ import Card from "../../GestioneEvento/components/Card.jsx";
 import "../css/crea-alloggio.css";
 import "../../GestioneAnnuncio/css/PopUpForm.css";
 
-
 const MostraAlloggi = () => {
     const [alloggi, setAlloggi] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -101,15 +100,15 @@ const MostraAlloggi = () => {
         <div>
             {/* Mostra il pulsante "Crea" solo se l'utente è un volontario */}
             {isVolontario && (
-            <div className="headerForm-container">
-                <h1 className="header-title">Tutti gli Alloggi</h1>
+                <div className="headerForm-container">
+                    <h1 className="header-title">Tutti gli Alloggi</h1>
                     <button
                         className="btn btn-circle"
                         onClick={handleGoToCreaAlloggi} // Apri il popup
                     >
                         +
                     </button>
-            </div>
+                </div>
             )}
             {loading ? (
                 <p>Caricamento in corso...</p>
@@ -125,7 +124,7 @@ const MostraAlloggi = () => {
                                 data={{
                                     title: alloggio.titolo,
                                     image: alloggioImage,
-                                    alloggiProprietario: `${alloggio.proprietario.nome}`,
+                                    userName: alloggio.proprietario.nome, // Passa il nome del proprietario
                                     parameter1: alloggio.maxPersone,
                                     parameter2: alloggio.metratura,
                                     parameter3: alloggio.servizi,
