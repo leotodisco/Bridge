@@ -132,7 +132,7 @@ public class SecurityConfig {
                 "alloggi/assegnazione",
                 "/alloggi/SingoloAlloggio/{titolo}",
                 "/alloggi/interesse",
-                "/api/alloggi/random",
+                "/alloggi/random",
                 "/alloggi/alloggiPreferitiUtente/{email}",
 
                 // AREA PERSONALE

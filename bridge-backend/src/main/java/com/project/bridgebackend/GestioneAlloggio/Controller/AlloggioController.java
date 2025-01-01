@@ -3,10 +3,7 @@ package com.project.bridgebackend.GestioneAlloggio.Controller;
 import com.project.bridgebackend.GestioneAlloggio.FotoAlloggio.FotoAlloggio;
 import com.project.bridgebackend.GestioneAlloggio.FotoAlloggio.FotoAlloggioService;
 import com.project.bridgebackend.GestioneAlloggio.Service.AlloggioService;
-import com.project.bridgebackend.Model.Entity.Alloggio;
-import com.project.bridgebackend.Model.Entity.Indirizzo;
-import com.project.bridgebackend.Model.Entity.Rifugiato;
-import com.project.bridgebackend.Model.Entity.Volontario;
+import com.project.bridgebackend.Model.Entity.*;
 import com.project.bridgebackend.Model.dao.VolontarioDAO;
 import com.project.bridgebackend.Model.dao.IndirizzoDAO;
 import com.project.bridgebackend.Model.dao.UtenteDAO;
@@ -376,5 +373,13 @@ public class AlloggioController {
     public List<Alloggio> getAllAlloggiByRifugiatoEmail(@PathVariable String email) {
         return alloggioService.getAllAlloggiByRifugiatoEmail(email);
     }
+
+    @GetMapping("/random")
+    public ResponseEntity<List<Alloggio>> getRandomAccommodations() {
+        List<Alloggio> alloggi = alloggioService.getRandomAlloggi();
+        System.out.println("Alloggi restituiti: " + alloggi); // Log per debug
+        return new ResponseEntity<>(alloggi, HttpStatus.OK);
+    }
+
 
 }

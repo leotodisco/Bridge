@@ -54,17 +54,30 @@ const Homepage = () => {
             .catch((error) => console.error("Errore fetching events:", error));
 
         // Fetch accommodations
-        fetch("/api/alloggi/random", {
+        fetch("http://localhost:8080/alloggi/random", {
             method: "GET",
             headers: {
                 "Authorization": `Bearer ${token}`,
                 "Content-Type": "application/json",
             },
         })
-            .then((response) => response.json())
-            .then((data) => setAccommodations(data))
+            .then((response) => {
+                console.log("Status:", response.status); // Stato della risposta
+                console.log("Content-Type:", response.headers.get("Content-Type")); // Tipo di contenuto
+                return response.text(); // Leggi come testo per debug
+            })
+            .then((text) => {
+                console.log("Risposta come testo:", text); // Contenuto della risposta
+                try {
+                    const data = JSON.parse(text); // Prova a parsare come JSON
+                    console.log("Dati parsati:", data);
+                    setAccommodations(data);
+                } catch (error) {
+                    console.error("Errore nel parsing JSON:", error, text);
+                }
+            })
             .catch((error) => console.error("Errore fetching accommodations:", error));
-    }, []);
+    },[]);
 
 
     // Gestisce l'apertura del popup con l'ID dell'evento selezionato
@@ -141,12 +154,31 @@ const Homepage = () => {
                         <Link to="/mostraAlloggio" className="section-title">
                             <h3>Alloggi</h3>
                         </Link>
-                        <div className="accommodations-grid">
-                            {accommodations.map((accommodation, index) => (
-                                <div className="accommodation-item" key={index}>
-                                    <img src={accommodation.image} alt={`Alloggio ${index}`}/>
-                                </div>
-                            ))}
+                        <div className="scrollable-list">
+                            {accommodations.length > 0 ? (
+                                accommodations.map((accommodation, index) => {
+                                    const imageUrl = accommodation.foto[0] || "https://via.placeholder.com/150"; // Fallback
+                                    console.log("Immagine URL: ", imageUrl); // Verifica l'URL dell'immagine
+                                    return (
+                                        <div className="list-item" key={index}>
+                                            <img
+                                                src={imageUrl}
+                                                alt={`Immagine di ${accommodation.descrizione || "Alloggio"}`}
+                                                style={{
+                                                    width: "100px",
+                                                    height: "100px",
+                                                    objectFit: "cover",
+                                                    borderRadius: "8px",
+                                                    marginBottom: "8px",
+                                                }}
+                                            />
+                                            <p>{accommodation.descrizione || "Nessuna descrizione"}</p>
+                                        </div>
+                                    );
+                                })
+                            ) : (
+                                <p>Nessun alloggio disponibile al momento.</p>
+                            )}
                         </div>
                     </section>
                 </div>
@@ -154,12 +186,12 @@ const Homepage = () => {
 
             {/* Popup EVENTO dettagliato */}
             {isPopupOpen && selectedEventId && (
-                <EventoRetrieveView id={selectedEventId} onClose={handleClosePopup} />
+                <EventoRetrieveView id={selectedEventId} onClose={handleClosePopup}/>
             )}
 
             {/* Popup ABOUT US */}
-            {isAboutUsOpen && <AboutUs onClose={toggleAboutUsPopup} />}
-            <Footer />
+            {isAboutUsOpen && <AboutUs onClose={toggleAboutUsPopup}/>}
+            <Footer/>
         </div>
     );
 };

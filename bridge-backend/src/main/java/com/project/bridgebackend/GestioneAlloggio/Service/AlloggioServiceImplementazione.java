@@ -318,13 +318,14 @@ public class AlloggioServiceImplementazione implements AlloggioService {
 
     @Override
     public List<Alloggio> getRandomAlloggi() {
-        // Recupera tutti gli eventi
-        List<Alloggio> alloggi = alloggioDAO.findAll();
 
-        // Mischia la lista
+        System.out.println("Siamo nel service");
+        List<Alloggio> alloggi = alloggioDAO.findMyAll();
+        if (alloggi.isEmpty()) {
+            System.out.println("Nessun alloggio trovato nel database.");
+            return Collections.emptyList();
+        }
         Collections.shuffle(alloggi);
-
-        //Restituisce solo 5 eventi
         return alloggi.stream().limit(5).toList();
     }
 
