@@ -44,7 +44,7 @@ public class GestioneCorsoController {
     @Autowired
     private CorsoDAO corsoDAO;
     @Autowired
-    private PDFService pdfService;
+    private CDNService pdfService;
     @Autowired
     private JwtService jwtService;
     @Qualifier("utenteDAO")

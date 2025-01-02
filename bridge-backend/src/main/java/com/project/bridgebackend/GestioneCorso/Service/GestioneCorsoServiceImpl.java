@@ -1,6 +1,6 @@
 package com.project.bridgebackend.GestioneCorso.Service;
 
-import com.project.bridgebackend.GestioneCorso.pdf.PDFService;
+import com.project.bridgebackend.CDN.CDNService;
 import com.project.bridgebackend.Model.Entity.Corso;
 import com.project.bridgebackend.Model.dao.CorsoDAO;
 import jakarta.transaction.Transactional;
@@ -33,7 +33,7 @@ public class GestioneCorsoServiceImpl implements GestioneCorsoService {
      * Iniezione logica di gestione per i pdf.
      */
     @Autowired
-    private final PDFService pdfService;
+    private final CDNService pdfService;
     /**
      * Crea un nuovo corso.
      * @param corso il DTO del corso contenente i dettagli del corso.

@@ -41,7 +41,7 @@ public class AlloggioController {
      * Service per la logica di gestione delle foto alloggio.
      */
     @Autowired
-    private FotoAlloggioService fotoAlloggioService;
+    private CDNService fotoAlloggioService;
 
     /**
      * Service per la logica di gestione degli utenti volontari.
@@ -135,7 +135,7 @@ public class AlloggioController {
                     if (foto.startsWith("data:image/jpeg;base64,")) {
                         foto = foto.split(",")[1]; // Estrai solo la parte Base64 dopo la virgola
                         byte[] fotoData = Base64.getDecoder().decode(foto);
-                        fotoProfiloId = fotoAlloggioService.saveIMG(foto, fotoData);
+                        fotoProfiloId = fotoAlloggioService.saveFotoAlloggio(foto, fotoData);
                     }
                     fotoIds.add(fotoProfiloId); // Aggiungiamo l'ID alla lista
                 }
@@ -324,7 +324,7 @@ public class AlloggioController {
         List<String> fotoBase64 = new ArrayList<>();
         if (alloggio.getFoto() != null) {
             for (String fotoId : alloggio.getFoto()) {
-                FotoAlloggio fotoAlloggio = fotoAlloggioService.getIMG(fotoId);
+                FotoAlloggio fotoAlloggio = fotoAlloggioService.getFotoAlloggio(fotoId);
                 if (fotoAlloggio != null) {
                     // Converti l'immagine in base64
                     String base64Image = Base64.getEncoder().encodeToString(fotoAlloggio.getData());

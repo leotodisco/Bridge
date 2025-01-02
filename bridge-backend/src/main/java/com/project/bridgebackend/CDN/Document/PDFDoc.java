@@ -19,7 +19,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
  */
 @Document(collection = "pdf")
 @Data
-public class PDFDoc {
+public class PDFDoc implements CDNDocument {
 
     /**
      * ID univoco del documento, utilizzato come chiave primaria nel database MongoDB.

@@ -19,7 +19,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
  */
 @Document(collection = "foto_profilo")
 @Data
-public class FotoProfilo {
+public class FotoProfilo implements CDNDocument {
 
     /**
      * ID univoco del documento, utilizzato come chiave primaria nel database MongoDB.
