@@ -243,7 +243,7 @@ public class DBPopulator {
 
         Evento evento4 = new Evento();
         evento4.setNome("Evento di Networking");
-        evento4.setData(LocalDate.of(2025, 1, 1));
+        evento4.setData(LocalDate.of(2025, 6, 1));
         evento4.setOra(LocalTime.of(18, 0));
         evento4.setLinguaParlata(Lingua.INGLESE);
         evento4.setDescrizione("Evento di networking per rifugiati e aziende.");
