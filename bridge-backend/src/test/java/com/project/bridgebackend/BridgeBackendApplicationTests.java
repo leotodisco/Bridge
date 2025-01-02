@@ -5,7 +5,7 @@ import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWeb
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class BridgeBackendApplicationTests {
+public class BridgeBackendApplicationTests {
 
     @Test
     void contextLoads() {
