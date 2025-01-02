@@ -1,4 +1,4 @@
-package com.project.bridgebackend.fotoProfilo;
+package com.project.bridgebackend.CDN.Document;
 
 import org.springframework.data.mongodb.repository.MongoRepository;
 

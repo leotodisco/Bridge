@@ -4,8 +4,7 @@ import com.project.bridgebackend.GestioneUtente.Service.UtenteService;
 import com.project.bridgebackend.Model.Entity.FiguraSpecializzata;
 import com.project.bridgebackend.Model.Entity.Utente;
 import com.project.bridgebackend.Model.dto.UtenteDTO;
-import com.project.bridgebackend.fotoProfilo.FotoProfilo;
-import com.project.bridgebackend.fotoProfilo.FotoProfiloService;
+import com.project.bridgebackend.CDN.Document.FotoProfilo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -38,12 +37,6 @@ public class UtenteController {
      */
     @Autowired
     private UtenteService utenteService;
-
-    /**
-     * Service per la gestione delle foto profilo.
-     */
-    @Autowired
-    private FotoProfiloService fotoProfiloService;
 
     /**
      * Metodo per eliminare un utente specifico in base all'email.

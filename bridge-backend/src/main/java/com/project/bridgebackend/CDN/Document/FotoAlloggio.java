@@ -1,5 +1,6 @@
-package com.project.bridgebackend.GestioneAlloggio.FotoAlloggio;
+package com.project.bridgebackend.CDN.Document;
 
+import com.project.bridgebackend.CDN.CDNDocument;
 import lombok.Data;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -18,7 +19,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
  */
 @Data
 @Document("foto_alloggio")
-public class FotoAlloggio {
+public class FotoAlloggio implements CDNDocument {
 
     /**
      * ID univoco del documento,

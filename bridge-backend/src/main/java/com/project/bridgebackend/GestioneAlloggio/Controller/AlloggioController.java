@@ -1,7 +1,7 @@
 package com.project.bridgebackend.GestioneAlloggio.Controller;
 
-import com.project.bridgebackend.GestioneAlloggio.FotoAlloggio.FotoAlloggio;
-import com.project.bridgebackend.GestioneAlloggio.FotoAlloggio.FotoAlloggioService;
+import com.project.bridgebackend.CDN.CDNService;
+import com.project.bridgebackend.CDN.Document.FotoAlloggio;
 import com.project.bridgebackend.GestioneAlloggio.Service.AlloggioService;
 import com.project.bridgebackend.Model.Entity.*;
 import com.project.bridgebackend.Model.dao.VolontarioDAO;
@@ -375,9 +375,31 @@ public class AlloggioController {
     }
 
     @GetMapping("/random")
-    public ResponseEntity<List<Alloggio>> getRandomAccommodations() {
+    public ResponseEntity<List<Alloggio>> getRandomAccommodations() throws IOException {
         List<Alloggio> alloggi = alloggioService.getRandomAlloggi();
-        System.out.println("Alloggi restituiti: " + alloggi); // Log per debug
+
+        // Itera su ogni alloggio per aggiungere una parte delle immagini in Base64
+        for (Alloggio alloggio : alloggi) {
+            if (alloggio.getFoto() != null) {
+                List<String> fotoBase64 = new ArrayList<>();
+                int count = 0;
+
+                for (String fotoId : alloggio.getFoto()) {
+                    if (count >= 3) break; // Limita a 3 immagini per alloggio
+                    FotoAlloggio fotoAlloggio = fotoAlloggioService.getFotoAlloggio(fotoId);
+                    if (fotoAlloggio != null) {
+                        // Converti l'immagine in Base64
+                        String base64Image = Base64.getEncoder().encodeToString(fotoAlloggio.getData());
+                        fotoBase64.add(base64Image);
+                        count++;
+                    }
+                }
+
+                alloggio.setFoto(fotoBase64); // Sostituisci con le immagini convertite
+            }
+        }
+
+        System.out.println("Alloggi con immagini: " + alloggi); // Debug
         return new ResponseEntity<>(alloggi, HttpStatus.OK);
     }
 

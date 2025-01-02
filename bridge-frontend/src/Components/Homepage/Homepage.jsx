@@ -62,15 +62,11 @@ const Homepage = () => {
             },
         })
             .then((response) => {
-                console.log("Status:", response.status); // Stato della risposta
-                console.log("Content-Type:", response.headers.get("Content-Type")); // Tipo di contenuto
                 return response.text(); // Leggi come testo per debug
             })
             .then((text) => {
-                console.log("Risposta come testo:", text); // Contenuto della risposta
                 try {
                     const data = JSON.parse(text); // Prova a parsare come JSON
-                    console.log("Dati parsati:", data);
                     setAccommodations(data);
                 } catch (error) {
                     console.error("Errore nel parsing JSON:", error, text);
@@ -157,12 +153,16 @@ const Homepage = () => {
                         <div className="scrollable-list">
                             {accommodations.length > 0 ? (
                                 accommodations.map((accommodation, index) => {
-                                    const imageUrl = accommodation.foto[0] || "https://via.placeholder.com/150"; // Fallback
-                                    console.log("Immagine URL: ", imageUrl); // Verifica l'URL dell'immagine
+                                    const imageBase64 = accommodation.foto && accommodation.foto[0]
+                                        ? (accommodation.foto[0].startsWith("http")
+                                            ? accommodation.foto[0]
+                                            : `data:image/jpeg;base64,${accommodation.foto[0]}`)
+                                        : "https://via.placeholder.com/150";
+
                                     return (
                                         <div className="list-item" key={index}>
                                             <img
-                                                src={imageUrl}
+                                                src={imageBase64}
                                                 alt={`Immagine di ${accommodation.descrizione || "Alloggio"}`}
                                                 style={{
                                                     width: "100px",
@@ -179,6 +179,7 @@ const Homepage = () => {
                             ) : (
                                 <p>Nessun alloggio disponibile al momento.</p>
                             )}
+
                         </div>
                     </section>
                 </div>

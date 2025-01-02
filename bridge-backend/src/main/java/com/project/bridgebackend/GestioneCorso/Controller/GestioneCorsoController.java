@@ -1,11 +1,10 @@
 package com.project.bridgebackend.GestioneCorso.Controller;
 
+import com.project.bridgebackend.CDN.CDNService;
 import com.project.bridgebackend.GestioneCorso.Service.GestioneCorsoService;
-import com.project.bridgebackend.GestioneCorso.pdf.PDFDoc;
-import com.project.bridgebackend.GestioneCorso.pdf.PDFService;
+import com.project.bridgebackend.CDN.Document.PDFDoc;
 import com.project.bridgebackend.Model.Entity.Corso;
 import com.project.bridgebackend.Model.Entity.FiguraSpecializzata;
-import com.project.bridgebackend.Model.Entity.Utente;
 import com.project.bridgebackend.Model.dao.CorsoDAO;
 import com.project.bridgebackend.Model.dao.FiguraSpecializzataDAO;
 import com.project.bridgebackend.Model.dao.UtenteDAO;

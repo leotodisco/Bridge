@@ -1,7 +1,7 @@
 package com.project.bridgebackend.GestioneUtente.Service;
 
 import com.project.bridgebackend.Model.Entity.Utente;
-import com.project.bridgebackend.fotoProfilo.FotoProfilo;
+import com.project.bridgebackend.CDN.Document.FotoProfilo;
 import java.io.IOException;
 import java.util.HashMap;
 

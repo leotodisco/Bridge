@@ -1,24 +1,25 @@
-package com.project.bridgebackend.fotoProfilo;
+package com.project.bridgebackend.CDN.Document;
 
+
+import com.project.bridgebackend.CDN.CDNDocument;
 import lombok.Data;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-
 /**
  * @author Geraldine Montella.
- * Questa classe rappresenta il documento FotoProfilo
+ * Questa classe rappresenta il documento pdf
  * memorizzato nel database MongoDB.
  *
  * <p>Ogni istanza di questa classe corrisponde a un documento
- * nella collezione "foto_profilo" del database MongoDB.
- * Contiene informazioni relative alle foto profilo
+ * nella collezione "pdf" del database MongoDB.
+ * Contiene informazioni relative ai pdf
  * degli utenti, tra cui un ID univoco, un nome descrittivo,
- * e i dati binari della foto.</p>
+ * e i dati binari dei pdf.</p>
  */
-@Document(collection = "foto_profilo")
+@Document(collection = "pdf")
 @Data
-public class FotoProfilo {
+public class PDFDoc {
 
     /**
      * ID univoco del documento, utilizzato come chiave primaria nel database MongoDB.
@@ -28,14 +29,14 @@ public class FotoProfilo {
     private String id;
 
     /**
-     * Nome descrittivo della foto profilo, utilizzato per identificare il contenuto
+     * Nome descrittivo del pdf, utilizzato per identificare il contenuto
      * in modo umano leggibile (non necessariamente unico).
      */
-    private String nome;
+    private String nomePdf;
 
     /**
-     * Dati binari della foto, rappresentati come array di byte.
-     * Contiene il contenuto effettivo dell'immagine caricata.
+     * Dati binari del pdf, rappresentati come array di byte.
+     * Contiene il contenuto effettivo del pdf.
      */
-    private byte[] data;
+    private byte[] pdf;
 }
