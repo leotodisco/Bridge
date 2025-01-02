@@ -1,6 +1,6 @@
 package com.project.bridgebackend.GestioneUtente.Service;
 
-import com.project.bridgebackend.BridgeBackendApplicationTests;
+import com.project.bridgebackend.Service.BridgeBackendApplicationTests;
 import com.project.bridgebackend.Model.Entity.Rifugiato;
 import com.project.bridgebackend.Model.Entity.enumeration.Gender;
 import com.project.bridgebackend.Model.Entity.enumeration.Ruolo;

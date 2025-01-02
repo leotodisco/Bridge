@@ -1,7 +1,5 @@
 package com.project.bridgebackend.GestioneAlloggio.service;
 
-import com.project.bridgebackend.BridgeBackendApplicationTests;
-import com.project.bridgebackend.GestioneAlloggio.Service.AlloggioService;
 import com.project.bridgebackend.GestioneAlloggio.Service.AlloggioServiceImplementazione;
 import com.project.bridgebackend.Model.Entity.Alloggio;
 import com.project.bridgebackend.Model.Entity.Indirizzo;
@@ -13,6 +11,7 @@ import com.project.bridgebackend.Model.Entity.enumeration.TitoloDiStudio;
 import com.project.bridgebackend.Model.dao.AlloggioDAO;
 import com.project.bridgebackend.Model.dao.IndirizzoDAO;
 import com.project.bridgebackend.Model.dao.VolontarioDAO;
+import com.project.bridgebackend.Service.BridgeBackendApplicationTests;
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
