@@ -138,8 +138,49 @@ public class AlloggioServiceImplementazione implements AlloggioService {
         if (alloggio == null) {
             throw new IllegalArgumentException("L'alloggio non può essere nullo");
         }
+
+        if (alloggio.getMetratura() <= 0 || alloggio.getMetratura() > 99999) {
+            throw new IllegalArgumentException("La metratura deve essere maggiore di zero");
+        }
+
+        if (alloggio.getMaxPersone() <= 0 || alloggio.getMaxPersone() > 99) {
+            throw new IllegalArgumentException("Il numero massimo di persone deve essere maggiore di zero");
+        }
+        if (alloggio.getDescrizione() == null || alloggio.getDescrizione().isEmpty() || !alloggio.getDescrizione().matches("^[A-Za-z0-9]{0,400}$")){
+            throw new IllegalArgumentException("La descrizione non può essere nulla o vuota");
+        }
+        if (alloggio.getServizi() == null) {
+            throw new IllegalArgumentException("I servizi non possono essere nulli");
+        }
+
+
+        if (alloggio.getProprietario() == null) {
+            throw new IllegalArgumentException("Il proprietario non può essere nullo");
+        }
+
+        if (alloggio.getListaCandidati() == null) {
+            throw new IllegalArgumentException("La lista dei candidati non può essere nulla");
+        }
+
+        if (alloggio.getFoto() == null || alloggio.getFoto().isEmpty()) {
+            throw new IllegalArgumentException("Devi fornire almeno una foto");
+        }
+
+        if (alloggio.getFoto().size() > 3) {
+            throw new IllegalArgumentException("Puoi fornire al massimo 3 foto");
+        }
+
+        if (alloggio.getTitolo() == null || alloggio.getTitolo().isEmpty()) {
+            throw new IllegalArgumentException("Il titolo non può essere nullo o vuoto");
+        }
+
+        if (alloggio.getIndirizzo() == null) {
+            throw new IllegalArgumentException("L'indirizzo non può essere nullo");
+        }
+
         return alloggioDAO.save(alloggio);
     }
+
 
     /**
      * Metodo che invia una email al rifugiato.
@@ -274,6 +315,21 @@ public class AlloggioServiceImplementazione implements AlloggioService {
 
     @Override
     public long salvaIndirizzoAlloggio(final Indirizzo indirizzo) {
+        if(indirizzo.getNumCivico() > 9999){
+            throw new IllegalArgumentException("Numero civico troppo lungo");
+        }
+        if (!indirizzo.getCitta().matches("^[^\\d]*$")) {
+            throw new IllegalArgumentException("La città non può contenere numeri");
+        }
+        if(!indirizzo.getProvincia().matches("^[A-Z]{2}$")){
+            throw new IllegalArgumentException("La provincia non rispetta il formato");
+        }
+        if(!indirizzo.getVia().matches("^[A-zÀ-ù ‘]{2,50}$")){
+            throw new IllegalArgumentException("La provincia non rispetta il formato");
+        }
+        if(indirizzo.getCap() <= 9999 || indirizzo.getCap() > 99999){
+            throw new IllegalArgumentException("Il CAP non rispetta il formato");
+        }
         indirizzoDAO.save(indirizzo);
         return indirizzo.getId();
     }
