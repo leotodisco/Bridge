@@ -200,14 +200,14 @@ public class DBPopulator {
         );
 
         // Creazione di quattro indirizzi
-        Indirizzo indirizzo1 = new Indirizzo("Lazio", 28, 00100, "Roma", "Via del Corso");
-        Indirizzo indirizzo2 = new Indirizzo("Lombardia", 10, 20100, "Milano", "Via Milano");
-        Indirizzo indirizzo3 = new Indirizzo("Piemonte", 15, 10100, "Torino", "Via Torino");
-        Indirizzo indirizzo4 = new Indirizzo("Campania", 20, 80100, "Napoli", "Via Napoli");
-        Indirizzo indirizzo5= new Indirizzo("Lombardia", 69, 20190, "pene", "Via cazzo");
-        Indirizzo indirizzo6 = new Indirizzo("Lombardia", 12, 20121, "Milano", "Via Roma");
-        Indirizzo indirizzo7 = new Indirizzo("Piemonte", 5, 10122, "Torino", "Via Garibaldi");
-        Indirizzo indirizzo8 = new Indirizzo("Toscana", 20, 50123, "Firenze", "Via Dante");
+        Indirizzo indirizzo1 = new Indirizzo("Lazio", 28, "00100", "RM", "Via del Corso");
+        Indirizzo indirizzo2 = new Indirizzo("Lombardia", 10, "20100", "MI", "Via Milano");
+        Indirizzo indirizzo3 = new Indirizzo("Piemonte", 15, "10100", "TO", "Via Torino");
+        Indirizzo indirizzo4 = new Indirizzo("Campania", 20, "80100", "NA", "Via Napoli");
+        Indirizzo indirizzo5= new Indirizzo("Lombardia", 69, "20190", "PE", "Via cazzo");
+        Indirizzo indirizzo6 = new Indirizzo("Lombardia", 12, "20121", "MI", "Via Roma");
+        Indirizzo indirizzo7 = new Indirizzo("Piemonte", 5, "10122", "TO", "Via Garibaldi");
+        Indirizzo indirizzo8 = new Indirizzo("Toscana", 20, "50123", "FI", "Via Dante");
         indirizzoDAO.saveAll(List.of(indirizzo1, indirizzo2, indirizzo3, indirizzo4, indirizzo5, indirizzo6, indirizzo7, indirizzo8));
 
 

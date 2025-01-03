@@ -93,7 +93,7 @@ public class GestioneAlloggioServiceImplTest {
         Indirizzo indirizzo = new Indirizzo(
               "",
               12,
-                84096,
+                "84096",
               "",
               "c"
         );
@@ -125,7 +125,7 @@ public class GestioneAlloggioServiceImplTest {
         Indirizzo indirizzo = new Indirizzo(
                 "",
                  27000,
-                84096,
+                "84096",
                 "",
                 "Via Garibaldi"
         );
@@ -156,7 +156,7 @@ public class GestioneAlloggioServiceImplTest {
         Indirizzo indirizzo = new Indirizzo(
                 "MontecorvinoRovella1000",
                 101,
-                84096,
+                "84096",
                 "",
                 "Via Garibaldi"
         );
@@ -187,7 +187,7 @@ public class GestioneAlloggioServiceImplTest {
         Indirizzo indirizzo = new Indirizzo(
                 "Montecorvino Rovella",
                 101,
-                84096,
+                "84096",
                 "CAP-",
                 "Via Garibaldi"
         );
@@ -218,7 +218,7 @@ public class GestioneAlloggioServiceImplTest {
         Indirizzo indirizzo = new Indirizzo(
                 "Montecorvino Rovella",
                 101,
-                840960,
+                "840960",
                 "SA",
                 "Via Garibaldi"
         );
@@ -249,7 +249,7 @@ public class GestioneAlloggioServiceImplTest {
         Indirizzo indirizzo = new Indirizzo(
                 "Montecorvino Rovella",
                 101,
-                84096,
+                "84096",
                 "SA",
                 "Via Garibaldi"
         );
@@ -280,7 +280,7 @@ public class GestioneAlloggioServiceImplTest {
         Indirizzo indirizzo = new Indirizzo(
                 "Montecorvino Rovella",
                 101,
-                84096,
+                "84096",
                 "SA",
                 "Via Garibaldi"
         );
@@ -311,7 +311,7 @@ public class GestioneAlloggioServiceImplTest {
         Indirizzo indirizzo = new Indirizzo(
                 "Montecorvino Rovella",
                 101,
-                84096,
+                "84096",
                 "SA",
                 "Via Garibaldi"
         );
@@ -342,7 +342,7 @@ public class GestioneAlloggioServiceImplTest {
         Indirizzo indirizzo = new Indirizzo(
                 "Montecorvino Rovella",
                 101,
-                84096,
+                "84096",
                 "SA",
                 "Via Garibaldi"
         );
@@ -374,7 +374,7 @@ public class GestioneAlloggioServiceImplTest {
         Indirizzo indirizzo = new Indirizzo(
                 "Montecorvino Rovella",
                 101,
-                84096,
+                "84096",
                 "SA",
                 "Via Garibaldi"
         );
@@ -407,7 +407,7 @@ public class GestioneAlloggioServiceImplTest {
         Indirizzo indirizzo = new Indirizzo(
                 "Montecorvino Rovella",
                 101,
-                84096,
+                "84096",
                 "SA",
                 "Via Garibaldi"
         );
@@ -453,7 +453,7 @@ public class GestioneAlloggioServiceImplTest {
         Indirizzo indirizzo = new Indirizzo(
                 "Montecorvino Rovella",
                 101,
-                84096,
+                "84096",
                 "SA",
                 "Via Garibaldi"
         );
@@ -487,7 +487,7 @@ public class GestioneAlloggioServiceImplTest {
         Indirizzo indirizzo = new Indirizzo(
                 "Montecorvino Rovella",
                 101,
-                84096,
+                "84096",
                 "SA",
                 "Via Garibaldi"
         );

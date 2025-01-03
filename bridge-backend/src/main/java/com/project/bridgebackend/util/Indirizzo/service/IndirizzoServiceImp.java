@@ -61,7 +61,7 @@ public class IndirizzoServiceImp implements IndirizzoService {
             indirizzo.setCitta((String) indirizzoData.get("citta"));
         }
         if (indirizzoData.containsKey("cap")) {
-            indirizzo.setCap((Integer) indirizzoData.get("cap"));
+            indirizzo.setCap((String) indirizzoData.get("cap"));
         }
         if (indirizzoData.containsKey("num_civico")) {
             indirizzo.setNumCivico((Integer) indirizzoData.get("num_civico"));
