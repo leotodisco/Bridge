@@ -3,15 +3,23 @@ import PropTypes from "prop-types";
 import "../../GestioneAnnuncio/css/formLavoro.css";
 import "../../GestioneEvento/css/eventoView.css"
 import {useLocation} from "react-router-dom";
+import {toast} from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
-const LavoroView = ({ id, onClose }) => {
+
+const LavoroView = ({ id, onClose, onUpdate}) => {
     const [lavoroData, setLavoroData] = useState(null);
     const [loading, setLoading] = useState(true);
-    const [candidati, setCandidati] = useState([]);
     const [error, setError] = useState(null);
     const [editing, setEditing] = useState(false);
     const location = useLocation(); // Ottieni la route corrente
     const isLavoriUtenteRoute = location.pathname.includes("lavori-utente"); // Verifica se è la route desiderata
+    const [isCandidato, setIsCandidato] = useState(false);
+
+
+    const [showSecondPopup, setShowSecondPopup] = useState(false); // Stato per il secondo popup
+    const [popupTransition, setPopupTransition] = useState(false); // Stato per il movimento del popup
+
     const [titolo, setTitolo] = useState("");
     const [posizioneLavorativa, setPosizioneLavorativa] = useState("");
     const [retribuzione, setRetribuzione] = useState(0);
@@ -19,8 +27,6 @@ const LavoroView = ({ id, onClose }) => {
     const [nomeAzienda, setNomeAzienda] = useState("");
     const [orarioLavoro, setOrarioLavoro] = useState("");
     const [infoUtili, setInfoUtili] = useState("");
-    const [showSecondPopup, setShowSecondPopup] = useState(false); // Stato per il secondo popup
-    const [popupTransition, setPopupTransition] = useState(false); // Stato per il movimento del popup
     const [indirizzo, setIndirizzo] = useState({
         via: "",
         numCivico: "",
@@ -29,11 +35,12 @@ const LavoroView = ({ id, onClose }) => {
         provincia: ""
     });
 
+    const [candidati, setCandidati] = useState([]);
 
-    // Recupera l'email dell'utente loggato dal localStorage
+    // Recupera l'email e il token JWT dall'archivio locale
     const emailUtenteLoggato = localStorage.getItem("email");
-
-    const token = localStorage.getItem("authToken"); // Recupera il token JWT
+    const token = localStorage.getItem("authToken");
+    const ruoloUtenteLoggato = localStorage.getItem("ruolo");
 
     // Funzione per ottenere i dettagli di un annuncio di lavoro
     const fetchLavoro = async (id) => {
@@ -52,7 +59,7 @@ const LavoroView = ({ id, onClose }) => {
             }
             const data = await response.json();
             setLavoroData(data);
-            console.log("Dati ricevuti: ",data);
+            console.log("Dati ricevuti: ", data);
 
             setTitolo(data.titolo);
             setPosizioneLavorativa(data.posizioneLavorativa);
@@ -78,13 +85,9 @@ const LavoroView = ({ id, onClose }) => {
 
     useEffect(() => {
         fetchLavoro(id);
-    }, [id]);
 
-    // Effettua il fetch dei dettagli dell'annuncio al primo rendering
-    useEffect(() => {
-
+        // Se showSecondPopup è true, gestisci la logica del secondo popup
         if (showSecondPopup) {
-            // Aggiungi la classe per far comparire il secondo popup
             setTimeout(() => {
                 const secondPopup = document.querySelector('.second-popup');
                 if (secondPopup) {
@@ -93,7 +96,7 @@ const LavoroView = ({ id, onClose }) => {
             }, 200); // Ritardo per sincronizzare la comparsa
             fetchCandidati(); // Carica i partecipanti
         }
-    }, [showSecondPopup] );
+    }, [id, showSecondPopup]);
 
 
     // Se il caricamento è in corso, mostra un messaggio
@@ -107,7 +110,6 @@ const LavoroView = ({ id, onClose }) => {
         );
     }
 
-
     // Se si è verificato un errore, mostra un messaggio
     if (error) {
         return (
@@ -118,7 +120,6 @@ const LavoroView = ({ id, onClose }) => {
             </div>
         );
     }
-
 
     // Creazione stringa concatenata per l'indirizzo
     const luogoConcatenato = lavoroData
@@ -134,7 +135,7 @@ const LavoroView = ({ id, onClose }) => {
     const handleEdit = async () => {
         if (!id) {
             console.error("ID dell'annuncio non trovato.");
-            alert("Errore: ID dell'annuncio non trovato.");
+            toast.error("ID dell'annuncio non trovato.");
             return;
         }
 
@@ -155,7 +156,7 @@ const LavoroView = ({ id, onClose }) => {
             const token = localStorage.getItem("token");
             if (!token) {
                 console.error("Token non trovato. Effettua nuovamente il login.");
-                alert("Token non trovato. Effettua nuovamente il login.");
+                toast.error("Token non trovato. Effettua nuovamente il login.");
                 return;
             }
 
@@ -173,12 +174,12 @@ const LavoroView = ({ id, onClose }) => {
             }
 
             const data = await response.json();
-            alert("Annuncio modificato con successo!");
+            toast.info("Annuncio modificato con successo!");
             setLavoroData(data);
             setEditing(false);
         } catch (err) {
             console.error("Errore durante la modifica dell'annuncio:", err);
-            alert(`Non è stato possibile modificare l'annuncio. Dettagli: ${err.message}`);
+            toast.error(`Non è stato possibile modificare l'annuncio. Dettagli: ${err.message}`);
         }
     };
 
@@ -190,14 +191,14 @@ const LavoroView = ({ id, onClose }) => {
 
         if (!token) {
             console.error("Token non trovato. Effettua nuovamente il login.");
-            alert("Token non trovato. Effettua nuovamente il login.");
+            toast.error("Token non trovato. Effettua nuovamente il login.");
             return;
         }
 
         const id = lavoroData?.id;
         if (!id) {
             console.error("Errore: L'ID dell'annuncio è null o undefined.");
-            alert("Errore: L'ID dell'annuncio non è valido.");
+            toast.error("Errore: L'ID dell'annuncio non è valido.");
             return;
         }
 
@@ -214,41 +215,104 @@ const LavoroView = ({ id, onClose }) => {
 
             if (!response.ok) {
                 if (response.status === 403) {
-                    alert("Non sei autorizzato a eliminare questo annuncio.");
+                    toast.error("Non sei autorizzato a eliminare questo annuncio.");
                 } else {
-                    alert(`Errore durante l'eliminazione dell'annuncio. Codice: ${response.status}`);
+                    toast.error(`Errore durante l'eliminazione dell'annuncio. Codice: ${response.status}`);
                 }
                 return;
             }
 
-            alert("Annuncio eliminato con successo!");
+            toast.info("Annuncio eliminato con successo!");
             onClose(); // Chiudi il popup dopo l'eliminazione
             fetchLavoro(); // Aggiorna la lista degli annunci
         } catch (err) {
             console.error("Errore durante l'eliminazione dell'annuncio:", err);
-            alert(`Non è stato possibile eliminare l'annuncio. Dettagli: ${err.message}`);
+            toast.error(`Non è stato possibile eliminare l'annuncio. Dettagli: ${err.message}`);
         }
     };
 
-        const fetchCandidati = async () => {
-            try {
-                const response = await fetch(`http://localhost:8080/api/annunci/candidati_lavoro/${id}`, {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                    },
-                });
-                if (!response.ok) {
-                    throw new Error("Errore durante il recupero dei candidati.");
-                }
-                const data = await response.json();
-                setCandidati(data); // Presumiamo che data sia un array di stringhe
-            } catch (err) {
-                setError(err.message);
-            } finally {
-                setLoading(false);
+    // Funzione per il recupero dei candidati
+    const fetchCandidati = async () => {
+        try {
+            const response = await fetch(`http://localhost:8080/api/annunci/candidati_lavoro/${id}`, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            });
+            if (!response.ok) {
+                throw new Error("Errore durante il recupero dei candidati.");
             }
-        };
+            const data = await response.json();
+            console.log("Candidati ricevuti:", data);
+            setCandidati(data); // Presumiamo che data sia un array di stringhe
+        } catch (err) {
+            setError(err.message);
+        } finally {
+            setLoading(false);
+        }
+    };
 
+    const handleCandidatura = async () => {
+        try {
+            const response = await fetch(`http://localhost:8080/api/annunci/invia-candidatura-lavoro/${id}`, {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json',
+                },
+            });
+            if (!response.ok) {
+                throw new Error("Errore durante la candidatura.");
+            }
+            toast.info("Candidatura inviata con successo!");
+            checkCandidatura(); // Aggiorna lo stato
+        } catch (err) {
+            toast.error(`Errore durante la candidatura: ${err.message}`);
+        }
+    }
+
+    const handleRimuoviCandidatura = async () => {
+        try {
+            const response = await fetch(`http://localhost:8080/api/annunci/rimuovi-candidatura-lavoro/${id}`, {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json',
+                },
+            });
+
+            if (!response.ok) {
+                throw new Error("Errore durante la rimozione della candidatura.");
+            }
+
+            toast.info("Candidatura ritirata con successo!");
+            setIsCandidato(false); // Aggiorna lo stato
+        } catch (err) {
+            toast.error(`Errore durante la rimozione della candidatura: ${err.message}`);
+        }
+    };
+
+
+    const checkCandidatura = async () => {
+        try {
+            const response = await fetch(`http://localhost:8080/api/annunci/check-candidatura-lavoro/${id}`, {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json',
+                },
+            });
+
+            if (!response.ok) {
+                throw new Error("Errore durante la verifica della candidatura.");
+            }
+
+            const result = await response.json();
+            setIsCandidato(result); // Aggiorna lo stato
+        } catch (err) {
+            console.error(err.message);
+        }
+    };
 
     return (
         <div className="popup-overlay">
@@ -295,6 +359,21 @@ const LavoroView = ({ id, onClose }) => {
                                 {luogoConcatenato}
                             </p>
                         </div>
+                        {ruoloUtenteLoggato === "Rifugiato" && (
+                            <div className="button-group">
+                                {isCandidato ? (
+                                    <button onClick={handleRimuoviCandidatura} className="remove-button">
+                                        Rimuovi Candidatura
+                                    </button>
+                                ) : (
+                                    <button onClick={handleCandidatura} className="apply-button">
+                                        Invia Candidatura
+                                    </button>
+                                )}
+                            </div>
+                        )}
+
+
                         {isLavoriUtenteRoute && emailUtenteLoggato === lavoroData.proprietario.email && (
                             <div className="button-group">
                                 <button onClick={() => setEditing(true)} className="edit-button">

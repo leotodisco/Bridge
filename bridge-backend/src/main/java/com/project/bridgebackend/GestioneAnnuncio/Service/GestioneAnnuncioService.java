@@ -6,6 +6,7 @@ import com.project.bridgebackend.Model.Entity.Consulenza;
 import com.project.bridgebackend.Model.Entity.Indirizzo;
 import com.project.bridgebackend.Model.Entity.Lavoro;
 import com.project.bridgebackend.Model.Entity.Utente;
+import com.project.bridgebackend.Model.Entity.Rifugiato;
 import com.project.bridgebackend.Model.Entity.enumeration.TipoConsulenza;
 import com.project.bridgebackend.Model.Entity.enumeration.TipoContratto;
 
@@ -21,7 +22,6 @@ import java.util.List;
  */
 public interface GestioneAnnuncioService {
 
-    //      **Metodi per Consulenza**
 
     /**
      * Inserisce una nuova consulenza nel database.
@@ -104,7 +104,6 @@ public interface GestioneAnnuncioService {
      */
     void sendEmailRifugiato(String message, String emailRifugiato);
 
-    //      **Metodi per Lavoro**
 
 
     /**
@@ -179,7 +178,6 @@ public interface GestioneAnnuncioService {
      */
     void eliminaAnnuncioLavoro(long idAnnuncio);
 
-
     /**
      * Recupera in maniera casuale 5 annunci di lavoro.
      * @return Una lista di 5 oggetti `Lavoro` contenenti annunci di lavoro casuali.
@@ -201,4 +199,25 @@ public interface GestioneAnnuncioService {
      * @return Una lista di candidati.
      */
     List<String> getCandidatiPerLavoro(final long lavoroId);
+
+    /**
+     * Invia la candidatura di un rifugiato per un determinato lavoro.
+     * @param jobId identificativo del lavoro.
+     * @param emailRifugiato email del rifugiato da accettare.
+     */
+    void invioCandidaturaLavoro(long jobId, String emailRifugiato);
+
+    /**
+     * Rimuove la candidatura di un rifugiato per un determinato lavoro.
+     * @param jobId identificativo del lavoro.
+     * @param emailRifugiato email del rifuigato da rimuovere.
+     */
+    void rimuoviCandidaturaLavoro(long idLavoro, String emailRifugiato);
+    /**
+     * Verifica se un rifugiato è candidato per un determinato lavoro.
+     * @param jobId identificativo del lavoro.
+     * @param emailRifugiato email del rifugiato da verificare.
+     * @return true se il rifugiato è candidato, false altrimenti.
+     */
+    boolean isCandidatoPerLavoro(long idLavoro, String emailRifugiato);
 }
