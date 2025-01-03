@@ -5,11 +5,13 @@ import com.project.bridgebackend.GestioneCorso.Service.GestioneCorsoServiceImpl;
 import com.project.bridgebackend.Model.Entity.Corso;
 import com.project.bridgebackend.Model.Entity.FiguraSpecializzata;
 import com.project.bridgebackend.Model.Entity.enumeration.*;
+import com.project.bridgebackend.Model.dao.CorsoDAO;
 import com.project.bridgebackend.Model.dao.FiguraSpecializzataDAO;
 import jakarta.validation.Validation;
 import jakarta.validation.Validator;
 import jakarta.validation.ValidatorFactory;
 import lombok.SneakyThrows;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -38,10 +40,18 @@ class GestioneCorsoServiceImplTest {
     @Mock
     private FiguraSpecializzataDAO figuraSpecializzataDAO;
 
+    @Mock
+    private CorsoDAO corsoDAO;
+
     BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
     @InjectMocks
     private GestioneCorsoServiceImpl gestioneCorsoServiceImpl;
+
+    @AfterEach
+    void tearDown() {
+        Mockito.reset(figuraSpecializzataDAO, corsoDAO);
+    }
 
     @SneakyThrows
     @BeforeEach
@@ -61,7 +71,8 @@ class GestioneCorsoServiceImplTest {
                 passwordEncoder.encode("Passroad69!"),
                 "09:00-17:00"
         );
-    }
+
+    };
 
     @Test
     public void testInserimentoCorsoTitolo_FormatoErrato() {
@@ -173,5 +184,28 @@ class GestioneCorsoServiceImplTest {
         assertThrows(IllegalArgumentException.class, () -> {
                 this.gestioneCorsoServiceImpl.creaCorso(corso);
         });
+    }
+
+    @Test
+    public void testInserimentoCorsoTitolo_FormatoCorretto() throws Exception {
+        // Creazione dell'oggetto Corso
+        Corso corso = new Corso();
+        corso.setId(1000L);
+        corso.setProprietario(figura1);
+        corso.setTitolo("Corso di Italiano");
+        corso.setCategoriaCorso(CategoriaCorso.LINGUE);
+        corso.setDescrizione("Questo è un corso introduttivo all’apprendimento della lingua italiana");
+        corso.setPdf("6772e95230698b3a76d304af");
+        corso.setLingua(Lingua.ITALIANO);
+
+        // Mock del comportamento di corsoDAO
+        Mockito.when(corsoDAO.save(Mockito.any(Corso.class)))
+                .thenAnswer(invocazione -> invocazione.getArgument(0));
+
+        // Mock del comportamento di figuraSpecializzataDAO
+        Mockito.when(figuraSpecializzataDAO.findByEmail(corso.getProprietario().getEmail()))
+                .thenReturn(corso.getProprietario());
+
+        assertDoesNotThrow( () -> this.gestioneCorsoServiceImpl.creaCorso(corso));
     }
 }

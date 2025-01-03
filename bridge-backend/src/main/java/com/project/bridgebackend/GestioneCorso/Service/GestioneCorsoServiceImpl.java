@@ -95,15 +95,16 @@ public class GestioneCorsoServiceImpl implements GestioneCorsoService {
             throw new Exception("La categoria del corso non è valida");
         }
 
-        if (!corso.getDescrizione().matches("^[A-Za-z0-9À-ÿ .,'-]{10,500}$")) {
-            throw new Exception("La descrizione del corso non è valida");
-        }
-
         if (!corso.getLingua().toString().matches("(?i)^(Italiano|Inglese|Francese|Tedesco|Spagnolo|Portoghese|Russo|Cinese|Ucraino, Arabo)(,\\s*(Italiano|Inglese|Francese|Tedesco|Spagnolo|Portoghese|Russo|Cinese|Ucraino, Arabo))*$")) {
             throw new Exception("La lingua del corso non è valida");
         }
+        System.out.println("Proprietario trovato: " + figuraSpecializzataDAO.findByEmail(corso.getProprietario().getEmail()));
 
-        return corsoDAO.save(corso);
+        var result = corsoDAO.save(corso);
+        System.out.println(corso);
+        System.out.println(result);
+        return result;
+        //return corsoDAO.save(corso);
     }
     /**
      * Modifica un corso esistente.
