@@ -184,7 +184,7 @@ public class AlloggioServiceImplementazione implements AlloggioService {
                 }
             }
             if(length > 12* 1024 * 1024) {
-                throw new IllegalArgumentException("La dimensione dell'immagine supera il limite di 4MB.");
+                throw new IllegalArgumentException("La dimensione dell'immagine supera il limite di 12MB.");
             }
         }
 
@@ -337,8 +337,8 @@ public class AlloggioServiceImplementazione implements AlloggioService {
         if(!indirizzo.getVia().matches("^[A-zÀ-ù ‘]{2,50}$")){
             throw new IllegalArgumentException("La provincia non rispetta il formato");
         }
-        if(indirizzo.getCap() <= 9999 || indirizzo.getCap() > 99999){
-            throw new IllegalArgumentException("Il CAP non rispetta il formato");
+        if (indirizzo.getCap() == null || !indirizzo.getCap().matches("\\d{5}")) {
+            throw new IllegalArgumentException("Il CAP non rispetta il formato: deve essere composto da 5 cifre.");
         }
         indirizzoDAO.save(indirizzo);
         return indirizzo.getId();

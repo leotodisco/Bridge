@@ -9,8 +9,10 @@ import com.project.bridgebackend.Model.dao.IndirizzoDAO;
 import com.project.bridgebackend.Model.dao.RifugiatoDAO;
 import com.project.bridgebackend.Model.dao.VolontarioDAO;
 import jakarta.transaction.Transactional;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.validation.annotation.Validated;
 
 import java.util.Collections;
 import java.util.List;
@@ -23,6 +25,7 @@ import java.util.Optional;
  **/
 
 @Service
+@Validated
 public class GestioneEventoServiceImpl implements GestioneEventoService {
 
     /**
@@ -56,7 +59,7 @@ public class GestioneEventoServiceImpl implements GestioneEventoService {
      **/
     @Transactional
     @Override
-    public Evento insertEvento(final Evento evento) {
+    public Evento insertEvento(@Valid final Evento evento) {
         //Controllo su DTO nullo o id nullo
         if (evento == null) {
             throw new IllegalArgumentException("Evento non valido.");
