@@ -17,7 +17,7 @@ public interface GestioneCorsoService {
      * @param corso il DTO del corso contenente i dettagli del corso.
      * @return il corso creato come CorsoDTO.
      */
-    Corso creaCorso(Corso corso);
+    Corso creaCorso(Corso corso) throws Exception;
     /**
      * Modifica un corso esistente.
      * @param corso il DTO del corso contenente
