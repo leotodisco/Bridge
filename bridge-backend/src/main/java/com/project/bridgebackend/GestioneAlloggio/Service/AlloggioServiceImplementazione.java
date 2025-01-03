@@ -1,9 +1,6 @@
 package com.project.bridgebackend.GestioneAlloggio.Service;
 
-import com.project.bridgebackend.Model.Entity.Alloggio;
-import com.project.bridgebackend.Model.Entity.Consulenza;
-import com.project.bridgebackend.Model.Entity.Indirizzo;
-import com.project.bridgebackend.Model.Entity.Rifugiato;
+import com.project.bridgebackend.Model.Entity.*;
 import com.project.bridgebackend.Model.dao.RifugiatoDAO;
 import com.project.bridgebackend.Model.dao.VolontarioDAO;
 import com.project.bridgebackend.Model.dao.AlloggioDAO;
@@ -17,6 +14,8 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RequestBody;
+
+import java.util.Base64;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -146,36 +145,47 @@ public class AlloggioServiceImplementazione implements AlloggioService {
         if (alloggio.getMaxPersone() <= 0 || alloggio.getMaxPersone() > 99) {
             throw new IllegalArgumentException("Il numero massimo di persone deve essere maggiore di zero");
         }
-        if (alloggio.getDescrizione() == null || alloggio.getDescrizione().isEmpty() || !alloggio.getDescrizione().matches("^[A-Za-z0-9]{0,400}$")){
+        if (alloggio.getDescrizione() == null || alloggio.getDescrizione().isEmpty() || !alloggio.getDescrizione().matches("^[A-Za-z0-9 ]{0,400}$")){
             throw new IllegalArgumentException("La descrizione non può essere nulla o vuota");
         }
         if (alloggio.getServizi() == null) {
             throw new IllegalArgumentException("I servizi non possono essere nulli");
         }
 
-
-        if (alloggio.getProprietario() == null) {
-            throw new IllegalArgumentException("Il proprietario non può essere nullo");
-        }
-
-        if (alloggio.getListaCandidati() == null) {
-            throw new IllegalArgumentException("La lista dei candidati non può essere nulla");
-        }
-
-        if (alloggio.getFoto() == null || alloggio.getFoto().isEmpty()) {
-            throw new IllegalArgumentException("Devi fornire almeno una foto");
-        }
-
-        if (alloggio.getFoto().size() > 3) {
-            throw new IllegalArgumentException("Puoi fornire al massimo 3 foto");
-        }
-
-        if (alloggio.getTitolo() == null || alloggio.getTitolo().isEmpty()) {
+        if (alloggio.getTitolo() == null || alloggio.getTitolo().isEmpty() || !alloggio.getTitolo().matches("^[a-zA-Z0-9 ]{3,100}$")) {
             throw new IllegalArgumentException("Il titolo non può essere nullo o vuoto");
+        }
+
+        Volontario proprietario = volontarioDAO.findByEmail(alloggio.getProprietario().getEmail());
+        if (proprietario == null) {
+            throw new IllegalArgumentException("Il proprietario non esiste");
         }
 
         if (alloggio.getIndirizzo() == null) {
             throw new IllegalArgumentException("L'indirizzo non può essere nullo");
+        }
+
+        int length = 0;
+        if (alloggio.getFoto() != null && !alloggio.getFoto().isEmpty()) {
+            for (String foto : alloggio.getFoto()) {
+                // Verifica che il formato sia JPEG o JPG
+                if (!foto.startsWith("data:image/jpeg;base64,") && !foto.startsWith("data:image/jpg;base64,")) {
+                    throw new IllegalArgumentException("Formato foto non valido. Solo JPEG o JPG sono supportati.");
+                }
+
+                // Estrai la parte Base64 dell'immagine
+                String base64Image = foto.split(",")[1];
+                byte[] fotoData = Base64.getDecoder().decode(base64Image);
+
+
+                // Verifica che la dimensione della foto non superi 4MB (4 * 1024 * 1024 byte)
+                if (fotoData.length > 4 * 1024 * 1024) {
+                    length = length + fotoData.length;
+                }
+            }
+            if(length > 12* 1024 * 1024) {
+                throw new IllegalArgumentException("La dimensione dell'immagine supera il limite di 4MB.");
+            }
         }
 
         return alloggioDAO.save(alloggio);
