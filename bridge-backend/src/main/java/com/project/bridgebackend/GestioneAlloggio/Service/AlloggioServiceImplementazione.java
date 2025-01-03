@@ -184,7 +184,7 @@ public class AlloggioServiceImplementazione implements AlloggioService {
                 }
             }
             if(length > 12* 1024 * 1024) {
-                throw new IllegalArgumentException("La dimensione dell'immagine supera il limite di 4MB.");
+                throw new IllegalArgumentException("La dimensione dell'immagine supera il limite di 12MB.");
             }
         }
 
