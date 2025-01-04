@@ -1,16 +1,14 @@
-import { useState} from "react";
+import {useEffect, useState} from "react";
 import {useNavigate} from "react-router";
 import "../../GestioneLogin/css/loginStyle.css";
 import PropTypes from 'prop-types';
+
 
 
 const Login = ({ onLogin }) =>  {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const nav = useNavigate();
-
-    const token = localStorage.getItem('authToken');
-
 
     const aggiornaEmail = (event) => {
         setEmail(event.target.value);
@@ -20,6 +18,15 @@ const Login = ({ onLogin }) =>  {
         setPassword(event.target.value);
     }
 
+    useEffect(() => {
+        const token = localStorage.getItem('authToken');
+
+        // Controlla se l'utente è autenticato
+        if (token) {
+            nav('/');
+        }
+    }, [nav]);
+
     const handleSubmit = async (event) => {
         event.preventDefault();
 
@@ -27,7 +34,6 @@ const Login = ({ onLogin }) =>  {
             const response = await fetch('http://localhost:8080/authentication/login', {
                 method: 'POST',
                 headers: {
-                    'Authorization': `Barer ${token}`,
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({
@@ -47,7 +53,7 @@ const Login = ({ onLogin }) =>  {
             onLogin(data.token);
                 nav("/");
         } catch (error) {
-            document.getElementById("spanErrore").style.display = "block";
+           // document.getElementById("spanErrore").style.display = "block";
             console.error("Error during login:", error);
         }
     }

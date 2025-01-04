@@ -1,6 +1,9 @@
 package com.project.bridgebackend.CDN;
 
 import com.project.bridgebackend.CDN.Document.*;
+import com.project.bridgebackend.Model.dao.FotoAlloggioRepository;
+import com.project.bridgebackend.Model.dao.FotoProfiloRepository;
+import com.project.bridgebackend.Model.dao.PDFDocRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
