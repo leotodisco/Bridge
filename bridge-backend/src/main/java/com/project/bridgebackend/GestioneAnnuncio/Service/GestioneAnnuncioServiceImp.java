@@ -4,11 +4,9 @@ import com.project.bridgebackend.GestioneAlloggio.Service.AlloggioServiceImpleme
 import com.project.bridgebackend.Model.Entity.*;
 import com.project.bridgebackend.Model.Entity.enumeration.TipoConsulenza;
 import com.project.bridgebackend.Model.Entity.enumeration.TipoContratto;
-import com.project.bridgebackend.Model.dao.ConsulenzaDAO;
-import com.project.bridgebackend.Model.dao.IndirizzoDAO;
-import com.project.bridgebackend.Model.dao.LavoroDAO;
-import com.project.bridgebackend.Model.dao.RifugiatoDAO;
+import com.project.bridgebackend.Model.dao.*;
 import com.project.bridgebackend.util.Indirizzo.service.IndirizzoService;
+import jakarta.validation.Validator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +14,7 @@ import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 import jakarta.validation.Valid;
+import org.springframework.validation.annotation.Validated;
 
 import java.util.*;
 
@@ -27,7 +26,7 @@ import java.util.*;
  * interagendo con i repository di Consulenza e Indirizzo per il salvataggio nel database.
  */
 
-@Valid
+@Validated
 @Service
 public class GestioneAnnuncioServiceImp implements GestioneAnnuncioService {
 
@@ -70,9 +69,15 @@ public class GestioneAnnuncioServiceImp implements GestioneAnnuncioService {
     @Autowired
     private JavaMailSender mailSender;
 
+    @Autowired
+    private Validator validator;
+
     private static final Logger logger = LoggerFactory.getLogger(AlloggioServiceImplementazione.class);
+    @Autowired
+    private FiguraSpecializzataDAO figuraSpecializzataDAO;
 
     // Implementazioni dei metodi per Consulenza
+
 
     /**
      * Inserisce una nuova consulenza nel database.
@@ -82,12 +87,73 @@ public class GestioneAnnuncioServiceImp implements GestioneAnnuncioService {
      * @return la consulenza salvata nel database.
      */
     @Override
-    public Consulenza inserimentoConsulenza(final Consulenza consulenza) {
-        if (consulenza.getMaxCandidature() < 1) {
+    public Consulenza inserimentoConsulenza(@Valid final Consulenza consulenza) {
+
+        // Tipologia non nulla
+        if (consulenza.getTipologia() == null) {
+            throw new IllegalArgumentException("La tipologia della consulenza non può essere vuota.");
+        }
+
+        // Descrizione non vuota
+        if (consulenza.getDescrizione() == null || consulenza.getDescrizione().trim().isEmpty()) {
+            throw new IllegalArgumentException("La descrizione della consulenza non può essere vuota.");
+        }
+
+        // Titolo non vuoto
+        if (consulenza.getTitolo() == null || consulenza.getTitolo().trim().isEmpty()) {
+            throw new IllegalArgumentException("Il titolo della consulenza non può essere vuoto.");
+        }
+
+        // Numero massimo di candidature deve essere almeno 1
+        if (consulenza.getMaxCandidature() < 1 || consulenza.getMaxCandidature() > 99) {
             throw new IllegalArgumentException("Il numero massimo di candidature deve essere almeno 1.");
         }
+
+        // Disponibilità non nulla
+        if (consulenza.getDisponibilita() == null) {
+            throw new IllegalArgumentException("La disponibilità non può essere nulla.");
+        }
+
+        // Numero di telefono valido
+        if (consulenza.getNumero() == null || !consulenza.getNumero().matches("^((00|\\+)39[\\. ]??)??3\\d{2}[\\. ]??\\d{6,7}$")) {
+            throw new IllegalArgumentException("Il numero di telefono non è valido.");
+        }
+
+        // Orari disponibili con formato valido
+        if (consulenza.getOrariDisponibili() == null || !consulenza.getOrariDisponibili().matches("^(Lunedi|Martedi|Mercoledi|Giovedi|Venerdi|Sabato|Domenica)\\s+(0\\d|1\\d|2[0-3]):[0-5]\\d\\s*-\\s*(0\\d|1\\d|2[0-3]):[0-5]\\d$")) {
+            throw new IllegalArgumentException("Gli orari di disponibilità non rispettano il formato richiesto.");
+        }
+
+        // Indirizzo non nullo
+        if (consulenza.getIndirizzo() == null) {
+            throw new IllegalArgumentException("L'indirizzo non può essere nullo.");
+        }
+
+        if(consulenza.getProprietario() == null || figuraSpecializzataDAO.findByEmail(consulenza.getProprietario().getEmail()) == null){
+            throw new IllegalArgumentException("Il proprietario non può essere nullo.");
+        }
+
+        // Validazione dei campi dell'indirizzo
+        Indirizzo indirizzo = consulenza.getIndirizzo();
+        if (indirizzo.getCitta() == null || indirizzo.getCitta().trim().isEmpty() || !indirizzo.getCitta().matches("^[A-zÀ-ù ‘]{2,50}$")) {
+            throw new IllegalArgumentException("La città non può essere vuota.");
+        }
+        if (indirizzo.getProvincia() == null || indirizzo.getProvincia().trim().length() != 2) {
+            throw new IllegalArgumentException("La provincia deve essere composta da 2 caratteri.");
+        }
+        if (indirizzo.getCap().length() != 5) {
+            throw new IllegalArgumentException("Il CAP deve essere un numero di 5 cifre.");
+        }
+        if (indirizzo.getVia() == null || indirizzo.getVia().trim().isEmpty() || !indirizzo.getVia().matches("^[A-zÀ-ù ‘]{2,50}$")) {
+            throw new IllegalArgumentException("La via non può essere vuota.");
+        }
+        if(indirizzo.getNumCivico() > 999) {
+            throw new IllegalArgumentException("Il numero civico non può essere maggiore di 3 cifre.");
+        }
+
         return consulenzaDAO.save(consulenza);
     }
+
 
     /**
      * Salva un indirizzo di consulenza nel database.
