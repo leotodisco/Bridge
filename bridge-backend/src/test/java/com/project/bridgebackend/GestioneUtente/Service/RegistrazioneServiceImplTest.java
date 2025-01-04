@@ -45,8 +45,6 @@ public class RegistrazioneServiceImplTest {
     @Mock
     private RifugiatoDAO rifugiatoDAO;
     @Mock
-    private AlloggioDAO alloggioDAO;
-    @Mock
     private AuthenticationManager authenticationManager;
 
     private Rifugiato rifugiato;
@@ -56,7 +54,7 @@ public class RegistrazioneServiceImplTest {
     @AfterEach
     void tearDown() {
         // Resetta tutti i mock di Mockito per evitare interferenze tra i test
-        Mockito.reset(rifugiatoDAO, alloggioDAO);
+        Mockito.reset(rifugiatoDAO);
     }
 
     @BeforeEach
