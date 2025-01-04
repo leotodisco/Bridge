@@ -56,7 +56,7 @@ public final class Indirizzo implements Serializable {
      */
     @NotNull
     @Pattern(regexp = "^\\d{5}$",
-            message = "La città contiene caratteri non validi")
+            message = "Il CAP contiene caratteri non validi")
     @Column(name = "cap")
     private String cap;
     //todo cambiare il cap in stringa
@@ -66,7 +66,7 @@ public final class Indirizzo implements Serializable {
      */
     @NotNull
     @Pattern(regexp = "^[A-Z]{2}$",
-            message = "La città contiene caratteri non validi")
+            message = "La provincia contiene caratteri non validi")
     @Column(name = "provincia")
     private String provincia;
 
@@ -75,7 +75,7 @@ public final class Indirizzo implements Serializable {
      */
     @NotNull
     @Pattern(regexp = "^[A-zÀ-ù ‘]{2,50}$",
-            message = "La città contiene caratteri non validi")
+            message = "La via contiene caratteri non validi")
     @Column(name = "via")
     private String via;
 

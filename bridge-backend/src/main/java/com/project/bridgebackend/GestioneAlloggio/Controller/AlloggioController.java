@@ -148,9 +148,7 @@ public class AlloggioController {
             indirizzo.setVia(alloggio.getIndirizzo().getVia());
             indirizzo.setNumCivico(alloggio.getIndirizzo().getNumCivico());
             indirizzo.setProvincia(alloggio.getIndirizzo().getProvincia());
-
             long checkIndirizzo = alloggioService.salvaIndirizzoAlloggio(indirizzo);
-
             /*if (checkIndirizzo) {
                 throw new RuntimeException("Indirizzo non trovato");
             }*/
@@ -170,7 +168,6 @@ public class AlloggioController {
             newalloggio.setServizi(alloggio.getServizi());
             newalloggio.setTitolo(alloggio.getTitolo());
             newalloggio.setIndirizzo(indirizzoDAO.getReferenceById(checkIndirizzo));
-            System.out.println("alLOGGIO CREATO: " + newalloggio);
 
 
             // Rimuoviamo le foto dalla DTO, non ci servono più per il salvataggio dell'alloggio

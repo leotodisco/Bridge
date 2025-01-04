@@ -134,6 +134,7 @@ public class AlloggioServiceImplementazione implements AlloggioService {
      */
     @Override
     public Alloggio addAlloggio(final Alloggio alloggio) {
+
         if (alloggio == null) {
             throw new IllegalArgumentException("L'alloggio non può essere nullo");
         }
@@ -141,7 +142,7 @@ public class AlloggioServiceImplementazione implements AlloggioService {
         if(alloggio.getIndirizzo().getNumCivico() > 9999 || alloggio.getIndirizzo().getNumCivico() <= 0) {
             throw new IllegalArgumentException("Numero civico errato");
         }
-        if (!alloggio.getIndirizzo().getCitta().matches("^[^\\d]*$")) {
+        if (!alloggio.getIndirizzo().getCitta().matches("^[A-zÀ-ù ‘]{2,50}$")) {
             throw new IllegalArgumentException("La città non può contenere numeri");
         }
         if(!alloggio.getIndirizzo().getProvincia().matches("^[A-Z]{2}$")){
@@ -181,30 +182,8 @@ public class AlloggioServiceImplementazione implements AlloggioService {
             throw new IllegalArgumentException("L'indirizzo non può essere nullo");
         }
 
-        int length = 0;
-        if (alloggio.getFoto() != null && !alloggio.getFoto().isEmpty()) {
-            for (String foto : alloggio.getFoto()) {
-                // Verifica che il formato sia JPEG o JPG
-                if (!foto.startsWith("data:image/jpeg;base64,") && !foto.startsWith("data:image/jpg;base64,")) {
-                    throw new IllegalArgumentException("Formato foto non valido. Solo JPEG o JPG sono supportati.");
-                }
-
-                // Estrai la parte Base64 dell'immagine
-                String base64Image = foto.split(",")[1];
-                byte[] fotoData = Base64.getDecoder().decode(base64Image);
-
-
-                // Verifica che la dimensione della foto non superi 4MB (4 * 1024 * 1024 byte)
-                if (fotoData.length > 4 * 1024 * 1024) {
-                    length = length + fotoData.length;
-                }
-            }
-            if(length > 12* 1024 * 1024) {
-                throw new IllegalArgumentException("La dimensione dell'immagine supera il limite di 12MB.");
-            }
-        }
-
-        return alloggioDAO.save(alloggio);
+            Alloggio salvato = alloggioDAO.save(alloggio);
+            return salvato;
     }
 
 
@@ -341,6 +320,9 @@ public class AlloggioServiceImplementazione implements AlloggioService {
 
     @Override
     public long salvaIndirizzoAlloggio(final Indirizzo indirizzo) {
+        if(indirizzo == null) {
+            throw new IllegalArgumentException("Indirizzo nullo");
+        }
         if(indirizzo.getNumCivico() > 9999){
             throw new IllegalArgumentException("Numero civico troppo lungo");
         }

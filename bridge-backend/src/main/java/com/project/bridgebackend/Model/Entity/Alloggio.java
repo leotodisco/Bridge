@@ -22,7 +22,7 @@ public class Alloggio implements Serializable {
      * Viene generato automaticamente.
      */
     @Id
-    @GeneratedValue()
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
     /**

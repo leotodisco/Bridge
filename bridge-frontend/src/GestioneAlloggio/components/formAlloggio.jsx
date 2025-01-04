@@ -203,7 +203,7 @@ const CreaAlloggio = () => {
             }
 
             const result = await response.text();
-           toast.error("Alloggio creato con successo: " + result);
+           toast.success("Alloggio creato con successo: " + result);
 
             nav("/area-personale");
         } catch (errore) {
