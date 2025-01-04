@@ -20,56 +20,61 @@ const ListaCorsiView = () => {
 
     const fetchCorsi = async () => {
         try {
-            const token = localStorage.getItem("authToken");
+            const token = localStorage.getItem('authToken');
 
             if (!token) {
                 toast.error("Non sei autenticato. Effettua il login.");
-                nav("/login");
+                nav('/login');
                 return;
             }
 
             const response = await fetch("http://localhost:8080/api/corsi/listaCorsi", {
-                method: "GET",
+                method: 'GET',
                 headers: {
-                    Authorization: `Bearer ${token}`,
-                    "Content-Type": "application/json",
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json',
                 },
             });
 
-            if (response.ok) {
-                const data = await response.json();
-                setCorsi(data);
-
-                const imagesData = {};
-                for (const corso of data) {
-                    const email = corso.proprietario.email;
-                    try {
-                        const imgResponse = await fetch(
-                            `http://localhost:8080/areaPersonale/DatiFotoUtente/${email}`,
-                            {
-                                method: "GET",
-                                headers: {
-                                    Authorization: `Bearer ${token}`,
-                                    "Content-Type": "application/json",
-                                },
-                            }
-                        );
-
-                        if (imgResponse.ok) {
-                            const imgBase64 = await imgResponse.text();
-                            imagesData[email] = imgBase64;
-                        } else {
-                            imagesData[email] = "https://via.placeholder.com/150/cccccc/000000?text=No+Image";
-                        }
-                    } catch (error) {
-                        console.error(error);
-                        imagesData[email] = "https://via.placeholder.com/150/cccccc/000000?text=No+Image";
-                    }
-                }
-                setUserImages(imagesData);
-            } else {
+            if (!response.ok) {
                 setError(true);
+                return;
             }
+
+            const data = await response.json();
+            setCorsi(data);
+
+            // *** Carichiamo anche le immagini dei proprietari ***
+            const userImagesData = {};
+            for (const corso of data) {
+                const ownerEmail = corso.proprietario.email;
+
+                try {
+                    const imgResponse = await fetch(
+                        `http://localhost:8080/areaPersonale/DatiFotoUtente/${ownerEmail}`,
+                        {
+                            method: 'GET',
+                            headers: {
+                                'Authorization': `Bearer ${token}`,
+                                'Content-Type': 'application/json',
+                            },
+                        }
+                    );
+
+                    if (imgResponse.ok) {
+                        const base64Img = await imgResponse.text();
+                        userImagesData[ownerEmail] = base64Img;
+                    } else {
+                        // Se non c'è immagine disponibile, usa placeholder
+                        userImagesData[ownerEmail] = null;
+                    }
+                } catch (error) {
+                    console.error("Errore caricamento foto utente:", error);
+                    userImagesData[ownerEmail] = null;
+                }
+            }
+            setUserImages(userImagesData);
+
         } catch (error) {
             console.error("Errore nel recupero dei corsi:", error);
             setError(true);
@@ -80,14 +85,15 @@ const ListaCorsiView = () => {
 
     useEffect(() => {
         fetchCorsi();
+
         const closeOnEscapeKeyDown = (e) => {
             if ((e.charCode || e.keyCode) === 27) {
                 setShowModal(false);
             }
         };
-        document.body.addEventListener("keydown", closeOnEscapeKeyDown);
+        document.body.addEventListener('keydown', closeOnEscapeKeyDown);
         return () => {
-            document.body.removeEventListener("keydown", closeOnEscapeKeyDown);
+            document.body.removeEventListener('keydown', closeOnEscapeKeyDown);
         };
     }, []);
 
@@ -123,15 +129,19 @@ const ListaCorsiView = () => {
             {corsi.length > 0 ? (
                 <div className="cards-container">
                     {corsi.map((corso) => {
-                        const corsoImage = userImages[corso.proprietario.email]
-                            ? `data:image/jpeg;base64,${userImages[corso.proprietario.email]}`
+                        // Se abbiamo caricato l'immagine, costruiamo la base64, altrimenti placeholder
+                        const ownerEmail = corso.proprietario.email;
+                        const base64Image = userImages[ownerEmail]
+                            ? `data:image/jpeg;base64,${userImages[ownerEmail]}`
                             : "https://via.placeholder.com/150/cccccc/000000?text=No+Image";
+
                         return (
                             <Card
                                 key={corso.id}
                                 data={{
                                     title: corso.titolo,
-                                    image: corsoImage,
+                                    // Usiamo l'immagine caricata o un placeholder
+                                    image: base64Image,
                                     userName: `${corso.proprietario.nome} ${corso.proprietario.cognome}`,
                                     parameter1: corso.lingua,
                                     parameter2: corso.categoriaCorso,
@@ -151,7 +161,12 @@ const ListaCorsiView = () => {
             ) : (
                 <p>Nessun corso disponibile.</p>
             )}
-            {selectedCorsoId && <CorsoView id={selectedCorsoId} onClose={() => setSelectedCorsoId(null)} />}
+            {selectedCorsoId && (
+                <CorsoView
+                    id={selectedCorsoId}
+                    onClose={() => setSelectedCorsoId(null)}
+                />
+            )}
             {showModal && (
                 <div className="modal">
                     <div>
