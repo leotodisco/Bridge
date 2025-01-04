@@ -2,6 +2,7 @@ package com.project.bridgebackend.GestioneAlloggio.service;
 
 import com.project.bridgebackend.GestioneAlloggio.Service.AlloggioServiceImplementazione;
 import com.project.bridgebackend.Model.Entity.Alloggio;
+import com.project.bridgebackend.Model.Entity.Consulenza;
 import com.project.bridgebackend.Model.Entity.Indirizzo;
 import com.project.bridgebackend.Model.Entity.Volontario;
 import com.project.bridgebackend.Model.Entity.enumeration.Gender;
@@ -13,6 +14,7 @@ import com.project.bridgebackend.Model.dao.IndirizzoDAO;
 import com.project.bridgebackend.Model.dao.VolontarioDAO;
 import com.project.bridgebackend.Service.BridgeBackendApplicationTests;
 import lombok.SneakyThrows;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -29,6 +31,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static com.project.bridgebackend.Model.Entity.enumeration.Servizi.WIFI;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 /**
@@ -55,6 +58,12 @@ public class GestioneAlloggioServiceImplTest {
     private Alloggio alloggio;
     @InjectMocks
     private AlloggioServiceImplementazione alloggioServiceImplementazione;
+
+    @AfterEach
+    void tearDown() {
+        // Resetta tutti i mock di Mockito per evitare interferenze tra i test
+        Mockito.reset(alloggioDAO, volontarioDAO,indirizzoDAO);
+    }
 
     /**
      * Metodo che viene eseguito prima di tutti gli altri metodi.
@@ -91,10 +100,10 @@ public class GestioneAlloggioServiceImplTest {
     @Test
     public void testInserimentoAlloggioViaIndirizzo_FormatoErrato() {
         Indirizzo indirizzo = new Indirizzo(
-              "",
-              12,
+              "Montecorvino rovella",
+              101,
                 "84096",
-              "",
+              "SA",
               "c"
         );
         indirizzo.setId(1L);
@@ -122,11 +131,12 @@ public class GestioneAlloggioServiceImplTest {
      */
     @Test
     public void testInserimentoAlloggioNCivicoIndirizzo_FormatoErrato() {
+
         Indirizzo indirizzo = new Indirizzo(
-                "",
-                 27000,
+                "Montecorvino rovella",
+                27000,
                 "84096",
-                "",
+                "SA",
                 "Via Garibaldi"
         );
         indirizzo.setId(1L);
@@ -512,5 +522,42 @@ public class GestioneAlloggioServiceImplTest {
         alloggio.setId(1L);
 
         assertThrows(IllegalArgumentException.class, () -> {this.alloggioServiceImplementazione.addAlloggio(alloggio);});
+    }
+
+    @Test
+    public void testInserimentoAlloggio_Corretto() {
+
+        Indirizzo indirizzo = new Indirizzo(
+                "Montecorvino Rovella",
+                101,
+                "84096",
+                "SA",
+                "Via Garibaldi"
+        );
+        indirizzo.setId(1L);
+
+        Alloggio alloggio = new Alloggio();
+        alloggio.setIndirizzo(indirizzo);
+        alloggio.setMetratura(100);
+        alloggio.setMaxPersone(3);
+        alloggio.setDescrizione("Casa nel centro Storico");
+        alloggio.setTitolo("Casa Bellissima");
+        alloggio.setServizi(WIFI);
+        alloggio.setListaCandidati(null);
+        List<String> foto = new ArrayList<>();
+        String fotoBase64 = "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEASABIAAD/4Qm0RXhpZgAATU0AKgAAAAgACgEPAAIAAAAGAA";
+        foto.add(fotoBase64);
+        alloggio.setFoto(foto);
+        alloggio.setAssegnatoA(null);
+        alloggio.setProprietario(volontario);
+        alloggio.setId(1L);
+
+        // Configura il comportamento predefinito del mock per il salvataggio di una consulenza
+        Mockito.when(alloggioDAO.save(Mockito.any(Alloggio.class))).thenAnswer(
+                invocazione -> {
+                    return invocazione.getArgument(0);
+                }
+        );
+        assertEquals(alloggio,this.alloggioServiceImplementazione.addAlloggio(alloggio));
     }
 }
