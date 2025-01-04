@@ -138,6 +138,22 @@ public class AlloggioServiceImplementazione implements AlloggioService {
             throw new IllegalArgumentException("L'alloggio non può essere nullo");
         }
 
+        if(alloggio.getIndirizzo().getNumCivico() > 9999 || alloggio.getIndirizzo().getNumCivico() <= 0) {
+            throw new IllegalArgumentException("Numero civico errato");
+        }
+        if (!alloggio.getIndirizzo().getCitta().matches("^[^\\d]*$")) {
+            throw new IllegalArgumentException("La città non può contenere numeri");
+        }
+        if(!alloggio.getIndirizzo().getProvincia().matches("^[A-Z]{2}$")){
+            throw new IllegalArgumentException("La provincia non rispetta il formato");
+        }
+        if(!alloggio.getIndirizzo().getVia().matches("^[A-zÀ-ù ‘]{2,50}$")){
+            throw new IllegalArgumentException("La provincia non rispetta il formato");
+        }
+        if (alloggio.getIndirizzo().getCap() == null || !alloggio.getIndirizzo().getCap().matches("\\d{5}")) {
+            throw new IllegalArgumentException("Il CAP non rispetta il formato: deve essere composto da 5 cifre.");
+        }
+
         if (alloggio.getMetratura() <= 0 || alloggio.getMetratura() > 99999) {
             throw new IllegalArgumentException("La metratura deve essere maggiore di zero");
         }

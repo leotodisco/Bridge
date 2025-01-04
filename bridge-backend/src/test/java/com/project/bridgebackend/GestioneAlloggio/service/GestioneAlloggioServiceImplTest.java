@@ -50,12 +50,9 @@ public class GestioneAlloggioServiceImplTest {
     private VolontarioDAO volontarioDAO;
     @Mock
     private IndirizzoDAO indirizzoDAO;
-    @Mock
     BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
     @Mock
     private Volontario volontario;
-    @InjectMocks
-    private Alloggio alloggio;
     @InjectMocks
     private AlloggioServiceImplementazione alloggioServiceImplementazione;
 
@@ -108,18 +105,20 @@ public class GestioneAlloggioServiceImplTest {
         );
         indirizzo.setId(1L);
 
-
         Alloggio alloggio = new Alloggio();
         alloggio.setIndirizzo(indirizzo);
-        alloggio.setMetratura(1);
-        alloggio.setTitolo("");
+        alloggio.setMetratura(100);
+        alloggio.setMaxPersone(3);
+        alloggio.setDescrizione("Casa nel centro Storico");
+        alloggio.setTitolo("Casa Bellissima");
+        alloggio.setServizi(WIFI);
         alloggio.setListaCandidati(null);
-        alloggio.setDescrizione("");
-        alloggio.setFoto(null);
+        List<String> foto = new ArrayList<>();
+        String fotoBase64 = "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEASABIAAD/4Qm0RXhpZgAATU0AKgAAAAgACgEPAAIAAAAGAA";
+        foto.add(fotoBase64);
+        alloggio.setFoto(foto);
         alloggio.setAssegnatoA(null);
-        alloggio.setServizi(null);
-        alloggio.setMaxPersone(1);
-        alloggio.setProprietario(null);
+        alloggio.setProprietario(volontario);
         alloggio.setId(1L);
 
         assertThrows(IllegalArgumentException.class, () -> {this.alloggioServiceImplementazione.addAlloggio(alloggio);});
@@ -143,15 +142,18 @@ public class GestioneAlloggioServiceImplTest {
 
         Alloggio alloggio = new Alloggio();
         alloggio.setIndirizzo(indirizzo);
-        alloggio.setMetratura(1);
-        alloggio.setTitolo("");
+        alloggio.setMetratura(100);
+        alloggio.setMaxPersone(3);
+        alloggio.setDescrizione("Casa nel centro Storico");
+        alloggio.setTitolo("Casa Bellissima");
+        alloggio.setServizi(WIFI);
         alloggio.setListaCandidati(null);
-        alloggio.setFoto(null);
-        alloggio.setDescrizione("");
+        List<String> foto = new ArrayList<>();
+        String fotoBase64 = "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEASABIAAD/4Qm0RXhpZgAATU0AKgAAAAgACgEPAAIAAAAGAA";
+        foto.add(fotoBase64);
+        alloggio.setFoto(foto);
         alloggio.setAssegnatoA(null);
-        alloggio.setServizi(null);
-        alloggio.setMaxPersone(1);
-        alloggio.setProprietario(null);
+        alloggio.setProprietario(volontario);
         alloggio.setId(1L);
 
         assertThrows(IllegalArgumentException.class, () -> {this.alloggioServiceImplementazione.addAlloggio(alloggio);});
@@ -167,22 +169,25 @@ public class GestioneAlloggioServiceImplTest {
                 "MontecorvinoRovella1000",
                 101,
                 "84096",
-                "",
+                "SA",
                 "Via Garibaldi"
         );
         indirizzo.setId(1L);
 
         Alloggio alloggio = new Alloggio();
         alloggio.setIndirizzo(indirizzo);
-        alloggio.setMetratura(1);
-        alloggio.setTitolo("");
+        alloggio.setMetratura(100);
+        alloggio.setMaxPersone(3);
+        alloggio.setDescrizione("Casa nel centro Storico");
+        alloggio.setTitolo("Casa Bellissima");
+        alloggio.setServizi(WIFI);
         alloggio.setListaCandidati(null);
-        alloggio.setDescrizione("");
-        alloggio.setFoto(null);
+        List<String> foto = new ArrayList<>();
+        String fotoBase64 = "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEASABIAAD/4Qm0RXhpZgAATU0AKgAAAAgACgEPAAIAAAAGAA";
+        foto.add(fotoBase64);
+        alloggio.setFoto(foto);
         alloggio.setAssegnatoA(null);
-        alloggio.setServizi(null);
-        alloggio.setMaxPersone(1);
-        alloggio.setProprietario(null);
+        alloggio.setProprietario(volontario);
         alloggio.setId(1L);
 
         assertThrows(IllegalArgumentException.class, () -> {this.alloggioServiceImplementazione.addAlloggio(alloggio);});
@@ -205,15 +210,18 @@ public class GestioneAlloggioServiceImplTest {
 
         Alloggio alloggio = new Alloggio();
         alloggio.setIndirizzo(indirizzo);
-        alloggio.setMetratura(1);
-        alloggio.setTitolo("");
+        alloggio.setMetratura(100);
+        alloggio.setMaxPersone(3);
+        alloggio.setDescrizione("Casa nel centro Storico");
+        alloggio.setTitolo("Casa Bellissima");
+        alloggio.setServizi(WIFI);
         alloggio.setListaCandidati(null);
-        alloggio.setFoto(null);
-        alloggio.setDescrizione("");
+        List<String> foto = new ArrayList<>();
+        String fotoBase64 = "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEASABIAAD/4Qm0RXhpZgAATU0AKgAAAAgACgEPAAIAAAAGAA";
+        foto.add(fotoBase64);
+        alloggio.setFoto(foto);
         alloggio.setAssegnatoA(null);
-        alloggio.setServizi(null);
-        alloggio.setMaxPersone(1);
-        alloggio.setProprietario(null);
+        alloggio.setProprietario(volontario);
         alloggio.setId(1L);
 
         assertThrows(IllegalArgumentException.class, () -> {this.alloggioServiceImplementazione.addAlloggio(alloggio);});
@@ -234,17 +242,21 @@ public class GestioneAlloggioServiceImplTest {
         );
 
         indirizzo.setId(1L);
+
         Alloggio alloggio = new Alloggio();
         alloggio.setIndirizzo(indirizzo);
-        alloggio.setMetratura(1);
-        alloggio.setTitolo("");
+        alloggio.setMetratura(100);
+        alloggio.setMaxPersone(3);
+        alloggio.setDescrizione("Casa nel centro Storico");
+        alloggio.setTitolo("Casa Bellissima");
+        alloggio.setServizi(WIFI);
         alloggio.setListaCandidati(null);
-        alloggio.setFoto(null);
-        alloggio.setDescrizione("");
+        List<String> foto = new ArrayList<>();
+        String fotoBase64 = "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEASABIAAD/4Qm0RXhpZgAATU0AKgAAAAgACgEPAAIAAAAGAA";
+        foto.add(fotoBase64);
+        alloggio.setFoto(foto);
         alloggio.setAssegnatoA(null);
-        alloggio.setServizi(null);
-        alloggio.setMaxPersone(1);
-        alloggio.setProprietario(null);
+        alloggio.setProprietario(volontario);
         alloggio.setId(1L);
 
         assertThrows(IllegalArgumentException.class, () -> {this.alloggioServiceImplementazione.addAlloggio(alloggio);});
@@ -265,17 +277,21 @@ public class GestioneAlloggioServiceImplTest {
         );
 
         indirizzo.setId(1L);
+
         Alloggio alloggio = new Alloggio();
         alloggio.setIndirizzo(indirizzo);
         alloggio.setMetratura(10000000);
-        alloggio.setTitolo("");
+        alloggio.setMaxPersone(3);
+        alloggio.setDescrizione("Casa nel centro Storico");
+        alloggio.setTitolo("Casa Bellissima");
+        alloggio.setServizi(WIFI);
         alloggio.setListaCandidati(null);
-        alloggio.setFoto(null);
-        alloggio.setDescrizione("");
+        List<String> foto = new ArrayList<>();
+        String fotoBase64 = "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEASABIAAD/4Qm0RXhpZgAATU0AKgAAAAgACgEPAAIAAAAGAA";
+        foto.add(fotoBase64);
+        alloggio.setFoto(foto);
         alloggio.setAssegnatoA(null);
-        alloggio.setServizi(null);
-        alloggio.setMaxPersone(1);
-        alloggio.setProprietario(null);
+        alloggio.setProprietario(volontario);
         alloggio.setId(1L);
 
         assertThrows(IllegalArgumentException.class, () -> {this.alloggioServiceImplementazione.addAlloggio(alloggio);});
@@ -296,17 +312,21 @@ public class GestioneAlloggioServiceImplTest {
         );
 
         indirizzo.setId(1L);
+
         Alloggio alloggio = new Alloggio();
         alloggio.setIndirizzo(indirizzo);
         alloggio.setMetratura(100);
         alloggio.setMaxPersone(200);
-        alloggio.setDescrizione("");
-        alloggio.setTitolo("");
+        alloggio.setDescrizione("Casa nel centro Storico");
+        alloggio.setTitolo("Casa Bellissima");
+        alloggio.setServizi(WIFI);
         alloggio.setListaCandidati(null);
-        alloggio.setFoto(null);
+        List<String> foto = new ArrayList<>();
+        String fotoBase64 = "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEASABIAAD/4Qm0RXhpZgAATU0AKgAAAAgACgEPAAIAAAAGAA";
+        foto.add(fotoBase64);
+        alloggio.setFoto(foto);
         alloggio.setAssegnatoA(null);
-        alloggio.setServizi(null);
-        alloggio.setProprietario(null);
+        alloggio.setProprietario(volontario);
         alloggio.setId(1L);
 
         assertThrows(IllegalArgumentException.class, () -> {this.alloggioServiceImplementazione.addAlloggio(alloggio);});
@@ -327,17 +347,21 @@ public class GestioneAlloggioServiceImplTest {
         );
 
         indirizzo.setId(1L);
+
         Alloggio alloggio = new Alloggio();
         alloggio.setIndirizzo(indirizzo);
         alloggio.setMetratura(100);
         alloggio.setMaxPersone(3);
         alloggio.setDescrizione("@@@");
-        alloggio.setTitolo("");
+        alloggio.setTitolo("Casa Bellissima");
+        alloggio.setServizi(WIFI);
         alloggio.setListaCandidati(null);
-        alloggio.setFoto(null);
+        List<String> foto = new ArrayList<>();
+        String fotoBase64 = "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEASABIAAD/4Qm0RXhpZgAATU0AKgAAAAgACgEPAAIAAAAGAA";
+        foto.add(fotoBase64);
+        alloggio.setFoto(foto);
         alloggio.setAssegnatoA(null);
-        alloggio.setServizi(null);
-        alloggio.setProprietario(null);
+        alloggio.setProprietario(volontario);
         alloggio.setId(1L);
 
         assertThrows(IllegalArgumentException.class, () -> {this.alloggioServiceImplementazione.addAlloggio(alloggio);});
@@ -358,18 +382,21 @@ public class GestioneAlloggioServiceImplTest {
         );
 
         indirizzo.setId(1L);
+
         Alloggio alloggio = new Alloggio();
         alloggio.setIndirizzo(indirizzo);
         alloggio.setMetratura(100);
         alloggio.setMaxPersone(3);
         alloggio.setDescrizione("Casa nel centro Storico");
-        alloggio.setTitolo("");
+        alloggio.setTitolo("Casa Bellissima");
         alloggio.setListaCandidati(null);
-        alloggio.setFoto(null);
+        List<String> foto = new ArrayList<>();
+        String fotoBase64 = "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEASABIAAD/4Qm0RXhpZgAATU0AKgAAAAgACgEPAAIAAAAGAA";
+        foto.add(fotoBase64);
+        alloggio.setFoto(foto);
         alloggio.setAssegnatoA(null);
-        alloggio.setProprietario(null);
+        alloggio.setProprietario(volontario);
         alloggio.setId(1L);
-
          assertThrows(IllegalArgumentException.class, () -> {
             alloggio.setServizi(Servizi.valueOf("#####"));
         });
@@ -390,19 +417,22 @@ public class GestioneAlloggioServiceImplTest {
         );
 
         indirizzo.setId(1L);
+
         Alloggio alloggio = new Alloggio();
         alloggio.setIndirizzo(indirizzo);
         alloggio.setMetratura(100);
         alloggio.setMaxPersone(3);
         alloggio.setDescrizione("Casa nel centro Storico");
-        alloggio.setTitolo("87-Ciao");
+        alloggio.setTitolo("87-ciao");
         alloggio.setServizi(WIFI);
         alloggio.setListaCandidati(null);
-        alloggio.setFoto(null);
+        List<String> foto = new ArrayList<>();
+        String fotoBase64 = "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEASABIAAD/4Qm0RXhpZgAATU0AKgAAAAgACgEPAAIAAAAGAA";
+        foto.add(fotoBase64);
+        alloggio.setFoto(foto);
         alloggio.setAssegnatoA(null);
-        alloggio.setProprietario(null);
+        alloggio.setProprietario(volontario);
         alloggio.setId(1L);
-
 
         assertThrows(IllegalArgumentException.class, () -> {this.alloggioServiceImplementazione.addAlloggio(alloggio);});
     }
@@ -437,6 +467,7 @@ public class GestioneAlloggioServiceImplTest {
                 "Italia",
                 passwordEncoder.encode("123Password!")
         );
+
         Alloggio alloggio = new Alloggio();
         alloggio.setIndirizzo(indirizzo);
         alloggio.setMetratura(100);
@@ -445,7 +476,10 @@ public class GestioneAlloggioServiceImplTest {
         alloggio.setTitolo("Casa Bellissima");
         alloggio.setServizi(WIFI);
         alloggio.setListaCandidati(null);
-        alloggio.setFoto(null);
+        List<String> foto = new ArrayList<>();
+        String fotoBase64 = "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEASABIAAD/4Qm0RXhpZgAATU0AKgAAAAgACgEPAAIAAAAGAA";
+        foto.add(fotoBase64);
+        alloggio.setFoto(foto);
         alloggio.setAssegnatoA(null);
         alloggio.setProprietario(proprietarioErrato);
         alloggio.setId(1L);
@@ -483,6 +517,7 @@ public class GestioneAlloggioServiceImplTest {
         alloggio.setAssegnatoA(null);
         alloggio.setProprietario(volontario);
         alloggio.setId(1L);
+
 
         assertThrows(IllegalArgumentException.class, () -> {this.alloggioServiceImplementazione.addAlloggio(alloggio);});
     }
