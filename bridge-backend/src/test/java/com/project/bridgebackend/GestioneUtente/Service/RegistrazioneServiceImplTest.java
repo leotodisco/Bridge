@@ -1,5 +1,7 @@
 package com.project.bridgebackend.GestioneUtente.Service;
 
+import com.project.bridgebackend.Model.Entity.Consulenza;
+import com.project.bridgebackend.Model.dao.AlloggioDAO;
 import com.project.bridgebackend.Service.BridgeBackendApplicationTests;
 import com.project.bridgebackend.Model.Entity.Rifugiato;
 import com.project.bridgebackend.Model.Entity.enumeration.Gender;
@@ -9,6 +11,7 @@ import com.project.bridgebackend.Model.dao.RifugiatoDAO;
 import com.project.bridgebackend.registrazione.service.RegistrazioneServiceImpl;
 import com.project.bridgebackend.util.AuthenticationRequest;
 import lombok.SneakyThrows;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -42,11 +45,19 @@ public class RegistrazioneServiceImplTest {
     @Mock
     private RifugiatoDAO rifugiatoDAO;
     @Mock
+    private AlloggioDAO alloggioDAO;
+    @Mock
     private AuthenticationManager authenticationManager;
 
     private Rifugiato rifugiato;
 
     private String confermaPassword;
+
+    @AfterEach
+    void tearDown() {
+        // Resetta tutti i mock di Mockito per evitare interferenze tra i test
+        Mockito.reset(rifugiatoDAO, alloggioDAO);
+    }
 
     @BeforeEach
     @SneakyThrows
@@ -70,6 +81,11 @@ public class RegistrazioneServiceImplTest {
         Mockito.when(rifugiatoDAO.findByEmail(Mockito.anyString())).thenReturn(rifugiato);
         Authentication dummyAuthentication = Mockito.mock(Authentication.class);
         Mockito.when(authenticationManager.authenticate(Mockito.any(Authentication.class))).thenReturn(dummyAuthentication);
+        Mockito.when(rifugiatoDAO.save(Mockito.any(Rifugiato.class))).thenAnswer(
+                invocazione -> {
+                    return invocazione.getArgument(0);
+                }
+        );
     }
 
 
@@ -176,5 +192,6 @@ public class RegistrazioneServiceImplTest {
 
         Mockito.when(rifugiatoDAO.findByEmail(Mockito.anyString())).thenReturn(null);
         assertDoesNotThrow(() -> {this.registrazioneService.registraRifugiato(rifugiato2,confermaPassword);});
+
     }
 }

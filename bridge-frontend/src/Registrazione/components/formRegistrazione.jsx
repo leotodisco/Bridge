@@ -1,7 +1,7 @@
 import {useEffect, useState} from "react";
 import '../css/CreaUtente.css';
 import {useNavigate} from "react-router";
-import { ToastContainer, toast } from 'react-toastify';
+import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 const TitolodiStudio = {
@@ -32,7 +32,7 @@ const regexPatterns = {
     cognome: /^[A-Za-zÀ-ÖØ-öø-ÿ' -]{2,30}$/,
     nazionalita: /^[a-zA-Z\s]{5,30}$/,
     lingueParlate: /^[a-zA-Z ,]{5,30}$/,
-    email: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+    email: /^[^\s@]+@[^\s@]+\.([^\s@]+\.)?[a-zA-Z]{2,}$/,
     disponibilita: /^[A-Za-z0-9 ì,.:;-]+$/,
     password: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,16}$/,
     skill: /^[^<>{}[\]]{1,255}$/,
@@ -552,8 +552,9 @@ const CreaUtente = () => {
                     </p>
                 )}
 
-                <div className="password-field">
+                <div className="password-field" >
                     <input
+                        id = "conferma-password"
                         type={showConfirmPassword ? "text" : "password"}
                         placeholder="Conferma Password"
                         className={`formEditText  field ${errorMessages.confermaPW ? 'error-field' : ''}`}
