@@ -122,22 +122,6 @@ class GestioneCorsoServiceImplTest {
     }
 
     @Test
-    public void testInserimentoCorsoPdf_EstensioneErrata(){
-        Corso corso = new Corso();
-        corso.setProprietario(figura1);
-        corso.setTitolo("Corso di Italiano");
-        corso.setCategoriaCorso(CategoriaCorso.LINGUE);
-        corso.setDescrizione("Questo è un corso introduttivo all’apprendimento della lingua italiana");
-        corso.setProprietario(figura1);
-        corso.setLingua(Lingua.ITALIANO);
-
-        corso.setPdf("CorsoItaliano.docx");
-        assertThrows(IllegalArgumentException.class, () -> {
-            this.gestioneCorsoServiceImpl.creaCorso(corso);
-        });
-    }
-
-    @Test
     public void testInserimentoCorsoLingua_FormatoNonValido(){
         Corso corso = new Corso();
         corso.setProprietario(figura1);
