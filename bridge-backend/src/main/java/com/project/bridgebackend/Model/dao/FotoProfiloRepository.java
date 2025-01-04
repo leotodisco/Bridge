@@ -1,5 +1,6 @@
-package com.project.bridgebackend.CDN.Document;
+package com.project.bridgebackend.Model.dao;
 
+import com.project.bridgebackend.CDN.Document.FotoProfilo;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
 
