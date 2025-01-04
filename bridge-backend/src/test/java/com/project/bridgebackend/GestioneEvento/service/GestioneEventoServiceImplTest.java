@@ -1,6 +1,7 @@
 package com.project.bridgebackend.GestioneEvento.service;
 
 
+import com.project.bridgebackend.Model.Entity.Consulenza;
 import com.project.bridgebackend.Model.Entity.Evento;
 import com.project.bridgebackend.Model.Entity.Indirizzo;
 import com.project.bridgebackend.Model.Entity.enumeration.Lingua;
@@ -9,11 +10,13 @@ import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validation;
 import jakarta.validation.Validator;
 import jakarta.validation.ValidatorFactory;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.DateTimeException;
@@ -21,8 +24,7 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.Set;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(MockitoExtension.class)
 public class GestioneEventoServiceImplTest {
@@ -38,6 +40,12 @@ public class GestioneEventoServiceImplTest {
 
     private Evento evento;
     private Indirizzo indirizzo;
+
+    @AfterEach
+    void tearDown() {
+        // Resetta tutti i mock di Mockito per evitare interferenze tra i test
+        Mockito.reset(eventoDAO);
+    }
 
     @BeforeEach
     public void setup() {
@@ -289,6 +297,19 @@ public class GestioneEventoServiceImplTest {
 
         // Stampa le violazioni (facoltativo)
         violations.forEach(v -> System.out.println(v.getPropertyPath() + ": " + v.getMessage()));
+    }
+
+    @Test
+    public void testCreazioneEventoCorretto() {
+
+        // Configura il comportamento predefinito del mock per il salvataggio di una consulenza
+        Mockito.when(eventoDAO.save(Mockito.any(Evento.class))).thenAnswer(
+                invocazione -> {
+                    return invocazione.getArgument(0);
+                }
+        );
+
+        assertEquals(evento, this.eventoService.insertEvento(evento));
     }
 
 }
