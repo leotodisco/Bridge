@@ -1,7 +1,6 @@
 package com.project.bridgebackend.GestioneAlloggio.service;
 
 import com.project.bridgebackend.CDN.CDNService;
-import com.project.bridgebackend.CDN.Document.FotoAlloggioRepository;
 import com.project.bridgebackend.GestioneAlloggio.Service.AlloggioServiceImplementazione;
 import com.project.bridgebackend.Model.Entity.Alloggio;
 import com.project.bridgebackend.Model.Entity.Consulenza;
