@@ -49,6 +49,12 @@ public class GestioneAnnuncioServiceImp implements GestioneAnnuncioService {
     private RifugiatoDAO rifugiatoDAO;
 
     /**
+     * Repository per la gestione dei volontari nel database.
+     */
+    @Autowired
+    private VolontarioDAO volontarioDAO;
+
+    /**
      * Repository per la gestione dei lavori nel database.
      */
     @Autowired
@@ -178,9 +184,88 @@ public class GestioneAnnuncioServiceImp implements GestioneAnnuncioService {
      */
     @Override
     public Lavoro inserimentoLavoro(final Lavoro lavoro) {
-        if (lavoro.getRetribuzione() <= 0) {
-            throw new IllegalArgumentException("La retribuzione deve essere positiva.");
+        // Validazione dei campi dell'indirizzo
+        Indirizzo indirizzo = lavoro.getIndirizzo();
+        if (indirizzo.getCitta() == null || indirizzo.getCitta().trim().isEmpty() || !indirizzo.getCitta().matches("^[A-zÀ-ù ‘]{2,50}$")) {
+            throw new IllegalArgumentException("La città non può essere vuota.");
         }
+        if (indirizzo.getProvincia() == null || indirizzo.getProvincia().trim().length() != 2 || !indirizzo.getProvincia().matches("^[A-Z]{2}$") ) {
+            throw new IllegalArgumentException("La provincia deve essere composta da 2 caratteri.");
+        }
+        if (indirizzo.getCap().length() != 5 || !indirizzo.getCap().matches("^\\d{5}$")) {
+            throw new IllegalArgumentException("Il CAP deve essere un numero di 5 cifre.");
+        }
+        if (indirizzo.getVia() == null || indirizzo.getVia().trim().isEmpty() || !indirizzo.getVia().matches("^[A-zÀ-ù ‘]{2,50}$")) {
+            throw new IllegalArgumentException("La via non può essere vuota.");
+        }
+        if(indirizzo.getNumCivico() > 999 || indirizzo.getNumCivico() < 0) {
+            throw new IllegalArgumentException("Il numero civico non può essere maggiore di 3 cifre.");
+        }
+        //posizione lavorativa non deve essere nulla e rispettare il formato
+        if (lavoro.getPosizioneLavorativa().isEmpty() || !lavoro.getPosizioneLavorativa().matches("^[a-zA-ZÀ-ÿ‘’ ]{2,100}$")) {
+            throw new IllegalArgumentException("La posizione lavorativa non può essere vuota e deve contenere solo lettere, spazi, e tra 2 e 100 caratteri.");
+        }
+
+        //nome azienda non deve esssere nulla e rispettare il formato
+        if(lavoro.getNomeAzienda().isEmpty() || !lavoro.getNomeAzienda().matches("^[a-zA-ZÀ-ÿ‘’ ]{2,100}$")) {
+            throw new IllegalArgumentException("Il nome Azienda non può essere vuota e deve contenere solo lettere, spazi, e tra 2 e 100 caratteri.");
+        }
+
+        //gli orari di lavoro devono rispettare il formato
+        if(lavoro.getOrarioLavoro().isEmpty() || !lavoro.getOrarioLavoro().matches("^\\d{2}:\\d{2}-\\d{2}:\\d{2}$")) {
+            throw new IllegalArgumentException("Gli orari di lavoro devono rispettare il formato.");
+        }
+
+        //il tipo di contratto non può essere nullo e deve essere compreso tra i valori definiti
+        //nell'enum tipo contratto
+        if(lavoro.getTipoContratto() == null) {
+            throw new IllegalArgumentException("Il tipo contratto non può essere null.");
+        }
+
+        //retribuzione deve essere un doble positivo che rispetta il formato
+        if (lavoro.getRetribuzione() <= 0 ||
+                !String.valueOf(lavoro.getRetribuzione()).matches("^\\d{1,8}(\\.\\d{1,2})?$")) {
+            throw new IllegalArgumentException("La retribuzione deve essere un numero positivo, con un massimo di 8 cifre intere e 2 cifre decimali.");
+        }
+
+        //nome sede non può essere nullo
+        if (lavoro.getNomeSede() == null ||
+                lavoro.getNomeSede().isEmpty() ||
+                !lavoro.getNomeSede().matches("^[A-zÀ-ù ‘]{2,100}$")) {
+            throw new IllegalArgumentException("Il nome della sede non può essere nullo, vuoto e deve contenere solo caratteri validi con una lunghezza compresa tra 2 e 100 caratteri.");
+        }
+
+        if (lavoro.getInfoUtili() == null ||
+                lavoro.getInfoUtili().isEmpty() ||
+                !lavoro.getInfoUtili().matches("^[\\wÀ-ÿ\\s,.!?@'\\-]{1,500}$")) {
+            throw new IllegalArgumentException("Il campo 'Info Utili' non può essere nullo o vuoto, e deve rispettare il formato e avere una lunghezza compresa tra 1 e 500 caratteri.");
+        }
+
+        // Controllo per maxCandidature: non deve essere nullo e deve rispettare il formato della regex
+        if (lavoro.getMaxCandidature() < 1 || lavoro.getMaxCandidature() > 99) {
+            throw new IllegalArgumentException("Il numero massimo di candidature deve essere un numero intero compreso tra 1 e 99.");
+        }
+
+        Volontario proprietario = volontarioDAO.findByEmail(lavoro.getProprietario().getEmail());
+        if (proprietario == null) {
+            throw new IllegalArgumentException("Il proprietario non esiste");
+        }
+
+        // Controllo per disponibilita: non può essere null
+        if (lavoro.getDisponibilita() == null) {
+            throw new IllegalArgumentException("La disponibilità non può essere nulla.");
+        }
+
+        //controllo per titolo
+        if (lavoro.getTitolo() == null || lavoro.getTitolo().isEmpty() || !lavoro.getTitolo().matches("^[A-Za-z0-9À-ÿ .,'-]{3,100}$")) {
+            throw new IllegalArgumentException("il titolo non può essere nullo e deve rispettare il formato.");
+        }
+
+        // Controllo per tipologia: non può essere null
+        if (lavoro.getTipologia() == null) {
+            throw new IllegalArgumentException("La Tipologia non può essere nulla.");
+        }
+
         return lavoroDAO.save(lavoro);
     }
 
