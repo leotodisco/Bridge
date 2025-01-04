@@ -87,7 +87,7 @@ public class GestioneAnnuncioServiceImp implements GestioneAnnuncioService {
      * @return la consulenza salvata nel database.
      */
     @Override
-    public Consulenza inserimentoConsulenza(@Valid final Consulenza consulenza) {
+    public Consulenza inserimentoConsulenza(final Consulenza consulenza) {
 
         // Tipologia non nulla
         if (consulenza.getTipologia() == null) {
