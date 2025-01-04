@@ -400,8 +400,6 @@ public class AlloggioServiceImplementazione implements AlloggioService {
 
     @Override
     public List<Alloggio> getRandomAlloggi() {
-
-        System.out.println("Siamo nel service");
         List<Alloggio> alloggi = alloggioDAO.findMyAll();
         if (alloggi.isEmpty()) {
             System.out.println("Nessun alloggio trovato nel database.");

@@ -243,4 +243,3 @@ const AllLavoroView = () => {
 };
 
 export default AllLavoroView;
-

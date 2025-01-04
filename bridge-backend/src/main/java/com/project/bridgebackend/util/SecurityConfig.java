@@ -114,6 +114,9 @@ public class SecurityConfig {
                 "/api/annunci/modifica_lavoro/{id}",
                 "/api/annunci/elimina_lavoro/{id}",
                 "/api/annunci/random",
+                "/api/annunci/invia-candidatura-lavoro/{id}",
+                "/api/annunci/rimuovi-candidatura-lavoro/{id}",
+                "/api/annunci/check-candidatura-lavoro/{id}",
 
                 // CORSI
                 "/api/corsi/crea",

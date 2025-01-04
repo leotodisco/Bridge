@@ -4,13 +4,13 @@ import CorsoView from "./corsoView.jsx";
 import CreaCorso from "./formCorso.jsx";
 import "../../GestioneEvento/css/card.css";
 import "../../GestioneCorso/css/listaCorsiStyle.css";
-import {FaPlus} from "react-icons/fa";
-import {useNavigate} from "react-router-dom";
-import {toast} from "react-toastify";
-
+import { FaPlus } from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 
 const ListaCorsiView = () => {
     const [corsi, setCorsi] = useState([]);
+    const [userImages, setUserImages] = useState({}); // Stato per le immagini degli utenti
     const [error, setError] = useState(false);
     const [loading, setLoading] = useState(true);
     const [selectedCorsoId, setSelectedCorsoId] = useState(null);
@@ -20,26 +20,53 @@ const ListaCorsiView = () => {
 
     const fetchCorsi = async () => {
         try {
-            const token = localStorage.getItem('authToken');
+            const token = localStorage.getItem("authToken");
 
             if (!token) {
                 toast.error("Non sei autenticato. Effettua il login.");
-                nav('/login');
+                nav("/login");
                 return;
             }
 
-            const response = await
-                fetch("http://localhost:8080/api/corsi/listaCorsi", {
-                    method: 'GET',
-                    headers: {
-                        'Authorization': `Bearer ${token}`,
-                        'Content-Type': 'application/json',
-                    },
-                });
+            const response = await fetch("http://localhost:8080/api/corsi/listaCorsi", {
+                method: "GET",
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                    "Content-Type": "application/json",
+                },
+            });
 
             if (response.ok) {
                 const data = await response.json();
                 setCorsi(data);
+
+                const imagesData = {};
+                for (const corso of data) {
+                    const email = corso.proprietario.email;
+                    try {
+                        const imgResponse = await fetch(
+                            `http://localhost:8080/areaPersonale/DatiFotoUtente/${email}`,
+                            {
+                                method: "GET",
+                                headers: {
+                                    Authorization: `Bearer ${token}`,
+                                    "Content-Type": "application/json",
+                                },
+                            }
+                        );
+
+                        if (imgResponse.ok) {
+                            const imgBase64 = await imgResponse.text();
+                            imagesData[email] = imgBase64;
+                        } else {
+                            imagesData[email] = "https://via.placeholder.com/150/cccccc/000000?text=No+Image";
+                        }
+                    } catch (error) {
+                        console.error(error);
+                        imagesData[email] = "https://via.placeholder.com/150/cccccc/000000?text=No+Image";
+                    }
+                }
+                setUserImages(imagesData);
             } else {
                 setError(true);
             }
@@ -58,9 +85,9 @@ const ListaCorsiView = () => {
                 setShowModal(false);
             }
         };
-        document.body.addEventListener('keydown', closeOnEscapeKeyDown);
+        document.body.addEventListener("keydown", closeOnEscapeKeyDown);
         return () => {
-            document.body.removeEventListener('keydown', closeOnEscapeKeyDown);
+            document.body.removeEventListener("keydown", closeOnEscapeKeyDown);
         };
     }, []);
 
@@ -70,6 +97,7 @@ const ListaCorsiView = () => {
         fetchCorsi(); // Ricarica i corsi
         toggleModal(); // Chiude il modal
     };
+
     if (loading) {
         return <p>Caricamento in corso...</p>;
     }
@@ -77,7 +105,6 @@ const ListaCorsiView = () => {
     if (error) {
         return <p>Errore nel recupero dei corsi.</p>;
     }
-    console.log("RUOLO", ruolo);
 
     return (
         <div>
@@ -95,28 +122,31 @@ const ListaCorsiView = () => {
             </div>
             {corsi.length > 0 ? (
                 <div className="cards-container">
-                    {corsi.map((corso) => (
-                        <Card
-                            key={corso.id}
-                            data={{
-                                title: corso.titolo,
-                                image: corso.proprietario.fotoUtente
-                                    ? corso.proprietario.fotoUtente
-                                    : "https://via.placeholder.com/150",
-                                userName: `${corso.proprietario.nome} ${corso.proprietario.cognome}`,
-                                parameter1: corso.lingua,
-                                parameter2: corso.categoriaCorso,
-                                parameter3: corso.proprietario.nome,
-                            }}
-                            labels={{
-                                parameter1: "Lingua",
-                                parameter2: "Categoria",
-                                parameter3: "Proprietario",
-                            }}
-                            onClick={() => console.log(`Cliccato su corso: ${corso.titolo}`)}
-                            onInfoClick={() => setSelectedCorsoId(corso.id)}
-                        />
-                    ))}
+                    {corsi.map((corso) => {
+                        const corsoImage = userImages[corso.proprietario.email]
+                            ? `data:image/jpeg;base64,${userImages[corso.proprietario.email]}`
+                            : "https://via.placeholder.com/150/cccccc/000000?text=No+Image";
+                        return (
+                            <Card
+                                key={corso.id}
+                                data={{
+                                    title: corso.titolo,
+                                    image: corsoImage,
+                                    userName: `${corso.proprietario.nome} ${corso.proprietario.cognome}`,
+                                    parameter1: corso.lingua,
+                                    parameter2: corso.categoriaCorso,
+                                    parameter3: corso.proprietario.nome,
+                                }}
+                                labels={{
+                                    parameter1: "Lingua",
+                                    parameter2: "Categoria",
+                                    parameter3: "Proprietario",
+                                }}
+                                onClick={() => console.log(`Cliccato su corso: ${corso.titolo}`)}
+                                onInfoClick={() => setSelectedCorsoId(corso.id)}
+                            />
+                        );
+                    })}
                 </div>
             ) : (
                 <p>Nessun corso disponibile.</p>
@@ -124,7 +154,7 @@ const ListaCorsiView = () => {
             {selectedCorsoId && <CorsoView id={selectedCorsoId} onClose={() => setSelectedCorsoId(null)} />}
             {showModal && (
                 <div className="modal">
-                    <div >
+                    <div>
                         <CreaCorso onClose={toggleModal} onCourseAdded={handleCourseAdded} />
                     </div>
                 </div>

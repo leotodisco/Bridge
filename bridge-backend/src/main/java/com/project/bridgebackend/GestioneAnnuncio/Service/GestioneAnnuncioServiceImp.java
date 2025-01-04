@@ -565,9 +565,6 @@ public class GestioneAnnuncioServiceImp implements GestioneAnnuncioService {
         consulenzaDAO.save(c);
     }
 
-    /**
-     *
-     */
     @Override
     public List<Lavoro> getRandomLavori() {
         // Recupera tutti gli eventi
@@ -588,6 +585,80 @@ public class GestioneAnnuncioServiceImp implements GestioneAnnuncioService {
 
         // Restituisce la lista dei partecipanti (Rifugiato) associati all'evento
         return lavoro.getCandidati();
+    }
+
+
+    @Override
+    public void invioCandidaturaLavoro(long idLavoro, String emailRifugiato) {
+        // Recupera l'annuncio di lavoro
+        Optional<Lavoro> lavoroOptional = lavoroDAO.findById(idLavoro);
+        if (lavoroOptional.isEmpty()) {
+            throw new IllegalArgumentException("Annuncio di lavoro non trovato.");
+        }
+        Lavoro lavoro = lavoroOptional.get();
+
+        // Recupera il rifugiato
+        Rifugiato rifugiato = rifugiatoDAO.findByEmail(emailRifugiato);
+        if (rifugiato == null) {
+            throw new IllegalArgumentException("Rifugiato non trovato.");
+        }
+
+        // Verifica se il rifugiato ha già candidato
+        if (lavoro.getCandidati().contains(emailRifugiato)) {
+            throw new IllegalArgumentException("Sei già candidato a questo annuncio.");
+        }
+
+        // Aggiungi l'email del rifugiato ai candidati
+        lavoro.getCandidati().add(emailRifugiato);
+        lavoroDAO.save(lavoro);
+
+        // Invia notifica email al proprietario dell'annuncio
+        sendEmailVolontario(
+                "Il rifugiato " + rifugiato.getNome() + " " + rifugiato.getCognome()
+                        + " si è candidato per il lavoro " + lavoro.getTitolo(),
+                lavoro.getProprietario().getEmail()
+        );
+    }
+
+
+    // Metodo per verificare se un rifugiato è candidato a un annuncio di lavoro
+    @Override
+    public boolean isCandidatoPerLavoro(long idLavoro, String emailRifugiato) {
+        // Recupera l'annuncio di lavoro
+        Optional<Lavoro> lavoroOptional = lavoroDAO.findById(idLavoro);
+        if (lavoroOptional.isEmpty()) {
+            throw new IllegalArgumentException("Annuncio di lavoro non trovato.");
+        }
+        Lavoro lavoro = lavoroOptional.get();
+
+        // Controlla se l'email del rifugiato è nella lista dei candidati
+        return lavoro.getCandidati().contains(emailRifugiato);
+    }
+
+    // Metodo per rimuovere la candidatura di un rifugiato a un annuncio di lavoro
+    @Override
+    public void rimuoviCandidaturaLavoro(long idLavoro, String emailRifugiato) {
+        // Recupera l'annuncio di lavoro
+        Optional<Lavoro> lavoroOptional = lavoroDAO.findById(idLavoro);
+        if (lavoroOptional.isEmpty()) {
+            throw new IllegalArgumentException("Annuncio di lavoro non trovato.");
+        }
+        Lavoro lavoro = lavoroOptional.get();
+
+        // Recupera il rifugiato
+        Rifugiato rifugiato = rifugiatoDAO.findByEmail(emailRifugiato);
+        if (rifugiato == null) {
+            throw new IllegalArgumentException("Rifugiato non trovato.");
+        }
+
+        // Verifica se il rifugiato è candidato a questo lavoro
+        if (!lavoro.getCandidati().contains(emailRifugiato)) {
+            throw new IllegalArgumentException("Non sei candidato a questo annuncio.");
+        }
+
+        // Rimuovi l'email del rifugiato dalla lista dei candidati
+        lavoro.getCandidati().remove(emailRifugiato);
+        lavoroDAO.save(lavoro);
     }
 
 }
