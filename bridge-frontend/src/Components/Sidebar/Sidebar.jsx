@@ -48,7 +48,7 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
                 <ul className={`menu ${isServicesExpanded ? 'shifted-up' : ''}`}>
                     {/* Voce di menu: Home */}
                     <li>
-                        <Link to="/">
+                        <Link to="/homepage">
                             <FaHome className="icon"/> <span>Home</span>
                         </Link>
                     </li>
@@ -100,7 +100,7 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
                         className={`log-out ${isServicesExpanded ? 'shifted-down' : ''}`}
                         onClick={() => {
                             localStorage.clear(); // Rimuove il token e altri dati utente
-                            window.location.href = "/login"; // Reindirizza alla pagina di login
+                            window.location.href = "/"; // Reindirizza alla pagina di login
                         }}
                     >
                         <FaSignOutAlt className="icon"/> <span>Log out</span>

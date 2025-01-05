@@ -1,0 +1,178 @@
+/* Contenitore principale */
+.intro-container {
+    width: 100%;
+    max-width: 1200px;
+    text-align: center;
+    background-color: #0C3444;
+    padding: 20px;
+    border-radius: 20px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+    margin: 50px auto;
+    color: white;
+}
+
+/* Titolo */
+.intro-header h1 {
+    color: white;
+    font-size: 2.5rem;
+    margin-bottom: 10px;
+}
+
+/* Paragrafo iniziale */
+.intro-header p {
+    color: #e0e0e0;
+    font-size: 1.2rem;
+    margin-bottom: 20px;
+}
+
+/* Sezioni */
+.intro-mission, .intro-features, .intro-success {
+    margin-top: 30px;
+    margin-bottom: 10px;
+    text-align: left;
+    background-color: #ffffff;
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    color: #0C3444;
+    transition: transform 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease;
+    animation: fadeInUp 0.6s ease-out forwards;
+}
+
+/* Effetto hover per le sezioni */
+.intro-mission:hover, .intro-features:hover, .intro-success:hover {
+    transform: translateY(-5px) scale(1.02);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    background-color: #f0f8ff;
+}
+
+/* Keyframes per animazione iniziale */
+@keyframes fadeInUp {
+    0% {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Titoli delle sezioni */
+.intro-mission h2, .intro-features h2, .intro-success h2 {
+    font-size: 1.8rem;
+    margin-bottom: 15px;
+    color: #007bff;
+}
+
+/* Elenco delle funzionalità */
+.intro-features ul {
+    list-style: none;
+    padding: 0;
+}
+
+.intro-features li {
+    margin-bottom: 10px;
+    color: #444;
+    font-size: 1rem;
+}
+
+.intro-features li strong {
+    color: #007bff;
+}
+
+/* Pulsante di accesso */
+.cta-button {
+    background-color: #2a5368;
+    color: white;
+    border: none;
+    border-radius: 20px;
+    padding: 10px 30px;
+    font-size: 1.2rem;
+    font-weight: bold;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+    cursor: pointer;
+    transition: transform 0.2s, background-color 0.2s;
+    margin-top: 20px;
+}
+
+.cta-button:hover {
+    background-color: #00BF62;
+    transform: scale(1.05);
+}
+
+.cta-button:focus {
+    outline: none;
+    box-shadow: 0 0 8px rgba(0, 0, 0, 0.4);
+}
+
+.cta-button:active {
+    transform: scale(0.95);
+}
+
+/* Footer */
+.intro-footer {
+    margin-top: 30px;
+    color: #e0e0e0;
+    font-size: 0.9rem;
+    text-align: center;
+}
+
+/* Media Query per schermi medi (tablet) */
+@media (max-width: 768px) {
+    .intro-container {
+        width: 700px;
+        padding: 15px;
+    }
+
+    .intro-header h1 {
+        font-size: 2rem;
+    }
+
+    .intro-header p {
+        font-size: 1rem;
+    }
+
+    .intro-mission, .intro-features, .intro-success {
+        padding: 15px;
+    }
+
+    .intro-mission h2, .intro-features h2, .intro-success h2 {
+        font-size: 1.5rem;
+    }
+
+    .cta-button {
+        font-size: 1rem;
+        padding: 8px 20px;
+    }
+}
+
+/* Media Query per schermi piccoli (smartphone) */
+@media (max-width: 480px) {
+    .intro-container {
+        width: 350px;
+        margin: 20px auto;
+        padding: 10px;
+    }
+
+    .intro-header h1 {
+        font-size: 1.8rem;
+    }
+
+    .intro-header p {
+        font-size: 0.9rem;
+    }
+
+    .intro-mission, .intro-features, .intro-success {
+        padding: 10px;
+    }
+
+    .intro-mission h2, .intro-features h2, .intro-success h2 {
+        font-size: 1.2rem;
+    }
+
+    .cta-button {
+        font-size: 0.9rem;
+        padding: 6px 15px;
+    }
+}

@@ -6,6 +6,7 @@ import EventoRetrieveView from "../../GestioneEvento/components/EventoRetrieveVi
 import {Link, useNavigate} from "react-router-dom";
 import AboutUs from "../AboutUs/AboutUs.jsx";
 import LavoroView from "../../GestioneAnnuncio/components/LavoroRetrieve.jsx";
+import {toast} from "react-toastify";
 
 
 const Homepage = () => {
@@ -30,7 +31,7 @@ const Homepage = () => {
 
         // check su token:
         if (!token) {
-            alert("Non sei autenticato. Effettua il login.");
+            toast.error("Non sei autenticato. Effettua il login.");
             nav('/login');
             return;
         }

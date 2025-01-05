@@ -38,7 +38,7 @@ function LogoutButton({ onLogout }) {
             }
 
             // Reindirizza alla pagina di login
-            navigate('/login');
+            navigate('/');
 
         } catch (error) {
             console.error('Errore durante il logout:', error);

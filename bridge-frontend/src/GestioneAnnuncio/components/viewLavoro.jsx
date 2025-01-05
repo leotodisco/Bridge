@@ -4,6 +4,7 @@ import Card from "../../GestioneEvento/components/Card.jsx";
 import "../../GestioneEvento/css/card.css";
 import { useNavigate } from "react-router-dom";
 import CreaLavoro from "./formLavoro.jsx";
+import {toast} from "react-toastify";
 
 /**
  * @author Vito Vernellati

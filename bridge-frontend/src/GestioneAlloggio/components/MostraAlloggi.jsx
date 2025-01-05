@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import Card from "../../GestioneEvento/components/Card.jsx";
 import "../css/crea-alloggio.css";
 import "../../GestioneAnnuncio/css/PopUpForm.css";
+import {toast} from "react-toastify";
 
 const MostraAlloggi = () => {
     const [alloggi, setAlloggi] = useState([]);
@@ -26,7 +27,7 @@ const MostraAlloggi = () => {
             const token = localStorage.getItem('authToken');
 
             if (!email || !token) {
-                alert("Non sei autenticato. Effettua il login.");
+                toast.error("Non sei autenticato. Effettua il login.");
                 navigate('/login');
                 return;
             }

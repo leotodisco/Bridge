@@ -28,6 +28,7 @@ import "./GestioneChatbot/css/Chatbot.css"
 import {FaRobot} from "react-icons/fa";
 import { ToastContainer } from 'react-toastify';
 import CorsiUtente from "./GestioneUtente/components/dashboardCorso.jsx";
+import IntroPage from "./Components/Homepage/introPage.jsx";
 
 function App() {
     const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -73,7 +74,8 @@ function App() {
                 {isAuthenticated ? (
                     <>
                         <Routes>
-                            <Route path="/" element={<Homepage />} />
+                            <Route path="/" element={<IntroPage />} />
+                            <Route path="/homepage" element={<Homepage />} />
                             <Route path="/eventi-utente" element={<EventiUtente />} />
                             <Route path="/consulenze-candidato" element={<ConsulenzeCandidate />} />
                             <Route path="/corsi-utente" element={<CorsiUtente />} />
@@ -100,7 +102,8 @@ function App() {
                 ) : (
                     <>
                         <Routes>
-                            <Route path="/" element={<Homepage />} />
+                            <Route path="/" element={<IntroPage />} />
+                            <Route path="/homepage" element={<Homepage />} />
                             <Route path="/view-eventi" element={<AllEventsView />} />
                             <Route path="/view-lavoro" element={<ViewLavoro />} />
                             <Route path="/alloggi/SingoloAlloggio/:titolo" element={<Alloggio />} />

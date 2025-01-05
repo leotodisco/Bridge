@@ -7,6 +7,7 @@ import "../css/filterBar.css";
 import ConsulenzaView from "./ConsulenzaRetrive.jsx";
 import FormConsulenza from "./formConsulenza.jsx";
 import {useNavigate} from "react-router-dom";
+import {toast} from "react-toastify";
 /*
 * @author Geraldine Montella
 *
@@ -41,17 +42,19 @@ const AllConsulenzaView = () => {
         try {
             // Usa fetch per recuperare i dati
             const token = localStorage.getItem('authToken');
+
+            if (!token) {
+                toast.error("Non sei autenticato. Effettua il login.");
+                nav('/login');
+                return;
+            }
+
             const url = tipo
                 ? `http://localhost:8080/api/annunci/view_consulenze/filter?tipo=${tipo}`
                 : `http://localhost:8080/api/annunci/view_consulenze`;
 
             console.log("Calling URL:", url); // Log per verificare l'URL
 
-            if (!token) {
-                alert("Non sei autenticato. Effettua il login.");
-                nav('/login');
-                return;
-            }
 
             const response = await
                 fetch(url,{
@@ -75,7 +78,7 @@ const AllConsulenzaView = () => {
                 try {
                     // check su token:
                     if (!token) {
-                        alert("Non sei autenticato. Effettua il login.");
+                        toast.error("Non sei autenticato. Effettua il login.");
                         nav('/login');
                         return;
                     }
