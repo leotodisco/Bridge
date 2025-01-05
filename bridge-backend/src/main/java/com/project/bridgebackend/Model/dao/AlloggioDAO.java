@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Optional;
 
 /**
- * @author: Mario Zurolo
+ * @author : Mario Zurolo
  * created: 3/12/24
  * Repository per la gestione degli oggetti {@link Alloggio}.
  * Fornisce metodi per l'accesso e la manipolazione dei,

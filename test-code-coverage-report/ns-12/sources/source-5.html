@@ -1,0 +1,296 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > SecurityConfig</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">com.project.bridgebackend.util</a>
+</div>
+
+<h1>Coverage Summary for Class: SecurityConfig (com.project.bridgebackend.util)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">SecurityConfig</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (4/4)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (21/21)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">SecurityConfig$$SpringCGLIB$$0</td>
+  </tr>
+  <tr>
+    <td class="name">SecurityConfig$$SpringCGLIB$$FastClass$$0</td>
+  </tr>
+  <tr>
+    <td class="name">SecurityConfig$$SpringCGLIB$$FastClass$$1</td>
+  </tr>
+<tr>
+  <td class="name"><strong>Total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (4/4)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (21/21)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package com.project.bridgebackend.util;
+&nbsp;
+&nbsp;import lombok.RequiredArgsConstructor;
+&nbsp;import org.springframework.beans.factory.annotation.Autowired;
+&nbsp;import org.springframework.context.annotation.Bean;
+&nbsp;import org.springframework.context.annotation.Configuration;
+&nbsp;import org.springframework.security.authentication.AuthenticationProvider;
+&nbsp;import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+&nbsp;import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+&nbsp;import org.springframework.security.config.http.SessionCreationPolicy;
+&nbsp;import org.springframework.security.web.SecurityFilterChain;
+&nbsp;import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+&nbsp;import org.springframework.web.cors.CorsConfiguration;
+&nbsp;import org.springframework.web.cors.CorsConfigurationSource;
+&nbsp;import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+&nbsp;
+&nbsp;import java.util.List;
+&nbsp;
+&nbsp;/**
+&nbsp; * @author Benedetta Colella
+&nbsp; * Creato il: 04/12/2024
+&nbsp; * Questa classe configura Spring Security per proteggere l&#39;applicazione.
+&nbsp; * Specifica:
+&nbsp; * - Gli endpoint pubblici e quelli protetti
+&nbsp; * - La gestione delle sessioni come stateless
+&nbsp; * - L&#39;integrazione del filtro JWT per l&#39;autenticazione
+&nbsp; * - Configurazioni CORS per abilitare richieste da client frontend.
+&nbsp; * È il cuore della sicurezza applicativa basata su token.
+&nbsp; */
+&nbsp;
+&nbsp;@Configuration
+&nbsp;@EnableWebSecurity
+&nbsp;@RequiredArgsConstructor
+&nbsp;public class SecurityConfig {
+&nbsp;    /**
+&nbsp;     * Filtro per l&#39;autenticazione tramite JWT.
+&nbsp;     */
+&nbsp;    @Autowired
+&nbsp;    private final JwtAuthenticationFilter authFilter;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Fornitore di autenticazione per la gestione della logica di autenticazione.
+&nbsp;     */
+&nbsp;    @Autowired
+&nbsp;    private final AuthenticationProvider provider;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Configura la sicurezza HTTP dell&#39;applicazione, incluse le autorizzazioni degli endpoint,
+&nbsp;     * la gestione delle sessioni come stateless e l&#39;integrazione del filtro JWT.
+&nbsp;     *
+&nbsp;     * @param http Oggetto HttpSecurity per configurare la sicurezza HTTP.
+&nbsp;     * @return SecurityFilterChain configurato per la protezione degli endpoint.
+&nbsp;     * @throws Exception Se si verificano errori durante la configurazione della sicurezza.
+&nbsp;     */
+&nbsp;    @Bean
+&nbsp;    public SecurityFilterChain securityFilterChain(
+&nbsp;            final HttpSecurity http) throws Exception {
+<b class="fc">&nbsp;        http</b>
+<b class="fc">&nbsp;                .cors(cors -&gt; cors.configurationSource(corsConfigurationSource()))</b>
+<b class="fc">&nbsp;                .csrf(csrf -&gt; csrf.disable())</b>
+<b class="fc">&nbsp;                .authorizeHttpRequests(auth -&gt; auth</b>
+<b class="fc">&nbsp;                        .requestMatchers(&quot;/authentication/login&quot;, &quot;/authentication/registrazioneUtente&quot;).anonymous() // Accesso consentito solo a non autenticati</b>
+<b class="fc">&nbsp;                        .requestMatchers(getPublicEndpoints()).authenticated() // Richiedono token JWT valido</b>
+<b class="fc">&nbsp;                        .anyRequest().authenticated()</b>
+&nbsp;                )
+<b class="fc">&nbsp;                .sessionManagement(session -&gt; session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))</b>
+<b class="fc">&nbsp;                .authenticationProvider(provider)</b>
+<b class="fc">&nbsp;                .addFilterBefore(authFilter, UsernamePasswordAuthenticationFilter.class);</b>
+&nbsp;
+<b class="fc">&nbsp;        return http.build();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Restituisce una lista di endpoint pubblici che non richiedono autenticazione.
+&nbsp;     *
+&nbsp;     * @return Un array di endpoint pubblici.
+&nbsp;     */
+&nbsp;    private String[] getPublicEndpoints() {
+<b class="fc">&nbsp;        return new String[]{</b>
+&nbsp;                // AUTENTICAZIONE
+&nbsp;                &quot;/authentication/login&quot;,
+&nbsp;                &quot;/authentication/registrazioneUtente&quot;,
+&nbsp;
+&nbsp;                // EVENTI
+&nbsp;                &quot;/api/eventi/crea&quot;,
+&nbsp;                &quot;/api/eventi/all&quot;,
+&nbsp;                &quot;/api/eventi/retrieve/{id}&quot;,
+&nbsp;                &quot;/api/eventi/{id}/iscrivi&quot;,
+&nbsp;                &quot;/api/eventi/{id}/disiscrivi&quot;,
+&nbsp;                &quot;/api/eventi/{id}/partecipanti&quot;,
+&nbsp;                &quot;/api/eventi/pubblicati&quot;,
+&nbsp;                &quot;/api/eventi/{id}/iscrizione&quot;,
+&nbsp;                &quot;/api/eventi/random&quot;,
+&nbsp;                &quot;/api/eventi/eventiIscritti&quot;,
+&nbsp;
+&nbsp;                // ANNUNCI (CONSULENZA E LAVORO)
+&nbsp;                &quot;/api/annunci/creaConsulenza&quot;,
+&nbsp;                &quot;/api/annunci/view_consulenze&quot;,
+&nbsp;                &quot;/api/annunci/view_consulenze/proprietario/{id}&quot;,
+&nbsp;                &quot;/api/annunci/view_consulenze/retrive/{id}&quot;,
+&nbsp;                &quot;/api/annunci/modifica_consulenza/{idConsulenza}&quot;,
+&nbsp;                &quot;/api/annunci/eliminaConsulenza/{id}&quot;,
+&nbsp;                &quot;/api/annunci/manifestazione-interesse/{idConsulenza}&quot;,
+&nbsp;                &quot;/api/annunci/verifica-candidato/{idConsulenza}&quot;,
+&nbsp;                &quot;/api/annunci/rimuovi-interesse/{idConsulenza}&quot;,
+&nbsp;                &quot;/api/annunci/accetta/{idConsulenza}&quot;,
+&nbsp;                &quot;/api/annunci/rifiuta/{idConsulenza}&quot;,
+&nbsp;                &quot;/api/annunci/pubblicati&quot;,
+&nbsp;                &quot;/api/annunci/candidature&quot;,
+&nbsp;                &quot;/api/annunci/creaLavoro&quot;,
+&nbsp;                &quot;/api/annunci/view_lavori&quot;,
+&nbsp;                &quot;/api/annunci/view_lavori/proprietario/{id}&quot;,
+&nbsp;                &quot;/api/annunci/view_lavori/retrieve/{id}&quot;,
+&nbsp;                &quot;/api/annunci/modifica_lavoro/{id}&quot;,
+&nbsp;                &quot;/api/annunci/elimina_lavoro/{id}&quot;,
+&nbsp;                &quot;/api/annunci/random&quot;,
+&nbsp;                &quot;/api/annunci/invia-candidatura-lavoro/{id}&quot;,
+&nbsp;                &quot;/api/annunci/rimuovi-candidatura-lavoro/{id}&quot;,
+&nbsp;                &quot;/api/annunci/check-candidatura-lavoro/{id}&quot;,
+&nbsp;
+&nbsp;                // CORSI
+&nbsp;                &quot;/api/corsi/crea&quot;,
+&nbsp;                &quot;/api/corsi/upload&quot;,
+&nbsp;                &quot;/api/corsi/cerca/{id}&quot;,
+&nbsp;                &quot;/api/corsi/modifica/{id}&quot;,
+&nbsp;                &quot;/api/corsi/listaCorsi&quot;,
+&nbsp;                &quot;/api/corsi/listaCorsiUtente/{email}&quot;,
+&nbsp;                &quot;/api/corsi/download/{id}&quot;,
+&nbsp;
+&nbsp;                // ALLOGGI
+&nbsp;                &quot;/alloggi/aggiungi&quot;,
+&nbsp;                &quot;/alloggi/mostra&quot;,
+&nbsp;                &quot;/alloggi/preferiti&quot;,
+&nbsp;                &quot;/alloggi/isFavorito&quot;,
+&nbsp;                &quot;alloggi/assegnazione&quot;,
+&nbsp;                &quot;/alloggi/SingoloAlloggio/{titolo}&quot;,
+&nbsp;                &quot;/alloggi/interesse&quot;,
+&nbsp;                &quot;/alloggi/random&quot;,
+&nbsp;                &quot;/alloggi/alloggiPreferitiUtente/{email}&quot;,
+&nbsp;
+&nbsp;                // AREA PERSONALE
+&nbsp;                &quot;/areaPersonale/DatiUtente/{email}&quot;,
+&nbsp;                &quot;/areaPersonale/elimina/{email}&quot;,
+&nbsp;                &quot;/areaPersonale/DatiFotoUtente/{email}&quot;,
+&nbsp;                &quot;/areaPersonale/modificaUtente/{email}&quot;,
+&nbsp;                &quot;/areaPersonale/modificaPassword/{email}&quot;,
+&nbsp;                &quot;/areaPersonale/modificaFotoUtente/{email}&quot;
+&nbsp;        };
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Configura le impostazioni CORS per consentire richieste da client specifici
+&nbsp;     * e gestire correttamente le intestazioni e i metodi HTTP supportati.
+&nbsp;     *
+&nbsp;     * @return Un oggetto CorsConfigurationSource configurato per l&#39;applicazione.
+&nbsp;     */
+&nbsp;    @Bean
+&nbsp;    public CorsConfigurationSource corsConfigurationSource() {
+<b class="fc">&nbsp;        CorsConfiguration configuration = new CorsConfiguration();</b>
+<b class="fc">&nbsp;        configuration.setAllowedOrigins(List.of(</b>
+&nbsp;                &quot;http://localhost:5174&quot;,
+&nbsp;                &quot;http://localhost:5173&quot;,
+&nbsp;                &quot;http://localhost:8080&quot;,
+&nbsp;                &quot;https://your-production-domain.com&quot;
+&nbsp;        ));
+<b class="fc">&nbsp;        configuration.setAllowedMethods(List.of(&quot;GET&quot;, &quot;POST&quot;, &quot;PUT&quot;, &quot;DELETE&quot;, &quot;OPTIONS&quot;, &quot;PATCH&quot;));</b>
+<b class="fc">&nbsp;        configuration.setAllowedHeaders(List.of(&quot;Authorization&quot;, &quot;Content-Type&quot;));</b>
+<b class="fc">&nbsp;        configuration.setExposedHeaders(List.of(&quot;Authorization&quot;));</b>
+<b class="fc">&nbsp;        configuration.setAllowCredentials(true);</b>
+&nbsp;
+<b class="fc">&nbsp;        var source = new UrlBasedCorsConfigurationSource();</b>
+<b class="fc">&nbsp;        source.registerCorsConfiguration(&quot;/**&quot;, configuration);</b>
+<b class="fc">&nbsp;        return source;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2025-01-05 20:59</div>
+</div>
+</body>
+</html>

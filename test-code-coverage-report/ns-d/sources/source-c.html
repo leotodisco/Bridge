@@ -1,0 +1,193 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > Corso</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">com.project.bridgebackend.Model.Entity</a>
+</div>
+
+<h1>Coverage Summary for Class: Corso (com.project.bridgebackend.Model.Entity)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+</tr>
+  <tr>
+    <td class="name">Corso$HibernateInstantiator$KEwHq11a</td>
+  </tr>
+  <tr>
+    <td class="name">Corso$HibernateProxy$Vb3zMxA5</td>
+  </tr>
+<tr>
+  <td class="name"><strong>Total</strong></td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package com.project.bridgebackend.Model.Entity;
+&nbsp;
+&nbsp;import com.project.bridgebackend.Model.Entity.enumeration.CategoriaCorso;
+&nbsp;import com.project.bridgebackend.Model.Entity.enumeration.Lingua;
+&nbsp;import jakarta.persistence.Entity;
+&nbsp;import jakarta.persistence.Table;
+&nbsp;import jakarta.persistence.Enumerated;
+&nbsp;import jakarta.persistence.EnumType;
+&nbsp;import jakarta.persistence.Column;
+&nbsp;import jakarta.persistence.Id;
+&nbsp;import jakarta.persistence.GeneratedValue;
+&nbsp;import jakarta.persistence.GenerationType;
+&nbsp;import jakarta.persistence.JoinColumn;
+&nbsp;import jakarta.persistence.ManyToOne;
+&nbsp;import lombok.ToString;
+&nbsp;import lombok.Getter;
+&nbsp;import lombok.Setter;
+&nbsp;import lombok.NoArgsConstructor;
+&nbsp;import lombok.AllArgsConstructor;
+&nbsp;import java.io.Serializable;
+&nbsp;
+&nbsp;/**
+&nbsp; * @author [Biagio]
+&nbsp; * Creato il: [03/12/2024].
+&nbsp; * Classe che rappresenta un Corso.
+&nbsp; * I campi sono: id, descrizione, categoria del corso,
+&nbsp; * titolo, pdf, lingua, proprietario.
+&nbsp; */
+&nbsp;@Entity
+&nbsp;@ToString
+&nbsp;@Getter
+&nbsp;@Setter
+&nbsp;@NoArgsConstructor
+&nbsp;@AllArgsConstructor
+&nbsp;@Table(name = &quot;corso&quot;)
+&nbsp;public class Corso implements Serializable {
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Lunghezza massima della descrizione del corso.
+&nbsp;     */
+&nbsp;    private static final int DESCRIZIONE_MAX_LENGTH = 500;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Lunghezza massima del titolo del corso.
+&nbsp;     */
+&nbsp;    private static final int TITOLO_MAX_LENGTH = 50;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Lunghezza minima del titolo del corso.
+&nbsp;     */
+&nbsp;    private static final int TITOLO_MIN_LENGTH = 3;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Lunghezza minima della descrizione del corso.
+&nbsp;     */
+&nbsp;    private static final int DESCRIZIONE_MIN_LENGTH = 3;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * ID univoco del corso.
+&nbsp;     * Viene generato automaticamente al momento della persistenza.
+&nbsp;     */
+&nbsp;    @Id
+&nbsp;    @GeneratedValue(strategy = GenerationType.IDENTITY)
+&nbsp;    @Column(name = &quot;id&quot;)
+&nbsp;    private Long id;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Categoria a cui il corso appartiene,
+&nbsp;     * rappresentato da un enum {@link CategoriaCorso}.
+&nbsp;     * La categoria del corso descrive il tipo di contenuto o,
+&nbsp;     * l&#39;area disciplinare.
+&nbsp;     */
+&nbsp;    @Enumerated(EnumType.STRING)
+&nbsp;    @Column(name = &quot;categoria_corso&quot;)
+&nbsp;    private CategoriaCorso categoriaCorso;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Descrizione del corso. Può contenere fino a 500 caratteri.
+&nbsp;     * La descrizione fornisce una panoramica del contenuto del corso.
+&nbsp;     */
+&nbsp;    @Column(name = &quot;descrizione&quot;, length = DESCRIZIONE_MAX_LENGTH)
+&nbsp;    private String descrizione;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Lingua in cui è disponibile il corso,
+&nbsp;     * rappresentata da un enum {@link Lingua}.
+&nbsp;     * La lingua del corso è utilizzata per determinare la lingua,
+&nbsp;     * di erogazione.
+&nbsp;     */
+&nbsp;    @Enumerated(EnumType.STRING)
+&nbsp;    @Column(name = &quot;lingua&quot;)
+&nbsp;    private Lingua lingua;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Nome del file PDF associato al corso,
+&nbsp;     * che potrebbe contenere il materiale didattico.
+&nbsp;     * Il campo è opzionale.
+&nbsp;     */
+&nbsp;    @Column(name = &quot;pdf&quot;)
+&nbsp;    private String pdf;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Titolo del corso. Deve essere compreso tra 3 e 50 caratteri.
+&nbsp;     * Il titolo è utilizzato per identificare il corso nel sistema.
+&nbsp;     */
+&nbsp;    @Column(name = &quot;titolo&quot;, length = TITOLO_MAX_LENGTH)
+&nbsp;    private String titolo;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Proprietario del corso,
+&nbsp;     * rappresentato dall&#39;entità {@link FiguraSpecializzata}.
+&nbsp;     * Ogni corso ha un proprietario,
+&nbsp;     * che può essere una figura specializzata nel settore.
+&nbsp;     * Il campo è obbligatorio.
+&nbsp;     */
+&nbsp;    @ManyToOne(optional = false)
+&nbsp;    @JoinColumn(name = &quot;proprietario&quot;)
+&nbsp;    private FiguraSpecializzata proprietario;
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2025-01-05 20:59</div>
+</div>
+</body>
+</html>

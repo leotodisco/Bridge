@@ -59,8 +59,6 @@ public final class Indirizzo implements Serializable {
             message = "Il CAP contiene caratteri non validi")
     @Column(name = "cap")
     private String cap;
-    //todo cambiare il cap in stringa
-
     /**
      * Stringa che rappresenta la provincia dell'indirizzo.
      */

@@ -1,0 +1,371 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > Utente</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">com.project.bridgebackend.Model.Entity</a>
+</div>
+
+<h1>Coverage Summary for Class: Utente (com.project.bridgebackend.Model.Entity)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Branch, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">Utente</td>
+<td class="coverageStat">
+  <span class="percent">
+    33,3%
+  </span>
+  <span class="absValue">
+    (3/9)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    5,7%
+  </span>
+  <span class="absValue">
+    (4/70)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    71,4%
+  </span>
+  <span class="absValue">
+    (15/21)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">Utente$HibernateInstantiator$4ymt9X2R</td>
+  </tr>
+  <tr>
+    <td class="name">Utente$HibernateProxy$uTs9M3Ff</td>
+  </tr>
+<tr>
+  <td class="name"><strong>Total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    33,3%
+  </span>
+  <span class="absValue">
+    (3/9)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    5,7%
+  </span>
+  <span class="absValue">
+    (4/70)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    71,4%
+  </span>
+  <span class="absValue">
+    (15/21)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package com.project.bridgebackend.Model.Entity;
+&nbsp;
+&nbsp;import com.project.bridgebackend.Model.Entity.enumeration.Gender;
+&nbsp;import com.project.bridgebackend.Model.Entity.enumeration.Ruolo;
+&nbsp;import com.project.bridgebackend.Model.Entity.enumeration.TitoloDiStudio;
+&nbsp;import jakarta.persistence.Entity;
+&nbsp;import jakarta.persistence.Enumerated;
+&nbsp;import jakarta.persistence.Id;
+&nbsp;import jakarta.persistence.Column;
+&nbsp;import jakarta.persistence.EnumType;
+&nbsp;import jakarta.validation.constraints.Email;
+&nbsp;import jakarta.validation.constraints.NotNull;
+&nbsp;import jakarta.validation.constraints.Past;
+&nbsp;import lombok.Data;
+&nbsp;import lombok.ToString;
+&nbsp;import lombok.experimental.SuperBuilder;
+&nbsp;import jakarta.validation.constraints.Pattern;
+&nbsp;import org.springframework.security.core.GrantedAuthority;
+&nbsp;import org.springframework.security.core.authority.SimpleGrantedAuthority;
+&nbsp;import org.springframework.security.core.userdetails.UserDetails;
+&nbsp;
+&nbsp;import java.io.Serializable;
+&nbsp;import java.time.LocalDate;
+&nbsp;import java.util.Collection;
+&nbsp;import java.util.List;
+&nbsp;
+&nbsp;/**
+&nbsp; * @author Antonio Ceruso.
+&nbsp; * Creati il: 03/12/2024.
+&nbsp; * Questa è la classe relativa ad un UtenteRegistrato.
+&nbsp; * I suoi campi sono:
+&nbsp; * email.
+&nbsp; * nome.
+&nbsp; * titoloDiStudio.
+&nbsp; * nazionalita.
+&nbsp; * lingueParlate.
+&nbsp; * role.
+&nbsp; * password.
+&nbsp; * gender.
+&nbsp; * dataNascita.
+&nbsp; * cognome.
+&nbsp; * Skill.
+&nbsp; * fotoProfilo.
+&nbsp; * */
+&nbsp;@ToString
+&nbsp;@Entity
+&nbsp;@SuperBuilder
+&nbsp;@Data
+&nbsp;public class Utente implements Serializable, UserDetails {
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Rappresenta l&#39;email dell&#39;utente registrato (chiave primaria).
+&nbsp;     * */
+&nbsp;    @Id
+&nbsp;    @Column(name = &quot;email&quot;)
+&nbsp;    @NotNull
+&nbsp;    @Email
+&nbsp;    protected String email;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Nome dell&#39;utente.
+&nbsp;     * */
+&nbsp;    @Column(name = &quot;nome&quot;)
+&nbsp;    @NotNull
+&nbsp;    @Pattern(regexp = &quot;^[A-Za-zÀ-ÖØ-öø-ÿ&#39; -]{2,30}$&quot;,
+&nbsp;            message = &quot;regexp per il nome non rispettata&quot;)
+&nbsp;    private String nome;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Cognome dell&#39;utente.
+&nbsp;     * */
+&nbsp;    @Column(name = &quot;cognome&quot;)
+&nbsp;    @NotNull
+&nbsp;    @Pattern(regexp = &quot;^[A-Za-zÀ-ÖØ-öø-ÿ&#39; -]{2,30}$&quot;,
+&nbsp;            message = &quot;regexp per il cognome non rispettata&quot;)
+&nbsp;    private String cognome;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Password dell&#39;utente.
+&nbsp;     * */
+&nbsp;    @Column(name = &quot;password&quot;)
+&nbsp;    @NotNull
+&nbsp;    protected String password;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Nazionalità dell&#39;utente.
+&nbsp;     * */
+&nbsp;    @Column(name = &quot;nazionalita&quot;)
+&nbsp;    @NotNull
+&nbsp;    @Pattern(regexp = &quot;^[a-zA-Z\s]{5,30}$&quot;, message = &quot;regexp per la nazionalità non rispettata&quot;)
+&nbsp;    private String nazionalita;
+&nbsp;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Genere dell&#39;utente.
+&nbsp;     * */
+&nbsp;    @Column(name = &quot;genere&quot;)
+&nbsp;    @Enumerated(EnumType.STRING)
+&nbsp;    @NotNull
+&nbsp;    private Gender gender;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Ruolo dell&#39;utente nell&#39;applicazione.
+&nbsp;     * */
+&nbsp;    @Column(name = &quot;ruolo&quot;)
+&nbsp;    @Enumerated(EnumType.STRING)
+&nbsp;    @NotNull
+&nbsp;    private Ruolo role;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Titolo di studio posseduto dall&#39;utente.
+&nbsp;     * */
+&nbsp;    @Column(name = &quot;titoloDiStudio&quot;)
+&nbsp;    @NotNull
+&nbsp;    @Enumerated(EnumType.STRING)
+&nbsp;    private TitoloDiStudio titoloDiStudio;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Data di nascita dell&#39;utente.
+&nbsp;     * */
+&nbsp;    @Column(name = &quot;dataNascita&quot;)
+&nbsp;    @NotNull
+&nbsp;    @Past
+&nbsp;    private LocalDate dataNascita;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Skill o competenze dell&#39;utente.
+&nbsp;     * */
+&nbsp;    @Column(name = &quot;skill&quot;)
+&nbsp;    private String skill;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Foto profilo dell&#39;utente (in formato Byte[]).
+&nbsp;     * */
+&nbsp;    @Column(name = &quot;fotoProfilo&quot;)
+&nbsp;    private String fotoProfilo;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Lingue parlate dall&#39;utente.
+&nbsp;     */
+&nbsp;    @Column(name = &quot;lingueParlate&quot;)
+&nbsp;    @NotNull
+&nbsp;    @Pattern(regexp = &quot;^[a-zA-Z ,]{5,30}$&quot;,
+&nbsp;            message = &quot;regexp per le lingue parlate non rispettate&quot;)
+&nbsp;    private String lingueParlate;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Costruttore vuoto per utente.
+&nbsp;     * */
+<b class="fc">&nbsp;    public Utente() {</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Costruttore con tutti i campi dell&#39;utente.
+&nbsp;     * @param email rappresenta l&#39;email dell&#39;utente.
+&nbsp;     * @param nome rappresenta il nome dell&#39;utente.
+&nbsp;     * @param cognome rappresenta il cognome dell&#39;utente.
+&nbsp;     * @param lingueParlate rappresenta le lingue parlate dall&#39;utente.
+&nbsp;     * @param fotoProfilo rappresenta la foto profilo dell&#39;utente.
+&nbsp;     * @param skill rappresenta le skill dell&#39;utente.
+&nbsp;     * @param dataNascita rappresenta la data di nascita dell&#39;utente.
+&nbsp;     * @param titoloDiStudio rappresenta il titolo di studio
+&nbsp;     * @param role rappresenta il ruolo dell&#39;utente nell&#39;applicazione.
+&nbsp;     * @param gender rappresenta il genere dell&#39;utente.
+&nbsp;     * @param nazionalita rappresenta la nazionalità dell&#39;utente.
+&nbsp;     * @param password rappresenta la password dell&#39;utente.
+&nbsp;     */
+&nbsp;    public Utente(final String email,
+&nbsp;                  final String nome,
+&nbsp;                  final String cognome,
+&nbsp;                  final String lingueParlate,
+&nbsp;                  final String fotoProfilo,
+&nbsp;                  final String skill,
+&nbsp;                  final LocalDate dataNascita,
+&nbsp;                  final TitoloDiStudio titoloDiStudio,
+&nbsp;                  final Ruolo role,
+&nbsp;                  final Gender gender,
+&nbsp;                  final String nazionalita,
+<b class="fc">&nbsp;                  final String password) {</b>
+<b class="fc">&nbsp;        this.email = email;</b>
+<b class="fc">&nbsp;        this.nome = nome;</b>
+<b class="fc">&nbsp;        this.cognome = cognome;</b>
+<b class="fc">&nbsp;        this.lingueParlate = lingueParlate;</b>
+<b class="fc">&nbsp;        this.fotoProfilo = fotoProfilo;</b>
+<b class="fc">&nbsp;        this.skill = skill;</b>
+<b class="fc">&nbsp;        this.dataNascita = dataNascita;</b>
+<b class="fc">&nbsp;        this.titoloDiStudio = titoloDiStudio;</b>
+<b class="fc">&nbsp;        this.role = role;</b>
+<b class="fc">&nbsp;        this.gender = gender;</b>
+<b class="fc">&nbsp;        this.nazionalita = nazionalita;</b>
+<b class="fc">&nbsp;        this.password = password;</b>
+&nbsp;
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Metodo che ritorna una lista di ruoli.
+&nbsp;     */
+&nbsp;    @Override
+&nbsp;    public Collection&lt;? extends GrantedAuthority&gt; getAuthorities() {
+<b class="nc">&nbsp;        return List.of(new SimpleGrantedAuthority(role.name()));</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public String getPassword() {
+<b class="pc">&nbsp;        return password;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public String getUsername() {
+<b class="nc">&nbsp;        return email;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public boolean isAccountNonExpired() {
+<b class="nc">&nbsp;        return UserDetails.super.isAccountNonExpired();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public boolean isAccountNonLocked() {
+<b class="nc">&nbsp;        return UserDetails.super.isAccountNonLocked();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public boolean isCredentialsNonExpired() {
+<b class="nc">&nbsp;        return UserDetails.super.isCredentialsNonExpired();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public boolean isEnabled() {
+<b class="nc">&nbsp;        return UserDetails.super.isEnabled();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2025-01-05 20:59</div>
+</div>
+</body>
+</html>

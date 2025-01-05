@@ -18,7 +18,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * @Author Biagio Gallo.
+ * @author : Biagio Gallo.
  * Creato il: 29/12/2024.
  * Questa classe è responsabile della popolazione
  * del database con dati di esempio.
@@ -503,7 +503,7 @@ public class DBPopulator {
             try {
                 alloggioDAO.save(alloggio);
             } catch (Exception e) {
-                throw new RuntimeException("Errore durante la registrazione dell'alloggio: " + alloggio.getTitolo(), e);
+                System.out.println("Errore durante la registrazione dell'alloggio: " + alloggio.getTitolo());
             }
         });
 

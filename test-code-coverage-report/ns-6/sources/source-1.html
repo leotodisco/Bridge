@@ -1,0 +1,883 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > GestioneAnnuncioServiceImp</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">com.project.bridgebackend.GestioneAnnuncio.Service</a>
+</div>
+
+<h1>Coverage Summary for Class: GestioneAnnuncioServiceImp (com.project.bridgebackend.GestioneAnnuncio.Service)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Branch, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">GestioneAnnuncioServiceImp</td>
+<td class="coverageStat">
+  <span class="percent">
+    12,9%
+  </span>
+  <span class="absValue">
+    (4/31)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    43,8%
+  </span>
+  <span class="absValue">
+    (91/208)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    28,5%
+  </span>
+  <span class="absValue">
+    (69/242)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">GestioneAnnuncioServiceImp$$SpringCGLIB$$0</td>
+  </tr>
+<tr>
+  <td class="name"><strong>Total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    12,9%
+  </span>
+  <span class="absValue">
+    (4/31)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    43,8%
+  </span>
+  <span class="absValue">
+    (91/208)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    28,5%
+  </span>
+  <span class="absValue">
+    (69/242)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package com.project.bridgebackend.GestioneAnnuncio.Service;
+&nbsp;
+&nbsp;import com.project.bridgebackend.GestioneAlloggio.Service.AlloggioServiceImplementazione;
+&nbsp;import com.project.bridgebackend.Model.Entity.*;
+&nbsp;import com.project.bridgebackend.Model.Entity.enumeration.TipoConsulenza;
+&nbsp;import com.project.bridgebackend.Model.Entity.enumeration.TipoContratto;
+&nbsp;import com.project.bridgebackend.Model.dao.*;
+&nbsp;import com.project.bridgebackend.util.Indirizzo.service.IndirizzoService;
+&nbsp;import jakarta.validation.Validator;
+&nbsp;import org.slf4j.Logger;
+&nbsp;import org.slf4j.LoggerFactory;
+&nbsp;import org.springframework.beans.factory.annotation.Autowired;
+&nbsp;import org.springframework.mail.SimpleMailMessage;
+&nbsp;import org.springframework.mail.javamail.JavaMailSender;
+&nbsp;import org.springframework.stereotype.Service;
+&nbsp;import jakarta.validation.Valid;
+&nbsp;import org.springframework.validation.annotation.Validated;
+&nbsp;
+&nbsp;import java.util.*;
+&nbsp;
+&nbsp;/**
+&nbsp; * @author Geraldine Montella, Vito Vernellati.
+&nbsp; * Creato il: 04/12/2024.
+&nbsp;
+&nbsp; * Questa classe implementa il servizio per la gestione degli annunci,
+&nbsp; * interagendo con i repository di Consulenza e Indirizzo per il salvataggio nel database.
+&nbsp; */
+&nbsp;
+&nbsp;@Validated
+&nbsp;@Service
+<b class="fc">&nbsp;public class GestioneAnnuncioServiceImp implements GestioneAnnuncioService {</b>
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Repository per la gestione delle consulenze nel database.
+&nbsp;     */
+&nbsp;    @Autowired
+&nbsp;    private ConsulenzaDAO consulenzaDAO;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Repository per la gestione degli indirizzi nel database.
+&nbsp;     */
+&nbsp;    @Autowired
+&nbsp;    private IndirizzoDAO indirizzoDAO;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Repository per la gestione dei rifugiati nel database.
+&nbsp;     */
+&nbsp;    @Autowired
+&nbsp;    private RifugiatoDAO rifugiatoDAO;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Repository per la gestione dei volontari nel database.
+&nbsp;     */
+&nbsp;    @Autowired
+&nbsp;    private VolontarioDAO volontarioDAO;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Repository per la gestione dei lavori nel database.
+&nbsp;     */
+&nbsp;    @Autowired
+&nbsp;    private LavoroDAO lavoroDAO;
+&nbsp;
+&nbsp;    /**
+&nbsp;    * Servizi per la gestione degli indirizzi.
+&nbsp;     */
+&nbsp;    @Autowired
+&nbsp;    private IndirizzoService indirizzoService;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Bean per l&#39;invio di email tramite JavaMailSender.
+&nbsp;     * Utilizzato per inviare email al rifugiato e,
+&nbsp;     * al volontario nel sistema.
+&nbsp;     */
+&nbsp;
+&nbsp;    @Autowired
+&nbsp;    private JavaMailSender mailSender;
+&nbsp;
+&nbsp;    @Autowired
+&nbsp;    private Validator validator;
+&nbsp;
+<b class="fc">&nbsp;    private static final Logger logger = LoggerFactory.getLogger(AlloggioServiceImplementazione.class);</b>
+&nbsp;    @Autowired
+&nbsp;    private FiguraSpecializzataDAO figuraSpecializzataDAO;
+&nbsp;
+&nbsp;    // Implementazioni dei metodi per Consulenza
+&nbsp;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Inserisce una nuova consulenza nel database.
+&nbsp;     * Verifica che il numero massimo di candidature sia almeno 1.
+&nbsp;     *
+&nbsp;     * @param consulenza l&#39;oggetto Consulenza da inserire.
+&nbsp;     * @return la consulenza salvata nel database.
+&nbsp;     */
+&nbsp;    @Override
+&nbsp;    public Consulenza inserimentoConsulenza(final Consulenza consulenza) {
+&nbsp;
+&nbsp;        // Tipologia non nulla
+<b class="pc">&nbsp;        if (consulenza.getTipologia() == null) {</b>
+<b class="nc">&nbsp;            throw new IllegalArgumentException(&quot;La tipologia della consulenza non può essere vuota.&quot;);</b>
+&nbsp;        }
+&nbsp;
+&nbsp;        // Descrizione non vuota
+<b class="pc">&nbsp;        if (consulenza.getDescrizione() == null || consulenza.getDescrizione().trim().isEmpty()) {</b>
+<b class="fc">&nbsp;            throw new IllegalArgumentException(&quot;La descrizione della consulenza non può essere vuota.&quot;);</b>
+&nbsp;        }
+&nbsp;
+&nbsp;        // Titolo non vuoto
+<b class="pc">&nbsp;        if (consulenza.getTitolo() == null || consulenza.getTitolo().trim().isEmpty()) {</b>
+<b class="nc">&nbsp;            throw new IllegalArgumentException(&quot;Il titolo della consulenza non può essere vuoto.&quot;);</b>
+&nbsp;        }
+&nbsp;
+&nbsp;        // Numero massimo di candidature deve essere almeno 1
+<b class="pc">&nbsp;        if (consulenza.getMaxCandidature() &lt; 1 || consulenza.getMaxCandidature() &gt; 99) {</b>
+<b class="fc">&nbsp;            throw new IllegalArgumentException(&quot;Il numero massimo di candidature deve essere almeno 1.&quot;);</b>
+&nbsp;        }
+&nbsp;
+&nbsp;        // Disponibilità non nulla
+<b class="pc">&nbsp;        if (consulenza.getDisponibilita() == null) {</b>
+<b class="nc">&nbsp;            throw new IllegalArgumentException(&quot;La disponibilità non può essere nulla.&quot;);</b>
+&nbsp;        }
+&nbsp;
+&nbsp;        // Numero di telefono valido
+<b class="pc">&nbsp;        if (consulenza.getNumero() == null || !consulenza.getNumero().matches(&quot;^((00|\\+)39[\\. ]??)??3\\d{2}[\\. ]??\\d{6,7}$&quot;)) {</b>
+<b class="fc">&nbsp;            throw new IllegalArgumentException(&quot;Il numero di telefono non è valido.&quot;);</b>
+&nbsp;        }
+&nbsp;
+&nbsp;        // Orari disponibili con formato valido
+<b class="pc">&nbsp;        if (consulenza.getOrariDisponibili() == null || !consulenza.getOrariDisponibili().matches(&quot;^(Lunedi|Martedi|Mercoledi|Giovedi|Venerdi|Sabato|Domenica)\\s+(0\\d|1\\d|2[0-3]):[0-5]\\d\\s*-\\s*(0\\d|1\\d|2[0-3]):[0-5]\\d$&quot;)) {</b>
+<b class="fc">&nbsp;            throw new IllegalArgumentException(&quot;Gli orari di disponibilità non rispettano il formato richiesto.&quot;);</b>
+&nbsp;        }
+&nbsp;
+&nbsp;        // Indirizzo non nullo
+<b class="pc">&nbsp;        if (consulenza.getIndirizzo() == null) {</b>
+<b class="nc">&nbsp;            throw new IllegalArgumentException(&quot;L&#39;indirizzo non può essere nullo.&quot;);</b>
+&nbsp;        }
+&nbsp;
+<b class="pc">&nbsp;        if(consulenza.getProprietario() == null || figuraSpecializzataDAO.findByEmail(consulenza.getProprietario().getEmail()) == null){</b>
+<b class="fc">&nbsp;            throw new IllegalArgumentException(&quot;Il proprietario non può essere nullo.&quot;);</b>
+&nbsp;        }
+&nbsp;
+&nbsp;        // Validazione dei campi dell&#39;indirizzo
+<b class="fc">&nbsp;        Indirizzo indirizzo = consulenza.getIndirizzo();</b>
+<b class="pc">&nbsp;        if (indirizzo.getCitta() == null || indirizzo.getCitta().trim().isEmpty() || !indirizzo.getCitta().matches(&quot;^[A-zÀ-ù ‘]{2,50}$&quot;)) {</b>
+<b class="fc">&nbsp;            throw new IllegalArgumentException(&quot;La città non può essere vuota.&quot;);</b>
+&nbsp;        }
+<b class="pc">&nbsp;        if (indirizzo.getProvincia() == null || indirizzo.getProvincia().trim().length() != 2) {</b>
+<b class="fc">&nbsp;            throw new IllegalArgumentException(&quot;La provincia deve essere composta da 2 caratteri.&quot;);</b>
+&nbsp;        }
+<b class="fc">&nbsp;        if (indirizzo.getCap().length() != 5) {</b>
+<b class="fc">&nbsp;            throw new IllegalArgumentException(&quot;Il CAP deve essere un numero di 5 cifre.&quot;);</b>
+&nbsp;        }
+<b class="pc">&nbsp;        if (indirizzo.getVia() == null || indirizzo.getVia().trim().isEmpty() || !indirizzo.getVia().matches(&quot;^[A-zÀ-ù ‘]{2,50}$&quot;)) {</b>
+<b class="fc">&nbsp;            throw new IllegalArgumentException(&quot;La via non può essere vuota.&quot;);</b>
+&nbsp;        }
+<b class="pc">&nbsp;        if(indirizzo.getNumCivico() &gt; 999) {</b>
+<b class="nc">&nbsp;            throw new IllegalArgumentException(&quot;Il numero civico non può essere maggiore di 3 cifre.&quot;);</b>
+&nbsp;        }
+&nbsp;
+<b class="fc">&nbsp;        return consulenzaDAO.save(consulenza);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Salva un indirizzo di consulenza nel database.
+&nbsp;     *
+&nbsp;     * @param indirizzo l&#39;oggetto Indirizzo da salvare.
+&nbsp;     * @return l&#39;ID dell&#39;indirizzo salvato.
+&nbsp;     */
+&nbsp;    @Override
+&nbsp;    public long salvaIndirizzoConsulenza(final Indirizzo indirizzo) {
+<b class="nc">&nbsp;        indirizzoDAO.save(indirizzo);</b>
+<b class="nc">&nbsp;        return indirizzo.getId();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    //      **Implementazioni dei metodi per Lavoro**
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Inserisce un nuovo annuncio di lavoro nel database.
+&nbsp;     * Verifica che la retribuzione sia positiva.
+&nbsp;     *
+&nbsp;     * @param lavoro l&#39;oggetto Lavoro da inserire.
+&nbsp;     * @return l&#39;annuncio di lavoro salvato nel database.
+&nbsp;     */
+&nbsp;    @Override
+&nbsp;    public Lavoro inserimentoLavoro(final Lavoro lavoro) {
+&nbsp;        // Validazione dei campi dell&#39;indirizzo
+<b class="fc">&nbsp;        Indirizzo indirizzo = lavoro.getIndirizzo();</b>
+<b class="pc">&nbsp;        if (indirizzo.getCitta() == null || indirizzo.getCitta().trim().isEmpty() || !indirizzo.getCitta().matches(&quot;^[A-zÀ-ù ‘]{2,50}$&quot;)) {</b>
+<b class="fc">&nbsp;            throw new IllegalArgumentException(&quot;La città non può essere vuota.&quot;);</b>
+&nbsp;        }
+<b class="pc">&nbsp;        if (indirizzo.getProvincia() == null || indirizzo.getProvincia().trim().length() != 2 || !indirizzo.getProvincia().matches(&quot;^[A-Z]{2}$&quot;) ) {</b>
+<b class="fc">&nbsp;            throw new IllegalArgumentException(&quot;La provincia deve essere composta da 2 caratteri.&quot;);</b>
+&nbsp;        }
+<b class="pc">&nbsp;        if (indirizzo.getCap().length() != 5 || !indirizzo.getCap().matches(&quot;^\\d{5}$&quot;)) {</b>
+<b class="fc">&nbsp;            throw new IllegalArgumentException(&quot;Il CAP deve essere un numero di 5 cifre.&quot;);</b>
+&nbsp;        }
+<b class="pc">&nbsp;        if (indirizzo.getVia() == null || indirizzo.getVia().trim().isEmpty() || !indirizzo.getVia().matches(&quot;^[A-zÀ-ù ‘]{2,50}$&quot;)) {</b>
+<b class="fc">&nbsp;            throw new IllegalArgumentException(&quot;La via non può essere vuota.&quot;);</b>
+&nbsp;        }
+<b class="pc">&nbsp;        if(indirizzo.getNumCivico() &gt; 999 || indirizzo.getNumCivico() &lt; 0) {</b>
+<b class="fc">&nbsp;            throw new IllegalArgumentException(&quot;Il numero civico non può essere maggiore di 3 cifre.&quot;);</b>
+&nbsp;        }
+&nbsp;        //posizione lavorativa non deve essere nulla e rispettare il formato
+<b class="fc">&nbsp;        if (lavoro.getPosizioneLavorativa().isEmpty() || !lavoro.getPosizioneLavorativa().matches(&quot;^[a-zA-ZÀ-ÿ‘’ ]{2,100}$&quot;)) {</b>
+<b class="fc">&nbsp;            throw new IllegalArgumentException(&quot;La posizione lavorativa non può essere vuota e deve contenere solo lettere, spazi, e tra 2 e 100 caratteri.&quot;);</b>
+&nbsp;        }
+&nbsp;
+&nbsp;        //nome azienda non deve esssere nulla e rispettare il formato
+<b class="fc">&nbsp;        if(lavoro.getNomeAzienda().isEmpty() || !lavoro.getNomeAzienda().matches(&quot;^[a-zA-ZÀ-ÿ‘’ ]{2,100}$&quot;)) {</b>
+<b class="fc">&nbsp;            throw new IllegalArgumentException(&quot;Il nome Azienda non può essere vuota e deve contenere solo lettere, spazi, e tra 2 e 100 caratteri.&quot;);</b>
+&nbsp;        }
+&nbsp;
+&nbsp;        //gli orari di lavoro devono rispettare il formato
+<b class="pc">&nbsp;        if(lavoro.getOrarioLavoro().isEmpty() || !lavoro.getOrarioLavoro().matches(&quot;^\\d{2}:\\d{2}-\\d{2}:\\d{2}$&quot;)) {</b>
+<b class="fc">&nbsp;            throw new IllegalArgumentException(&quot;Gli orari di lavoro devono rispettare il formato.&quot;);</b>
+&nbsp;        }
+&nbsp;
+&nbsp;        //il tipo di contratto non può essere nullo e deve essere compreso tra i valori definiti
+&nbsp;        //nell&#39;enum tipo contratto
+<b class="fc">&nbsp;        if(lavoro.getTipoContratto() == null) {</b>
+<b class="fc">&nbsp;            throw new IllegalArgumentException(&quot;Il tipo contratto non può essere null.&quot;);</b>
+&nbsp;        }
+&nbsp;
+&nbsp;        //retribuzione deve essere un doble positivo che rispetta il formato
+<b class="pc">&nbsp;        if (lavoro.getRetribuzione() &lt;= 0 ||</b>
+<b class="fc">&nbsp;                !String.valueOf(lavoro.getRetribuzione()).matches(&quot;^\\d{1,8}(\\.\\d{1,2})?$&quot;)) {</b>
+<b class="fc">&nbsp;            throw new IllegalArgumentException(&quot;La retribuzione deve essere un numero positivo, con un massimo di 8 cifre intere e 2 cifre decimali.&quot;);</b>
+&nbsp;        }
+&nbsp;
+&nbsp;        //nome sede non può essere nullo
+<b class="pc">&nbsp;        if (lavoro.getNomeSede() == null ||</b>
+<b class="fc">&nbsp;                lavoro.getNomeSede().isEmpty() ||</b>
+<b class="fc">&nbsp;                !lavoro.getNomeSede().matches(&quot;^[A-zÀ-ù ‘]{2,100}$&quot;)) {</b>
+<b class="fc">&nbsp;            throw new IllegalArgumentException(&quot;Il nome della sede non può essere nullo, vuoto e deve contenere solo caratteri validi con una lunghezza compresa tra 2 e 100 caratteri.&quot;);</b>
+&nbsp;        }
+&nbsp;
+<b class="pc">&nbsp;        if (lavoro.getInfoUtili() == null ||</b>
+<b class="fc">&nbsp;                lavoro.getInfoUtili().isEmpty() ||</b>
+<b class="fc">&nbsp;                !lavoro.getInfoUtili().matches(&quot;^[\\wÀ-ÿ\\s,.!?@&#39;\\-]{1,500}$&quot;)) {</b>
+<b class="fc">&nbsp;            throw new IllegalArgumentException(&quot;Il campo &#39;Info Utili&#39; non può essere nullo o vuoto, e deve rispettare il formato e avere una lunghezza compresa tra 1 e 500 caratteri.&quot;);</b>
+&nbsp;        }
+&nbsp;
+&nbsp;        // Controllo per maxCandidature: non deve essere nullo e deve rispettare il formato della regex
+<b class="pc">&nbsp;        if (lavoro.getMaxCandidature() &lt; 1 || lavoro.getMaxCandidature() &gt; 99) {</b>
+<b class="fc">&nbsp;            throw new IllegalArgumentException(&quot;Il numero massimo di candidature deve essere un numero intero compreso tra 1 e 99.&quot;);</b>
+&nbsp;        }
+&nbsp;
+<b class="fc">&nbsp;        Volontario proprietario = volontarioDAO.findByEmail(lavoro.getProprietario().getEmail());</b>
+<b class="fc">&nbsp;        if (proprietario == null) {</b>
+<b class="fc">&nbsp;            throw new IllegalArgumentException(&quot;Il proprietario non esiste&quot;);</b>
+&nbsp;        }
+&nbsp;
+&nbsp;        // Controllo per disponibilita: non può essere null
+<b class="fc">&nbsp;        if (lavoro.getDisponibilita() == null) {</b>
+<b class="fc">&nbsp;            throw new IllegalArgumentException(&quot;La disponibilità non può essere nulla.&quot;);</b>
+&nbsp;        }
+&nbsp;
+&nbsp;        //controllo per titolo
+<b class="pc">&nbsp;        if (lavoro.getTitolo() == null || lavoro.getTitolo().isEmpty() || !lavoro.getTitolo().matches(&quot;^[A-Za-z0-9À-ÿ .,&#39;-]{3,100}$&quot;)) {</b>
+<b class="fc">&nbsp;            throw new IllegalArgumentException(&quot;il titolo non può essere nullo e deve rispettare il formato.&quot;);</b>
+&nbsp;        }
+&nbsp;
+&nbsp;        // Controllo per tipologia: non può essere null
+<b class="fc">&nbsp;        if (lavoro.getTipologia() == null) {</b>
+<b class="fc">&nbsp;            throw new IllegalArgumentException(&quot;La Tipologia non può essere nulla.&quot;);</b>
+&nbsp;        }
+&nbsp;
+<b class="fc">&nbsp;        return lavoroDAO.save(lavoro);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Salva un indirizzo di lavoro nel database.
+&nbsp;     *
+&nbsp;     * @param indirizzo l&#39;oggetto Indirizzo da salvare.
+&nbsp;     * @return l&#39;ID dell&#39;indirizzo salvato.
+&nbsp;     */
+&nbsp;    @Override
+&nbsp;    public long salvaIndirizzoLavoro(final Indirizzo indirizzo) {
+<b class="nc">&nbsp;        indirizzoDAO.save(indirizzo);</b>
+<b class="nc">&nbsp;        return indirizzo.getId();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public List&lt;Lavoro&gt; getAllLavori() {
+<b class="nc">&nbsp;        return lavoroDAO.findAll();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public Lavoro getLavori(final long id) {
+<b class="nc">&nbsp;        return lavoroDAO.findById(id).get();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public List&lt;Lavoro&gt; getLavoriByProprietario(final Utente proprietario) {
+<b class="nc">&nbsp;        return lavoroDAO.findByProprietario(proprietario);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public Lavoro modificaAnnuncioLavoro(final long idAnnuncio,
+&nbsp;                                         final HashMap&lt;String, Object&gt; aggiornamenti) {
+<b class="nc">&nbsp;        Optional&lt;Lavoro&gt; lavoroOptional = lavoroDAO.findById(idAnnuncio);</b>
+<b class="nc">&nbsp;        if (lavoroOptional.isEmpty()) {</b>
+<b class="nc">&nbsp;            throw new IllegalArgumentException(&quot;Annuncio di lavoro non trovato.&quot;);</b>
+&nbsp;        }
+&nbsp;
+<b class="nc">&nbsp;        Lavoro lavoro = lavoroOptional.get();</b>
+&nbsp;
+<b class="nc">&nbsp;        aggiornamenti.forEach((campo, valore) -&gt; {</b>
+<b class="nc">&nbsp;            switch (campo) {</b>
+&nbsp;                case &quot;titolo&quot;:
+<b class="nc">&nbsp;                    lavoro.setTitolo((String) valore);</b>
+&nbsp;                    break;
+&nbsp;                case &quot;posizioneLavorativa&quot;:
+<b class="nc">&nbsp;                    lavoro.setPosizioneLavorativa((String) valore);</b>
+&nbsp;                    break;
+&nbsp;                case &quot;nomeAzienda&quot;:
+<b class="nc">&nbsp;                    lavoro.setNomeAzienda((String) valore);</b>
+&nbsp;                    break;
+&nbsp;                case &quot;orarioLavoro&quot;:
+<b class="nc">&nbsp;                    lavoro.setOrarioLavoro((String) valore);</b>
+&nbsp;                    break;
+&nbsp;                case &quot;tipoContratto&quot;:
+<b class="nc">&nbsp;                    lavoro.setTipoContratto((TipoContratto) valore);</b>
+&nbsp;                    break;
+&nbsp;                case &quot;retribuzione&quot;:
+<b class="nc">&nbsp;                    double parsedValue = Double.parseDouble(valore.toString());</b>
+<b class="nc">&nbsp;                    lavoro.setRetribuzione(parsedValue);</b>
+&nbsp;                    break;
+&nbsp;                case &quot;nomeSede&quot;:
+<b class="nc">&nbsp;                    lavoro.setNomeSede((String) valore);</b>
+&nbsp;                    break;
+&nbsp;                case &quot;infoUtili&quot;:
+<b class="nc">&nbsp;                    lavoro.setInfoUtili((String) valore);</b>
+&nbsp;                    break;
+&nbsp;                case &quot;indirizzo&quot;:
+<b class="nc">&nbsp;                    if (valore instanceof HashMap) {</b>
+<b class="nc">&nbsp;                        HashMap&lt;String, Object&gt; indirizzoData = (HashMap&lt;String, Object&gt;) valore;</b>
+&nbsp;
+<b class="nc">&nbsp;                        Indirizzo indirizzo = lavoro.getIndirizzo(); // L&#39;indirizzo deve già esistere</b>
+&nbsp;
+&nbsp;                        // Aggiorna i campi dell&#39;indirizzo utilizzando un metodo di servizio
+<b class="nc">&nbsp;                        indirizzoService.aggiornaIndirizzo(indirizzo.getId(), indirizzoData);</b>
+&nbsp;
+&nbsp;                    } else {
+<b class="nc">&nbsp;                        throw new IllegalArgumentException(&quot;Formato indirizzo non valido.&quot;);</b>
+&nbsp;                    }
+&nbsp;                    break;
+&nbsp;                default:
+<b class="nc">&nbsp;                    throw new IllegalArgumentException(&quot;Campo non valido per la modifica: &quot; + campo);</b>
+&nbsp;            }
+&nbsp;        });
+&nbsp;
+<b class="nc">&nbsp;        return lavoroDAO.save(lavoro);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public void eliminaAnnuncioLavoro(final long idAnnuncio) {
+<b class="nc">&nbsp;        if (!lavoroDAO.existsById(idAnnuncio)) {</b>
+<b class="nc">&nbsp;            throw new IllegalArgumentException(&quot;Annuncio di lavoro non trovato.&quot;);</b>
+&nbsp;        }
+<b class="nc">&nbsp;        lavoroDAO.deleteById(idAnnuncio);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public List&lt;Lavoro&gt; getLavoroByTipoContratto(TipoContratto tipo) {
+<b class="nc">&nbsp;        return lavoroDAO.findByTipoContratto(tipo);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    //      **Implementazioni dei metodi per Consulenza**
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Prelevare tutte le consulenze sulla base dell&#39;identificativo dato in input.
+&nbsp;     *
+&nbsp;     * @return la consulenze con l&#39;identificativo id.
+&nbsp;     */
+&nbsp;    @Override
+&nbsp;    public List&lt;Consulenza&gt; getAllConsulenze() {
+<b class="nc">&nbsp;        return consulenzaDAO.findAll();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Prelevare la consulenza sulla base dell&#39;identificativo dato in input.
+&nbsp;     *
+&nbsp;     * @return la lista di tutte le consulenza presenti nel db.
+&nbsp;     */
+&nbsp;    @Override
+&nbsp;    public Consulenza getConsulenze(final long id) {
+<b class="nc">&nbsp;        return consulenzaDAO.findById(id).get();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Prelevare gli annunci di una consulenza.
+&nbsp;     *
+&nbsp;     * @param proprietario l&#39;utente proprietario delle consulenze.
+&nbsp;     *
+&nbsp;     * @return le consulenze di cui l&#39;utente risulta proprietario.
+&nbsp;     */
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public List&lt;Consulenza&gt; getConsulenzeByProprietario(final Utente proprietario) {
+<b class="nc">&nbsp;        return consulenzaDAO.findByProprietario(proprietario);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Prelevare tutti gli annunci di una consulenza,
+&nbsp;     * per cui il rifugiato si è candidato.
+&nbsp;     *
+&nbsp;     * @param candidato l&#39;utente candidato alle consulenze.
+&nbsp;     *
+&nbsp;     * @return le consulenze di cui l&#39;utente risulta candidato.
+&nbsp;     */
+&nbsp;    @Override
+&nbsp;    public List&lt;Consulenza&gt; getConsulenzeByCandidato(final Utente candidato) {
+<b class="nc">&nbsp;        return consulenzaDAO.findAllByRifugiatoEmail(candidato.getEmail());</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Metodo asincrono che invia una email al volontario.
+&nbsp;     *
+&nbsp;     * @param messaggio il messaggio da inviare.
+&nbsp;     * @param emailVolontario l&#39;email del destinatario.
+&nbsp;     */
+&nbsp;    @Override
+&nbsp;    public void sendEmailVolontario(final String messaggio, final String emailVolontario) {
+<b class="nc">&nbsp;        logger.info(&quot;Invio email a: {}, con messaggio: {}&quot;, emailVolontario, messaggio);</b>
+&nbsp;        try {
+<b class="nc">&nbsp;            SimpleMailMessage message = new SimpleMailMessage();</b>
+<b class="nc">&nbsp;            message.setFrom(&quot;beehaveofficial@gmail.com&quot;);</b>
+<b class="nc">&nbsp;            message.setTo(emailVolontario);</b>
+<b class="nc">&nbsp;            message.setSubject(&quot;Notifica Candidatura Consulenza&quot;);</b>
+<b class="nc">&nbsp;            message.setText(messaggio);</b>
+<b class="nc">&nbsp;            mailSender.send(message);</b>
+<b class="nc">&nbsp;            logger.info(&quot;Email inviata con successo a: {}&quot;, emailVolontario);</b>
+&nbsp;        } catch (Exception e) {
+<b class="nc">&nbsp;            logger.error(&quot;Errore nell&#39;invio dell&#39;email a: {} - {}&quot;, emailVolontario, e.getMessage(), e);</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Metodo che invia una email al rifugiato.
+&nbsp;     *
+&nbsp;     * @param messaggio il messaggio da inviare
+&nbsp;     * @param emailRifugiato l&#39;email del rifugiato destinatario
+&nbsp;     */
+&nbsp;    @Override
+&nbsp;    public void sendEmailRifugiato(final String messaggio,
+&nbsp;                                   final String emailRifugiato) {
+&nbsp;
+&nbsp;        try {
+<b class="nc">&nbsp;            SimpleMailMessage message = new SimpleMailMessage();</b>
+<b class="nc">&nbsp;            message.setFrom(&quot;beehaveofficial@gmail.com&quot;);</b>
+<b class="nc">&nbsp;            message.setTo(emailRifugiato);</b>
+<b class="nc">&nbsp;            message.setSubject(&quot;PROVA&quot;);</b>
+<b class="nc">&nbsp;            message.setText(messaggio);</b>
+<b class="nc">&nbsp;            mailSender.send(message);</b>
+<b class="nc">&nbsp;            System.out.println(&quot;email inviata&quot;);</b>
+&nbsp;        } catch (Exception e) {
+<b class="nc">&nbsp;            System.out.println(&quot;Errore nell invio dell&#39;email a: &quot; + emailRifugiato + e.getMessage());</b>
+&nbsp;        }
+&nbsp;
+&nbsp;    }
+&nbsp;    @Override
+&nbsp;    public List&lt;Consulenza&gt; getConsulenzeByTipo(TipoConsulenza tipo) {
+<b class="nc">&nbsp;        return consulenzaDAO.findByTipo(tipo);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Modifica una consulenza esistente nel database.
+&nbsp;     *
+&nbsp;     * @param idConsulenza l&#39;ID della consulenza da modificare.
+&nbsp;     * @param aggiornamenti mappa contenente i campi da aggiornare e i relativi valori.
+&nbsp;     * @return la consulenza aggiornata.
+&nbsp;     */
+&nbsp;    @Override
+&nbsp;    public Consulenza modificaAnnuncioConsulenza(final long idConsulenza,
+&nbsp;                                                 final HashMap&lt;String, Object&gt; aggiornamenti) {
+<b class="nc">&nbsp;        Optional&lt;Consulenza&gt; consulenzaOptional = consulenzaDAO.findById(idConsulenza);</b>
+<b class="nc">&nbsp;        if (consulenzaOptional.isEmpty()) {</b>
+<b class="nc">&nbsp;            throw new IllegalArgumentException(&quot;Consulenza non trovata.&quot;);</b>
+&nbsp;        }
+&nbsp;
+<b class="nc">&nbsp;        Consulenza consulenza = consulenzaOptional.get();</b>
+&nbsp;
+<b class="nc">&nbsp;        aggiornamenti.forEach((campo, valore) -&gt; {</b>
+<b class="nc">&nbsp;            switch (campo) {</b>
+&nbsp;                case &quot;titolo&quot;:
+<b class="nc">&nbsp;                    consulenza.setTitolo((String) valore);</b>
+&nbsp;                    break;
+&nbsp;                case &quot;descrizione&quot;:
+<b class="nc">&nbsp;                    consulenza.setDescrizione((String) valore);</b>
+&nbsp;                    break;
+&nbsp;                case &quot;orariDisponibili&quot;:
+<b class="nc">&nbsp;                    consulenza.setOrariDisponibili((String) valore);</b>
+&nbsp;                    break;
+&nbsp;                case &quot;maxCandidature&quot;:
+<b class="nc">&nbsp;                    int maxCandidature = (Integer) valore;</b>
+<b class="nc">&nbsp;                    if (maxCandidature &lt; 1) {</b>
+<b class="nc">&nbsp;                        throw new IllegalArgumentException(&quot;Il numero &quot;</b>
+&nbsp;                                + &quot;massimo di candidature deve essere almeno 1.&quot;);
+&nbsp;                    }
+<b class="nc">&nbsp;                    consulenza.setMaxCandidature(maxCandidature);</b>
+&nbsp;                    break;
+&nbsp;                case &quot;indirizzo&quot;:
+<b class="nc">&nbsp;                    if (valore instanceof HashMap) {</b>
+<b class="nc">&nbsp;                        HashMap&lt;String, Object&gt; indirizzoData = (HashMap&lt;String, Object&gt;) valore;</b>
+&nbsp;
+<b class="nc">&nbsp;                        Indirizzo indirizzo = consulenza.getIndirizzo(); // L&#39;indirizzo deve già esistere</b>
+&nbsp;
+&nbsp;                        // Aggiorna i campi dell&#39;indirizzo utilizzando un metodo di servizio
+<b class="nc">&nbsp;                        indirizzoService.aggiornaIndirizzo(indirizzo.getId(), indirizzoData);</b>
+&nbsp;
+&nbsp;                    } else {
+<b class="nc">&nbsp;                        throw new IllegalArgumentException(&quot;Formato indirizzo non valido.&quot;);</b>
+&nbsp;                    }
+&nbsp;                    break;
+&nbsp;                case &quot;candidati&quot;:
+<b class="nc">&nbsp;                    if (valore instanceof Map&lt;?,?&gt;) {</b>
+<b class="nc">&nbsp;                        Map&lt;String,Boolean&gt; nuoviCandidati = (Map&lt;String,Boolean&gt;) valore;</b>
+<b class="nc">&nbsp;                        consulenza.setCandidati(nuoviCandidati);</b>
+&nbsp;                    } else {
+<b class="nc">&nbsp;                        throw new IllegalArgumentException(&quot;Formato candidati non valido.&quot;);</b>
+&nbsp;                    }
+&nbsp;                    break;
+&nbsp;                case &quot;numero&quot;:
+<b class="nc">&nbsp;                    consulenza.setNumero((String) valore);</b>
+&nbsp;                    break;
+&nbsp;                case &quot;tipo&quot;:
+&nbsp;                    //obbligatorio questo check dato che dall&#39;object si
+&nbsp;                    //riesce a castare l&#39;enum direttamente
+<b class="nc">&nbsp;                    if (valore instanceof String) {</b>
+&nbsp;                        try {
+<b class="nc">&nbsp;                            TipoConsulenza tipoConsulenza = TipoConsulenza.valueOf((String) valore);</b>
+<b class="nc">&nbsp;                            consulenza.setTipo(tipoConsulenza);</b>
+&nbsp;                        } catch (IllegalArgumentException e) {
+<b class="nc">&nbsp;                            throw new IllegalArgumentException(&quot;TipoConsulenza non valido: &quot; + valore);</b>
+&nbsp;                        }
+&nbsp;                    } else {
+<b class="nc">&nbsp;                        throw new IllegalArgumentException(&quot;Il valore per &#39;tipo&#39; deve essere una stringa.&quot;);</b>
+&nbsp;                    }
+&nbsp;                    break;
+&nbsp;                case &quot;disponibilita&quot;:
+<b class="nc">&nbsp;                    consulenza.setDisponibilita((Boolean) valore);</b>
+&nbsp;                    break;
+&nbsp;                default:
+<b class="nc">&nbsp;                    throw new IllegalArgumentException(&quot;Campo non valido &quot;</b>
+&nbsp;                            + &quot;per la modifica: &quot; + campo);
+&nbsp;            }
+&nbsp;        });
+&nbsp;
+<b class="nc">&nbsp;        return consulenzaDAO.save(consulenza);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public void eliminaConsulenza(final long idConsulenza) {
+<b class="nc">&nbsp;        if (!consulenzaDAO.existsById(idConsulenza)) {</b>
+<b class="nc">&nbsp;            throw new IllegalArgumentException(&quot;Nessun riscontro con di consulenze con id &quot; + idConsulenza);</b>
+&nbsp;        }
+<b class="nc">&nbsp;        consulenzaDAO.deleteById(idConsulenza);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public void interesseConsulenza(final long idConsulenza, final String emailRifugiato){
+<b class="nc">&nbsp;        if (emailRifugiato == null || emailRifugiato.trim().isEmpty()) {</b>
+<b class="nc">&nbsp;            throw new IllegalArgumentException(&quot;Email vuota o nulla&quot;);</b>
+&nbsp;        }
+<b class="nc">&nbsp;        if (idConsulenza &lt;= 0) {</b>
+<b class="nc">&nbsp;            throw new IllegalArgumentException(&quot;ID consulenza non valido&quot;);</b>
+&nbsp;        }
+&nbsp;
+&nbsp;        // Recupera il rifugiato dal database
+<b class="nc">&nbsp;        Rifugiato r = rifugiatoDAO.findByEmail(emailRifugiato);</b>
+<b class="nc">&nbsp;        if (r == null) {</b>
+<b class="nc">&nbsp;            throw new IllegalArgumentException(&quot;Rifugiato non trovato&quot;);</b>
+&nbsp;        }
+&nbsp;
+<b class="nc">&nbsp;        Consulenza c = consulenzaDAO.findConsulenzaById(idConsulenza);</b>
+<b class="nc">&nbsp;        if (c == null) {</b>
+<b class="nc">&nbsp;            throw new IllegalArgumentException(&quot;Alloggio non trovato&quot;);</b>
+&nbsp;        }
+&nbsp;
+&nbsp;        // Verifica se l&#39;email del rifugiato è già nella lista candidati
+<b class="nc">&nbsp;        if (c.getCandidati().containsKey(r.getEmail())) {</b>
+<b class="nc">&nbsp;            throw new IllegalArgumentException(&quot;Interesse già manifestato&quot;);</b>
+&nbsp;        }
+&nbsp;
+<b class="nc">&nbsp;        c.getCandidati().put(r.getEmail(), false);</b>
+&nbsp;        //aggiorno la consulenza
+<b class="nc">&nbsp;        consulenzaDAO.save(c);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public void rimuoviInteresseConsulenza(final long idConsulenza, final String emailRifugiato){
+<b class="nc">&nbsp;        if (emailRifugiato == null || emailRifugiato.trim().isEmpty()) {</b>
+<b class="nc">&nbsp;            throw new IllegalArgumentException(&quot;Email vuota o nulla&quot;);</b>
+&nbsp;        }
+<b class="nc">&nbsp;        if (idConsulenza &lt;= 0) {</b>
+<b class="nc">&nbsp;            throw new IllegalArgumentException(&quot;ID consulenza non valido&quot;);</b>
+&nbsp;        }
+&nbsp;
+&nbsp;        // Recupera il rifugiato dal database
+<b class="nc">&nbsp;        Rifugiato r = rifugiatoDAO.findByEmail(emailRifugiato);</b>
+<b class="nc">&nbsp;        if (r == null) {</b>
+<b class="nc">&nbsp;            throw new IllegalArgumentException(&quot;Rifugiato non trovato&quot;);</b>
+&nbsp;        }
+&nbsp;
+<b class="nc">&nbsp;        Consulenza c = consulenzaDAO.findConsulenzaById(idConsulenza);</b>
+<b class="nc">&nbsp;        if (c == null) {</b>
+<b class="nc">&nbsp;            throw new IllegalArgumentException(&quot;Consulenza non trovato&quot;);</b>
+&nbsp;        }
+&nbsp;
+&nbsp;        // Verifica se l&#39;email del rifugiato non è presente in lista
+<b class="nc">&nbsp;        if (!c.getCandidati().containsKey(r.getEmail())) {</b>
+<b class="nc">&nbsp;            throw new IllegalArgumentException(</b>
+&nbsp;                    &quot;Il rifugito non risulata interessato alla consulenza&quot;);
+&nbsp;        }
+&nbsp;        //rimuovo dalla lista candidati
+<b class="nc">&nbsp;        c.getCandidati().remove(r.getEmail());</b>
+&nbsp;        //aggiorno la consulenza
+<b class="nc">&nbsp;        consulenzaDAO.save(c);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public void accettaConsulenzaRifugiato(final long idConsulenza, final String emailRifugiato) {
+<b class="nc">&nbsp;        if (emailRifugiato == null || emailRifugiato.trim().isEmpty()) {</b>
+<b class="nc">&nbsp;            throw new IllegalArgumentException(&quot;Email vuota o nulla&quot;);</b>
+&nbsp;        }
+<b class="nc">&nbsp;        if (idConsulenza &lt;= 0) {</b>
+<b class="nc">&nbsp;            throw new IllegalArgumentException(&quot;ID consulenza non valido&quot;);</b>
+&nbsp;        }
+&nbsp;
+&nbsp;        // Recupera il rifugiato dal database
+<b class="nc">&nbsp;        Rifugiato r = rifugiatoDAO.findByEmail(emailRifugiato);</b>
+<b class="nc">&nbsp;        if (r == null) {</b>
+<b class="nc">&nbsp;            throw new IllegalArgumentException(&quot;Rifugiato non trovato&quot;);</b>
+&nbsp;        }
+&nbsp;
+<b class="nc">&nbsp;        Consulenza c = consulenzaDAO.findConsulenzaById(idConsulenza);</b>
+<b class="nc">&nbsp;        if (c == null) {</b>
+<b class="nc">&nbsp;            throw new IllegalArgumentException(&quot;Alloggio non trovato&quot;);</b>
+&nbsp;        }
+&nbsp;
+&nbsp;        // Verifica se l&#39;email del rifugiato è già nella lista candidati
+<b class="nc">&nbsp;        if (c.getCandidati().containsKey(r.getEmail())) {</b>
+<b class="nc">&nbsp;            throw new IllegalArgumentException(&quot;Interesse già manifestato&quot;);</b>
+&nbsp;        }
+&nbsp;
+<b class="nc">&nbsp;        c.getCandidati().put(r.getEmail(), true);</b>
+&nbsp;        //aggiorno la consulenza
+<b class="nc">&nbsp;        consulenzaDAO.save(c);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public List&lt;Lavoro&gt; getRandomLavori() {
+&nbsp;        // Recupera tutti gli eventi
+<b class="nc">&nbsp;        List&lt;Lavoro&gt; lavori = lavoroDAO.findAll();</b>
+&nbsp;
+&nbsp;        // Mischia la lista
+<b class="nc">&nbsp;        Collections.shuffle(lavori);</b>
+&nbsp;
+&nbsp;        // Restituisce solo 5 lavori
+<b class="nc">&nbsp;        return lavori.stream().limit(5).toList();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public List&lt;String&gt; getCandidatiPerLavoro(final long lavoroId) {
+&nbsp;        // Recupera l&#39;evento specificato tramite ID
+<b class="nc">&nbsp;        Lavoro lavoro = lavoroDAO.findById(lavoroId)</b>
+<b class="nc">&nbsp;                .orElseThrow(() -&gt; new IllegalArgumentException(&quot;Lavoro non trovato&quot;));</b>
+&nbsp;
+&nbsp;        // Restituisce la lista dei partecipanti (Rifugiato) associati all&#39;evento
+<b class="nc">&nbsp;        return lavoro.getCandidati();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public void invioCandidaturaLavoro(long idLavoro, String emailRifugiato) {
+&nbsp;        // Recupera l&#39;annuncio di lavoro
+<b class="nc">&nbsp;        Optional&lt;Lavoro&gt; lavoroOptional = lavoroDAO.findById(idLavoro);</b>
+<b class="nc">&nbsp;        if (lavoroOptional.isEmpty()) {</b>
+<b class="nc">&nbsp;            throw new IllegalArgumentException(&quot;Annuncio di lavoro non trovato.&quot;);</b>
+&nbsp;        }
+<b class="nc">&nbsp;        Lavoro lavoro = lavoroOptional.get();</b>
+&nbsp;
+&nbsp;        // Recupera il rifugiato
+<b class="nc">&nbsp;        Rifugiato rifugiato = rifugiatoDAO.findByEmail(emailRifugiato);</b>
+<b class="nc">&nbsp;        if (rifugiato == null) {</b>
+<b class="nc">&nbsp;            throw new IllegalArgumentException(&quot;Rifugiato non trovato.&quot;);</b>
+&nbsp;        }
+&nbsp;
+&nbsp;        // Verifica se il rifugiato ha già candidato
+<b class="nc">&nbsp;        if (lavoro.getCandidati().contains(emailRifugiato)) {</b>
+<b class="nc">&nbsp;            throw new IllegalArgumentException(&quot;Sei già candidato a questo annuncio.&quot;);</b>
+&nbsp;        }
+&nbsp;
+&nbsp;        // Aggiungi l&#39;email del rifugiato ai candidati
+<b class="nc">&nbsp;        lavoro.getCandidati().add(emailRifugiato);</b>
+<b class="nc">&nbsp;        lavoroDAO.save(lavoro);</b>
+&nbsp;
+&nbsp;        // Invia notifica email al proprietario dell&#39;annuncio
+<b class="nc">&nbsp;        sendEmailVolontario(</b>
+<b class="nc">&nbsp;                &quot;Il rifugiato &quot; + rifugiato.getNome() + &quot; &quot; + rifugiato.getCognome()</b>
+<b class="nc">&nbsp;                        + &quot; si è candidato per il lavoro &quot; + lavoro.getTitolo(),</b>
+<b class="nc">&nbsp;                lavoro.getProprietario().getEmail()</b>
+&nbsp;        );
+&nbsp;    }
+&nbsp;
+&nbsp;
+&nbsp;    // Metodo per verificare se un rifugiato è candidato a un annuncio di lavoro
+&nbsp;    @Override
+&nbsp;    public boolean isCandidatoPerLavoro(long idLavoro, String emailRifugiato) {
+&nbsp;        // Recupera l&#39;annuncio di lavoro
+<b class="nc">&nbsp;        Optional&lt;Lavoro&gt; lavoroOptional = lavoroDAO.findById(idLavoro);</b>
+<b class="nc">&nbsp;        if (lavoroOptional.isEmpty()) {</b>
+<b class="nc">&nbsp;            throw new IllegalArgumentException(&quot;Annuncio di lavoro non trovato.&quot;);</b>
+&nbsp;        }
+<b class="nc">&nbsp;        Lavoro lavoro = lavoroOptional.get();</b>
+&nbsp;
+&nbsp;        // Controlla se l&#39;email del rifugiato è nella lista dei candidati
+<b class="nc">&nbsp;        return lavoro.getCandidati().contains(emailRifugiato);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    // Metodo per rimuovere la candidatura di un rifugiato a un annuncio di lavoro
+&nbsp;    @Override
+&nbsp;    public void rimuoviCandidaturaLavoro(long idLavoro, String emailRifugiato) {
+&nbsp;        // Recupera l&#39;annuncio di lavoro
+<b class="nc">&nbsp;        Optional&lt;Lavoro&gt; lavoroOptional = lavoroDAO.findById(idLavoro);</b>
+<b class="nc">&nbsp;        if (lavoroOptional.isEmpty()) {</b>
+<b class="nc">&nbsp;            throw new IllegalArgumentException(&quot;Annuncio di lavoro non trovato.&quot;);</b>
+&nbsp;        }
+<b class="nc">&nbsp;        Lavoro lavoro = lavoroOptional.get();</b>
+&nbsp;
+&nbsp;        // Recupera il rifugiato
+<b class="nc">&nbsp;        Rifugiato rifugiato = rifugiatoDAO.findByEmail(emailRifugiato);</b>
+<b class="nc">&nbsp;        if (rifugiato == null) {</b>
+<b class="nc">&nbsp;            throw new IllegalArgumentException(&quot;Rifugiato non trovato.&quot;);</b>
+&nbsp;        }
+&nbsp;
+&nbsp;        // Verifica se il rifugiato è candidato a questo lavoro
+<b class="nc">&nbsp;        if (!lavoro.getCandidati().contains(emailRifugiato)) {</b>
+<b class="nc">&nbsp;            throw new IllegalArgumentException(&quot;Non sei candidato a questo annuncio.&quot;);</b>
+&nbsp;        }
+&nbsp;
+&nbsp;        // Rimuovi l&#39;email del rifugiato dalla lista dei candidati
+<b class="nc">&nbsp;        lavoro.getCandidati().remove(emailRifugiato);</b>
+<b class="nc">&nbsp;        lavoroDAO.save(lavoro);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2025-01-05 20:59</div>
+</div>
+</body>
+</html>

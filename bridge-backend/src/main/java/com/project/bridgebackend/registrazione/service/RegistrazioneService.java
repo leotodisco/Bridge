@@ -8,7 +8,7 @@ import com.project.bridgebackend.util.AuthenticationRequest;
 import com.project.bridgebackend.util.AuthenticationResponse;
 
 /**
- *@author: Antonio Ceruso.
+ * @author : Antonio Ceruso.
  * Creato il: 04/12/2024.
  * Interfaccia per il service di registrazione.
  * */

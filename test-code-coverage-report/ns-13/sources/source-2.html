@@ -1,0 +1,98 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > IndirizzoService</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">com.project.bridgebackend.util.Indirizzo.service</a>
+</div>
+
+<h1>Coverage Summary for Class: IndirizzoService (com.project.bridgebackend.util.Indirizzo.service)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+</tr>
+<tr>
+  <td class="name">IndirizzoService</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package com.project.bridgebackend.util.Indirizzo.service;
+&nbsp;
+&nbsp;import java.util.HashMap;
+&nbsp;
+&nbsp;public interface IndirizzoService {
+&nbsp;    /**
+&nbsp;     * Aggiorna i dati di un indirizzo esistente nel sistema.
+&nbsp;     * &lt;p&gt;
+&nbsp;     * Questo metodo riceve un ID di indirizzo e una mappa,
+&nbsp;     * contenente i dati aggiornati
+&nbsp;     * dell&#39;indirizzo. I campi dell&#39;indirizzo che sono presenti,
+&nbsp;     * nella mappa verranno aggiornati
+&nbsp;     * nel database. Se l&#39;indirizzo con l&#39;ID specificato non esiste,
+&nbsp;     * viene generata un&#39;eccezione.
+&nbsp;     * &lt;/p&gt;
+&nbsp;     *
+&nbsp;     * @param idIndirizzo ID univoco dell&#39;indirizzo da aggiornare.
+&nbsp;     * @param indirizzoData Mappa contenente i dati dell&#39;indirizzo da aggiornare.
+&nbsp;     *                      La mappa può contenere le seguenti chiavi:
+&nbsp;     *                      &quot;via&quot;, &quot;citta&quot;, &quot;cap&quot;, &quot;num_civico&quot;, &quot;provincia&quot;.
+&nbsp;     *                      I valori associati a queste chiavi dovranno essere di tipo
+&nbsp;     *                      appropriato (String per &quot;via&quot;, &quot;citta&quot; e &quot;provincia&quot;, Integer per &quot;cap&quot; e &quot;num_civico&quot;).
+&nbsp;     *
+&nbsp;     * @throws IllegalArgumentException se l&#39;indirizzo con l&#39;ID fornito non esiste nel sistema.
+&nbsp;     */
+&nbsp;    void aggiornaIndirizzo(
+&nbsp;            long idIndirizzo,
+&nbsp;            HashMap&lt;String, Object&gt; indirizzoData);
+&nbsp;
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2025-01-05 20:59</div>
+</div>
+</body>
+</html>

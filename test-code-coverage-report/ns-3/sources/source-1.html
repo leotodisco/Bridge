@@ -1,0 +1,520 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > AlloggioController</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">com.project.bridgebackend.GestioneAlloggio.Controller</a>
+</div>
+
+<h1>Coverage Summary for Class: AlloggioController (com.project.bridgebackend.GestioneAlloggio.Controller)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Branch, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">AlloggioController</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    8,3%
+  </span>
+  <span class="absValue">
+    (1/12)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/58)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0,8%
+  </span>
+  <span class="absValue">
+    (1/121)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package com.project.bridgebackend.GestioneAlloggio.Controller;
+&nbsp;
+&nbsp;import com.project.bridgebackend.CDN.CDNService;
+&nbsp;import com.project.bridgebackend.CDN.Document.FotoAlloggio;
+&nbsp;import com.project.bridgebackend.GestioneAlloggio.Service.AlloggioService;
+&nbsp;import com.project.bridgebackend.Model.Entity.*;
+&nbsp;import com.project.bridgebackend.Model.dao.VolontarioDAO;
+&nbsp;import com.project.bridgebackend.Model.dao.IndirizzoDAO;
+&nbsp;import com.project.bridgebackend.Model.dao.UtenteDAO;
+&nbsp;import com.project.bridgebackend.Model.dao.AlloggioDAO;
+&nbsp;import com.project.bridgebackend.Model.dao.RifugiatoDAO;
+&nbsp;import com.project.bridgebackend.Model.dto.AlloggioDTO;
+&nbsp;import org.springframework.beans.factory.annotation.Autowired;
+&nbsp;import org.springframework.http.HttpStatus;
+&nbsp;import org.springframework.http.ResponseEntity;
+&nbsp;import org.springframework.web.bind.annotation.PostMapping;
+&nbsp;import org.springframework.web.bind.annotation.RequestBody;
+&nbsp;import org.springframework.web.bind.annotation.RequestMapping;
+&nbsp;import org.springframework.web.bind.annotation.RestController;
+&nbsp;import org.springframework.web.bind.annotation.RequestParam;
+&nbsp;import org.springframework.web.bind.annotation.GetMapping;
+&nbsp;import org.springframework.web.bind.annotation.PathVariable;
+&nbsp;import java.io.IOException;
+&nbsp;import java.util.*;
+&nbsp;
+&nbsp;
+&nbsp;/**
+&nbsp; * Controller per la gestione degli alloggi.
+&nbsp; */
+&nbsp;@RestController
+&nbsp;@RequestMapping(&quot;/alloggi&quot;)
+<b class="fc">&nbsp;public class AlloggioController {</b>
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Service per la logica di gestione degli alloggi.
+&nbsp;     */
+&nbsp;    @Autowired
+&nbsp;    private AlloggioService alloggioService;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Service per la logica di gestione delle foto alloggio.
+&nbsp;     */
+&nbsp;    @Autowired
+&nbsp;    private CDNService fotoAlloggioService;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Service per la logica di gestione degli utenti volontari.
+&nbsp;     */
+&nbsp;    @Autowired
+&nbsp;    private VolontarioDAO volontarioDAO;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Service per la logica di gestione degli indirizzi.
+&nbsp;     */
+&nbsp;    @Autowired
+&nbsp;    private IndirizzoDAO indirizzoDAO;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Service per la logica di gestione degli utenti.
+&nbsp;     */
+&nbsp;    @Autowired
+&nbsp;    private UtenteDAO utenteDAO;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * DAO per la gestione degli annunci di alloggio.
+&nbsp;     */
+&nbsp;    @Autowired
+&nbsp;    private AlloggioDAO alloggioDAO;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * DAO per la gestione degli utenti rifugiati.
+&nbsp;     */
+&nbsp;    @Autowired
+&nbsp;    private RifugiatoDAO rifugiatoDAO;
+&nbsp;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Metodo per rimuovere interesse per un alloggio.
+&nbsp;     * @param emailRifugiato email del rifugiato che ha rimosso l&#39;interesse.
+&nbsp;     * @param idAlloggio identificativo dell&#39;alloggio a cui è stato rimosso l&#39;interesse.
+&nbsp;     * @return ResponseEntity con lo stato dell&#39;operazione.
+&nbsp;     */
+&nbsp;    @PostMapping(&quot;/rimuoviInteresse&quot;)
+&nbsp;    public ResponseEntity&lt;String&gt; rimuoviInteresse(@RequestParam String emailRifugiato, @RequestParam long idAlloggio) {
+&nbsp;        try {
+<b class="nc">&nbsp;            Alloggio alloggio = alloggioDAO.findAlloggioById(idAlloggio);</b>
+<b class="nc">&nbsp;            if (alloggio == null) {</b>
+<b class="nc">&nbsp;                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(&quot;Alloggio non trovato.&quot;);</b>
+&nbsp;            }
+&nbsp;
+<b class="nc">&nbsp;            Rifugiato rifugiato = rifugiatoDAO.findByEmail(emailRifugiato);</b>
+<b class="nc">&nbsp;            if (rifugiato == null) {</b>
+<b class="nc">&nbsp;                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(&quot;Rifugiato non trovato.&quot;);</b>
+&nbsp;            }
+&nbsp;
+<b class="nc">&nbsp;            if (alloggio.getListaCandidati() == null || !alloggio.getListaCandidati().contains(rifugiato)) {</b>
+<b class="nc">&nbsp;                return ResponseEntity.ok(&quot;Interesse non trovato per questo alloggio.&quot;);</b>
+&nbsp;            }
+&nbsp;
+&nbsp;            // Rimuovi il rifugiato dalla lista dei candidati
+<b class="nc">&nbsp;            alloggio.getListaCandidati().remove(rifugiato);</b>
+<b class="nc">&nbsp;            alloggioDAO.save(alloggio);</b>
+&nbsp;
+<b class="nc">&nbsp;            return ResponseEntity.ok(&quot;Interesse rimosso con successo.&quot;);</b>
+&nbsp;        } catch (Exception e) {
+<b class="nc">&nbsp;            System.out.println(&quot;Errore interno del server: &quot; + e.getMessage());</b>
+<b class="nc">&nbsp;            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(&quot;Errore interno al server.&quot;);</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Aggiungi un nuovo alloggio nel sistema.
+&nbsp;     *
+&nbsp;     * @param alloggio   l&#39;alloggio da aggiungere.
+&nbsp;     * @return ResponseEntity con lo stato dell&#39;operazione.
+&nbsp;     */
+&nbsp;
+&nbsp;    @PostMapping(&quot;/aggiungi&quot;)
+&nbsp;    public ResponseEntity&lt;String&gt; addAlloggio(
+&nbsp;            @RequestBody final AlloggioDTO alloggio) {
+&nbsp;        try {
+&nbsp;            //Verifico prima se sia un volontario,
+&nbsp;            // in caso positivo può aggiungere l&#39;alloggio, in caso negativo non fa nulla
+&nbsp;
+&nbsp;            //Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+&nbsp;            //if (authentication != null &amp;&amp; authentication.getAuthorities().stream()
+&nbsp;            //.anyMatch(auth -&gt; auth.getAuthority().equals(&quot;Volontario&quot;))) {
+&nbsp;            // Lista per salvare gli ID delle foto
+<b class="nc">&nbsp;            List&lt;String&gt; fotoIds = new ArrayList&lt;&gt;();</b>
+<b class="nc">&nbsp;            String fotoProfiloId = null;</b>
+&nbsp;            // Cicliamo su tutte le foto inviate
+<b class="nc">&nbsp;            if (alloggio.getFoto() != null &amp;&amp; !alloggio.getFoto().isEmpty()) {</b>
+<b class="nc">&nbsp;                for (String foto : alloggio.getFoto()) {</b>
+<b class="nc">&nbsp;                    if (foto.startsWith(&quot;data:image/jpeg;base64,&quot;)) {</b>
+<b class="nc">&nbsp;                        foto = foto.split(&quot;,&quot;)[1]; // Estrai solo la parte Base64 dopo la virgola</b>
+<b class="nc">&nbsp;                        byte[] fotoData = Base64.getDecoder().decode(foto);</b>
+<b class="nc">&nbsp;                        fotoProfiloId = fotoAlloggioService.saveFotoAlloggio(foto, fotoData);</b>
+&nbsp;                    }
+<b class="nc">&nbsp;                    fotoIds.add(fotoProfiloId); // Aggiungiamo l&#39;ID alla lista</b>
+&nbsp;                }
+&nbsp;            }
+&nbsp;
+&nbsp;            //indirizzo
+<b class="nc">&nbsp;            Indirizzo indirizzo = new Indirizzo();</b>
+<b class="nc">&nbsp;            indirizzo.setCitta(alloggio.getIndirizzo().getCitta());</b>
+<b class="nc">&nbsp;            indirizzo.setCap(alloggio.getIndirizzo().getCap());</b>
+<b class="nc">&nbsp;            indirizzo.setVia(alloggio.getIndirizzo().getVia());</b>
+<b class="nc">&nbsp;            indirizzo.setNumCivico(alloggio.getIndirizzo().getNumCivico());</b>
+<b class="nc">&nbsp;            indirizzo.setProvincia(alloggio.getIndirizzo().getProvincia());</b>
+<b class="nc">&nbsp;            long checkIndirizzo = alloggioService.salvaIndirizzoAlloggio(indirizzo);</b>
+&nbsp;            /*if (checkIndirizzo) {
+&nbsp;                throw new RuntimeException(&quot;Indirizzo non trovato&quot;);
+&nbsp;            }*/
+&nbsp;
+<b class="nc">&nbsp;            Volontario proprietario = volontarioDAO.findByEmail(alloggio.getEmailProprietario());</b>
+<b class="nc">&nbsp;            if (proprietario == null) {</b>
+<b class="nc">&nbsp;                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);</b>
+&nbsp;            }
+&nbsp;
+&nbsp;            //alloggio
+<b class="nc">&nbsp;            Alloggio newalloggio = new Alloggio();</b>
+<b class="nc">&nbsp;            newalloggio.setDescrizione(alloggio.getDescrizione());</b>
+<b class="nc">&nbsp;            newalloggio.setMaxPersone(alloggio.getMaxPersone());</b>
+<b class="nc">&nbsp;            newalloggio.setFoto(fotoIds);</b>
+<b class="nc">&nbsp;            newalloggio.setProprietario(proprietario);</b>
+<b class="nc">&nbsp;            newalloggio.setMetratura(alloggio.getMetratura());</b>
+<b class="nc">&nbsp;            newalloggio.setServizi(alloggio.getServizi());</b>
+<b class="nc">&nbsp;            newalloggio.setTitolo(alloggio.getTitolo());</b>
+<b class="nc">&nbsp;            newalloggio.setIndirizzo(indirizzoDAO.getReferenceById(checkIndirizzo));</b>
+&nbsp;
+&nbsp;
+&nbsp;            // Rimuoviamo le foto dalla DTO, non ci servono più per il salvataggio dell&#39;alloggio
+<b class="nc">&nbsp;            Alloggio createdAlloggio = alloggioService.addAlloggio(newalloggio);</b>
+<b class="nc">&nbsp;            if (createdAlloggio != null) {</b>
+<b class="nc">&nbsp;                return new ResponseEntity&lt;&gt;(&quot;Alloggio aggiunto con successo&quot;, HttpStatus.CREATED);</b>
+&nbsp;            } else {
+<b class="nc">&nbsp;                return new ResponseEntity&lt;&gt;(&quot;Errore nell&#39;aggiunta dell&#39;alloggio&quot;, HttpStatus.BAD_REQUEST);</b>
+&nbsp;            }
+&nbsp;            //} //else {
+&nbsp;            // return new ResponseEntity&lt;&gt;(&quot;Accesso negato: Solo i volontari possono aggiungere alloggi&quot;, HttpStatus.FORBIDDEN);
+&nbsp;            //}
+&nbsp;        } catch (Exception e) {
+<b class="nc">&nbsp;            return new ResponseEntity&lt;&gt;(&quot;Errore interno del server: &quot; + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Assegna un alloggio a un rifugiato specifico.
+&nbsp;     *
+&nbsp;     * @param idAlloggio l&#39;id dell&#39;alloggio
+&nbsp;     * @param emailRifugiato l&#39;email del rifugiato
+&nbsp;     * @return ResponseEntity con lo stato dell&#39;operazione
+&nbsp;     */
+&nbsp;    @PostMapping(&quot;/assegnazione/{idAlloggio}&quot;)
+&nbsp;    public ResponseEntity&lt;?&gt; assegnazioneAlloggio(@PathVariable long idAlloggio, @RequestParam String emailRifugiato) {
+&nbsp;        try {
+<b class="nc">&nbsp;            if (idAlloggio &lt; 1 || emailRifugiato == null || emailRifugiato.trim().isEmpty()) {</b>
+<b class="nc">&nbsp;                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(&quot;Dati mancanti.&quot;);</b>
+&nbsp;            }
+<b class="nc">&nbsp;            Alloggio a = alloggioService.assegnazioneAlloggio(idAlloggio, emailRifugiato);</b>
+<b class="nc">&nbsp;            return ResponseEntity.ok(a); // Restituisci l&#39;alloggio aggiornato</b>
+&nbsp;        } catch (IllegalArgumentException e) {
+&nbsp;            // Se la lista dei rifugiati è vuota, restituire un errore 404 con un messaggio chiaro
+<b class="nc">&nbsp;            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(&quot;Nessun rifugiato disponibile per l&#39;assegnazione.&quot;);</b>
+&nbsp;        } catch (Exception e) {
+<b class="nc">&nbsp;            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(&quot;Si è verificato un errore durante l&#39;assegnazione dell&#39;alloggio.&quot;);</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;
+&nbsp;
+&nbsp;    /** Metodo che permette ad un rifugiato di manifesare interesse per un&#39;alloggio
+&nbsp;     * @param emailRifugiato l&#39;email del rifugiato
+&nbsp;     * @param idAlloggio l&#39;id dell&#39;alloggio al quale si manifesta interesse
+&nbsp;     *
+&nbsp;     * @return ResponseEntity con lo stato dell&#39;operazione
+&nbsp;     */
+&nbsp;
+&nbsp;    @PostMapping(&quot;/interesse&quot;)
+&nbsp;    public ResponseEntity&lt;String&gt; manifestaInteresse(@RequestParam String emailRifugiato, @RequestParam long idAlloggio) {
+&nbsp;        try {
+<b class="nc">&nbsp;            Alloggio alloggio = alloggioDAO.findAlloggioById(idAlloggio);</b>
+<b class="nc">&nbsp;            if (alloggio == null) {</b>
+<b class="nc">&nbsp;                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(&quot;Alloggio non trovato.&quot;);</b>
+&nbsp;            }
+&nbsp;
+&nbsp;            // Aggiungi il rifugiato alla lista dei candidati
+<b class="nc">&nbsp;            Rifugiato rifugiato = rifugiatoDAO.findByEmail(emailRifugiato);</b>
+<b class="nc">&nbsp;            if (rifugiato == null) {</b>
+<b class="nc">&nbsp;                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(&quot;Rifugiato non trovato.&quot;);</b>
+&nbsp;            }
+&nbsp;
+&nbsp;            // Se la lista candidati è null o vuota, inizializzala
+<b class="nc">&nbsp;            if (alloggio.getListaCandidati() == null) {</b>
+<b class="nc">&nbsp;                alloggio.setListaCandidati(new ArrayList&lt;&gt;());</b>
+&nbsp;            }
+&nbsp;
+&nbsp;            // Verifica se il rifugiato ha già manifestato interesse
+<b class="nc">&nbsp;            if (alloggio.getListaCandidati().contains(rifugiato)) {</b>
+<b class="nc">&nbsp;                return ResponseEntity.ok(&quot;Hai già manifestato interesse per questo alloggio&quot;);</b>
+&nbsp;            }
+&nbsp;
+&nbsp;            // Aggiungi il rifugiato alla lista dei candidati
+<b class="nc">&nbsp;            alloggio.getListaCandidati().add(rifugiato);</b>
+&nbsp;
+<b class="nc">&nbsp;            alloggioService.sendEmailVolontario(&quot;Hai ricevuto una nuova manifestazione&quot;, &quot;mariozurolo00@gmail.com&quot;);</b>
+<b class="nc">&nbsp;            alloggioDAO.save(alloggio); // Salva l&#39;alloggio aggiornato nel database</b>
+&nbsp;
+<b class="nc">&nbsp;            return ResponseEntity.ok(&quot;Interesse manifestato con successo.&quot;);</b>
+&nbsp;        } catch (Exception e) {
+<b class="nc">&nbsp;            System.out.println(&quot;Errore interno del server: &quot; + e.getMessage());</b>
+<b class="nc">&nbsp;            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(&quot;Errore interno al server.&quot;);</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Verifica se un rifugiato ha aggiunto un alloggio ai preferiti.
+&nbsp;     *
+&nbsp;     * @param email  l&#39;email del rifugiato
+&nbsp;     * @param idAlloggio l&#39;id dell&#39;alloggio
+&nbsp;     * @return ResponseEntity con valore booleano che indica se è favorito
+&nbsp;     */
+&nbsp;    @GetMapping(&quot;/isFavorito&quot;)
+&nbsp;    public ResponseEntity&lt;Boolean&gt; isFavorito(@RequestParam String email,
+&nbsp;                                              @RequestParam long idAlloggio) {
+&nbsp;        try {
+&nbsp;            // Verifica se l&#39;alloggio esiste
+<b class="nc">&nbsp;            Alloggio alloggio = alloggioDAO.findAlloggioById(idAlloggio);</b>
+<b class="nc">&nbsp;            if (alloggio == null) {</b>
+<b class="nc">&nbsp;                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(false); // Alloggio non trovato</b>
+&nbsp;            }
+&nbsp;
+&nbsp;            // Verifica se l&#39;email del rifugiato è presente nella lista dei candidati
+<b class="nc">&nbsp;            boolean isFavorito = alloggio.getListaCandidati().stream()</b>
+<b class="nc">&nbsp;                    .anyMatch(candidato -&gt; candidato.getEmail().equals(email));</b>
+&nbsp;
+&nbsp;            // Restituisce true se l&#39;alloggio è nei preferiti, altrimenti false
+<b class="nc">&nbsp;            return ResponseEntity.ok(isFavorito);</b>
+&nbsp;        } catch (Exception e) {
+&nbsp;            // Gestisce eventuali eccezioni generiche
+<b class="nc">&nbsp;            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)</b>
+<b class="nc">&nbsp;                    .body(false);</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Recupera tutti gli alloggi disponibili.
+&nbsp;     *
+&nbsp;     * @return ResponseEntity contenente la lista degli alloggi
+&nbsp;     */
+&nbsp;    @GetMapping(&quot;/mostra&quot;)
+&nbsp;    public ResponseEntity&lt;List&lt;Alloggio&gt;&gt; getAllAlloggi() {
+&nbsp;        try {
+&nbsp;            // Otteniamo tutti gli alloggi dal servizio
+<b class="nc">&nbsp;            List&lt;Alloggio&gt; alloggi = alloggioService.getAllAlloggio();</b>
+&nbsp;
+&nbsp;            // Restituiamo la lista con lo stato OK
+<b class="nc">&nbsp;            System.out.println(ResponseEntity.ok(alloggi.size()));</b>
+<b class="nc">&nbsp;            return new ResponseEntity&lt;&gt;(alloggi, HttpStatus.OK);</b>
+&nbsp;        } catch (Exception e) {
+&nbsp;            // In caso di errore, restituiamo uno stato di errore con il messaggio
+<b class="nc">&nbsp;            return new ResponseEntity&lt;&gt;(null, HttpStatus.INTERNAL_SERVER_ERROR);</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Ottiene i dettagli di un alloggio specifico tramite il titolo.
+&nbsp;     *
+&nbsp;     * @param titolo il titolo dell&#39;alloggio da cercare
+&nbsp;     * @return dettagli dell&#39;alloggio o null se non trovato
+&nbsp;     * @throws IOException se si verifica un errore durante il recupero delle immagini
+&nbsp;     */
+&nbsp;    @GetMapping(&quot;/SingoloAlloggio/{titolo}&quot;)
+&nbsp;    public Alloggio getAlloggioByTitolo(@PathVariable final String titolo) throws IOException {
+<b class="nc">&nbsp;        Alloggio alloggio = alloggioService.getAlloggioByTitolo(titolo);</b>
+<b class="nc">&nbsp;        if (alloggio == null) {</b>
+<b class="nc">&nbsp;            return null;</b>
+&nbsp;        }
+&nbsp;
+<b class="nc">&nbsp;        List&lt;String&gt; fotoBase64 = new ArrayList&lt;&gt;();</b>
+<b class="nc">&nbsp;        if (alloggio.getFoto() != null) {</b>
+<b class="nc">&nbsp;            for (String fotoId : alloggio.getFoto()) {</b>
+<b class="nc">&nbsp;                FotoAlloggio fotoAlloggio = fotoAlloggioService.getFotoAlloggio(fotoId);</b>
+<b class="nc">&nbsp;                if (fotoAlloggio != null) {</b>
+&nbsp;                    // Converti l&#39;immagine in base64
+<b class="nc">&nbsp;                    String base64Image = Base64.getEncoder().encodeToString(fotoAlloggio.getData());</b>
+<b class="nc">&nbsp;                    fotoBase64.add(base64Image);</b>
+&nbsp;                }
+&nbsp;            }
+&nbsp;        }
+&nbsp;
+<b class="nc">&nbsp;        alloggio.setFoto(fotoBase64);</b>
+<b class="nc">&nbsp;        return alloggio;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @GetMapping(&quot;/alloggiByEmail/{email}&quot;)
+&nbsp;    public ResponseEntity&lt;List&lt;Alloggio&gt;&gt; getAlloggiByEmail(@PathVariable String email) {
+&nbsp;        try {
+<b class="nc">&nbsp;            List&lt;Alloggio&gt; alloggi = alloggioService.getAllAlloggiByEmail(email);</b>
+&nbsp;
+<b class="nc">&nbsp;            if (alloggi.isEmpty() || alloggi == null) {</b>
+<b class="nc">&nbsp;                System.out.println(&quot;Nessun alloggio trovato&quot;);</b>
+<b class="nc">&nbsp;                return ResponseEntity.ok(Collections.emptyList());</b>
+&nbsp;            }
+&nbsp;
+<b class="nc">&nbsp;            return ResponseEntity.ok(alloggi);</b>
+&nbsp;        } catch (IllegalArgumentException e) {
+&nbsp;            // Specifica l&#39;errore per alloggi non trovati
+<b class="nc">&nbsp;            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Collections.emptyList());</b>
+&nbsp;        } catch (Exception e) {
+&nbsp;            // Gestisce altri tipi di errori generali
+<b class="nc">&nbsp;            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;    @GetMapping(&quot;/interessati/{idAlloggio}&quot;)
+&nbsp;    public ResponseEntity&lt;List&lt;Rifugiato&gt;&gt; getInteressati(@PathVariable long idAlloggio) {
+&nbsp;        try {
+<b class="nc">&nbsp;            List&lt;Rifugiato&gt; interessati = alloggioService.getInteressati(idAlloggio);</b>
+<b class="nc">&nbsp;            return ResponseEntity.ok(interessati);</b>
+&nbsp;        } catch (Exception e) {
+&nbsp;            // Log dell&#39;errore lato server
+<b class="nc">&nbsp;            System.err.println(&quot;Errore durante il recupero dei rifugiati interessati: &quot; + e.getMessage());</b>
+<b class="nc">&nbsp;            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)</b>
+<b class="nc">&nbsp;                    .body(Collections.emptyList());</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;
+&nbsp;    @GetMapping(&quot;/alloggiPreferitiUtente/{email}&quot;)
+&nbsp;    public List&lt;Alloggio&gt; getAllAlloggiByRifugiatoEmail(@PathVariable String email) {
+<b class="nc">&nbsp;        return alloggioService.getAllAlloggiByRifugiatoEmail(email);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @GetMapping(&quot;/random&quot;)
+&nbsp;    public ResponseEntity&lt;List&lt;Alloggio&gt;&gt; getRandomAccommodations() throws IOException {
+<b class="nc">&nbsp;        List&lt;Alloggio&gt; alloggi = alloggioService.getRandomAlloggi();</b>
+&nbsp;
+&nbsp;        // Itera su ogni alloggio per aggiungere una parte delle immagini in Base64
+<b class="nc">&nbsp;        for (Alloggio alloggio : alloggi) {</b>
+<b class="nc">&nbsp;            if (alloggio.getFoto() != null) {</b>
+<b class="nc">&nbsp;                List&lt;String&gt; fotoBase64 = new ArrayList&lt;&gt;();</b>
+<b class="nc">&nbsp;                int count = 0;</b>
+&nbsp;
+<b class="nc">&nbsp;                for (String fotoId : alloggio.getFoto()) {</b>
+<b class="nc">&nbsp;                    if (count &gt;= 3) break; // Limita a 3 immagini per alloggio</b>
+<b class="nc">&nbsp;                    FotoAlloggio fotoAlloggio = fotoAlloggioService.getFotoAlloggio(fotoId);</b>
+<b class="nc">&nbsp;                    if (fotoAlloggio != null) {</b>
+&nbsp;                        // Converti l&#39;immagine in Base64
+<b class="nc">&nbsp;                        String base64Image = Base64.getEncoder().encodeToString(fotoAlloggio.getData());</b>
+<b class="nc">&nbsp;                        fotoBase64.add(base64Image);</b>
+<b class="nc">&nbsp;                        count++;</b>
+&nbsp;                    }
+&nbsp;                }
+&nbsp;
+<b class="nc">&nbsp;                alloggio.setFoto(fotoBase64); // Sostituisci con le immagini convertite</b>
+&nbsp;            }
+&nbsp;        }
+&nbsp;
+<b class="nc">&nbsp;        System.out.println(&quot;Alloggi con immagini: &quot; + alloggi); // Debug</b>
+<b class="nc">&nbsp;        return new ResponseEntity&lt;&gt;(alloggi, HttpStatus.OK);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2025-01-05 20:59</div>
+</div>
+</body>
+</html>

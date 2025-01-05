@@ -1,0 +1,278 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > Indirizzo</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">com.project.bridgebackend.Model.Entity</a>
+</div>
+
+<h1>Coverage Summary for Class: Indirizzo (com.project.bridgebackend.Model.Entity)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Branch, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">Indirizzo</td>
+<td class="coverageStat">
+  <span class="percent">
+    50%
+  </span>
+  <span class="absValue">
+    (2/4)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/14)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    30,4%
+  </span>
+  <span class="absValue">
+    (7/23)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">Indirizzo$HibernateInstantiator$CUfSb39Q</td>
+  </tr>
+<tr>
+  <td class="name"><strong>Total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    50%
+  </span>
+  <span class="absValue">
+    (2/4)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/14)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    30,4%
+  </span>
+  <span class="absValue">
+    (7/23)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package com.project.bridgebackend.Model.Entity;
+&nbsp;
+&nbsp;import jakarta.persistence.Entity;
+&nbsp;import jakarta.persistence.Table;
+&nbsp;import jakarta.persistence.Id;
+&nbsp;import jakarta.persistence.GeneratedValue;
+&nbsp;import jakarta.persistence.GenerationType;
+&nbsp;import jakarta.persistence.Column;
+&nbsp;import jakarta.validation.constraints.Pattern;
+&nbsp;import lombok.Data;
+&nbsp;import jakarta.validation.constraints.NotBlank;
+&nbsp;import jakarta.validation.constraints.NotNull;
+&nbsp;import java.io.Serializable;
+&nbsp;import java.util.Objects;
+&nbsp;
+&nbsp;/**
+&nbsp; *
+&nbsp; * @author Benedetta Colella.
+&nbsp; * Creato il: 03/12/2024
+&nbsp; * Questa Java Persistence Entity rappresenta un indirizzo,
+&nbsp; *
+&nbsp; */
+&nbsp;@Entity
+&nbsp;@Table(name = &quot;Indirizzo&quot;)
+&nbsp;@Data
+&nbsp;public final class Indirizzo implements Serializable {
+&nbsp;
+&nbsp;    /**87
+&nbsp;     * Rappresenta l&#39;id autogenerato.
+&nbsp;     */
+&nbsp;    @Id
+&nbsp;    @GeneratedValue(strategy = GenerationType.IDENTITY)
+&nbsp;    @Column(name = &quot;id&quot;)
+&nbsp;    private Long id;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Stringa che rappresenta la città dell&#39;indirizzo.
+&nbsp;     */
+&nbsp;    @NotNull
+&nbsp;    @NotBlank
+&nbsp;    @Pattern(regexp = &quot;^[A-zÀ-ù ‘]{2,50}$&quot;,
+&nbsp;            message = &quot;La città contiene caratteri non validi&quot;)
+&nbsp;    @Column(name = &quot;citta&quot;)
+&nbsp;    private String citta;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Numero Intero che rappresenta il numero civico dell&#39;indirizzo.
+&nbsp;     */
+&nbsp;    @NotNull
+&nbsp;    @Column(name = &quot;num_civico&quot;)
+&nbsp;    private int numCivico;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Numero Intero che rappresenta il cap dell&#39;indirizzo.
+&nbsp;     * deve essere un numero intero di 5 cifre
+&nbsp;     */
+&nbsp;    @NotNull
+&nbsp;    @Pattern(regexp = &quot;^\\d{5}$&quot;,
+&nbsp;            message = &quot;Il CAP contiene caratteri non validi&quot;)
+&nbsp;    @Column(name = &quot;cap&quot;)
+&nbsp;    private String cap;
+&nbsp;    //todo cambiare il cap in stringa
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Stringa che rappresenta la provincia dell&#39;indirizzo.
+&nbsp;     */
+&nbsp;    @NotNull
+&nbsp;    @Pattern(regexp = &quot;^[A-Z]{2}$&quot;,
+&nbsp;            message = &quot;La provincia contiene caratteri non validi&quot;)
+&nbsp;    @Column(name = &quot;provincia&quot;)
+&nbsp;    private String provincia;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Stringa che rappresenta la via dell&#39;indirizzo.
+&nbsp;     */
+&nbsp;    @NotNull
+&nbsp;    @Pattern(regexp = &quot;^[A-zÀ-ù ‘]{2,50}$&quot;,
+&nbsp;            message = &quot;La via contiene caratteri non validi&quot;)
+&nbsp;    @Column(name = &quot;via&quot;)
+&nbsp;    private String via;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Costruttore vuoto.
+&nbsp;     */
+<b class="fc">&nbsp;    public Indirizzo() {</b>
+&nbsp;    }
+&nbsp;
+&nbsp;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Costruttore con parametri.
+&nbsp;     * @param citta
+&nbsp;     * @param numCivico
+&nbsp;     * @param cap
+&nbsp;     * @param provincia
+&nbsp;     * @param via
+&nbsp;     */
+&nbsp;    public Indirizzo(final String citta,
+&nbsp;                     final int numCivico,
+&nbsp;                     final String cap,
+&nbsp;                     final String provincia,
+<b class="fc">&nbsp;                     final String via) {</b>
+<b class="fc">&nbsp;        this.citta = citta;</b>
+<b class="fc">&nbsp;        this.numCivico = numCivico;</b>
+<b class="fc">&nbsp;        this.cap = cap;</b>
+<b class="fc">&nbsp;        this.provincia = provincia;</b>
+<b class="fc">&nbsp;        this.via = via;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Metodo equals.
+&nbsp;     * @param o oggetto da confermare
+&nbsp;     * @return true se l&#39;oggetto è uguale, false altrimenti
+&nbsp;     */
+&nbsp;    @Override
+&nbsp;    public boolean equals(final Object o) {
+<b class="nc">&nbsp;        if (this == o) {</b>
+<b class="nc">&nbsp;            return true;</b>
+&nbsp;        }
+<b class="nc">&nbsp;        if (!(o instanceof Indirizzo indirizzo)) {</b>
+<b class="nc">&nbsp;            return false;</b>
+&nbsp;        }
+<b class="nc">&nbsp;        return Objects.equals(id, indirizzo.id)</b>
+<b class="nc">&nbsp;                &amp;&amp; Objects.equals(getCitta(), indirizzo.getCitta())</b>
+<b class="nc">&nbsp;                &amp;&amp; Objects.equals(getNumCivico(), indirizzo.getNumCivico())</b>
+<b class="nc">&nbsp;                &amp;&amp; Objects.equals(getCap(), indirizzo.getCap())</b>
+<b class="nc">&nbsp;                &amp;&amp; Objects.equals(getProvincia(), indirizzo.getProvincia())</b>
+<b class="nc">&nbsp;                &amp;&amp; Objects.equals(getVia(), indirizzo.getVia());</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Metodo hashCode.
+&nbsp;     * @return hashcode.
+&nbsp;     */
+&nbsp;    @Override
+&nbsp;    public int hashCode() {
+<b class="nc">&nbsp;        return Objects.hash(id,</b>
+<b class="nc">&nbsp;                getCitta(),</b>
+<b class="nc">&nbsp;                getNumCivico(),</b>
+<b class="nc">&nbsp;                getCap(),</b>
+<b class="nc">&nbsp;                getProvincia(),</b>
+<b class="nc">&nbsp;                getVia());</b>
+&nbsp;    }
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2025-01-05 20:59</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,294 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > Evento</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">com.project.bridgebackend.Model.Entity</a>
+</div>
+
+<h1>Coverage Summary for Class: Evento (com.project.bridgebackend.Model.Entity)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">Evento</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">Evento$HibernateInstantiator$f4qhjsYW</td>
+  </tr>
+  <tr>
+    <td class="name">Evento$HibernateProxy$Cl0rgMsX</td>
+  </tr>
+<tr>
+  <td class="name"><strong>Total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package com.project.bridgebackend.Model.Entity;
+&nbsp;
+&nbsp;import com.fasterxml.jackson.annotation.JsonIgnore;
+&nbsp;import com.project.bridgebackend.Model.Entity.enumeration.Lingua;
+&nbsp;import jakarta.persistence.Entity;
+&nbsp;import jakarta.persistence.Table;
+&nbsp;import jakarta.persistence.Enumerated;
+&nbsp;import jakarta.persistence.EnumType;
+&nbsp;import jakarta.persistence.Column;
+&nbsp;import jakarta.persistence.Id;
+&nbsp;import jakarta.persistence.GeneratedValue;
+&nbsp;import jakarta.persistence.GenerationType;
+&nbsp;import jakarta.persistence.JoinColumn;
+&nbsp;import jakarta.persistence.ManyToOne;
+&nbsp;import jakarta.persistence.ManyToMany;
+&nbsp;import jakarta.persistence.JoinTable;
+&nbsp;import jakarta.persistence.FetchType;
+&nbsp;import jakarta.validation.constraints.Size;
+&nbsp;import jakarta.validation.constraints.NotBlank;
+&nbsp;import jakarta.validation.constraints.Pattern;
+&nbsp;import jakarta.validation.constraints.NotNull;
+&nbsp;import jakarta.validation.constraints.Positive;
+&nbsp;import jakarta.validation.constraints.FutureOrPresent;
+&nbsp;import lombok.EqualsAndHashCode;
+&nbsp;import lombok.Getter;
+&nbsp;import lombok.Setter;
+&nbsp;import lombok.ToString;
+&nbsp;import lombok.experimental.SuperBuilder;
+&nbsp;import org.springframework.format.annotation.DateTimeFormat;
+&nbsp;import java.io.Serializable;
+&nbsp;import java.time.LocalDate;
+&nbsp;import java.time.LocalTime;
+&nbsp;import java.util.List;
+&nbsp;
+&nbsp;/**
+&nbsp; * @author Alessia De Filippo.
+&nbsp; * Creato il: 03/12/2024.
+&nbsp; * È la classe relativa all&#39;entità Evento.
+&nbsp; * I campi sono: id, nome, data, ora,
+&nbsp; * lingueParlate, descrizione, luogo,
+&nbsp; * organizzatore, maxPartecipanti e listaCandidati.
+&nbsp; **/
+&nbsp;
+&nbsp;@Entity
+&nbsp;@ToString
+&nbsp;@SuperBuilder
+&nbsp;@Getter
+&nbsp;@Setter
+&nbsp;@EqualsAndHashCode
+&nbsp;@Table(name = &quot;evento&quot;)
+&nbsp;public class Evento implements Serializable {
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Costante lunghezza minima nome.
+&nbsp;     */
+&nbsp;    private static final int MIN_NAME_LENGTH = 3;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Costante lunghezza massima nome.
+&nbsp;     */
+&nbsp;    private static final int MAX_NAME_LENGTH = 100;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Costante lunghezza minima descrizione.
+&nbsp;     */
+&nbsp;    private static final int MIN_DESCRIPTION_LENGTH = 1;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Costante lunghezza massima descrizione.
+&nbsp;     */
+&nbsp;    private static final int MAX_DESCRIPTION_LENGTH = 1000;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Campo relativo all&#39;id dell&#39;evento.
+&nbsp;     * Generato automaticamente.
+&nbsp;     **/
+&nbsp;    @Id
+&nbsp;    @GeneratedValue(strategy = GenerationType.IDENTITY)
+&nbsp;    @Column(name = &quot;id&quot;, nullable = false)
+&nbsp;    private Long id;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Campo relativo al nome dell&#39;evento.
+&nbsp;     **/
+&nbsp;    @NotBlank(message = &quot;Il nome dell&#39;evento non può essere vuoto&quot;)
+&nbsp;    @Pattern(regexp = &quot;^[A-Za-z0-0-ÿ .,&#39;-]{3,100}$&quot;,
+&nbsp;            message = &quot;Il nome contiene caratteri non validi&quot;)
+&nbsp;    @Size(min = MIN_NAME_LENGTH,
+&nbsp;          max = MAX_NAME_LENGTH,
+&nbsp;          message = &quot;Il nome deve essere tra 3 e 100 caratteri&quot;)
+&nbsp;    @Column(name = &quot;nome&quot;,
+&nbsp;            nullable = false,
+&nbsp;            length = MAX_NAME_LENGTH)
+&nbsp;    private String nome;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Campo relativo alla data dell&#39;evento.
+&nbsp;     **/
+&nbsp;
+&nbsp;    @NotNull(message = &quot;La data dell&#39;evento è obbligatoria&quot;)
+&nbsp;    @FutureOrPresent(message = &quot;La data non può essere nel passato&quot;)
+&nbsp;    @DateTimeFormat(pattern = &quot;yyyy-MM-dd&quot;)
+&nbsp;    @Column(name = &quot;data&quot;, nullable = false)
+&nbsp;    private LocalDate data;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Campo relativo all&#39;ora dell&#39;evento.
+&nbsp;     **/
+&nbsp;    @NotNull(message = &quot;L&#39;ora è obbligatoria&quot;)
+&nbsp;    @DateTimeFormat(pattern = &quot;HH:mm&quot;)
+&nbsp;    @Column(name = &quot;ora&quot;, nullable = false)
+&nbsp;    private LocalTime ora;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Campo relativo alle lingue parlate durante l&#39;evento.
+&nbsp;     **/
+&nbsp;    @NotNull(message = &quot;La lingue sono obbligatorie&quot;)
+&nbsp;    @Enumerated(EnumType.STRING)
+&nbsp;    @Column(name = &quot;linguaParlata&quot;, nullable = false)
+&nbsp;    private Lingua linguaParlata;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Campo relativo alla descrizione dell&#39;evento.
+&nbsp;     **/
+&nbsp;    @NotBlank(message = &quot;La descrizione non può essere vuota&quot;)
+&nbsp;    @Size(min = MIN_DESCRIPTION_LENGTH,
+&nbsp;          max = MAX_DESCRIPTION_LENGTH,
+&nbsp;          message = &quot;La descrizione deve essere tra 1 e 1000 caratteri&quot;)
+&nbsp;    @Column(name = &quot;descrizione&quot;,
+&nbsp;            nullable = false,
+&nbsp;            length = MAX_DESCRIPTION_LENGTH)
+&nbsp;    private String descrizione;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Campo relativo al luogo dell&#39;evento.
+&nbsp;     * È chiave esterna di Indirizzo.
+&nbsp;     **/
+&nbsp;    @NotNull(message = &quot;Il luogo è obbligatorio&quot;)
+&nbsp;    @ManyToOne
+&nbsp;    @JoinColumn(name = &quot;luogo&quot;, referencedColumnName = &quot;id&quot;)
+&nbsp;    private Indirizzo luogo;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Campo relativo all&#39;organizzatore dell&#39;evento.
+&nbsp;     * È chiave esterna di Volontario.
+&nbsp;     **/
+&nbsp;    @NotNull(message = &quot;L&#39;organizzatore è obbligatorio&quot;)
+&nbsp;    @ManyToOne
+&nbsp;    @JoinColumn(name = &quot;organizzatore&quot;, referencedColumnName = &quot;email&quot;)
+&nbsp;    private Volontario organizzatore;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Campo relativo al numero massimo di partecipanti dell&#39;evento.
+&nbsp;     **/
+&nbsp;    @NotNull(message = &quot;Il numero massimo di partecipanti è obbligatorio&quot;)
+&nbsp;    @Positive(message = &quot;Il numero massimo di partecipanti deve essere positivo&quot;)
+&nbsp;    @Column(name = &quot;maxPartecipanti&quot;,
+&nbsp;            nullable = false)
+&nbsp;    private int maxPartecipanti;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Campo relativo alla lista di partecipanti dell&#39;evento.
+&nbsp;     * è chiave esterna di Rifugiato.
+&nbsp;     **/
+&nbsp;    @JsonIgnore
+&nbsp;    @ManyToMany(fetch = FetchType.LAZY)
+&nbsp;    @JoinTable(name = &quot;evento_lista_partecipanti&quot;,
+&nbsp;            joinColumns = @JoinColumn(name = &quot;evento_id&quot;),
+&nbsp;            inverseJoinColumns = @JoinColumn(name = &quot;rifugiato_email&quot;))
+&nbsp;    private List&lt;Rifugiato&gt; listaPartecipanti;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Costruttore vuoto.
+&nbsp;     **/
+<b class="fc">&nbsp;    public Evento() {</b>
+&nbsp;    }
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2025-01-05 20:59</div>
+</div>
+</body>
+</html>

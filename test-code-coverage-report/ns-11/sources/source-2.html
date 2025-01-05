@@ -1,0 +1,129 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > RegistrazioneService</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">com.project.bridgebackend.registrazione.service</a>
+</div>
+
+<h1>Coverage Summary for Class: RegistrazioneService (com.project.bridgebackend.registrazione.service)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+</tr>
+<tr>
+  <td class="name">RegistrazioneService</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package com.project.bridgebackend.registrazione.service;
+&nbsp;
+&nbsp;import com.project.bridgebackend.Model.Entity.Admin;
+&nbsp;import com.project.bridgebackend.Model.Entity.FiguraSpecializzata;
+&nbsp;import com.project.bridgebackend.Model.Entity.Rifugiato;
+&nbsp;import com.project.bridgebackend.Model.Entity.Volontario;
+&nbsp;import com.project.bridgebackend.util.AuthenticationRequest;
+&nbsp;import com.project.bridgebackend.util.AuthenticationResponse;
+&nbsp;
+&nbsp;/**
+&nbsp; *@author: Antonio Ceruso.
+&nbsp; * Creato il: 04/12/2024.
+&nbsp; * Interfaccia per il service di registrazione.
+&nbsp; * */
+&nbsp;public interface RegistrazioneService {
+&nbsp;    /**
+&nbsp;     * Metodo per la registrazione di un Volontario.
+&nbsp;     * @param volontario è il volontario che viene registrato.
+&nbsp;     * @param confermaPW conferma della password utente.
+&nbsp;     * */
+&nbsp;    void registraVolontario(Volontario volontario, String confermaPW)
+&nbsp;            throws Exception;
+&nbsp;    /**
+&nbsp;     * Metodo per la registrazione di un Rifugiato.
+&nbsp;     * @param rifugiato è il rifugiato che viene registrato.
+&nbsp;     * @param confermaPW conferma della password utente.
+&nbsp;     * */
+&nbsp;    void registraRifugiato(Rifugiato rifugiato, String confermaPW)
+&nbsp;            throws Exception;
+&nbsp;    /**
+&nbsp;     * Metodo per la registrazione di un admin.
+&nbsp;     * @param admin è l&#39;admin che viene registrato.
+&nbsp;     * @param confermaPW conferma della password utente
+&nbsp;     * */
+&nbsp;    void registraAdmin(Admin admin, String confermaPW) throws Exception;
+&nbsp;    /**
+&nbsp;     * Metodo per la registrazione di una Figura Specializzata.
+&nbsp;     * @param figspec è la figura specializzata che viene registrata.
+&nbsp;     * @param confermaPW conferma della password utente
+&nbsp;     * */
+&nbsp;    void registraFiguraSpecializzata(FiguraSpecializzata figspec,
+&nbsp;                                     String confermaPW)
+&nbsp;            throws Exception;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Metodo per effettuare il login di un utente.
+&nbsp;     * Riceve una richiesta contenente le credenziali,
+&nbsp;     * dell&#39;utente (email e password),
+&nbsp;     * verifica l&#39;autenticità delle credenziali,
+&nbsp;     * e restituisce una risposta con le informazioni
+&nbsp;     * di autenticazione, come un token JWT.
+&nbsp;     *
+&nbsp;     * @param request l&#39;oggetto contenente le credenziali
+&nbsp;     *                dell&#39;utente (email e password).
+&nbsp;     * @return un oggetto contenente il token JWT,
+&nbsp;     *         o altre informazioni necessarie per l&#39;autenticazione.
+&nbsp;     * @throws Exception se le credenziali sono errate o si verifica un errore
+&nbsp;     *                   durante il processo di autenticazione.
+&nbsp;     */
+&nbsp;    AuthenticationResponse login(AuthenticationRequest request) throws Exception;
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2025-01-05 20:59</div>
+</div>
+</body>
+</html>

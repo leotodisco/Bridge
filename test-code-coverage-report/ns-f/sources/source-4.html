@@ -1,0 +1,220 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > LavoroDTO</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">com.project.bridgebackend.Model.dto</a>
+</div>
+
+<h1>Coverage Summary for Class: LavoroDTO (com.project.bridgebackend.Model.dto)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+</tr>
+<tr>
+  <td class="name">LavoroDTO</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package com.project.bridgebackend.Model.dto;
+&nbsp;
+&nbsp;import com.project.bridgebackend.Model.Entity.Indirizzo;
+&nbsp;import com.project.bridgebackend.Model.Entity.enumeration.TipoContratto;
+&nbsp;
+&nbsp;import lombok.Data;
+&nbsp;import lombok.Getter;
+&nbsp;import lombok.Setter;
+&nbsp;import lombok.ToString;
+&nbsp;import lombok.EqualsAndHashCode;
+&nbsp;import jakarta.validation.Valid;
+&nbsp;import jakarta.validation.constraints.DecimalMin;
+&nbsp;import jakarta.validation.constraints.NotBlank;
+&nbsp;import jakarta.validation.constraints.NotNull;
+&nbsp;import jakarta.validation.constraints.Pattern;
+&nbsp;import jakarta.validation.constraints.Size;
+&nbsp;import jakarta.validation.constraints.Min;
+&nbsp;import jakarta.validation.constraints.Max;
+&nbsp;
+&nbsp;import java.util.List;
+&nbsp;
+&nbsp;/**
+&nbsp; * DTO (Data Transfer Object) per la gestione dei dati di un annuncio di lavoro.
+&nbsp; * Questo oggetto serve a trasferire i dati tra i livelli del sistema, mantenendo
+&nbsp; * una separazione chiara tra le entità del database e i dati ricevuti/inviati tramite API.
+&nbsp; *
+&nbsp; * In questo DTO vengono applicate regole di validazione per garantire la consistenza
+&nbsp; * dei dati forniti.
+&nbsp; *
+&nbsp; * @author Vito Vernellati
+&nbsp; * @since  08/12/2024
+&nbsp; */
+&nbsp;
+&nbsp;@Data
+&nbsp;@Getter
+&nbsp;@Setter
+&nbsp;@ToString
+&nbsp;@EqualsAndHashCode
+&nbsp;public class LavoroDTO {
+&nbsp;
+&nbsp;    //campi specifici di annuncio
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Titolo dell&#39;annuncio.
+&nbsp;     * Deve essere una stringa non vuota, di lunghezza compresa tra 5 e 100 caratteri.
+&nbsp;     */
+&nbsp;    @NotBlank(message = &quot;Il titolo non può essere vuoto&quot;)
+&nbsp;    @Size(min = 5, max = 100, message = &quot;Il titolo deve essere tra 5 e 100 caratteri&quot;)
+&nbsp;    private String titolo;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Disponibilità del servizio.
+&nbsp;     * Indica se il servizio è attualmente disponibile (true) o meno (false).
+&nbsp;     * Obbligatorio.
+&nbsp;     */
+&nbsp;    @NotNull(message = &quot;La disponibilità è obbligatoria&quot;)
+&nbsp;    private Boolean disponibilita;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Indirizzo di riferimento per l&#39;annuncio.
+&nbsp;     * Campo obbligatorio e validato.
+&nbsp;     */
+&nbsp;    @Valid
+&nbsp;    @NotNull(message = &quot;Avere un indirizzo di riferimento è obbligatorio&quot;)
+&nbsp;    private Indirizzo indirizzo;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Proprietario dell&#39;annuncio.
+&nbsp;     * Campo obbligatorio e validato.
+&nbsp;     */
+&nbsp;    @NotBlank(message = &quot;Il proprietario è obbligatorio&quot;)
+&nbsp;    private String proprietario;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Numero massimo di candidature accettate per l&#39;annuncio.
+&nbsp;     * Campo obbligatorio.
+&nbsp;     */
+&nbsp;    @NotNull(message = &quot;Il numero massimo di candidature è obbligatorio&quot;)
+&nbsp;    @Min(value = 1, message = &quot;Il numero massimo di candidature deve essere almeno 1&quot;)
+&nbsp;    @Max(value = 1000, message = &quot;Il numero massimo di candidature non può superare 100&quot;)
+&nbsp;    private Integer maxCandidature;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Lista dei candidati che hanno applicato all&#39;annuncio.
+&nbsp;     * Ogni email nella lista deve essere non vuota e avere un formato valido.
+&nbsp;     */
+&nbsp;    private List&lt;@NotBlank(message = &quot;L&#39;email del candidato non può essere vuota&quot;)
+&nbsp;    @Pattern(regexp = &quot;^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$&quot;, message = &quot;Email del candidato non valida&quot;)
+&nbsp;            String&gt; candidati;
+&nbsp;
+&nbsp;    //Campi specifici di Lavoro
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Posizione lavorativa richiesta nell&#39;annuncio.
+&nbsp;     * Deve essere una stringa non vuota, di lunghezza compresa tra 2 e 100 caratteri.
+&nbsp;     */
+&nbsp;    @NotBlank(message = &quot;La posizione lavorativa è obbligatoria&quot;)
+&nbsp;    @Pattern(regexp = &quot;^[A-zÀ-ù ‘]{2,100}$&quot;, message = &quot;Formato posizione lavorativa non valido&quot;)
+&nbsp;    @Size(max = 100, message = &quot;La posizione lavorativa non può superare i 100 caratteri&quot;)
+&nbsp;    private String posizioneLavorativa;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Il nome dell&#39;azienda che offre il lavoro.
+&nbsp;     * Deve essere una stringa non vuota, di lunghezza compresa tra 2 e 100 caratteri.
+&nbsp;     */
+&nbsp;    @NotBlank(message = &quot;Il nome dell&#39;azienda è obbligatorio&quot;)
+&nbsp;    @Pattern(regexp = &quot;^[A-zÀ-ù0-9 ‘]{2,100}$&quot;, message = &quot;Formato nome azienda non valido&quot;)
+&nbsp;    @Size(max = 100, message = &quot;Il nome dell&#39;azienda non può superare i 100 caratteri&quot;)
+&nbsp;    private String nomeAzienda;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * L&#39;orario di lavoro specificato nell&#39;annuncio (ad esempio, 09:00-17:00).
+&nbsp;     * Deve seguire il formato &#39;HH:mm-HH:mm&#39;.
+&nbsp;     */
+&nbsp;    @NotBlank(message = &quot;L&#39;orario di lavoro è obbligatorio&quot;)
+&nbsp;    @Pattern(regexp = &quot;^\\d{2}:\\d{2}-\\d{2}:\\d{2}$&quot;, message = &quot;Formato orario di lavoro non valido&quot;)
+&nbsp;    private String orarioLavoro;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Il tipo di contratto offerto.
+&nbsp;     * Deve essere un valore valido della enumerazione {@link TipoContratto}.
+&nbsp;     * Obbligatorio.
+&nbsp;     */
+&nbsp;    @NotNull(message = &quot;Il tipo di contratto è obbligatorio&quot;)
+&nbsp;    private TipoContratto tipoContratto;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * La retribuzione offerta per la posizione.
+&nbsp;     * Deve essere un valore positivo.
+&nbsp;     */
+&nbsp;    @NotNull(message = &quot;La retribuzione è obbligatoria&quot;)
+&nbsp;    @DecimalMin(value = &quot;0.01&quot;, inclusive = true, message = &quot;La retribuzione deve essere positiva e maggiore di 0&quot;)
+&nbsp;    private Double retribuzione;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Il nome della sede di lavoro.
+&nbsp;     * Deve essere una stringa non vuota, di lunghezza compresa tra 2 e 100 caratteri.
+&nbsp;     */
+&nbsp;    @NotBlank(message = &quot;Il nome della sede è obbligatorio&quot;)
+&nbsp;    @Pattern(regexp = &quot;^[A-zÀ-ù ‘]{2,100}$&quot;, message = &quot;Formato nome sede non valido&quot;)
+&nbsp;    @Size(max = 100, message = &quot;Il nome della sede non può superare i 100 caratteri&quot;)
+&nbsp;    private String nomeSede;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Informazioni aggiuntive utili per il lavoro.
+&nbsp;     * Deve essere una stringa non vuota con lunghezza massima di 500 caratteri.
+&nbsp;     */
+&nbsp;    @NotBlank(message = &quot;Le info utili sono obbligatorie&quot;)
+&nbsp;    @Pattern(regexp = &quot;^[\\wÀ-ÿ\\s,.!?\\&#39;\\-]{1,500}$&quot;, message = &quot;Formato info utili non valido&quot;)
+&nbsp;    @Size(max = 500, message = &quot;Le info utili non possono superare i 500 caratteri&quot;)
+&nbsp;    private String infoUtili;
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2025-01-05 20:59</div>
+</div>
+</body>
+</html>

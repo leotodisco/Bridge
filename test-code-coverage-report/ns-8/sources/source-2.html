@@ -1,0 +1,108 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > GestioneCorsoService</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">com.project.bridgebackend.GestioneCorso.Service</a>
+</div>
+
+<h1>Coverage Summary for Class: GestioneCorsoService (com.project.bridgebackend.GestioneCorso.Service)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+</tr>
+<tr>
+  <td class="name">GestioneCorsoService</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package com.project.bridgebackend.GestioneCorso.Service;
+&nbsp;
+&nbsp;
+&nbsp;import com.project.bridgebackend.Model.Entity.Corso;
+&nbsp;
+&nbsp;import java.util.List;
+&nbsp;
+&nbsp;/**
+&nbsp; * @author Biagio Gallo.
+&nbsp; * Creato il: 06/12/2024.
+&nbsp; * Questa interfaccia fornisce metodi per la gestione dei corsi.
+&nbsp; */
+&nbsp;public interface GestioneCorsoService {
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Crea un nuovo corso.
+&nbsp;     * @param corso il DTO del corso contenente i dettagli del corso.
+&nbsp;     * @return il corso creato come CorsoDTO.
+&nbsp;     */
+&nbsp;    Corso creaCorso(Corso corso) throws Exception;
+&nbsp;    /**
+&nbsp;     * Modifica un corso esistente.
+&nbsp;     * @param corso il DTO del corso contenente
+&nbsp;     * i dettagli aggiornati del corso.
+&nbsp;     * @return il corso modificato come CorsoDTO.
+&nbsp;     */
+&nbsp;    Corso modificaCorso(Corso corso);
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Elimina un corso esistente.
+&nbsp;     * @param corso il DTO del corso da eliminare
+&nbsp;     */
+&nbsp;    void eliminaCorso(Corso corso);
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Trova tutti i corsi.
+&nbsp;     * @return una lista di tutti i corsi come CorsoDTO.
+&nbsp;     */
+&nbsp;    List&lt;Corso&gt; findAll();
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2025-01-05 20:59</div>
+</div>
+</body>
+</html>

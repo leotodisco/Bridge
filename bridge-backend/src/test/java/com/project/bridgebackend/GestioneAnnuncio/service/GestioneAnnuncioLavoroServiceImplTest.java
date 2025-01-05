@@ -9,7 +9,7 @@ import com.project.bridgebackend.Model.Entity.enumeration.TipoContratto;
 import com.project.bridgebackend.Model.Entity.enumeration.TitoloDiStudio;
 import com.project.bridgebackend.Model.dao.LavoroDAO;
 import com.project.bridgebackend.Model.dao.VolontarioDAO;
-import com.project.bridgebackend.Service.BridgeBackendApplicationTests;
+import com.project.bridgebackend.BridgeBackendApplicationTests;
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;

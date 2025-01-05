@@ -1,0 +1,478 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > GestioneEventoController</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">com.project.bridgebackend.GestioneEvento.controller</a>
+</div>
+
+<h1>Coverage Summary for Class: GestioneEventoController (com.project.bridgebackend.GestioneEvento.controller)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Branch, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">GestioneEventoController</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    9,1%
+  </span>
+  <span class="absValue">
+    (1/11)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/16)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0,9%
+  </span>
+  <span class="absValue">
+    (1/109)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package com.project.bridgebackend.GestioneEvento.controller;
+&nbsp;
+&nbsp;import com.project.bridgebackend.GestioneEvento.service.GestioneEventoService;
+&nbsp;import com.project.bridgebackend.Model.Entity.Evento;
+&nbsp;import com.project.bridgebackend.Model.Entity.Rifugiato;
+&nbsp;import com.project.bridgebackend.Model.Entity.Volontario;
+&nbsp;import com.project.bridgebackend.Model.dao.RifugiatoDAO;
+&nbsp;import com.project.bridgebackend.Model.dao.VolontarioDAO;
+&nbsp;import com.project.bridgebackend.Model.dto.EventoDTO;
+&nbsp;import com.project.bridgebackend.Model.Entity.Indirizzo;
+&nbsp;import com.project.bridgebackend.Model.dao.IndirizzoDAO;
+&nbsp;import com.project.bridgebackend.util.JwtService;
+&nbsp;import org.springframework.beans.factory.annotation.Autowired;
+&nbsp;import org.springframework.http.HttpStatus;
+&nbsp;import org.springframework.http.ResponseEntity;
+&nbsp;import org.springframework.web.bind.annotation.*;
+&nbsp;
+&nbsp;import java.sql.SQLOutput;
+&nbsp;import java.time.LocalDate;
+&nbsp;import java.util.Collections;
+&nbsp;import java.util.List;
+&nbsp;import java.util.Optional;
+&nbsp;
+&nbsp;import jakarta.validation.Valid;
+&nbsp;import org.springframework.web.server.ResponseStatusException;
+&nbsp;
+&nbsp;
+&nbsp;/**
+&nbsp; * @author Alessia De Filippo.
+&nbsp; * Creato il: 06/12/2024.
+&nbsp; *
+&nbsp; * Controller per la gestione degli eventi.
+&nbsp; * Fornisce API REST per la creazione, il recupero,
+&nbsp; * la modifica e la cancellazione degli eventi.
+&nbsp; */
+&nbsp;@RestController
+&nbsp;@CrossOrigin(origins = &quot;http://localhost:5174&quot;, allowedHeaders = &quot;*&quot;)
+&nbsp;@RequestMapping(&quot;api/eventi&quot;)
+<b class="fc">&nbsp;public class GestioneEventoController {</b>
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Service per la gestione degli eventi.
+&nbsp;     */
+&nbsp;    @Autowired
+&nbsp;    private GestioneEventoService gestioneEventoService;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * DAO per la gestione degli indirizzi.
+&nbsp;     */
+&nbsp;    @Autowired
+&nbsp;    private IndirizzoDAO indirizzoDAO;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * DAO per la gestione dei volontari.
+&nbsp;     */
+&nbsp;    @Autowired
+&nbsp;    private VolontarioDAO volontarioDAO;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * DAO per la gestione delle operazioni sui rifugiati.
+&nbsp;     */
+&nbsp;    @Autowired
+&nbsp;    private RifugiatoDAO rifugiatoDAO;
+&nbsp;    @Autowired
+&nbsp;    private JwtService jwtService;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Crea un nuovo evento.
+&nbsp;     *
+&nbsp;     * @param eventoDTO DTO che contiene i dati dell&#39;evento da creare.
+&nbsp;     * @return L&#39;evento creato, incapsulato in una risposta HTTP con codice 201 (CREATED).
+&nbsp;     */
+&nbsp;    @PostMapping(&quot;/crea&quot;)
+&nbsp;    public ResponseEntity&lt;?&gt; creaEvento(
+&nbsp;            @Valid @RequestBody final EventoDTO eventoDTO,
+&nbsp;            @RequestHeader(&quot;Authorization&quot;) final String autorizationHeader) {
+&nbsp;
+&nbsp;        // Estrae il token JWT dall&#39;header Authorization
+<b class="nc">&nbsp;        String token = autorizationHeader.replace(&quot;Bearer &quot;, &quot;&quot;);</b>
+&nbsp;
+&nbsp;        // Estrae l&#39;email dal token
+<b class="nc">&nbsp;        String emailUtenteLoggato = jwtService.extractUsername(token);</b>
+&nbsp;
+&nbsp;        // Verifica se l&#39;utente loggato è un volontario
+<b class="nc">&nbsp;        Volontario volontarioLoggato = volontarioDAO.findByEmail(emailUtenteLoggato);</b>
+<b class="nc">&nbsp;        if(volontarioLoggato == null) {</b>
+<b class="nc">&nbsp;            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)</b>
+<b class="nc">&nbsp;                    .body(&quot;Non sei autorizzato a creare un evento&quot;);</b>
+&nbsp;        }
+&nbsp;
+&nbsp;         // Recupero dati dell&#39;indirizzo dell&#39;evento.
+&nbsp;         // Salvataggio in Indirizzo
+&nbsp;
+<b class="nc">&nbsp;        Indirizzo indirizzo = new Indirizzo();</b>
+<b class="nc">&nbsp;        indirizzo.setVia(</b>
+<b class="nc">&nbsp;                eventoDTO.getLuogo().getVia());</b>
+<b class="nc">&nbsp;        indirizzo.setNumCivico(</b>
+<b class="nc">&nbsp;                eventoDTO.getLuogo().getNumCivico());</b>
+<b class="nc">&nbsp;        indirizzo.setCap(</b>
+<b class="nc">&nbsp;                eventoDTO.getLuogo().getCap());</b>
+<b class="nc">&nbsp;        indirizzo.setCitta(</b>
+<b class="nc">&nbsp;                eventoDTO.getLuogo().getCitta());</b>
+<b class="nc">&nbsp;        indirizzo.setProvincia(</b>
+<b class="nc">&nbsp;                eventoDTO.getLuogo().getProvincia());</b>
+&nbsp;
+&nbsp;        //Salvataggio indirizzo in DB
+<b class="nc">&nbsp;        long idIndirizzo = gestioneEventoService</b>
+<b class="nc">&nbsp;                .salvaIndirizzoEvento(indirizzo);</b>
+&nbsp;
+&nbsp;
+&nbsp;        //Creazione entity Evento da DTO
+<b class="nc">&nbsp;        Evento evento = new Evento();</b>
+<b class="nc">&nbsp;        evento.setNome(eventoDTO.getNome());</b>
+<b class="nc">&nbsp;        evento.setData(LocalDate.parse(eventoDTO.getData()));</b>
+<b class="nc">&nbsp;        evento.setOra(eventoDTO.getOra());</b>
+<b class="nc">&nbsp;        evento.setLinguaParlata(eventoDTO.getLinguaParlata());</b>
+<b class="nc">&nbsp;        evento.setDescrizione(eventoDTO.getDescrizione());</b>
+<b class="nc">&nbsp;        evento.setLuogo(indirizzoDAO.getReferenceById(idIndirizzo));</b>
+<b class="nc">&nbsp;        evento.setOrganizzatore(volontarioLoggato);</b>
+<b class="nc">&nbsp;        evento.setMaxPartecipanti(eventoDTO.getMaxPartecipanti());</b>
+&nbsp;
+&nbsp;        //Salvataggio evento in DB
+<b class="nc">&nbsp;        Evento createdEvent = gestioneEventoService.insertEvento(evento);</b>
+&nbsp;
+&nbsp;        //Risposta con evento creato
+<b class="nc">&nbsp;        return new ResponseEntity&lt;&gt;(createdEvent, HttpStatus.CREATED);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Endpoint per ottenere la lista dei partecipanti di un evento.
+&nbsp;     * @param id identificativo dell&#39;evento.
+&nbsp;     * @return lista dei partecipanti dell&#39;evento.
+&nbsp;     */
+&nbsp;    @GetMapping(&quot;/partecipanti/{id}&quot;)
+&nbsp;    public ResponseEntity&lt;List&lt;Rifugiato&gt;&gt; getPartecipanti(@PathVariable final long id) {
+&nbsp;        try {
+<b class="nc">&nbsp;            List&lt;Rifugiato&gt; partecipanti = gestioneEventoService.getPartecipantiPerEvento(id);</b>
+<b class="nc">&nbsp;            return ResponseEntity.ok(partecipanti);</b>
+&nbsp;        } catch (IllegalArgumentException e) {
+<b class="nc">&nbsp;            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Recupera un evento dato il suo ID.
+&nbsp;     *
+&nbsp;     * @param id Identificativo dell&#39;evento da recuperare.
+&nbsp;     * @return DTO dell&#39;evento recuperato, o codice 404 (NOT FOUND) se non trovato.
+&nbsp;     */
+&nbsp;
+&nbsp;    @GetMapping(&quot;/retrieve/{id}&quot;)
+&nbsp;    public ResponseEntity&lt;EventoDTO&gt; getEventoById(
+&nbsp;            @PathVariable final long id) {
+<b class="nc">&nbsp;        Optional&lt;Evento&gt; evento = gestioneEventoService.getEventoById(id);</b>
+<b class="nc">&nbsp;        if (evento.isPresent()) {</b>
+&nbsp;            //Converto l&#39;entity Evento in DTO
+<b class="nc">&nbsp;            EventoDTO eventoDTO = new EventoDTO();</b>
+<b class="nc">&nbsp;            eventoDTO.setId(</b>
+<b class="nc">&nbsp;                    evento.get().getId());</b>
+<b class="nc">&nbsp;            eventoDTO.setNome(</b>
+<b class="nc">&nbsp;                    evento.get().getNome());</b>
+<b class="nc">&nbsp;            eventoDTO.setData(</b>
+<b class="nc">&nbsp;                    evento.get().getData().toString());</b>
+<b class="nc">&nbsp;            eventoDTO.setOra(</b>
+<b class="nc">&nbsp;                    evento.get().getOra());</b>
+<b class="nc">&nbsp;            eventoDTO.setLinguaParlata(</b>
+<b class="nc">&nbsp;                    evento.get().getLinguaParlata());</b>
+<b class="nc">&nbsp;            eventoDTO.setDescrizione(</b>
+<b class="nc">&nbsp;                    evento.get().getDescrizione());</b>
+<b class="nc">&nbsp;            eventoDTO.setLuogo(</b>
+<b class="nc">&nbsp;                    evento.get().getLuogo());</b>
+<b class="nc">&nbsp;            eventoDTO.setOrganizzatore(</b>
+<b class="nc">&nbsp;                    evento.get().getOrganizzatore());</b>
+<b class="nc">&nbsp;            eventoDTO.setMaxPartecipanti(</b>
+<b class="nc">&nbsp;                    evento.get().getMaxPartecipanti());</b>
+<b class="nc">&nbsp;            return new ResponseEntity&lt;&gt;(</b>
+&nbsp;                    eventoDTO, HttpStatus.OK);
+&nbsp;        } else {
+<b class="nc">&nbsp;            return new ResponseEntity&lt;&gt;(null, HttpStatus.NOT_FOUND);</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Iscrive un partecipante a un evento.
+&nbsp;     *
+&nbsp;     * @param id Identificativo dell&#39;evento.
+&nbsp;     * @param emailPartecipante Email del partecipante da iscrivere.
+&nbsp;     * @return Evento aggiornato con il partecipante aggiunto, o un errore se il partecipante o l&#39;evento non esiste.
+&nbsp;     */
+&nbsp;    @PostMapping(&quot;/{id}/iscrivi&quot;)
+&nbsp;    public ResponseEntity&lt;?&gt; iscriviPartecipante(
+&nbsp;            @PathVariable final long id,
+&nbsp;            @RequestParam final String emailPartecipante,
+&nbsp;            @RequestHeader(&quot;Authorization&quot;) final String autorizationHeader) {
+&nbsp;
+&nbsp;        // Estrae il token JWT dall&#39;header Authorization
+<b class="nc">&nbsp;        String token = autorizationHeader.replace(&quot;Bearer &quot;, &quot;&quot;);</b>
+&nbsp;
+&nbsp;        // Estrae l&#39;email dal token
+<b class="nc">&nbsp;        String emailUtenteLoggato = jwtService.extractUsername(token);</b>
+&nbsp;
+&nbsp;        // Verifica se l&#39;utente loggato è un rifugiato
+<b class="nc">&nbsp;        Rifugiato rifugiatoLoggato = rifugiatoDAO.findByEmail(emailUtenteLoggato);</b>
+<b class="nc">&nbsp;        if(rifugiatoLoggato == null) {</b>
+<b class="nc">&nbsp;            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)</b>
+<b class="nc">&nbsp;                    .body(&quot;Non sei autorizzato a iscriverti ad un evento&quot;);</b>
+&nbsp;        }
+&nbsp;
+&nbsp;        // Verifica che l&#39;evento esista
+<b class="nc">&nbsp;        Evento evento = gestioneEventoService.getEventoById(id)</b>
+<b class="nc">&nbsp;                .orElseThrow(() -&gt; new ResponseStatusException(HttpStatus.NOT_FOUND, &quot;Evento non trovato&quot;));</b>
+&nbsp;
+&nbsp;        // Iscrivi il partecipante
+<b class="nc">&nbsp;        gestioneEventoService.iscrizioneEvento(id, emailUtenteLoggato);</b>
+&nbsp;
+<b class="nc">&nbsp;        return new ResponseEntity&lt;&gt;(evento, HttpStatus.OK);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Rimuove l&#39;iscrizione di un partecipante da un evento.
+&nbsp;     *
+&nbsp;     * @param id Identificativo dell&#39;evento.
+&nbsp;     * @param emailPartecipante Email del partecipante da disiscrivere.
+&nbsp;     * @return L&#39;evento aggiornato senza il partecipante, o un errore se i dati non sono validi.
+&nbsp;     */
+&nbsp;    @DeleteMapping(&quot;/{id}/disiscrivi&quot;)
+&nbsp;    public ResponseEntity&lt;Evento&gt; disiscriviPartecipante(
+&nbsp;            @PathVariable final long id,
+&nbsp;            @RequestParam final String emailPartecipante,
+&nbsp;            @RequestHeader(&quot;Authorization&quot;) final String autorizationHeader) {
+&nbsp;        try {
+&nbsp;
+&nbsp;            // Estrae il token JWT dall&#39;header Authorization
+<b class="nc">&nbsp;            String token = autorizationHeader.replace(&quot;Bearer &quot;, &quot;&quot;);</b>
+&nbsp;
+&nbsp;            // Estrae l&#39;email dal token
+<b class="nc">&nbsp;            String emailUtenteLoggato = jwtService.extractUsername(token);</b>
+&nbsp;
+&nbsp;            // Verifica se l&#39;utente loggato è un rifugiato
+<b class="nc">&nbsp;            Rifugiato rifugiatoLoggato = rifugiatoDAO.findByEmail(emailUtenteLoggato);</b>
+<b class="nc">&nbsp;            if(rifugiatoLoggato == null) {</b>
+<b class="nc">&nbsp;                return ResponseEntity.status(HttpStatus.UNAUTHORIZED)</b>
+<b class="nc">&nbsp;                        .body(null);</b>
+&nbsp;            }
+&nbsp;
+<b class="nc">&nbsp;            System.out.println(&quot;Disiscrivi partecipante: &quot;</b>
+&nbsp;                    + id + &quot; &quot; + emailPartecipante);
+<b class="nc">&nbsp;            Evento eventoAggiornato = gestioneEventoService.disiscrizioneEvento(id, emailPartecipante);</b>
+<b class="nc">&nbsp;            System.out.println(&quot;Evento aggiornato: &quot; + eventoAggiornato);</b>
+<b class="nc">&nbsp;            return new ResponseEntity&lt;&gt;(eventoAggiornato, HttpStatus.OK);</b>
+&nbsp;        } catch (IllegalArgumentException e) {
+<b class="nc">&nbsp;            System.err.println(&quot;Errore: &quot; + e.getMessage());</b>
+<b class="nc">&nbsp;            return new ResponseEntity&lt;&gt;(null, HttpStatus.BAD_REQUEST); // 400 se dati non validi</b>
+&nbsp;        } catch (Exception e) {
+<b class="nc">&nbsp;            System.err.println(&quot;Errore generico: &quot; + e.getMessage());</b>
+<b class="nc">&nbsp;            e.printStackTrace();</b>
+<b class="nc">&nbsp;            return new ResponseEntity&lt;&gt;(null, HttpStatus.INTERNAL_SERVER_ERROR); // 500 se errore interno</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Recupera tutti gli eventi disponibili.
+&nbsp;     *
+&nbsp;     * @return Lista di tutti gli eventi presenti nel database.
+&nbsp;     */
+&nbsp;    @GetMapping(&quot;/all&quot;)
+&nbsp;    public ResponseEntity&lt;List&lt;Evento&gt;&gt; getAllEventi() {
+<b class="nc">&nbsp;        List&lt;Evento&gt; eventi = gestioneEventoService.getAllEventi();</b>
+<b class="nc">&nbsp;        return new ResponseEntity&lt;&gt;(eventi, HttpStatus.OK);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Recupera tutti gli eventi pubblicati da un volontario.
+&nbsp;     *
+&nbsp;     * @param email Email del volontario.
+&nbsp;     * @return Lista degli eventi pubblicati dal volontario, o codice 404 (NOT FOUND) se non trovati.
+&nbsp;     */
+&nbsp;    @GetMapping(&quot;/pubblicati&quot;)
+&nbsp;    public ResponseEntity&lt;List&lt;Evento&gt;&gt; getCorsiPubblicatiByVolontario(
+&nbsp;            @RequestParam(&quot;email&quot;) final String email) {
+<b class="nc">&nbsp;        System.out.println(&quot;Email ricevuta: &quot; + email);</b>
+&nbsp;
+&nbsp;        // Recupera il volontario tramite email
+<b class="nc">&nbsp;        Volontario volontario = volontarioDAO.findByEmail(email);</b>
+<b class="nc">&nbsp;        System.out.println(&quot;Volontario trovato: &quot; + volontario);</b>
+<b class="nc">&nbsp;        if (volontario == null) {</b>
+<b class="nc">&nbsp;            System.out.println(&quot;Volontario non trovato&quot;);</b>
+<b class="nc">&nbsp;            return new ResponseEntity&lt;&gt;(null, HttpStatus.NOT_FOUND);</b>
+&nbsp;        }
+&nbsp;
+&nbsp;        //Recupera i corsi pubblicati
+<b class="nc">&nbsp;        List&lt;Evento&gt; eventi = gestioneEventoService.getEventiByVolontario(email);</b>
+<b class="nc">&nbsp;        eventi.forEach(System.out::println);</b>
+<b class="nc">&nbsp;        if (eventi.isEmpty()) {</b>
+<b class="nc">&nbsp;            System.out.println(&quot;Nessun evento trovato per questo volontario&quot;);</b>
+<b class="nc">&nbsp;            return new ResponseEntity&lt;&gt;(null, HttpStatus.NOT_FOUND);</b>
+&nbsp;        }
+<b class="nc">&nbsp;        return new ResponseEntity&lt;&gt;(eventi, HttpStatus.OK);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Verifica se un partecipante è iscritto a un evento.
+&nbsp;     *
+&nbsp;     * @param id Identificativo dell&#39;evento.
+&nbsp;     * @param emailPartecipante Email del partecipante.
+&nbsp;     * @return `true` se il partecipante è iscritto, `false` altrimenti.
+&nbsp;     */
+&nbsp;    @GetMapping(&quot;/{id}/iscrizione&quot;)
+&nbsp;    public ResponseEntity&lt;Boolean&gt; verificaIscrizione(
+&nbsp;            @PathVariable final long id,
+&nbsp;            @RequestParam final String emailPartecipante) {
+&nbsp;
+&nbsp;        try {
+&nbsp;            // Trova l&#39;evento con i partecipanti
+<b class="nc">&nbsp;            Evento evento = gestioneEventoService.trovaEventoConPartecipanti(id);</b>
+<b class="nc">&nbsp;            if (evento == null) {</b>
+<b class="nc">&nbsp;                return new ResponseEntity&lt;&gt;(false, HttpStatus.NOT_FOUND);</b>
+&nbsp;            }
+&nbsp;
+&nbsp;            // Trova il partecipante tramite email
+<b class="nc">&nbsp;            Rifugiato partecipante = rifugiatoDAO.findByEmail(emailPartecipante);</b>
+<b class="nc">&nbsp;            if (partecipante == null) {</b>
+<b class="nc">&nbsp;                return new ResponseEntity&lt;&gt;(false, HttpStatus.NOT_FOUND);</b>
+&nbsp;            }
+&nbsp;
+&nbsp;            // Verifica se il partecipante è iscritto all&#39;evento
+<b class="nc">&nbsp;            boolean isIscritto = evento.getListaPartecipanti().contains(partecipante);</b>
+<b class="nc">&nbsp;            return new ResponseEntity&lt;&gt;(isIscritto, HttpStatus.OK);</b>
+&nbsp;        } catch (Exception e) {
+<b class="nc">&nbsp;            return new ResponseEntity&lt;&gt;(false, HttpStatus.INTERNAL_SERVER_ERROR);</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Recupera eventi casuali per la home page.
+&nbsp;     *
+&nbsp;     * @return Lista di eventi casuali.
+&nbsp;     */
+&nbsp;    @GetMapping(&quot;/random&quot;)
+&nbsp;    public ResponseEntity&lt;List&lt;Evento&gt;&gt; getRandomEvents() {
+<b class="nc">&nbsp;        List&lt;Evento&gt; eventi = gestioneEventoService.getRandomEvents();</b>
+<b class="nc">&nbsp;        return new ResponseEntity&lt;&gt;(eventi, HttpStatus.OK);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Restituisce la lista di eventi a cui il rifugiato è iscritto.
+&nbsp;     *
+&nbsp;     * @param email L&#39;email del rifugiato
+&nbsp;     * @return Lista di eventi a cui il rifugiato è iscritto
+&nbsp;     */
+&nbsp;    @GetMapping(&quot;/eventiIscritti&quot;)
+&nbsp;    public ResponseEntity&lt;List&lt;Evento&gt;&gt; getEventiIscritti(@RequestParam String email) {
+<b class="nc">&nbsp;        List&lt;Evento&gt; eventiIscritti = gestioneEventoService.getEventiIscritti(email);</b>
+<b class="nc">&nbsp;        return ResponseEntity.ok(eventiIscritti);</b>
+&nbsp;    }
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2025-01-05 20:59</div>
+</div>
+</body>
+</html>

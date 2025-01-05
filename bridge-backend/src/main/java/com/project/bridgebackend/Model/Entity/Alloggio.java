@@ -7,7 +7,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 /**
- * @author: Mario Zurolo.
+ * @author : Mario Zurolo.
  * Creato in data 3/12/24.
  * Entity per la gestione degli alloggi.
  * Contiene tutte le informazioni relative agli alloggi gestiti.

@@ -1,0 +1,179 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > TipoContratto</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">com.project.bridgebackend.Model.Entity.enumeration</a>
+</div>
+
+<h1>Coverage Summary for Class: TipoContratto (com.project.bridgebackend.Model.Entity.enumeration)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">TipoContratto</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    75%
+  </span>
+  <span class="absValue">
+    (3/4)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    91,7%
+  </span>
+  <span class="absValue">
+    (11/12)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;/**
+&nbsp; * Pacchetto che contiene le enumerazioni utilizzate nel progetto Bridge Backend.
+&nbsp; */
+&nbsp;package com.project.bridgebackend.Model.Entity.enumeration;
+&nbsp;
+&nbsp;/**
+&nbsp; * Enumerazione per i tipi di contratto.
+&nbsp; * @author Vito Vernellati
+&nbsp; * Creato in data 04/12/2024
+&nbsp; * @version 1.0
+&nbsp; */
+<b class="fc">&nbsp;public enum TipoContratto {</b>
+&nbsp;    /**
+&nbsp;     * Contratto a tempo pieno.
+&nbsp;     */
+<b class="fc">&nbsp;    FULL_TIME(&quot;Full Time&quot;),</b>
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Contratto a tempo parziale.
+&nbsp;     */
+<b class="fc">&nbsp;    PART_TIME(&quot;Part Time&quot;),</b>
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Contratto di apprendistato.
+&nbsp;     */
+<b class="fc">&nbsp;    APPRENDISTATO(&quot;Apprendistato&quot;),</b>
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Stage o tirocinio.
+&nbsp;     */
+<b class="fc">&nbsp;    INTERNSHIP(&quot;Stage/Tirocinio&quot;),</b>
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Contratto a progetto.
+&nbsp;     */
+<b class="fc">&nbsp;    PROGETTO(&quot;Contratto a Progetto&quot;),</b>
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Collaborazione.
+&nbsp;     */
+<b class="fc">&nbsp;    COLLABORAZIONE(&quot;Collaborazione&quot;),</b>
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Cooperativa.
+&nbsp;     */
+<b class="fc">&nbsp;    COOPERATIVA(&quot;Cooperativa&quot;),</b>
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Altro tipo di contratto.
+&nbsp;     */
+<b class="fc">&nbsp;    ALTRO(&quot;Altro&quot;);</b>
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Descrizione del tipo di contratto.
+&nbsp;     */
+&nbsp;    private final String description;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Costruttore per l&#39;enum con descrizione.
+&nbsp;     *
+&nbsp;     * @param description Descrizione leggibile del tipo di contratto.
+&nbsp;     */
+<b class="fc">&nbsp;    TipoContratto(final String description) {</b>
+<b class="fc">&nbsp;        this.description = description;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Ottiene la descrizione del tipo di contratto.
+&nbsp;     *
+&nbsp;     * @return Descrizione leggibile.
+&nbsp;     */
+&nbsp;    public String getDescription() {
+<b class="nc">&nbsp;        return description;</b>
+&nbsp;    }
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2025-01-05 20:59</div>
+</div>
+</body>
+</html>

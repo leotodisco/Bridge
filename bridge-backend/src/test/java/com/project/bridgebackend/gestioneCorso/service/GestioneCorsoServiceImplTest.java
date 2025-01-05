@@ -30,7 +30,7 @@ import static org.junit.jupiter.api.Assertions.*;
 @SpringBootTest
 @ExtendWith(MockitoExtension.class)
 @ContextConfiguration(classes = BridgeBackendApplication.class)
-class GestioneCorsoServiceImplTest {
+public class GestioneCorsoServiceImplTest {
 
     private final ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
     private final Validator validator = factory.getValidator();

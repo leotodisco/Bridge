@@ -1,0 +1,193 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > ConsulenzaDTO</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">com.project.bridgebackend.Model.dto</a>
+</div>
+
+<h1>Coverage Summary for Class: ConsulenzaDTO (com.project.bridgebackend.Model.dto)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+</tr>
+<tr>
+  <td class="name">ConsulenzaDTO</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package com.project.bridgebackend.Model.dto;
+&nbsp;
+&nbsp;import com.project.bridgebackend.Model.Entity.Indirizzo;
+&nbsp;import com.project.bridgebackend.Model.Entity.enumeration.TipoConsulenza;
+&nbsp;import lombok.Data;
+&nbsp;import lombok.Getter;
+&nbsp;import lombok.Setter;
+&nbsp;import lombok.ToString;
+&nbsp;import lombok.EqualsAndHashCode;
+&nbsp;import jakarta.validation.Valid;
+&nbsp;import jakarta.validation.constraints.NotBlank;
+&nbsp;import jakarta.validation.constraints.NotNull;
+&nbsp;import jakarta.validation.constraints.Pattern;
+&nbsp;import jakarta.validation.constraints.Size;
+&nbsp;import java.util.List;
+&nbsp;import java.util.Map;
+&nbsp;
+&nbsp;/**
+&nbsp; * @author Geraldine Montella.
+&nbsp; * Creato il: 05/12/2024.
+&nbsp;
+&nbsp; * DTO (Data Transfer Object) per la gestione dei dati di una consulenza.
+&nbsp; * Questo oggetto serve a trasferire i dati tra i livelli del sistema, mantenendo
+&nbsp; * una separazione chiara tra le entità del database e i dati ricevuti/inviati tramite API.
+&nbsp;
+&nbsp; * In questo DTO vengono applicate regole di validazione per garantire la consistenza
+&nbsp; * dei dati forniti.
+&nbsp; */
+&nbsp;
+&nbsp;@Data
+&nbsp;@Getter
+&nbsp;@Setter
+&nbsp;@ToString
+&nbsp;@EqualsAndHashCode
+&nbsp;public class ConsulenzaDTO {
+&nbsp;    /** Campi di annuncio
+&nbsp;    /**
+&nbsp;     * Titolo dell&#39;annuncio.
+&nbsp;     * Deve essere una stringa non vuota, di lunghezza compresa tra 5 e 100 caratteri.
+&nbsp;     */
+&nbsp;    @NotBlank(message = &quot;Il titolo non può essere vuoto&quot;)
+&nbsp;    @Size(min = 5, max = 100, message = &quot;Il titolo deve essere tra 5 e 100 caratteri&quot;)
+&nbsp;    private String titolo;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Disponibilità del servizio.
+&nbsp;     * Indica se il servizio è attualmente disponibile (true) o meno (false).
+&nbsp;     * Obbligatorio.
+&nbsp;     */
+&nbsp;    @NotNull(message = &quot;La disponibilità è obbligatoria&quot;)
+&nbsp;    private Boolean disponibilita;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Indirizzo di riferimento per la consulenza.
+&nbsp;     * Campo obbligatorio e validato.
+&nbsp;     */
+&nbsp;    @Valid
+&nbsp;    @NotNull(message = &quot;avere un indirizzo di riferimento è obbligatorio&quot;)
+&nbsp;    private Indirizzo indirizzo;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Indirizzo di riferimento per la consulenza.
+&nbsp;     * Campo obbligatorio e validato.
+&nbsp;     */
+&nbsp;    @Valid
+&nbsp;    @NotNull(message = &quot;il proprietario è obbligatorio&quot;)
+&nbsp;    private String proprietario;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Numero massimo di candidature accettate per l&#39;annuncio.
+&nbsp;     * Campo obbligatorio.
+&nbsp;     */
+&nbsp;    @NotNull(message = &quot;Il numero massimo di candidature è obbligatorio&quot;)
+&nbsp;    private Integer maxCandidature;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Lista dei candidati che hanno applicato all&#39;annuncio.
+&nbsp;     * Ogni email nella lista deve essere non vuota.
+&nbsp;     */
+&nbsp;    private Map&lt;@NotBlank(message = &quot;l&#39;email del candidato non può essere vuoto&quot;) String, Boolean&gt; candidati;
+&nbsp;
+&nbsp;    /** Campi specifici di Consulenza
+&nbsp;    /**
+&nbsp;     * Tipo di consulenza offerta.
+&nbsp;     * Deve essere un valore valido della enumerazione `TipoConsulenza`.
+&nbsp;     */
+&nbsp;
+&nbsp;    @NotNull(message = &quot;Il tipo di consulenza è obbligatorio&quot;)
+&nbsp;    private TipoConsulenza tipo;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Orari disponibili per la consulenza.
+&nbsp;     * Formato previsto: &#39;Giorno hh:mm-hh:mm&#39;. Esempio: &#39;Lunedì 10:00-12:00&#39;.
+&nbsp;     * Più fasce orarie possono essere separate da virgole.
+&nbsp;
+&nbsp;     * todo: da rivedere se tale pattern è applicabile si potrebbe decidere di lasciare una semplice stringa
+&nbsp;     */
+&nbsp;    @Pattern(
+&nbsp;            regexp = &quot;^(\\w+\\s+\\d{2}:\\d{2}-\\d{2}:\\d{2})(,\\s*\\w+\\s+\\d{2}:\\d{2}-\\d{2}:\\d{2})*$&quot;,
+&nbsp;            message = &quot;Il formato degli orari deve essere &#39;Giorno hh:mm-hh:mm&#39;. Esempio: &#39;Lunedì 10:00-12:00&#39;&quot;
+&nbsp;    )
+&nbsp;    private String orariDisponibili;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Descrizione dettagliata dell&#39;annuncio.
+&nbsp;     * Deve essere una stringa non vuota con lunghezza massima di 500 caratteri.
+&nbsp;     */
+&nbsp;    @NotBlank(message = &quot;La descrizione non può essere vuota&quot;)
+&nbsp;    //@Min(2)
+&nbsp;    @Size(max = 500, message = &quot;la descrizione non può superare i 500 caratteri&quot;)
+&nbsp;    private String descrizione;
+&nbsp;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Numero di telefono del proprietario dell&#39;annuncio.
+&nbsp;     * Deve essere nel formato italiano (+39 o 0039 opzionali).
+&nbsp;     */
+&nbsp;    @NotBlank(message = &quot;Il numero di telefono non può essere vuoto&quot;)
+&nbsp;    @Pattern(
+&nbsp;            regexp = &quot;^((00|\\+)39[\\. ]??)??3\\d{2}[\\. ]??\\d{6,7}$&quot;,
+&nbsp;            message = &quot;Numero di telefono non valido. Deve seguire il formato italiano.&quot;
+&nbsp;    )
+&nbsp;    private String numero;
+&nbsp;
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2025-01-05 20:59</div>
+</div>
+</body>
+</html>

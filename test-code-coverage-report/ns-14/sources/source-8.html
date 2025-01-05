@@ -1,0 +1,127 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > AlloggioDAO</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">com.project.bridgebackend.Model.dao</a>
+</div>
+
+<h1>Coverage Summary for Class: AlloggioDAO (com.project.bridgebackend.Model.dao)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+</tr>
+  <tr>
+    <td class="name">AlloggioDAO$MockitoMock$bSetYoZ1</td>
+  </tr>
+  <tr>
+    <td class="name">AlloggioDAO$MockitoMock$bSetYoZ1$auxiliary$9AmY8SzS</td>
+  </tr>
+  <tr>
+    <td class="name">AlloggioDAO$MockitoMock$bSetYoZ1$auxiliary$kC6vavhg</td>
+  </tr>
+<tr>
+  <td class="name"><strong>Total</strong></td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package com.project.bridgebackend.Model.dao;
+&nbsp;import com.project.bridgebackend.Model.Entity.Alloggio;
+&nbsp;import org.springframework.data.jpa.repository.JpaRepository;
+&nbsp;import org.springframework.data.jpa.repository.Query;
+&nbsp;import org.springframework.data.repository.query.Param;
+&nbsp;import org.springframework.stereotype.Repository;
+&nbsp;
+&nbsp;import java.util.List;
+&nbsp;import java.util.Optional;
+&nbsp;
+&nbsp;/**
+&nbsp; * @author: Mario Zurolo
+&nbsp; * created: 3/12/24
+&nbsp; * Repository per la gestione degli oggetti {@link Alloggio}.
+&nbsp; * Fornisce metodi per l&#39;accesso e la manipolazione dei,
+&nbsp; * dati relativi agli alloggi.
+&nbsp; * Utilizza Spring Data JPA per fornire implementazioni automatiche,
+&nbsp; * delle query.
+&nbsp; */
+&nbsp;@Repository
+&nbsp;public interface AlloggioDAO extends JpaRepository&lt;Alloggio, Long&gt; {
+&nbsp;    /**
+&nbsp;     * Recupera tutti gli alloggi con il loro proprietario associato.
+&nbsp;     * Utilizza un JOIN FETCH per caricare il proprietario insieme agli alloggi.
+&nbsp;     *
+&nbsp;     * @return una lista di alloggi, ciascuno con il proprio proprietario.
+&nbsp;     */
+&nbsp;    @Query(&quot;SELECT a FROM Alloggio a JOIN FETCH a.proprietario&quot;)
+&nbsp;    List&lt;Alloggio&gt; findAllAlloggiWithProprietario();
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Trova un alloggio in base al suo titolo utilizzando il metodo fornito da Spring Data JPA.
+&nbsp;     *
+&nbsp;     * @param titolo titolo dell&#39;alloggio da trovare.
+&nbsp;     * @return un {@link Optional} contenente l&#39;alloggio se trovato, altrimenti vuoto.
+&nbsp;     */
+&nbsp;    Optional&lt;Alloggio&gt; findAlloggioByTitolo(String titolo);
+&nbsp;
+&nbsp;    @Query(&quot;SELECT a FROM Alloggio a WHERE a.id =:id&quot;)
+&nbsp;    Alloggio findAlloggioById(long id);
+&nbsp;
+&nbsp;    @Query(&quot;SELECT a FROM Alloggio a WHERE a.proprietario.email = :email&quot;)
+&nbsp;    List&lt;Alloggio&gt; getAllAlloggiByEmail(@Param(&quot;email&quot;) String email);
+&nbsp;
+&nbsp;    @Query(&quot;SELECT a FROM Alloggio a JOIN a.listaCandidati r WHERE r.email = :email&quot;)
+&nbsp;    List&lt;Alloggio&gt; findAllAlloggiByRifugiatoEmail(@Param(&quot;email&quot;) String email);
+&nbsp;
+&nbsp;    @Query(&quot;SELECT a FROM Alloggio a&quot;)
+&nbsp;    List&lt;Alloggio&gt; findMyAll();
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2025-01-05 20:59</div>
+</div>
+</body>
+</html>

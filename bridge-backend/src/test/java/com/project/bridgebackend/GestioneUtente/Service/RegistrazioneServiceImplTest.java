@@ -1,15 +1,12 @@
 package com.project.bridgebackend.GestioneUtente.Service;
 
-import com.project.bridgebackend.Model.Entity.Consulenza;
-import com.project.bridgebackend.Model.dao.AlloggioDAO;
-import com.project.bridgebackend.Service.BridgeBackendApplicationTests;
+import com.project.bridgebackend.BridgeBackendApplicationTests;
 import com.project.bridgebackend.Model.Entity.Rifugiato;
 import com.project.bridgebackend.Model.Entity.enumeration.Gender;
 import com.project.bridgebackend.Model.Entity.enumeration.Ruolo;
 import com.project.bridgebackend.Model.Entity.enumeration.TitoloDiStudio;
 import com.project.bridgebackend.Model.dao.RifugiatoDAO;
 import com.project.bridgebackend.registrazione.service.RegistrazioneServiceImpl;
-import com.project.bridgebackend.util.AuthenticationRequest;
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -23,14 +20,11 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.Authentication;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-import static org.junit.jupiter.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.*;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.when;
 
 import java.time.LocalDate;
 

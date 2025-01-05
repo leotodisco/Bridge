@@ -1,0 +1,141 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > ConsulenzaDAO</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">com.project.bridgebackend.Model.dao</a>
+</div>
+
+<h1>Coverage Summary for Class: ConsulenzaDAO (com.project.bridgebackend.Model.dao)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+</tr>
+  <tr>
+    <td class="name">ConsulenzaDAO$MockitoMock$elwejmla</td>
+  </tr>
+  <tr>
+    <td class="name">ConsulenzaDAO$MockitoMock$elwejmla$auxiliary$cgi7zsNZ</td>
+  </tr>
+  <tr>
+    <td class="name">ConsulenzaDAO$MockitoMock$elwejmla$auxiliary$J3tzuNAk</td>
+  </tr>
+<tr>
+  <td class="name"><strong>Total</strong></td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package com.project.bridgebackend.Model.dao;
+&nbsp;
+&nbsp;import com.project.bridgebackend.Model.Entity.Alloggio;
+&nbsp;import com.project.bridgebackend.Model.Entity.Consulenza;
+&nbsp;import com.project.bridgebackend.Model.Entity.Utente;
+&nbsp;import com.project.bridgebackend.Model.Entity.enumeration.TipoConsulenza;
+&nbsp;import org.springframework.data.jpa.repository.JpaRepository;
+&nbsp;import org.springframework.data.jpa.repository.Query;
+&nbsp;import org.springframework.stereotype.Repository;
+&nbsp;
+&nbsp;import java.util.List;
+&nbsp;import java.util.Optional;
+&nbsp;
+&nbsp;/**
+&nbsp; * @author Geraldine Montella.
+&nbsp; * Creato il: 03/12/2024.
+&nbsp; * Repository per la gestione degli oggetti {@link Consulenza}.
+&nbsp; * Fornisce metodi per l&#39;accesso e la manipolazione dei,
+&nbsp; * dati relativi alle consulenze.
+&nbsp; * Utilizza Spring Data JPA per fornire implementazioni automatiche,
+&nbsp; * delle query.
+&nbsp; */
+&nbsp;@Repository
+&nbsp;public interface ConsulenzaDAO extends JpaRepository&lt;Consulenza, Long&gt; {
+&nbsp;       /**
+&nbsp;        * Questo metodo effettua una ricerca delle consulenze,
+&nbsp;        * che sono collegate all&#39;utente specificato
+&nbsp;        * come proprietario.
+&nbsp;        *
+&nbsp;        * @param proprietario l&#39;utente che è il proprietario,
+&nbsp;        *                     delle consulenze da recuperare.
+&nbsp;        * @return una lista di consulenze associate al proprietario,
+&nbsp;        * specificato. La lista potrebbe essere vuota se
+&nbsp;        * non ci sono consulenze associate a quel proprietario.
+&nbsp;        */
+&nbsp;       List&lt;Consulenza&gt; findByProprietario(Utente proprietario);
+&nbsp;
+&nbsp;       @Query(&quot;SELECT c FROM Consulenza c WHERE c.id =:id&quot;)
+&nbsp;       Consulenza findConsulenzaById(long id);
+&nbsp;
+&nbsp;       @Query(&quot;SELECT c FROM Consulenza c WHERE c.tipo =:tipo&quot;)
+&nbsp;       List&lt;Consulenza&gt; findByTipo(TipoConsulenza tipo);
+&nbsp;
+&nbsp;       /**
+&nbsp;        * Recupera tutte le consulenze a cui un rifugiato si è candidato,
+&nbsp;        * filtrando in base all&#39;email.
+&nbsp;        *
+&nbsp;        * @param rifugiatoEmail l&#39;email del rifugiato.
+&nbsp;        * @return la lista delle consulenze corrispondenti.
+&nbsp;        */
+&nbsp;       @Query(&quot;SELECT c FROM Consulenza c JOIN c.candidati cand WHERE KEY(cand) = :rifugiatoEmail&quot;)
+&nbsp;       List&lt;Consulenza&gt; findAllByRifugiatoEmail(String rifugiatoEmail);
+&nbsp;
+&nbsp;       /**
+&nbsp;        * Recupera tutte le consulenze a cui un rifugiato si è candidato,
+&nbsp;        * filtrando in base all&#39;email e allo stato della candidatura.
+&nbsp;        *
+&nbsp;        * @param rifugiatoEmail l&#39;email del rifugiato.
+&nbsp;        * @param stato lo stato della candidatura (true o false).
+&nbsp;        * @return la lista delle consulenze corrispondenti.
+&nbsp;        */
+&nbsp;       @Query(&quot;SELECT c FROM Consulenza c JOIN c.candidati cand WHERE KEY(cand) = :rifugiatoEmail AND VALUE(cand) = :stato&quot;)
+&nbsp;       List&lt;Consulenza&gt; findAllByRifugiatoEmailAndStato(String rifugiatoEmail, Boolean stato);
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2025-01-05 20:59</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,291 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > GestioneAnnuncioService</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">com.project.bridgebackend.GestioneAnnuncio.Service</a>
+</div>
+
+<h1>Coverage Summary for Class: GestioneAnnuncioService (com.project.bridgebackend.GestioneAnnuncio.Service)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+</tr>
+<tr>
+  <td class="name">GestioneAnnuncioService</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package com.project.bridgebackend.GestioneAnnuncio.Service;
+&nbsp;
+&nbsp;
+&nbsp;
+&nbsp;import com.project.bridgebackend.Model.Entity.Consulenza;
+&nbsp;import com.project.bridgebackend.Model.Entity.Indirizzo;
+&nbsp;import com.project.bridgebackend.Model.Entity.Lavoro;
+&nbsp;import com.project.bridgebackend.Model.Entity.Utente;
+&nbsp;import com.project.bridgebackend.Model.Entity.Rifugiato;
+&nbsp;import com.project.bridgebackend.Model.Entity.enumeration.TipoConsulenza;
+&nbsp;import com.project.bridgebackend.Model.Entity.enumeration.TipoContratto;
+&nbsp;
+&nbsp;import java.util.HashMap;
+&nbsp;import java.util.List;
+&nbsp;
+&nbsp;/**
+&nbsp; * Servizio per la gestione degli annunci di lavoro e consulenza.
+&nbsp; * Include operazioni di inserimento, modifica, eliminazione e gestione delle preferenze.
+&nbsp; *
+&nbsp; * @author Geraldine Montella, Vito Vernellati
+&nbsp; * creato in data 04/12/2024
+&nbsp; */
+&nbsp;public interface GestioneAnnuncioService {
+&nbsp;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Inserisce una nuova consulenza nel database.
+&nbsp;     *
+&nbsp;     * @param consulenza l&#39;annuncio di consulenza da inserire, già validato.
+&nbsp;     * @return la consulenza appena inserita nel database.
+&nbsp;     */
+&nbsp;    Consulenza inserimentoConsulenza(Consulenza consulenza);
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Salva l&#39;indirizzo specifico per la sede di consulenza.
+&nbsp;     *
+&nbsp;     * @param indirizzo l&#39;indirizzo da salvare, già validato.
+&nbsp;     * @return l&#39;identificativo dell&#39;indirizzo appena salvato.
+&nbsp;     */
+&nbsp;    long salvaIndirizzoConsulenza(Indirizzo indirizzo);
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Prende tutte le consulenze presenti nel DB.
+&nbsp;     * @return la lista contente tutte le consulenze.
+&nbsp;     */
+&nbsp;    List&lt;Consulenza&gt; getAllConsulenze();
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Prende tutte le consulenze presenti nel DB di un certo utente.
+&nbsp;     *
+&nbsp;     * @param proprietario il proprietario di cui si vogliono,
+&nbsp;     *                     estrarre tutti gli annunci di consulenze,
+&nbsp;     *                     pubblicati.
+&nbsp;     * @return lista di annunci di consulenze pubblicati dall&#39;utente proprietario
+&nbsp;     */
+&nbsp;    List&lt;Consulenza&gt; getConsulenzeByProprietario(Utente proprietario);
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Prende una consulenze specifica nel DB.
+&nbsp;     *
+&nbsp;     * @param id intero identificativo della consulenza che si vuole ottenere.
+&nbsp;     * @return consulenza avente nel db l&#39;id specificato se presente.
+&nbsp;     */
+&nbsp;    Consulenza getConsulenze(long id);
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Funzione per aggiornare una certa consulenza sulla base delle informazioni passate.
+&nbsp;     *
+&nbsp;     * @param idConsulenza intero identificativo della consulenza che si vuole modificare.
+&nbsp;     * @param aggiornamenti nuove informazioni con cui si vuole aggiornare la consulenza.
+&nbsp;     *
+&nbsp;     * @return consulenza aggiornata con le nuove modifiche
+&nbsp;     */
+&nbsp;    Consulenza modificaAnnuncioConsulenza(long idConsulenza,
+&nbsp;                                          HashMap&lt;String, Object&gt; aggiornamenti);
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Funzione per l&#39;eliminazione di una consulenza sulla base,
+&nbsp;     * dell&#39;identificativo passato.
+&nbsp;     * @param idConsulenza identificativo della consulenza che,
+&nbsp;     *                     si vuole eliminare.
+&nbsp;     */
+&nbsp;
+&nbsp;    void eliminaConsulenza(long idConsulenza);
+&nbsp;
+&nbsp;    void rimuoviInteresseConsulenza(final long idConsulenza, final String emailRifugiato);
+&nbsp;
+&nbsp;    void accettaConsulenzaRifugiato(final long idConsulenza, final String emailRifugiato);
+&nbsp;
+&nbsp;    List&lt;Consulenza&gt; getConsulenzeByCandidato(final Utente candidato);
+&nbsp;
+&nbsp;    /**
+&nbsp;     *Firma del metodo che notifica il volontario nel caso,
+&nbsp;     * in cui ci sia una nuova manifestazione di interesse per il suo annuncio.
+&nbsp;     * @param message messaggio che viene inviato al volontario.
+&nbsp;     * @param emailVolontario id del volontario da notificare.
+&nbsp;     */
+&nbsp;    void sendEmailVolontario(String message, String emailVolontario);
+&nbsp;
+&nbsp;    /**
+&nbsp;     *Firma del metodo che invia una email al Rifugiato.
+&nbsp;     * @param message messaggio che sarà mostrato nella email.
+&nbsp;     * @param emailRifugiato id del rifugiato a cui inviare l&#39;email.
+&nbsp;     */
+&nbsp;    void sendEmailRifugiato(String message, String emailRifugiato);
+&nbsp;
+&nbsp;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Funzione per la ricerca di una determinata consuelenza,
+&nbsp;     * in base alla tipologia.
+&nbsp;     * @param tipo tipologia della consulenza che si vuole cercare.,
+&nbsp;     *
+&nbsp;     */
+&nbsp;    List&lt;Consulenza&gt; getConsulenzeByTipo(TipoConsulenza tipo);
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Funzione per la ricerca di un determinato lavoro,
+&nbsp;     * in base alla tipologia di contratto.
+&nbsp;     * @param tipo
+&nbsp;     *
+&nbsp;     */
+&nbsp;    List&lt;Lavoro&gt; getLavoroByTipoContratto(TipoContratto tipo);
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Inserisce un nuovo annuncio di lavoro nel database.
+&nbsp;     *
+&nbsp;     * @param lavoro l&#39;annuncio di lavoro da inserire, già validato.
+&nbsp;     * @return l&#39;annuncio di lavoro appena inserito nel database.
+&nbsp;     */
+&nbsp;    Lavoro inserimentoLavoro(Lavoro lavoro);
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Salva l&#39;indirizzo specifico per la sede di lavoro.
+&nbsp;     *
+&nbsp;     * @param indirizzo l&#39;indirizzo da salvare, già validato.
+&nbsp;     * @return l&#39;identificativo dell&#39;indirizzo appena salvato.
+&nbsp;     */
+&nbsp;    long salvaIndirizzoLavoro(Indirizzo indirizzo);
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Recupera tutti gli annunci di lavoro presenti nel database.
+&nbsp;     *
+&nbsp;     * @return Una lista di oggetti `Lavoro` contenenti tutti gli annunci di lavoro.
+&nbsp;     */
+&nbsp;    List&lt;Lavoro&gt; getAllLavori();
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Recupera tutti gli annunci di lavoro associati a un proprietario specifico.
+&nbsp;     *
+&nbsp;     * @param proprietario L&#39;oggetto `Utente` che rappresenta il proprietario degli annunci di lavoro.
+&nbsp;     * @return Una lista di oggetti `Lavoro` associati al proprietario specificato.
+&nbsp;     */
+&nbsp;    List&lt;Lavoro&gt; getLavoriByProprietario(Utente proprietario);
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Recupera un singolo annuncio di lavoro specifico tramite il suo ID.
+&nbsp;     *
+&nbsp;     * @param id L&#39;identificativo unico dell&#39;annuncio di lavoro da recuperare.
+&nbsp;     * @return L&#39;oggetto `Lavoro` corrispondente all&#39;ID fornito.
+&nbsp;     * @throws IllegalArgumentException se l&#39;annuncio non viene trovato.
+&nbsp;     */
+&nbsp;    Lavoro getLavori(long id);
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Modifica un annuncio di lavoro esistente.
+&nbsp;     *
+&nbsp;     * @param idAnnuncio L&#39;identificativo unico dell&#39;annuncio di lavoro da modificare.
+&nbsp;     * @param aggiornamenti Una mappa contenente i campi da aggiornare e i relativi nuovi valori.
+&nbsp;     * @return L&#39;oggetto `Lavoro` aggiornato.
+&nbsp;     */
+&nbsp;    Lavoro modificaAnnuncioLavoro(long idAnnuncio, HashMap&lt;String, Object&gt; aggiornamenti);
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Elimina un annuncio di lavoro dal database.
+&nbsp;     *
+&nbsp;     * @param idAnnuncio L&#39;identificativo unico dell&#39;annuncio di lavoro da eliminare.
+&nbsp;     */
+&nbsp;    void eliminaAnnuncioLavoro(long idAnnuncio);
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Recupera in maniera casuale 5 annunci di lavoro.
+&nbsp;     * @return Una lista di 5 oggetti `Lavoro` contenenti annunci di lavoro casuali.
+&nbsp;     */
+&nbsp;    List&lt;Lavoro&gt; getRandomLavori();
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Inserisce un rifugiato nella lista della consulenza.
+&nbsp;     * @param idConsulenza id della consulenza per cui si vuole,
+&nbsp;     *                     dimostrare l&#39;interesse.
+&nbsp;     * @param emailRifugiato email del rifugiato che dimostra,
+&nbsp;     *                       interesse per una consulenza.
+&nbsp;     */
+&nbsp;    void interesseConsulenza(final long idConsulenza, final String emailRifugiato);
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Recupera tutti i candiddati per un determinato lavoro.
+&nbsp;     * @param lavoroId identificativo del lavoro.
+&nbsp;     * @return Una lista di candidati.
+&nbsp;     */
+&nbsp;    List&lt;String&gt; getCandidatiPerLavoro(final long lavoroId);
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Invia la candidatura di un rifugiato per un determinato lavoro.
+&nbsp;     * @param jobId identificativo del lavoro.
+&nbsp;     * @param emailRifugiato email del rifugiato da accettare.
+&nbsp;     */
+&nbsp;    void invioCandidaturaLavoro(long jobId, String emailRifugiato);
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Rimuove la candidatura di un rifugiato per un determinato lavoro.
+&nbsp;     * @param jobId identificativo del lavoro.
+&nbsp;     * @param emailRifugiato email del rifuigato da rimuovere.
+&nbsp;     */
+&nbsp;    void rimuoviCandidaturaLavoro(long idLavoro, String emailRifugiato);
+&nbsp;    /**
+&nbsp;     * Verifica se un rifugiato è candidato per un determinato lavoro.
+&nbsp;     * @param jobId identificativo del lavoro.
+&nbsp;     * @param emailRifugiato email del rifugiato da verificare.
+&nbsp;     * @return true se il rifugiato è candidato, false altrimenti.
+&nbsp;     */
+&nbsp;    boolean isCandidatoPerLavoro(long idLavoro, String emailRifugiato);
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2025-01-05 20:59</div>
+</div>
+</body>
+</html>
