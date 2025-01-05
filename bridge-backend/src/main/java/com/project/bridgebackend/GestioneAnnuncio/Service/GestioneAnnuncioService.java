@@ -209,13 +209,13 @@ public interface GestioneAnnuncioService {
 
     /**
      * Rimuove la candidatura di un rifugiato per un determinato lavoro.
-     * @param jobId identificativo del lavoro.
+     * @param idLavoro identificativo del lavoro.
      * @param emailRifugiato email del rifuigato da rimuovere.
      */
     void rimuoviCandidaturaLavoro(long idLavoro, String emailRifugiato);
     /**
      * Verifica se un rifugiato è candidato per un determinato lavoro.
-     * @param jobId identificativo del lavoro.
+     * @param idLavoro identificativo del lavoro.
      * @param emailRifugiato email del rifugiato da verificare.
      * @return true se il rifugiato è candidato, false altrimenti.
      */

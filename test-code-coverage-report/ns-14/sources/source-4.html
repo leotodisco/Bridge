@@ -1,0 +1,117 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > LavoroDAO</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">com.project.bridgebackend.Model.dao</a>
+</div>
+
+<h1>Coverage Summary for Class: LavoroDAO (com.project.bridgebackend.Model.dao)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+</tr>
+  <tr>
+    <td class="name">LavoroDAO$MockitoMock$bujZpE3G</td>
+  </tr>
+  <tr>
+    <td class="name">LavoroDAO$MockitoMock$bujZpE3G$auxiliary$0SXs7ieC</td>
+  </tr>
+  <tr>
+    <td class="name">LavoroDAO$MockitoMock$bujZpE3G$auxiliary$LySx8K8l</td>
+  </tr>
+<tr>
+  <td class="name"><strong>Total</strong></td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package com.project.bridgebackend.Model.dao;
+&nbsp;
+&nbsp;import com.project.bridgebackend.Model.Entity.Consulenza;
+&nbsp;import com.project.bridgebackend.Model.Entity.Lavoro;
+&nbsp;import com.project.bridgebackend.Model.Entity.enumeration.TipoConsulenza;
+&nbsp;import com.project.bridgebackend.Model.Entity.enumeration.TipoContratto;
+&nbsp;import org.springframework.data.jpa.repository.JpaRepository;
+&nbsp;import org.springframework.data.jpa.repository.Query;
+&nbsp;import org.springframework.stereotype.Repository;
+&nbsp;import com.project.bridgebackend.Model.Entity.Utente;
+&nbsp;import java.util.List;
+&nbsp;
+&nbsp;/**
+&nbsp; * @author Vito Vernellati.
+&nbsp; * Creato il: 04/12/2024.
+&nbsp; * Repository per la gestione degli oggetti {@link Lavoro}.
+&nbsp; * Fornisce metodi per l&#39;accesso e la manipolazione dei,
+&nbsp; * dati relativi agli annunci di lavoro.
+&nbsp; * Utilizza Spring Data JPA per fornire implementazioni automatiche,
+&nbsp; * delle query.
+&nbsp; */
+&nbsp;
+&nbsp;@Repository
+&nbsp;public interface LavoroDAO extends JpaRepository&lt;Lavoro, Long&gt; {
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Recupera una lista di lavori associati a un determinato proprietario.
+&nbsp;     * Questo metodo esegue una query per ottenere tutti i lavori che sono
+&nbsp;     * associati a un utente specifico, identificato dal parametro &quot;proprietario&quot;.
+&nbsp;     *
+&nbsp;     * @param proprietario l&#39;utente proprietario dei lavori da recuperare.
+&nbsp;     * @return una lista di annunci di lavoro
+&nbsp;     * associati al proprietario. La lista potrebbe essere,
+&nbsp;     * vuota se non esistono lavori per il proprietario.
+&nbsp;     */
+&nbsp;    List&lt;Lavoro&gt; findByProprietario(Utente proprietario);
+&nbsp;
+&nbsp;    @Query(&quot;SELECT l FROM Lavoro l WHERE l.tipoContratto =:tipo&quot;)
+&nbsp;    List&lt;Lavoro&gt; findByTipoContratto(TipoContratto tipo);
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2025-01-05 20:59</div>
+</div>
+</body>
+</html>

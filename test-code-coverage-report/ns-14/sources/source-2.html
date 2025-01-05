@@ -1,0 +1,92 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > AdminDAO</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">com.project.bridgebackend.Model.dao</a>
+</div>
+
+<h1>Coverage Summary for Class: AdminDAO (com.project.bridgebackend.Model.dao)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+</tr>
+<tr>
+  <td class="name">AdminDAO</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package com.project.bridgebackend.Model.dao;
+&nbsp;
+&nbsp;import com.project.bridgebackend.Model.Entity.Admin;
+&nbsp;
+&nbsp;/**
+&nbsp; *
+&nbsp; * @author Benedetta Colella.
+&nbsp; * Data creazione: 05/12/2024
+&nbsp; * Repository per la gestione degli oggetti {@link Admin}.
+&nbsp; * Fornisce metodi per l&#39;accesso e la manipolazione dei,
+&nbsp; * dati relativi agli utenti admin.
+&nbsp; * Utilizza Spring Data JPA per fornire implementazioni automatiche,
+&nbsp; * delle query.
+&nbsp; */
+&nbsp;
+&nbsp;public interface AdminDAO extends UtenteDAO {
+&nbsp;    /**
+&nbsp;     * Query che ci permette di ricercare un Admin dalla email.
+&nbsp;     * @param email dell&#39;Admin da ricercare
+&nbsp;     * @return Admin corrispondente
+&nbsp;     * */
+&nbsp;    Admin findByEmail(String email);
+&nbsp;
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2025-01-05 20:59</div>
+</div>
+</body>
+</html>

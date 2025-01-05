@@ -1,0 +1,370 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > UtenteServiceImpl</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">com.project.bridgebackend.GestioneUtente.Service</a>
+</div>
+
+<h1>Coverage Summary for Class: UtenteServiceImpl (com.project.bridgebackend.GestioneUtente.Service)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Branch, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">UtenteServiceImpl</td>
+<td class="coverageStat">
+  <span class="percent">
+    10%
+  </span>
+  <span class="absValue">
+    (1/10)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/16)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    2,1%
+  </span>
+  <span class="absValue">
+    (1/47)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">UtenteServiceImpl$$SpringCGLIB$$0</td>
+  </tr>
+<tr>
+  <td class="name"><strong>Total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    10%
+  </span>
+  <span class="absValue">
+    (1/10)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/16)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    2,1%
+  </span>
+  <span class="absValue">
+    (1/47)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package com.project.bridgebackend.GestioneUtente.Service;
+&nbsp;
+&nbsp;import com.project.bridgebackend.CDN.CDNService;
+&nbsp;import com.project.bridgebackend.Model.Entity.FiguraSpecializzata;
+&nbsp;import com.project.bridgebackend.Model.Entity.Utente;
+&nbsp;import com.project.bridgebackend.Model.Entity.enumeration.Gender;
+&nbsp;import com.project.bridgebackend.Model.Entity.enumeration.TitoloDiStudio;
+&nbsp;import com.project.bridgebackend.Model.dao.FiguraSpecializzataDAO;
+&nbsp;import com.project.bridgebackend.Model.dao.UtenteDAO;
+&nbsp;import com.project.bridgebackend.CDN.Document.FotoProfilo;
+&nbsp;import org.springframework.beans.factory.annotation.Autowired;
+&nbsp;import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+&nbsp;import org.springframework.security.crypto.password.PasswordEncoder;
+&nbsp;import org.springframework.stereotype.Service;
+&nbsp;import org.springframework.transaction.annotation.Transactional;
+&nbsp;import java.io.IOException;
+&nbsp;import java.time.LocalDate;
+&nbsp;import java.util.Base64;
+&nbsp;import java.util.HashMap;
+&nbsp;import java.util.Optional;
+&nbsp;
+&nbsp;/**
+&nbsp; * @author Antonio Ceruso
+&nbsp; * Data creazione: 12/12/2024
+&nbsp; * Classe che implemeta il service per l&#39;utente
+&nbsp; * */
+&nbsp;@Service
+&nbsp;
+&nbsp;@Transactional
+<b class="fc">&nbsp;public class UtenteServiceImpl implements UtenteService {</b>
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Service per la gestione delle foto.
+&nbsp;     */
+&nbsp;    @Autowired
+&nbsp;    private CDNService fotoProfiloService;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Dao per la gestione degli utenti.
+&nbsp;     */
+&nbsp;    @Autowired
+&nbsp;    private UtenteDAO utenteDAO;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Figura specializzata per la gestione degli utenti.
+&nbsp;     */
+&nbsp;    @Autowired
+&nbsp;    private FiguraSpecializzataDAO fsDAO;
+&nbsp;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Bean per la gestione della cifratura delle password.
+&nbsp;     * Utilizza un&#39;implementazione di,
+&nbsp;     * {@link org.springframework.security.crypto.password.PasswordEncoder}
+&nbsp;     * per garantire la sicurezza durante la memorizzazione delle password.
+&nbsp;     */
+&nbsp;    @Autowired
+&nbsp;    private PasswordEncoder passwordEncoder;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Metodo per la cifratura della password.
+&nbsp;     * @param password
+&nbsp;     * @return la password cifrata come stringa.
+&nbsp;     * */
+&nbsp;    public String safePassword(final String password) {
+<b class="nc">&nbsp;        BCryptPasswordEncoder pwEncoder = new BCryptPasswordEncoder();</b>
+<b class="nc">&nbsp;        String pwCifrata = pwEncoder.encode(password);</b>
+<b class="nc">&nbsp;        return pwCifrata;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Metodo per eliminare un utente dato il suo indirizzo email.
+&nbsp;     * Viene eliminata anche la foto profilo associata all&#39;utente.
+&nbsp;     *
+&nbsp;     * @param email indirizzo email dell&#39;utente da eliminare.
+&nbsp;     * @throws Exception se si verifica un errore durante l&#39;eliminazione.
+&nbsp;     */
+&nbsp;    @Override
+&nbsp;    public void eliminaUtente(final String email) throws Exception {
+&nbsp;        try {
+<b class="nc">&nbsp;            String idFoto = utenteDAO.findByEmail(email).getFotoProfilo();</b>
+<b class="nc">&nbsp;            utenteDAO.delete(utenteDAO.findByEmail(email));</b>
+<b class="nc">&nbsp;            fotoProfiloService.deleteFotoProfilo(idFoto);</b>
+&nbsp;        } catch (Exception e) {
+<b class="nc">&nbsp;            throw new Exception(e.getMessage());</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Recupera la foto profilo di un utente dato il suo indirizzo email.
+&nbsp;     *
+&nbsp;     * @param email indirizzo email dell&#39;utente.
+&nbsp;     * @return un oggetto {@link FotoProfilo} contenente la foto dell&#39;utente.
+&nbsp;     * @throws IOException se si verifica un errore durante il recupero della foto.
+&nbsp;     */
+&nbsp;    public FotoProfilo getFotoUtente(
+&nbsp;            final String email) throws IOException {
+<b class="nc">&nbsp;        Utente u = utenteDAO.findByEmail(email);</b>
+<b class="nc">&nbsp;        FotoProfilo fp = fotoProfiloService.getFotoProfilo(u.getFotoProfilo());</b>
+<b class="nc">&nbsp;        return fp;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Modifica la password di un utente dato il suo indirizzo email.
+&nbsp;     * La nuova password viene cifrata prima di essere salvata.
+&nbsp;     *
+&nbsp;     * @param email indirizzo email dell&#39;utente.
+&nbsp;     * @param password nuova password da impostare.
+&nbsp;     * @throws Exception se si verifica un errore durante l&#39;aggiornamento della password.
+&nbsp;     */
+&nbsp;    public void modificaPassword(
+&nbsp;            final String email,
+&nbsp;            final String password) throws Exception {
+<b class="nc">&nbsp;        Utente u = utenteDAO.findByEmail(email);</b>
+<b class="nc">&nbsp;        System.out.println(password);</b>
+<b class="nc">&nbsp;        u.setPassword(safePassword(password));</b>
+<b class="nc">&nbsp;        utenteDAO.save(u);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Modifica la disponibilità di un utente specializzato dato il suo indirizzo email.
+&nbsp;     *
+&nbsp;     * @param email indirizzo email dell&#39;utente.
+&nbsp;     * @param disp nuova disponibilità da impostare.
+&nbsp;     * @throws Exception se si verifica un errore durante l&#39;aggiornamento della disponibilità.
+&nbsp;     */
+&nbsp;    public void modificaDisp(final String email, final String disp) throws Exception {
+<b class="nc">&nbsp;        FiguraSpecializzata fs = fsDAO.findByEmail(email);</b>
+<b class="nc">&nbsp;        fs.setDisponibilita(disp);</b>
+<b class="nc">&nbsp;          fsDAO.save(fs);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Modifica i dati di un utente dato il suo indirizzo email e una mappa,
+&nbsp;     * di aggiornamenti.
+&nbsp;     *
+&nbsp;     * @param email indirizzo email dell&#39;utente.
+&nbsp;     * @param aggiornamenti mappa contenente le chiavi e i valori dei dati da aggiornare.
+&nbsp;     * @return l&#39;oggetto {@link Utente} aggiornato.
+&nbsp;     * @throws IOException se si verifica un errore durante l&#39;aggiornamento.
+&nbsp;     */
+&nbsp;    public Utente modificaUtente(
+&nbsp;            final String email,
+&nbsp;            final HashMap&lt;String, Object&gt; aggiornamenti) throws IOException {
+<b class="nc">&nbsp;        Optional&lt;Utente&gt; utenteOptional = utenteDAO.findById(email);</b>
+<b class="nc">&nbsp;        if (utenteOptional.isEmpty()) {</b>
+<b class="nc">&nbsp;            throw new IllegalArgumentException(&quot;Utente non trovato.&quot;);</b>
+&nbsp;        }
+<b class="nc">&nbsp;        Utente utente = utenteOptional.get();</b>
+&nbsp;        try {
+<b class="nc">&nbsp;            aggiornamenti.forEach((campo, valore) -&gt; {</b>
+<b class="nc">&nbsp;                switch (campo) {</b>
+&nbsp;                    case &quot;nomeUtente&quot;:
+<b class="nc">&nbsp;                        utente.setNome((String) valore);</b>
+&nbsp;                        break;
+&nbsp;                    case &quot;cognomeUtente&quot;:
+<b class="nc">&nbsp;                        utente.setCognome((String) valore);</b>
+&nbsp;                        break;
+&nbsp;                    case &quot;nazionalitaUtente&quot;:
+<b class="nc">&nbsp;                        utente.setNazionalita((String) valore);</b>
+&nbsp;                        break;
+&nbsp;                    case &quot;dataNascitaUtente&quot;:
+<b class="nc">&nbsp;                        utente.setDataNascita(LocalDate.parse((String) valore));</b>
+&nbsp;                        break;
+&nbsp;                    case &quot;genderUtente&quot;:
+<b class="nc">&nbsp;                        utente.setGender(Gender.valueOf((String) valore));</b>
+&nbsp;                        break;
+&nbsp;                    case &quot;skillUtente&quot;:
+<b class="nc">&nbsp;                        utente.setSkill((String) valore);</b>
+&nbsp;                        break;
+&nbsp;                    case &quot;titoloDiStudioUtente&quot;:
+<b class="nc">&nbsp;                        utente.setTitoloDiStudio(TitoloDiStudio.valueOf((String) valore));</b>
+&nbsp;                        break;
+&nbsp;                    case &quot;lingueParlateUtente&quot;:
+<b class="nc">&nbsp;                        utente.setLingueParlate((String) valore);</b>
+&nbsp;                        break;
+&nbsp;                    default:
+<b class="nc">&nbsp;                        throw new IllegalArgumentException(&quot;Campo non valido: &quot; + campo);</b>
+&nbsp;                }
+&nbsp;            });
+&nbsp;        } catch (Exception e) {
+<b class="nc">&nbsp;            e.printStackTrace();</b>
+&nbsp;        }
+<b class="nc">&nbsp;        return utenteDAO.save(utente);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Modifica la foto profilo di un utente dato il suo indirizzo email e una nuova immagine in formato Base64.
+&nbsp;     *
+&nbsp;     * @param email indirizzo email dell&#39;utente.
+&nbsp;     * @param base64Image immagine in formato Base64 da salvare come nuova foto profilo.
+&nbsp;     * @throws IOException se si verifica un errore durante l&#39;aggiornamento della foto.
+&nbsp;     */
+&nbsp;    public void modificaFotoUtente(
+&nbsp;            final String email,
+&nbsp;            final String base64Image) throws IOException {
+&nbsp;        // Trova l&#39;utente dal database tramite email
+<b class="nc">&nbsp;        Optional&lt;Utente&gt; utenteOptional = utenteDAO.findById(email);</b>
+<b class="nc">&nbsp;        if (utenteOptional.isEmpty()) {</b>
+<b class="nc">&nbsp;            throw new IllegalArgumentException(&quot;Utente non trovato.&quot;);</b>
+&nbsp;        }
+&nbsp;
+<b class="nc">&nbsp;        Utente utente = utenteOptional.get();</b>
+&nbsp;
+&nbsp;        // Verifica se la foto è presente e non è vuota
+<b class="nc">&nbsp;        if (base64Image != null &amp;&amp; !base64Image.isEmpty()) {</b>
+&nbsp;            // Verifica se contiene il prefisso &#39;data:image/jpeg;base64,&#39; e rimuovilo
+&nbsp;
+&nbsp;                // Decodifica la stringa base64 in byte[]
+<b class="nc">&nbsp;                byte[] fotoData = Base64.getDecoder().decode(base64Image);</b>
+&nbsp;
+&nbsp;                // Salva l&#39;immagine tramite il servizio FotoProfiloService (deve restituire un ID unico per la foto)
+<b class="nc">&nbsp;                String fotoProfiloId = fotoProfiloService.saveFotoProfilo(utente.getEmail(), fotoData);</b>
+&nbsp;
+&nbsp;                // Aggiorna l&#39;utente con il nuovo ID foto
+<b class="nc">&nbsp;                utente.setFotoProfilo(fotoProfiloId);</b>
+<b class="nc">&nbsp;                utenteDAO.save(utente);  // Salva l&#39;utente con il nuovo fotoProfiloId nel database</b>
+&nbsp;
+&nbsp;
+&nbsp;        } else {
+<b class="nc">&nbsp;            throw new IllegalArgumentException(&quot;La stringa Base64 per la foto è vuota.&quot;);</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Recupera un utente dal sistema dato il suo indirizzo email.
+&nbsp;     *
+&nbsp;     * @param email indirizzo email dell&#39;utente.
+&nbsp;     * @return l&#39;oggetto {@link Utente} associato all&#39;indirizzo email fornito.
+&nbsp;     */
+&nbsp;    public Utente getUtente(
+&nbsp;            final String email) {
+<b class="nc">&nbsp;        Utente u = utenteDAO.findByEmail(email);</b>
+<b class="nc">&nbsp;        return u;</b>
+&nbsp;    }
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2025-01-05 20:59</div>
+</div>
+</body>
+</html>

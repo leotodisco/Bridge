@@ -1,0 +1,167 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > Consulenza</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">com.project.bridgebackend.Model.Entity</a>
+</div>
+
+<h1>Coverage Summary for Class: Consulenza (com.project.bridgebackend.Model.Entity)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+</tr>
+  <tr>
+    <td class="name">Consulenza$HibernateInstantiator$HHDXaJ5V</td>
+  </tr>
+  <tr>
+    <td class="name">Consulenza$HibernateProxy$2Ox75m7q</td>
+  </tr>
+<tr>
+  <td class="name"><strong>Total</strong></td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package com.project.bridgebackend.Model.Entity;
+&nbsp;
+&nbsp;import com.project.bridgebackend.Model.Entity.enumeration.TipoConsulenza;
+&nbsp;import jakarta.persistence.Inheritance;
+&nbsp;import jakarta.persistence.Entity;
+&nbsp;import jakarta.persistence.InheritanceType;
+&nbsp;import jakarta.persistence.Table;
+&nbsp;import jakarta.persistence.EnumType;
+&nbsp;import jakarta.persistence.Enumerated;
+&nbsp;import jakarta.persistence.Column;
+&nbsp;import jakarta.persistence.ElementCollection;
+&nbsp;import jakarta.persistence.CollectionTable;
+&nbsp;import jakarta.persistence.JoinColumn;
+&nbsp;import jakarta.persistence.MapKeyColumn;
+&nbsp;import lombok.AllArgsConstructor;
+&nbsp;import lombok.Getter;
+&nbsp;import lombok.NoArgsConstructor;
+&nbsp;import lombok.Setter;
+&nbsp;import jakarta.validation.constraints.NotBlank;
+&nbsp;import jakarta.validation.constraints.Pattern;
+&nbsp;import java.util.Map;
+&nbsp;
+&nbsp;/**
+&nbsp; * @author Geraldine Montella.
+&nbsp; * Creato il: 03/12/2024.
+&nbsp; * Questa Java Persistence Entity per una consulenza,
+&nbsp; *
+&nbsp; * eredita altri attributi dall&#39;entity Annuncio
+&nbsp; */
+&nbsp;@Inheritance(strategy = InheritanceType.JOINED)
+&nbsp;@Entity
+&nbsp;@Getter
+&nbsp;@Setter
+&nbsp;@Table(name = &quot;consulenza&quot;)
+&nbsp;@NoArgsConstructor
+&nbsp;@AllArgsConstructor
+&nbsp;public class Consulenza extends Annuncio {
+&nbsp;
+&nbsp;    /**
+&nbsp;    * Tipo identifica la tipologia di consulenza,
+&nbsp;    * che si vuole proporre.
+&nbsp;    * */
+&nbsp;    @Enumerated(EnumType.STRING)
+&nbsp;    @Column(name = &quot;tipo&quot;, nullable = false)
+&nbsp;    private TipoConsulenza tipo;
+&nbsp;
+&nbsp;    /**
+&nbsp;    * Orari di disponibilità indicano la fascia oraria,
+&nbsp;    * in cui il consulente è disponbile.
+&nbsp;    * todo: to verify if string is a valid option
+&nbsp;     */
+&nbsp;    @Column(name = &quot;orari_disponibili&quot;, nullable = false, length = 500)
+&nbsp;    @NotBlank(message = &quot;Gli orari di disponibilità non possono essere vuoti&quot;)
+&nbsp;    @Pattern(
+&nbsp;            regexp = &quot;^(Lunedi|Martedi|Mercoledi|Giovedi|Venerdi|Sabato|Domenica)\\s+(0\\d|1\\d|2[0-3]):[0-5]\\d\\s*-\\s*(0\\d|1\\d|2[0-3]):[0-5]\\d$&quot;,
+&nbsp;            message = &quot;Formato orario non valido! Usa: &lt;Giorno&gt; HH:MM - HH:MM (es. Lunedi 09:30-10:45)&quot;
+&nbsp;    )
+&nbsp;    private String orariDisponibili;
+&nbsp;
+&nbsp;    /**
+&nbsp;    * Descrizione è una stringa atta a discriminare come la,
+&nbsp;    * consulenza mira ad aiutare il rifugiato.
+&nbsp;    */
+&nbsp;    @Column(name = &quot;descrizione&quot;, nullable = false, length = 1000)
+&nbsp;    private String descrizione;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Numero di telefono per contattare il consulente.
+&nbsp;     * Valida il formato secondo il modello italiano.
+&nbsp;     */
+&nbsp;    @NotBlank(message = &quot;Il numero non può essere vuoto&quot;)
+&nbsp;    @Pattern(
+&nbsp;            regexp = &quot;^((00|\\+)39[\\. ]??)??3\\d{2}[\\. ]??\\d{6,7}$&quot;,
+&nbsp;            message = &quot;Numero di telefono non valido. Deve seguire il formato italiano.&quot;
+&nbsp;    )
+&nbsp;    @Column(name = &quot;numero&quot;, nullable = false, length = 15)
+&nbsp;    private String numero;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Lista di candidati (di tipo Rifugiato) che hanno applicato per l&#39;annuncio.
+&nbsp;     * È una relazione @OneToMany, in cui un annuncio può essere associato a più candidati.
+&nbsp;     * La relazione è mappata dall&#39;attributo annuncio nell&#39;entità Rifugiato.
+&nbsp;     */
+&nbsp;    @ElementCollection
+&nbsp;    @CollectionTable(
+&nbsp;            name = &quot;consulenza_rifugiati&quot;,
+&nbsp;            joinColumns = @JoinColumn(name = &quot;consulenza_id&quot;)
+&nbsp;    )
+&nbsp;    @MapKeyColumn(name = &quot;rifugiato_email&quot;)
+&nbsp;    @Column(name = &quot;stato&quot;)
+&nbsp;    private Map&lt;String, Boolean&gt; candidati; // true = accettato, false = respinto/in attesa
+&nbsp;
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2025-01-05 20:59</div>
+</div>
+</body>
+</html>

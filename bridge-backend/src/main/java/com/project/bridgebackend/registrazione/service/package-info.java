@@ -10,7 +10,6 @@
  *   : Implementazione dell'interfaccia che si occupa della logica di registrazione,
  *   e autenticazione degli utenti, con il supporto di token JWT.</li>
  * </ul>
- * </p>
  * <p>
  * La registrazione supporta diversi ruoli come admin, volontario, rifugiato e figura specializzata.
  * Inoltre, il login genera e restituisce un token JWT per l'autenticazione dell'utente.

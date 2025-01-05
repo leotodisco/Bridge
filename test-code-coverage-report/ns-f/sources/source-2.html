@@ -1,0 +1,192 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > EventoDTO</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">com.project.bridgebackend.Model.dto</a>
+</div>
+
+<h1>Coverage Summary for Class: EventoDTO (com.project.bridgebackend.Model.dto)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">EventoDTO</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/1)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package com.project.bridgebackend.Model.dto;
+&nbsp;
+&nbsp;import com.project.bridgebackend.Model.Entity.Indirizzo;
+&nbsp;import com.project.bridgebackend.Model.Entity.Volontario;
+&nbsp;import com.project.bridgebackend.Model.Entity.enumeration.Lingua;
+&nbsp;import lombok.AllArgsConstructor;
+&nbsp;import lombok.Getter;
+&nbsp;import lombok.Setter;
+&nbsp;import lombok.ToString;
+&nbsp;import lombok.experimental.SuperBuilder;
+&nbsp;import java.time.LocalTime;
+&nbsp;
+&nbsp;/**
+&nbsp; * @author Alessia De Filippo
+&nbsp; * Creato il: 04/12/2024
+&nbsp; * è la classe relativa all&#39;DTO Evento
+&nbsp; * I campi sono: id, nome, data, ora,
+&nbsp; * lingueParlate, descrizione, luogo,
+&nbsp; * organizzatore, maxPartecipanti
+&nbsp; **/
+&nbsp;
+&nbsp;@Getter
+&nbsp;@Setter
+&nbsp;@ToString
+&nbsp;@SuperBuilder
+&nbsp;@AllArgsConstructor
+&nbsp;public class EventoDTO {
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Identificativo univoco dell&#39;evento.
+&nbsp;     * Rappresenta la chiave primaria dell&#39;evento.
+&nbsp;     **/
+&nbsp;    private Long id;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Nome dell&#39;evento.
+&nbsp;     * Rappresenta il titolo dell&#39;evento.
+&nbsp;     **/
+&nbsp;    private String nome;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Data dell&#39;evento.
+&nbsp;     * Rappresenta la data di svolgimento dell&#39;evento.
+&nbsp;     **/
+&nbsp;    private String data;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Ora dell&#39;evento.
+&nbsp;     * Indica l&#39;orario di inizio dell&#39;evento.
+&nbsp;     **/
+&nbsp;    private LocalTime ora;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Lingue parlate durante l&#39;evento.
+&nbsp;     * Indica le lingue parlate durante l&#39;evento.
+&nbsp;     **/
+&nbsp;    private Lingua linguaParlata;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Descrizione dell&#39;evento.
+&nbsp;     * Rappresenta una breve descrizione dell&#39;evento.
+&nbsp;     **/
+&nbsp;    private String descrizione;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Luogo dell&#39;evento.
+&nbsp;     * Indica il luogo in cui si svolgerà l&#39;evento.
+&nbsp;     **/
+&nbsp;    private Indirizzo luogo;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Organizzatore dell&#39;evento.
+&nbsp;     * Indica il volontario che ha organizzato l&#39;evento.
+&nbsp;     **/
+&nbsp;    private Volontario organizzatore;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Numero massimo di partecipanti all&#39;evento.
+&nbsp;     * Numero massimo di partecipanti all&#39;evento.
+&nbsp;     **/
+&nbsp;    private int maxPartecipanti;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Costruttore vuoto.
+&nbsp;     **/
+<b class="nc">&nbsp;    public EventoDTO() {</b>
+&nbsp;    }
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2025-01-05 20:59</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,304 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > GestioneCorsoServiceImpl</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">com.project.bridgebackend.GestioneCorso.Service</a>
+</div>
+
+<h1>Coverage Summary for Class: GestioneCorsoServiceImpl (com.project.bridgebackend.GestioneCorso.Service)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Branch, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">GestioneCorsoServiceImpl</td>
+<td class="coverageStat">
+  <span class="percent">
+    25%
+  </span>
+  <span class="absValue">
+    (1/4)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    42,5%
+  </span>
+  <span class="absValue">
+    (17/40)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    40%
+  </span>
+  <span class="absValue">
+    (20/50)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">GestioneCorsoServiceImpl$$SpringCGLIB$$0</td>
+  </tr>
+<tr>
+  <td class="name"><strong>Total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    25%
+  </span>
+  <span class="absValue">
+    (1/4)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    42,5%
+  </span>
+  <span class="absValue">
+    (17/40)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    40%
+  </span>
+  <span class="absValue">
+    (20/50)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package com.project.bridgebackend.GestioneCorso.Service;
+&nbsp;
+&nbsp;import com.project.bridgebackend.CDN.CDNService;
+&nbsp;import com.project.bridgebackend.Model.Entity.Corso;
+&nbsp;import com.project.bridgebackend.Model.dao.CorsoDAO;
+&nbsp;import com.project.bridgebackend.Model.dao.FiguraSpecializzataDAO;
+&nbsp;import jakarta.transaction.Transactional;
+&nbsp;import lombok.RequiredArgsConstructor;
+&nbsp;import org.springframework.beans.factory.annotation.Autowired;
+&nbsp;import org.springframework.stereotype.Service;
+&nbsp;import java.util.List;
+&nbsp;import java.util.regex.Pattern;
+&nbsp;import java.util.regex.Matcher;
+&nbsp;
+&nbsp;/**
+&nbsp; * @author Biagio Gallo.
+&nbsp; * Creato il: 06/12/2024.
+&nbsp; * Implementazione del service per la gestione dei corsi.
+&nbsp; * Questa classe fornisce metodi per,
+&nbsp; * creare, modificare, eliminare e trovare corsi.
+&nbsp; * Utilizza il CorsoDAO per interagire con il database.
+&nbsp; * L&#39;annotazione @RequiredArgsConstructor di Lombok,
+&nbsp; * viene utilizzata per generare un costruttore con gli argomenti richiesti.
+&nbsp; */
+&nbsp;@Service
+&nbsp;@RequiredArgsConstructor
+&nbsp;public class GestioneCorsoServiceImpl implements GestioneCorsoService {
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Iniezione del DAO per interagire con il database.
+&nbsp;     */
+&nbsp;    @Autowired
+&nbsp;    private final CorsoDAO corsoDAO;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Iniezione logica di gestione per i pdf.
+&nbsp;     */
+&nbsp;    @Autowired
+&nbsp;    private final CDNService pdfService;
+&nbsp;    @Autowired
+&nbsp;    private FiguraSpecializzataDAO figuraSpecializzataDAO;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Crea un nuovo corso.
+&nbsp;     * @param corso il DTO del corso contenente i dettagli del corso.
+&nbsp;     * @return il corso creato come CorsoDTO.
+&nbsp;     */
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public Corso creaCorso(final Corso corso) throws Exception {
+<b class="pc">&nbsp;        if (corso == null) {</b>
+<b class="nc">&nbsp;            throw new IllegalArgumentException(&quot;Corso non valido&quot;);</b>
+&nbsp;        }
+&nbsp;
+&nbsp;        // Controllo del titolo
+<b class="pc">&nbsp;        if (corso.getTitolo() == null || corso.getTitolo().trim().isEmpty()) {</b>
+<b class="fc">&nbsp;            throw new IllegalArgumentException(&quot;Il titolo del corso non può essere vuoto&quot;);</b>
+&nbsp;        }
+<b class="pc">&nbsp;        if (corso.getTitolo().length() &lt; 3) {</b>
+<b class="nc">&nbsp;            throw new IllegalArgumentException(&quot;Il titolo del corso deve contenere almeno 3 caratteri&quot;);</b>
+&nbsp;        }
+&nbsp;
+&nbsp;        // Controllo della descrizione
+<b class="pc">&nbsp;        if (corso.getDescrizione() == null || corso.getDescrizione().trim().isEmpty()) {</b>
+<b class="fc">&nbsp;            throw new IllegalArgumentException(&quot;La descrizione del corso non può essere vuota&quot;);</b>
+&nbsp;        }
+<b class="pc">&nbsp;        if (corso.getDescrizione().length() &lt; 10) {</b>
+<b class="nc">&nbsp;            throw new IllegalArgumentException(&quot;La descrizione del corso deve contenere almeno 10 caratteri&quot;);</b>
+&nbsp;        }
+&nbsp;
+&nbsp;        // Controllo della categoria del corso
+<b class="pc">&nbsp;        if (corso.getCategoriaCorso() == null) {</b>
+<b class="nc">&nbsp;            throw new IllegalArgumentException(&quot;La categoria del corso è obbligatoria&quot;);</b>
+&nbsp;        }
+&nbsp;
+&nbsp;        // Controllo della lingua
+<b class="pc">&nbsp;        if (corso.getLingua() == null) {</b>
+<b class="nc">&nbsp;            throw new IllegalArgumentException(&quot;La lingua del corso è obbligatoria&quot;);</b>
+&nbsp;        }
+&nbsp;
+&nbsp;        // Controllo del proprietario del corso
+<b class="pc">&nbsp;        if (corso.getProprietario() == null) {</b>
+<b class="nc">&nbsp;            throw new IllegalArgumentException(&quot;Il proprietario del corso è obbligatorio&quot;);</b>
+&nbsp;        }
+&nbsp;
+<b class="fc">&nbsp;        if (figuraSpecializzataDAO.findByEmail(corso.getProprietario().getEmail()) == null) {</b>
+<b class="fc">&nbsp;            throw new IllegalArgumentException(&quot;Il proprietario del corso non è valido&quot;);</b>
+&nbsp;        }
+&nbsp;
+<b class="pc">&nbsp;        if (!corso.getTitolo().matches(&quot;^[A-Za-z0-9À-ÿ .,&#39;-]{3,100}$&quot;)) {</b>
+<b class="nc">&nbsp;            throw new Exception(&quot;Il titolo del corso non è valido&quot;);</b>
+&nbsp;        }
+&nbsp;
+<b class="pc">&nbsp;        if (!corso.getCategoriaCorso().toString().matches(&quot;^[A-Za-zÀ-ÿ&#39; -]{3,50}$&quot;)) {</b>
+<b class="nc">&nbsp;            throw new Exception(&quot;La categoria del corso non è valida&quot;);</b>
+&nbsp;        }
+&nbsp;
+<b class="pc">&nbsp;        if (!corso.getLingua().toString().matches(&quot;(?i)^(Italiano|Inglese|Francese|Tedesco|Spagnolo|Portoghese|Russo|Cinese|Ucraino, Arabo)(,\\s*(Italiano|Inglese|Francese|Tedesco|Spagnolo|Portoghese|Russo|Cinese|Ucraino, Arabo))*$&quot;)) {</b>
+<b class="nc">&nbsp;            throw new Exception(&quot;La lingua del corso non è valida&quot;);</b>
+&nbsp;        }
+<b class="fc">&nbsp;        System.out.println(&quot;Proprietario trovato: &quot; + figuraSpecializzataDAO.findByEmail(corso.getProprietario().getEmail()));</b>
+&nbsp;
+<b class="fc">&nbsp;        var result = corsoDAO.save(corso);</b>
+<b class="fc">&nbsp;        System.out.println(corso);</b>
+<b class="fc">&nbsp;        System.out.println(result);</b>
+<b class="fc">&nbsp;        return result;</b>
+&nbsp;        //return corsoDAO.save(corso);
+&nbsp;    }
+&nbsp;    /**
+&nbsp;     * Modifica un corso esistente.
+&nbsp;     * todo: inserire possibilità modifica pdf
+&nbsp;     * @param corso il DTO del corso contenente.
+&nbsp;     * i dettagli aggiornati del corso.
+&nbsp;     * @return il corso modificato come CorsoDTO.
+&nbsp;     */
+&nbsp;    @Override
+&nbsp;    public Corso modificaCorso(final Corso corso) {
+<b class="nc">&nbsp;        if (corso == null || corso.getTitolo() == null || corso.getProprietario() == null) {</b>
+<b class="nc">&nbsp;            throw new IllegalArgumentException(&quot;Il corso o i dettagli richiesti non sono validi&quot;);</b>
+&nbsp;        }
+&nbsp;
+<b class="nc">&nbsp;        Corso existingCorso = corsoDAO.findById(corso.getId())</b>
+<b class="nc">&nbsp;                .orElseThrow(() -&gt; new IllegalArgumentException(&quot;Corso non trovato&quot;));</b>
+<b class="nc">&nbsp;        if (existingCorso == null) {</b>
+<b class="nc">&nbsp;            throw new IllegalArgumentException(&quot;Corso non trovato&quot;);</b>
+&nbsp;        }
+&nbsp;
+&nbsp;        // Aggiorna i campi del corso esistente
+<b class="nc">&nbsp;        existingCorso.setId(corso.getId());</b>
+<b class="nc">&nbsp;        existingCorso.setTitolo(corso.getTitolo());</b>
+<b class="nc">&nbsp;        existingCorso.setDescrizione(corso.getDescrizione());</b>
+<b class="nc">&nbsp;        existingCorso.setCategoriaCorso(corso.getCategoriaCorso());</b>
+<b class="nc">&nbsp;        existingCorso.setLingua(corso.getLingua());</b>
+<b class="nc">&nbsp;        existingCorso.setPdf(corso.getPdf());</b>
+<b class="nc">&nbsp;        return corsoDAO.save(existingCorso);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Elimina un corso esistente.
+&nbsp;     * @param corso il DTO del corso contenente.
+&nbsp;     * i dettagli del corso da eliminare.
+&nbsp;     */
+&nbsp;    @Override
+&nbsp;    @Transactional
+&nbsp;    public void eliminaCorso(final Corso corso) {
+<b class="nc">&nbsp;        if (corso.getId() == null) {</b>
+<b class="nc">&nbsp;            throw new IllegalArgumentException(&quot;ID del corso non valido&quot;);</b>
+&nbsp;        }
+&nbsp;
+<b class="nc">&nbsp;        Corso existingCorso = corsoDAO.findById(corso.getId())</b>
+<b class="nc">&nbsp;                .orElseThrow(() -&gt; new IllegalArgumentException(&quot;Corso non trovato&quot;));</b>
+&nbsp;
+&nbsp;        // Elimina il PDF associato
+<b class="nc">&nbsp;        if (existingCorso.getPdf() != null) {</b>
+<b class="nc">&nbsp;            pdfService.deletePdf(existingCorso.getPdf());</b>
+&nbsp;        }
+&nbsp;
+<b class="nc">&nbsp;        corsoDAO.delete(existingCorso);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Trova tutti i corsi.
+&nbsp;     * @return una lista di tutti i corsi come CorsoDTO.
+&nbsp;     */
+&nbsp;    @Override
+&nbsp;    public List&lt;Corso&gt; findAll() {
+<b class="nc">&nbsp;        return corsoDAO.findAll();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2025-01-05 20:59</div>
+</div>
+</body>
+</html>

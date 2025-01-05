@@ -1,0 +1,391 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > GestioneCorsoController</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">com.project.bridgebackend.GestioneCorso.Controller</a>
+</div>
+
+<h1>Coverage Summary for Class: GestioneCorsoController (com.project.bridgebackend.GestioneCorso.Controller)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Branch, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">GestioneCorsoController</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    18,2%
+  </span>
+  <span class="absValue">
+    (2/11)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/26)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    2,1%
+  </span>
+  <span class="absValue">
+    (2/95)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package com.project.bridgebackend.GestioneCorso.Controller;
+&nbsp;
+&nbsp;import com.project.bridgebackend.CDN.CDNService;
+&nbsp;import com.project.bridgebackend.GestioneCorso.Service.GestioneCorsoService;
+&nbsp;import com.project.bridgebackend.CDN.Document.PDFDoc;
+&nbsp;import com.project.bridgebackend.Model.Entity.Corso;
+&nbsp;import com.project.bridgebackend.Model.Entity.FiguraSpecializzata;
+&nbsp;import com.project.bridgebackend.Model.dao.CorsoDAO;
+&nbsp;import com.project.bridgebackend.Model.dao.FiguraSpecializzataDAO;
+&nbsp;import com.project.bridgebackend.Model.dao.UtenteDAO;
+&nbsp;import com.project.bridgebackend.Model.dto.CorsoDTO;
+&nbsp;import com.project.bridgebackend.util.JwtService;
+&nbsp;import jakarta.servlet.http.HttpServletResponse;
+&nbsp;import jakarta.validation.Valid;
+&nbsp;import org.slf4j.Logger;
+&nbsp;import org.slf4j.LoggerFactory;
+&nbsp;import org.springframework.beans.factory.annotation.Autowired;
+&nbsp;import org.springframework.beans.factory.annotation.Qualifier;
+&nbsp;import org.springframework.http.HttpStatus;
+&nbsp;import org.springframework.http.ResponseEntity;
+&nbsp;import org.springframework.web.bind.annotation.*;
+&nbsp;import org.springframework.web.multipart.MultipartFile;
+&nbsp;
+&nbsp;import java.io.IOException;
+&nbsp;import java.io.OutputStream;
+&nbsp;import java.util.List;
+&nbsp;
+&nbsp;/**
+&nbsp; * @author Biagio Gallo.
+&nbsp; * Creato il: 06/12/2024.
+&nbsp; * Controller per la gestione dei corsi.
+&nbsp; */
+&nbsp;@RestController
+&nbsp;@RequestMapping(&quot;/api/corsi&quot;)
+&nbsp;@CrossOrigin(origins = &quot;http://localhost:5174&quot;, allowedHeaders = &quot;*&quot;)
+<b class="fc">&nbsp;public class GestioneCorsoController {</b>
+&nbsp;
+<b class="fc">&nbsp;    private static final Logger log = LoggerFactory.getLogger(GestioneCorsoController.class);</b>
+&nbsp;
+&nbsp;    @Autowired
+&nbsp;    private GestioneCorsoService gestioneCorsoService;
+&nbsp;    @Autowired
+&nbsp;    private FiguraSpecializzataDAO figuraSpecializzataDAO;
+&nbsp;    @Autowired
+&nbsp;    private CorsoDAO corsoDAO;
+&nbsp;    @Autowired
+&nbsp;    private CDNService pdfService;
+&nbsp;    @Autowired
+&nbsp;    private JwtService jwtService;
+&nbsp;    @Qualifier(&quot;utenteDAO&quot;)
+&nbsp;    @Autowired
+&nbsp;    private UtenteDAO utenteDAO;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Endpoint per creare un nuovo corso.
+&nbsp;     *
+&nbsp;     * @param authorizationHeader Header di autorizzazione contenente il token JWT
+&nbsp;     * @param corsoDTO DTO contenente i dati del corso da creare
+&nbsp;     * @return ResponseEntity con il corso creato o errore
+&nbsp;     */
+&nbsp;    @PostMapping(&quot;/crea&quot;)
+&nbsp;    public ResponseEntity&lt;Corso&gt; creaCorso(
+&nbsp;            @RequestHeader(&quot;Authorization&quot;) final String authorizationHeader,
+&nbsp;            @RequestBody @Valid CorsoDTO corsoDTO) {
+&nbsp;        try {
+<b class="nc">&nbsp;            log.info(&quot;Richiesta per la creazione di un corso ricevuta.&quot;);</b>
+<b class="nc">&nbsp;            log.info(&quot;Authorization Header: {}&quot;, authorizationHeader);</b>
+&nbsp;
+&nbsp;            // Estrai il token dall&#39;header
+<b class="nc">&nbsp;            String token = authorizationHeader.replace(&quot;Bearer &quot;, &quot;&quot;);</b>
+<b class="nc">&nbsp;            log.info(&quot;Token estratto: {}&quot;, token);</b>
+&nbsp;
+&nbsp;            // Estrai l&#39;email dal token
+<b class="nc">&nbsp;            String emailUtenteAutenticato = jwtService.extractUsername(token);</b>
+<b class="nc">&nbsp;            log.info(&quot;Email utente autenticato: {}&quot;, emailUtenteAutenticato);</b>
+&nbsp;
+&nbsp;            // Recupera la figura specializzata associata all&#39;email
+<b class="nc">&nbsp;            FiguraSpecializzata figuraSpecializzata = figuraSpecializzataDAO.findByEmail(emailUtenteAutenticato);</b>
+<b class="nc">&nbsp;            if (figuraSpecializzata == null) {</b>
+<b class="nc">&nbsp;                log.warn(&quot;FiguraSpecializzata non trovata per email: {}&quot;, emailUtenteAutenticato);</b>
+<b class="nc">&nbsp;                return ResponseEntity.status(HttpStatus.FORBIDDEN).body(null);</b>
+&nbsp;            }
+&nbsp;
+&nbsp;            // Creazione del corso
+<b class="nc">&nbsp;            Corso newCorso = new Corso();</b>
+<b class="nc">&nbsp;            newCorso.setTitolo(corsoDTO.getTitolo());</b>
+<b class="nc">&nbsp;            newCorso.setLingua(corsoDTO.getLingua());</b>
+<b class="nc">&nbsp;            newCorso.setCategoriaCorso(corsoDTO.getCategoria());</b>
+<b class="nc">&nbsp;            newCorso.setDescrizione(corsoDTO.getDescrizione());</b>
+<b class="nc">&nbsp;            newCorso.setPdf(corsoDTO.getPdf());</b>
+<b class="nc">&nbsp;            newCorso.setProprietario(figuraSpecializzata);</b>
+&nbsp;
+&nbsp;            // Salvataggio del corso
+<b class="nc">&nbsp;            Corso createdCorso = gestioneCorsoService.creaCorso(newCorso);</b>
+<b class="nc">&nbsp;            log.info(&quot;Corso creato con successo. ID: {}&quot;, createdCorso.getId());</b>
+&nbsp;
+<b class="nc">&nbsp;            return new ResponseEntity&lt;&gt;(createdCorso, HttpStatus.CREATED);</b>
+&nbsp;        } catch (IllegalArgumentException e) {
+<b class="nc">&nbsp;            log.error(&quot;Errore durante la creazione del corso: {}&quot;, e.getMessage());</b>
+<b class="nc">&nbsp;            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);</b>
+&nbsp;        } catch (Exception e) {
+<b class="nc">&nbsp;            log.error(&quot;Errore generico durante la creazione del corso&quot;, e);</b>
+<b class="nc">&nbsp;            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Endpoint per caricare un file PDF.
+&nbsp;     *
+&nbsp;     * @param name Nome del file
+&nbsp;     * @param file File PDF da caricare
+&nbsp;     * @return ResponseEntity con l&#39;ID del file PDF caricato
+&nbsp;     */
+&nbsp;    @PostMapping(&quot;/upload&quot;)
+&nbsp;    @CrossOrigin(origins = &quot;http://localhost:5174&quot;, allowedHeaders = &quot;*&quot;)
+&nbsp;    public ResponseEntity&lt;String&gt; uploadPDF(@RequestParam(&quot;nome&quot;) String name, @RequestParam(&quot;pdf&quot;) MultipartFile file) {
+&nbsp;        try {
+<b class="nc">&nbsp;            PDFDoc pdf = pdfService.savePdf(name, file);</b>
+<b class="nc">&nbsp;            return ResponseEntity.ok(pdf.getId());</b>
+&nbsp;        } catch (IOException e) {
+<b class="nc">&nbsp;            log.error(&quot;Errore durante il caricamento del PDF&quot;, e);</b>
+<b class="nc">&nbsp;            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(&quot;Errore durante il caricamento del PDF&quot;);</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;
+&nbsp;    @PostMapping(&quot;/modifica/{id}&quot;)
+&nbsp;    public ResponseEntity&lt;Corso&gt; modificaCorso(
+&nbsp;            @PathVariable Long id,
+&nbsp;            @RequestHeader(&quot;Authorization&quot;) final String authorizationHeader,
+&nbsp;            @RequestBody @Valid CorsoDTO corsoDTO) {
+&nbsp;        try {
+<b class="nc">&nbsp;            log.info(&quot;Authorization Header ricevuto: {}&quot;, authorizationHeader);</b>
+<b class="nc">&nbsp;            String token = authorizationHeader.replace(&quot;Bearer &quot;, &quot;&quot;);</b>
+<b class="nc">&nbsp;            log.info(&quot;Token estratto: {}&quot;, token);</b>
+&nbsp;
+<b class="nc">&nbsp;            String emailUtenteLoggato = jwtService.extractUsername(token);</b>
+<b class="nc">&nbsp;            log.info(&quot;Email utente loggato estratta: {}&quot;, emailUtenteLoggato);</b>
+&nbsp;
+<b class="nc">&nbsp;            Corso corso = corsoDAO.findById(id).orElse(null);</b>
+<b class="nc">&nbsp;            if (corso == null) {</b>
+<b class="nc">&nbsp;                log.warn(&quot;Corso non trovato per ID: {}&quot;, id);</b>
+<b class="nc">&nbsp;                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);</b>
+&nbsp;            }
+&nbsp;
+<b class="nc">&nbsp;            if (!corso.getProprietario().getEmail().equals(emailUtenteLoggato)) {</b>
+<b class="nc">&nbsp;                log.warn(&quot;Accesso non autorizzato per l&#39;utente: {}&quot;, emailUtenteLoggato);</b>
+<b class="nc">&nbsp;                return ResponseEntity.status(HttpStatus.FORBIDDEN).body(null);</b>
+&nbsp;            }
+&nbsp;
+<b class="nc">&nbsp;            corso.setTitolo(corsoDTO.getTitolo());</b>
+<b class="nc">&nbsp;            corso.setLingua(corsoDTO.getLingua());</b>
+<b class="nc">&nbsp;            corso.setCategoriaCorso(corsoDTO.getCategoria());</b>
+<b class="nc">&nbsp;            corso.setDescrizione(corsoDTO.getDescrizione());</b>
+<b class="nc">&nbsp;            corso.setPdf(corsoDTO.getPdf());</b>
+&nbsp;
+<b class="nc">&nbsp;            Corso updatedCorso = gestioneCorsoService.modificaCorso(corso);</b>
+<b class="nc">&nbsp;            return new ResponseEntity&lt;&gt;(updatedCorso, HttpStatus.OK);</b>
+&nbsp;        } catch (Exception e) {
+<b class="nc">&nbsp;            log.error(&quot;Errore durante la modifica del corso&quot;, e);</b>
+<b class="nc">&nbsp;            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;
+&nbsp;    @PostMapping(&quot;/elimina/{id}&quot;)
+&nbsp;    public ResponseEntity&lt;String&gt; eliminaCorso(@PathVariable Long id) {
+&nbsp;        try {
+<b class="nc">&nbsp;            Corso corso = corsoDAO.findById(id).orElse(null);</b>
+<b class="nc">&nbsp;            if (corso == null) {</b>
+<b class="nc">&nbsp;                log.warn(&quot;Corso non trovato per ID: {}&quot;, id);</b>
+<b class="nc">&nbsp;                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(&quot;Corso non trovato.&quot;);</b>
+&nbsp;            }
+&nbsp;
+<b class="nc">&nbsp;            gestioneCorsoService.eliminaCorso(corso);</b>
+<b class="nc">&nbsp;            return ResponseEntity.ok(&quot;Corso eliminato con successo.&quot;);</b>
+&nbsp;        } catch (Exception e) {
+<b class="nc">&nbsp;            log.error(&quot;Errore durante l&#39;eliminazione del corso&quot;, e);</b>
+<b class="nc">&nbsp;            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(&quot;Errore durante l&#39;eliminazione del corso.&quot;);</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;
+&nbsp;    @GetMapping(&quot;/cerca/{id}&quot;)
+&nbsp;    public ResponseEntity&lt;Corso&gt; cercaCorso(@PathVariable Long id) {
+&nbsp;        try {
+<b class="nc">&nbsp;            Corso corso = corsoDAO.findById(id).orElse(null);</b>
+<b class="nc">&nbsp;            if (corso == null) {</b>
+<b class="nc">&nbsp;                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);</b>
+&nbsp;            }
+<b class="nc">&nbsp;            return ResponseEntity.ok(corso);</b>
+&nbsp;        } catch (Exception e) {
+<b class="nc">&nbsp;            log.error(&quot;Errore durante la ricerca del corso&quot;, e);</b>
+<b class="nc">&nbsp;            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;
+&nbsp;    @GetMapping(&quot;/listaCorsi&quot;)
+&nbsp;    public ResponseEntity&lt;List&lt;Corso&gt;&gt; findAll() {
+&nbsp;        try {
+<b class="nc">&nbsp;            List&lt;Corso&gt; corsi = corsoDAO.findAll();</b>
+<b class="nc">&nbsp;            return ResponseEntity.ok(corsi);</b>
+&nbsp;        } catch (Exception e) {
+<b class="nc">&nbsp;            log.error(&quot;Errore durante la ricerca del corso&quot;, e);</b>
+<b class="nc">&nbsp;            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Endpoint per ottenere la lista di tutti i corsi pubblicati da un utente.
+&nbsp;     * @param email
+&nbsp;     * @return ResponseEntity con la lista di corsi di un certo utente o errore
+&nbsp;     */
+&nbsp;    @GetMapping(&quot;/listaCorsiUtente/{email}&quot;)
+&nbsp;    public ResponseEntity&lt;List&lt;Corso&gt;&gt; findAllUtente(@PathVariable final String email) {
+&nbsp;        try {
+<b class="nc">&nbsp;            List&lt;Corso&gt; corsi = corsoDAO.findByProprietario_Email(email);</b>
+<b class="nc">&nbsp;            if (corsi == null || corsi.isEmpty()) {</b>
+<b class="nc">&nbsp;                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);</b>
+&nbsp;            }
+<b class="nc">&nbsp;            return ResponseEntity.ok(corsi);</b>
+&nbsp;        } catch (Exception e) {
+<b class="nc">&nbsp;            log.error(&quot;Errore durante la ricerca dei corsi&quot;, e);</b>
+<b class="nc">&nbsp;            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Endpoint per ottenere la lista di tutti i corsi pubblicati da un utente.
+&nbsp;     * @param email
+&nbsp;     * @return ResponseEntity con la lista di corsi di un certo utente o errore
+&nbsp;     */
+&nbsp;    @GetMapping(&quot;/listaCorsiUtentePartecipazioni/{email}&quot;)
+&nbsp;    public ResponseEntity&lt;List&lt;Corso&gt;&gt; findAllPartecipazioniUtente(@PathVariable final String email) {
+&nbsp;        try {
+<b class="nc">&nbsp;            List&lt;Corso&gt; corsi = corsoDAO.findByProprietario_Email(email);</b>
+<b class="nc">&nbsp;            if (corsi == null || corsi.isEmpty()) {</b>
+<b class="nc">&nbsp;                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);</b>
+&nbsp;            }
+<b class="nc">&nbsp;            return ResponseEntity.ok(corsi);</b>
+&nbsp;        } catch (Exception e) {
+<b class="nc">&nbsp;            log.error(&quot;Errore durante la ricerca dei corsi&quot;, e);</b>
+<b class="nc">&nbsp;            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;
+&nbsp;    @GetMapping(&quot;/download/{id}&quot;)
+&nbsp;    public void downloadPDF(@PathVariable Long id, HttpServletResponse response) {
+&nbsp;        try {
+<b class="nc">&nbsp;            Corso corso = corsoDAO.findById(id).orElse(null);</b>
+<b class="nc">&nbsp;            if (corso == null || corso.getPdf() == null) {</b>
+<b class="nc">&nbsp;                response.sendError(HttpServletResponse.SC_NOT_FOUND, &quot;Corso o PDF non trovato&quot;);</b>
+&nbsp;                return;
+&nbsp;            }
+&nbsp;
+<b class="nc">&nbsp;            PDFDoc pdfDoc = pdfService.getPdf(corso.getPdf());</b>
+<b class="nc">&nbsp;            if (pdfDoc == null || pdfDoc.getPdf() == null) {</b>
+<b class="nc">&nbsp;                response.sendError(HttpServletResponse.SC_NOT_FOUND, &quot;PDF non trovato&quot;);</b>
+&nbsp;                return;
+&nbsp;            }
+&nbsp;
+<b class="nc">&nbsp;            response.setContentType(&quot;application/pdf&quot;);</b>
+<b class="nc">&nbsp;            response.setHeader(&quot;Content-Disposition&quot;, &quot;attachment; filename=&quot; + pdfDoc.getNomePdf());</b>
+<b class="nc">&nbsp;            response.setContentLength(pdfDoc.getPdf().length);</b>
+&nbsp;
+<b class="nc">&nbsp;            try (OutputStream outputStream = response.getOutputStream()) {</b>
+<b class="nc">&nbsp;                outputStream.write(pdfDoc.getPdf());</b>
+&nbsp;            }
+&nbsp;        } catch (Exception e) {
+<b class="nc">&nbsp;            log.error(&quot;Errore durante il download del PDF&quot;, e);</b>
+&nbsp;            try {
+<b class="nc">&nbsp;                response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, &quot;Errore durante il download del PDF&quot;);</b>
+&nbsp;            } catch (IOException ex) {
+<b class="nc">&nbsp;                log.error(&quot;Errore durante l&#39;invio della risposta di errore&quot;, ex);</b>
+&nbsp;            }
+&nbsp;        }
+&nbsp;    }
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2025-01-05 20:59</div>
+</div>
+</body>
+</html>

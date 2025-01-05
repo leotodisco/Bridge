@@ -1,0 +1,641 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > DBPopulator</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">com.project.bridgebackend.util</a>
+</div>
+
+<h1>Coverage Summary for Class: DBPopulator (com.project.bridgebackend.util)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">DBPopulator</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    72,7%
+  </span>
+  <span class="absValue">
+    (8/11)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    95%
+  </span>
+  <span class="absValue">
+    (268/282)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package com.project.bridgebackend.util;
+&nbsp;
+&nbsp;import com.project.bridgebackend.Model.Entity.*;
+&nbsp;import com.project.bridgebackend.Model.Entity.enumeration.*;
+&nbsp;import com.project.bridgebackend.Model.dao.*;
+&nbsp;import org.springframework.beans.factory.annotation.Autowired;
+&nbsp;import org.springframework.context.annotation.Scope;
+&nbsp;import org.springframework.stereotype.Component;
+&nbsp;import org.springframework.boot.context.event.ApplicationReadyEvent;
+&nbsp;import org.springframework.context.event.EventListener;
+&nbsp;import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+&nbsp;
+&nbsp;import java.time.LocalDate;
+&nbsp;import java.time.LocalTime;
+&nbsp;import java.util.ArrayList;
+&nbsp;import java.util.HashMap;
+&nbsp;import java.util.List;
+&nbsp;import java.util.Map;
+&nbsp;
+&nbsp;/**
+&nbsp; * @Author Biagio Gallo.
+&nbsp; * Creato il: 29/12/2024.
+&nbsp; * Questa classe è responsabile della popolazione
+&nbsp; * del database con dati di esempio.
+&nbsp; */
+&nbsp;@Component
+&nbsp;@Scope(&quot;singleton&quot;)
+<b class="fc">&nbsp;public class DBPopulator {</b>
+&nbsp;
+&nbsp;    @Autowired
+&nbsp;    private RifugiatoDAO rifugiatoDAO;
+&nbsp;
+&nbsp;    @Autowired
+&nbsp;    private FiguraSpecializzataDAO figuraSpecializzataDAO;
+&nbsp;
+&nbsp;    @Autowired
+&nbsp;    private VolontarioDAO volontarioDAO;
+&nbsp;
+&nbsp;    @Autowired
+&nbsp;    private EventoDAO eventoDAO;
+&nbsp;
+&nbsp;    @Autowired
+&nbsp;    private ConsulenzaDAO consulenzaDAO;
+&nbsp;
+&nbsp;    @Autowired
+&nbsp;    private AlloggioDAO alloggioDAO;
+&nbsp;
+&nbsp;    @Autowired
+&nbsp;    private CorsoDAO corsoDAO;
+&nbsp;
+&nbsp;    @Autowired
+&nbsp;    private IndirizzoDAO indirizzoDAO;
+&nbsp;
+&nbsp;    @Autowired
+&nbsp;    private LavoroDAO lavoroDAO;
+&nbsp;
+&nbsp;    @EventListener(ApplicationReadyEvent.class)
+&nbsp;    public void populateDB() {
+<b class="fc">&nbsp;        BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();</b>
+&nbsp;
+&nbsp;        // Creazione di tre rifugiati
+<b class="fc">&nbsp;        Rifugiato rifugiato1 = new Rifugiato(</b>
+&nbsp;                &quot;rifugiato1@example.com&quot;,
+&nbsp;                &quot;Ali&quot;,
+&nbsp;                &quot;Khan&quot;,
+&nbsp;                &quot;Italiano, Inglese&quot;,
+&nbsp;                &quot;6772deb930698b3a76d304a1&quot;,
+&nbsp;                &quot;Cucina, Carpenteria&quot;,
+<b class="fc">&nbsp;                LocalDate.of(1995, 3, 15),</b>
+&nbsp;                TitoloDiStudio.ScuolaPrimaria,
+&nbsp;                Ruolo.Rifugiato,
+&nbsp;                Gender.Maschio,
+&nbsp;                &quot;Pakistan&quot;,
+<b class="fc">&nbsp;                passwordEncoder.encode(&quot;Cazzarola69!&quot;)</b>
+&nbsp;        );
+&nbsp;
+<b class="fc">&nbsp;        Rifugiato rifugiato2 = new Rifugiato(</b>
+&nbsp;                &quot;rifugiato2@example.com&quot;,
+&nbsp;                &quot;Maria&quot;,
+&nbsp;                &quot;Gonzalez&quot;,
+&nbsp;                &quot;Spagnolo, Inglese&quot;,
+&nbsp;                &quot;6772dd6130698b3a76d304a0&quot;,
+&nbsp;                &quot;Educazione, Cucito&quot;,
+<b class="fc">&nbsp;                LocalDate.of(1987, 7, 22),</b>
+&nbsp;                TitoloDiStudio.Laurea,
+&nbsp;                Ruolo.Rifugiato,
+&nbsp;                Gender.Femmina,
+&nbsp;                &quot;Messico&quot;,
+<b class="fc">&nbsp;                passwordEncoder.encode(&quot;Passroad69!&quot;)</b>
+&nbsp;        );
+&nbsp;
+<b class="fc">&nbsp;        Rifugiato rifugiato3 = new Rifugiato(</b>
+&nbsp;                &quot;rifugiato3@example.com&quot;,
+&nbsp;                &quot;Ahmed&quot;,
+&nbsp;                &quot;Said&quot;,
+&nbsp;                &quot;Arabo, Italiano&quot;,
+&nbsp;                &quot;6772df3730698b3a76d304a2&quot;,
+&nbsp;                &quot;Manutenzione, Giardinaggio&quot;,
+<b class="fc">&nbsp;                LocalDate.of(1990, 12, 10),</b>
+&nbsp;                TitoloDiStudio.ScuolaPrimaria,
+&nbsp;                Ruolo.Rifugiato,
+&nbsp;                Gender.Maschio,
+&nbsp;                &quot;Siria&quot;,
+<b class="fc">&nbsp;                passwordEncoder.encode(&quot;Passroad69!&quot;)</b>
+&nbsp;        );
+&nbsp;
+&nbsp;        // Creazione di tre figure specializzate
+<b class="fc">&nbsp;        FiguraSpecializzata figura1 = new FiguraSpecializzata(</b>
+&nbsp;                &quot;figura1@example.com&quot;,
+&nbsp;                &quot;Laura&quot;,
+&nbsp;                &quot;Pausini&quot;,
+&nbsp;                &quot;Italiano, Inglese&quot;,
+&nbsp;                &quot;6772dfdc30698b3a76d304a3&quot;,
+&nbsp;                &quot;Medicina&quot;,
+<b class="fc">&nbsp;                LocalDate.of(1980, 5, 20),</b>
+&nbsp;                TitoloDiStudio.Specializzazione,
+&nbsp;                Ruolo.FiguraSpecializzata,
+&nbsp;                Gender.Femmina,
+&nbsp;                &quot;Italia&quot;,
+<b class="fc">&nbsp;                passwordEncoder.encode(&quot;Passroad69!&quot;),</b>
+&nbsp;                &quot;09:00-17:00&quot;
+&nbsp;        );
+&nbsp;
+<b class="fc">&nbsp;        FiguraSpecializzata figura2 = new FiguraSpecializzata(</b>
+&nbsp;                &quot;figura2@example.com&quot;,
+&nbsp;                &quot;John&quot;,
+&nbsp;                &quot;Doe&quot;,
+&nbsp;                &quot;Inglese, Francese&quot;,
+&nbsp;                &quot;6772e0ad30698b3a76d304a4&quot;,
+&nbsp;                &quot;Informatica&quot;,
+<b class="fc">&nbsp;                LocalDate.of(1985, 8, 15),</b>
+&nbsp;                TitoloDiStudio.Laurea,
+&nbsp;                Ruolo.FiguraSpecializzata,
+&nbsp;                Gender.Maschio,
+&nbsp;                &quot;Francia&quot;,
+<b class="fc">&nbsp;                passwordEncoder.encode(&quot;Passroad69!&quot;),</b>
+&nbsp;                &quot;10:00-18:00&quot;
+&nbsp;        );
+&nbsp;
+<b class="fc">&nbsp;        FiguraSpecializzata figura3 = new FiguraSpecializzata(</b>
+&nbsp;                &quot;figura3@example.com&quot;,
+&nbsp;                &quot;Olimpia&quot;,
+&nbsp;                &quot;Peroni&quot;,
+&nbsp;                &quot;Inglese, Spagnolo&quot;,
+&nbsp;                &quot;6772e22730698b3a76d304a5&quot;,
+&nbsp;                &quot;Insegnamento&quot;,
+<b class="fc">&nbsp;                LocalDate.of(1990, 11, 30),</b>
+&nbsp;                TitoloDiStudio.Laurea,
+&nbsp;                Ruolo.FiguraSpecializzata,
+&nbsp;                Gender.Femmina,
+&nbsp;                &quot;Germania&quot;,
+<b class="fc">&nbsp;                passwordEncoder.encode(&quot;Passroad69!&quot;),</b>
+&nbsp;                &quot;08:00-16:00&quot;
+&nbsp;        );
+&nbsp;
+&nbsp;        // Creazione di tre volontari
+<b class="fc">&nbsp;        Volontario volontario1 = new Volontario(</b>
+&nbsp;                &quot;volontario1@example.com&quot;,
+&nbsp;                &quot;Valentino&quot;,
+&nbsp;                &quot;Rossi&quot;,
+&nbsp;                &quot;Italiano, Inglese&quot;,
+&nbsp;                &quot;6772e2de30698b3a76d304a6&quot;,
+&nbsp;                &quot;Organizzazione eventi&quot;,
+<b class="fc">&nbsp;                LocalDate.of(1995, 3, 15),</b>
+&nbsp;                TitoloDiStudio.Laurea,
+&nbsp;                Ruolo.Volontario,
+&nbsp;                Gender.Maschio,
+&nbsp;                &quot;Italia&quot;,
+<b class="fc">&nbsp;                passwordEncoder.encode(&quot;Passroad69!&quot;)</b>
+&nbsp;        );
+&nbsp;
+<b class="fc">&nbsp;        Volontario volontario2 = new Volontario(</b>
+&nbsp;                &quot;volontario2@example.com&quot;,
+&nbsp;                &quot;Mara&quot;,
+&nbsp;                &quot;Venier&quot;,
+&nbsp;                &quot;Italiano, Francese&quot;,
+&nbsp;                &quot;6772e45a30698b3a76d304a8&quot;,
+&nbsp;                &quot;Assistenza sociale&quot;,
+<b class="fc">&nbsp;                LocalDate.of(1987, 7, 22),</b>
+&nbsp;                TitoloDiStudio.Laurea,
+&nbsp;                Ruolo.Volontario,
+&nbsp;                Gender.Femmina,
+&nbsp;                &quot;Italia&quot;,
+<b class="fc">&nbsp;                passwordEncoder.encode(&quot;Passroad69!&quot;)</b>
+&nbsp;        );
+&nbsp;
+<b class="fc">&nbsp;        Volontario volontario3 = new Volontario(</b>
+&nbsp;                &quot;volontario3@example.com&quot;,
+&nbsp;                &quot;Edoardo&quot;,
+&nbsp;                &quot;D&#39;Erme&quot;,
+&nbsp;                &quot;Italiano, Spagnolo&quot;,
+&nbsp;                &quot;6772e37230698b3a76d304a7&quot;,
+&nbsp;                &quot;Supporto tecnico&quot;,
+<b class="fc">&nbsp;                LocalDate.of(1990, 12, 10),</b>
+&nbsp;                TitoloDiStudio.ScuolaSecondariaPrimoGrado,
+&nbsp;                Ruolo.Volontario,
+&nbsp;                Gender.Maschio,
+&nbsp;                &quot;Italia&quot;,
+<b class="fc">&nbsp;                passwordEncoder.encode(&quot;Passroad69!&quot;)</b>
+&nbsp;        );
+&nbsp;
+&nbsp;        // Creazione di quattro indirizzi
+<b class="fc">&nbsp;        Indirizzo indirizzo1 = new Indirizzo(&quot;Lazio&quot;, 28, &quot;00100&quot;, &quot;RM&quot;, &quot;Via del Corso&quot;);</b>
+<b class="fc">&nbsp;        Indirizzo indirizzo2 = new Indirizzo(&quot;Lombardia&quot;, 10, &quot;20100&quot;, &quot;MI&quot;, &quot;Via Milano&quot;);</b>
+<b class="fc">&nbsp;        Indirizzo indirizzo3 = new Indirizzo(&quot;Piemonte&quot;, 15, &quot;10100&quot;, &quot;TO&quot;, &quot;Via Torino&quot;);</b>
+<b class="fc">&nbsp;        Indirizzo indirizzo4 = new Indirizzo(&quot;Campania&quot;, 20, &quot;80100&quot;, &quot;NA&quot;, &quot;Via Napoli&quot;);</b>
+<b class="fc">&nbsp;        Indirizzo indirizzo5= new Indirizzo(&quot;Lombardia&quot;, 69, &quot;20190&quot;, &quot;PE&quot;, &quot;Via cazzo&quot;);</b>
+<b class="fc">&nbsp;        Indirizzo indirizzo6 = new Indirizzo(&quot;Lombardia&quot;, 12, &quot;20121&quot;, &quot;MI&quot;, &quot;Via Roma&quot;);</b>
+<b class="fc">&nbsp;        Indirizzo indirizzo7 = new Indirizzo(&quot;Piemonte&quot;, 5, &quot;10122&quot;, &quot;TO&quot;, &quot;Via Garibaldi&quot;);</b>
+<b class="fc">&nbsp;        Indirizzo indirizzo8 = new Indirizzo(&quot;Toscana&quot;, 20, &quot;50123&quot;, &quot;FI&quot;, &quot;Via Dante&quot;);</b>
+<b class="fc">&nbsp;        indirizzoDAO.saveAll(List.of(indirizzo1, indirizzo2, indirizzo3, indirizzo4, indirizzo5, indirizzo6, indirizzo7, indirizzo8));</b>
+&nbsp;
+&nbsp;
+<b class="fc">&nbsp;        Evento evento1 = new Evento();</b>
+<b class="fc">&nbsp;        evento1.setNome(&quot;Evento di Benvenuto&quot;);</b>
+<b class="fc">&nbsp;        evento1.setData(LocalDate.of(2025, 12, 29));</b>
+<b class="fc">&nbsp;        evento1.setOra(LocalTime.of(10, 0));</b>
+<b class="fc">&nbsp;        evento1.setLinguaParlata(Lingua.ITALIANO);</b>
+<b class="fc">&nbsp;        evento1.setDescrizione(&quot;Evento di benvenuto per i nuovi rifugiati.&quot;);</b>
+<b class="fc">&nbsp;        evento1.setLuogo(indirizzo1);</b>
+<b class="fc">&nbsp;        evento1.setOrganizzatore(volontario1);</b>
+<b class="fc">&nbsp;        evento1.setMaxPartecipanti(50);</b>
+&nbsp;
+<b class="fc">&nbsp;        Evento evento2 = new Evento();</b>
+<b class="fc">&nbsp;        evento2.setNome(&quot;Workshop di Informatica&quot;);</b>
+<b class="fc">&nbsp;        evento2.setData(LocalDate.of(2025, 12, 30));</b>
+<b class="fc">&nbsp;        evento2.setOra(LocalTime.of(14, 0));</b>
+<b class="fc">&nbsp;        evento2.setLinguaParlata(Lingua.INGLESE);</b>
+<b class="fc">&nbsp;        evento2.setDescrizione(&quot;Workshop di informatica per rifugiati.&quot;);</b>
+<b class="fc">&nbsp;        evento2.setLuogo(indirizzo2);</b>
+<b class="fc">&nbsp;        evento2.setOrganizzatore(volontario2);</b>
+<b class="fc">&nbsp;        evento2.setMaxPartecipanti(30);</b>
+&nbsp;
+<b class="fc">&nbsp;        Evento evento3 = new Evento();</b>
+<b class="fc">&nbsp;        evento3.setNome(&quot;Corso di Cucina&quot;);</b>
+<b class="fc">&nbsp;        evento3.setData(LocalDate.of(2025, 12, 31));</b>
+<b class="fc">&nbsp;        evento3.setOra(LocalTime.of(16, 0));</b>
+<b class="fc">&nbsp;        evento3.setLinguaParlata(Lingua.ITALIANO);</b>
+<b class="fc">&nbsp;        evento3.setDescrizione(&quot;Corso di cucina italiana per rifugiati.&quot;);</b>
+<b class="fc">&nbsp;        evento3.setLuogo(indirizzo3);</b>
+<b class="fc">&nbsp;        evento3.setOrganizzatore(volontario3);</b>
+<b class="fc">&nbsp;        evento3.setMaxPartecipanti(20);</b>
+&nbsp;
+<b class="fc">&nbsp;        Evento evento4 = new Evento();</b>
+<b class="fc">&nbsp;        evento4.setNome(&quot;Evento di Networking&quot;);</b>
+<b class="fc">&nbsp;        evento4.setData(LocalDate.of(2025, 12, 10));</b>
+<b class="fc">&nbsp;        evento4.setOra(LocalTime.of(18, 0));</b>
+<b class="fc">&nbsp;        evento4.setLinguaParlata(Lingua.INGLESE);</b>
+<b class="fc">&nbsp;        evento4.setDescrizione(&quot;Evento di networking per rifugiati e aziende.&quot;);</b>
+<b class="fc">&nbsp;        evento4.setLuogo(indirizzo4);</b>
+<b class="fc">&nbsp;        evento4.setOrganizzatore(volontario3);</b>
+<b class="fc">&nbsp;        evento4.setMaxPartecipanti(40);</b>
+&nbsp;
+&nbsp;        // Creazione di quattro alloggi
+<b class="fc">&nbsp;        Alloggio alloggio1 = new Alloggio();</b>
+<b class="fc">&nbsp;        alloggio1.setMetratura(100);</b>
+<b class="fc">&nbsp;        alloggio1.setMaxPersone(4);</b>
+<b class="fc">&nbsp;        alloggio1.setDescrizione(&quot;Un bellissimo appartamento nel centro di Roma.&quot;);</b>
+<b class="fc">&nbsp;        alloggio1.setProprietario(volontario1);</b>
+<b class="fc">&nbsp;        alloggio1.setServizi(Servizi.WIFI);</b>
+<b class="fc">&nbsp;        alloggio1.setFoto(List.of(&quot;6772f05d67ee1d482dd9ef22&quot;, &quot;6772f05d67ee1d482dd9ef23&quot;));</b>
+<b class="fc">&nbsp;        alloggio1.setTitolo(&quot;Appartamento a Roma&quot;);</b>
+<b class="fc">&nbsp;        alloggio1.setIndirizzo(indirizzo1);</b>
+&nbsp;
+<b class="fc">&nbsp;        Alloggio alloggio2 = new Alloggio();</b>
+<b class="fc">&nbsp;        alloggio2.setMetratura(80);</b>
+<b class="fc">&nbsp;        alloggio2.setMaxPersone(3);</b>
+<b class="fc">&nbsp;        alloggio2.setDescrizione(&quot;Un accogliente appartamento a Milano.&quot;);</b>
+<b class="fc">&nbsp;        alloggio2.setProprietario(volontario2);</b>
+<b class="fc">&nbsp;        alloggio2.setServizi(Servizi.RISCALDAMENTO);</b>
+<b class="fc">&nbsp;        alloggio2.setFoto(List.of(&quot;6772f22f67ee1d482dd9ef24&quot;, &quot;6772f22f67ee1d482dd9ef25&quot;));</b>
+<b class="fc">&nbsp;        alloggio2.setTitolo(&quot;Appartamento a Milano&quot;);</b>
+<b class="fc">&nbsp;        alloggio2.setIndirizzo(indirizzo2);</b>
+&nbsp;
+<b class="fc">&nbsp;        Alloggio alloggio3 = new Alloggio();</b>
+<b class="fc">&nbsp;        alloggio3.setMetratura(120);</b>
+<b class="fc">&nbsp;        alloggio3.setMaxPersone(5);</b>
+<b class="fc">&nbsp;        alloggio3.setDescrizione(&quot;Un ampio appartamento a Torino.&quot;);</b>
+<b class="fc">&nbsp;        alloggio3.setProprietario(volontario3);</b>
+<b class="fc">&nbsp;        alloggio3.setServizi(Servizi.ARIACONDIZIONATA);</b>
+<b class="fc">&nbsp;        alloggio3.setFoto(List.of(&quot;6772f2ac67ee1d482dd9ef26&quot;, &quot;6772f2ac67ee1d482dd9ef27&quot;));</b>
+<b class="fc">&nbsp;        alloggio3.setTitolo(&quot;Appartamento a Torino&quot;);</b>
+<b class="fc">&nbsp;        alloggio3.setIndirizzo(indirizzo3);</b>
+&nbsp;
+<b class="fc">&nbsp;        Alloggio alloggio4 = new Alloggio();</b>
+<b class="fc">&nbsp;        alloggio4.setMetratura(90);</b>
+<b class="fc">&nbsp;        alloggio4.setMaxPersone(4);</b>
+<b class="fc">&nbsp;        alloggio4.setDescrizione(&quot;Un moderno appartamento a Napoli.&quot;);</b>
+<b class="fc">&nbsp;        alloggio4.setProprietario(volontario1);</b>
+<b class="fc">&nbsp;        alloggio4.setServizi(Servizi.WIFI);</b>
+<b class="fc">&nbsp;        alloggio4.setFoto(List.of(&quot;6772f5d967ee1d482dd9ef28&quot;, &quot;6772f5d967ee1d482dd9ef29&quot;));</b>
+<b class="fc">&nbsp;        alloggio4.setTitolo(&quot;Appartamento a Napoli&quot;);</b>
+<b class="fc">&nbsp;        alloggio4.setIndirizzo(indirizzo4);</b>
+&nbsp;
+&nbsp;        // Creazione di quattro corsi
+<b class="fc">&nbsp;        Corso corso1 = new Corso();</b>
+<b class="fc">&nbsp;        corso1.setCategoriaCorso(CategoriaCorso.LINGUE);</b>
+<b class="fc">&nbsp;        corso1.setDescrizione(&quot;Corso di Italiano per principianti.&quot;);</b>
+<b class="fc">&nbsp;        corso1.setLingua(Lingua.ITALIANO);</b>
+<b class="fc">&nbsp;        corso1.setPdf(&quot;6772e95230698b3a76d304af&quot;);</b>
+<b class="fc">&nbsp;        corso1.setTitolo(&quot;Italiano per Principianti&quot;);</b>
+<b class="fc">&nbsp;        corso1.setProprietario(figura1);</b>
+&nbsp;
+<b class="fc">&nbsp;        Corso corso2 = new Corso();</b>
+<b class="fc">&nbsp;        corso2.setCategoriaCorso(CategoriaCorso.INFORMATICA);</b>
+<b class="fc">&nbsp;        corso2.setDescrizione(&quot;Corso di Programmazione Java.&quot;);</b>
+<b class="fc">&nbsp;        corso2.setLingua(Lingua.INGLESE);</b>
+<b class="fc">&nbsp;        corso2.setPdf(&quot;6772e9be30698b3a76d304b1&quot;);</b>
+<b class="fc">&nbsp;        corso2.setTitolo(&quot;Programmazione Java&quot;);</b>
+<b class="fc">&nbsp;        corso2.setProprietario(figura2);</b>
+&nbsp;
+<b class="fc">&nbsp;        Corso corso3 = new Corso();</b>
+<b class="fc">&nbsp;        corso3.setCategoriaCorso(CategoriaCorso.LINGUE);</b>
+<b class="fc">&nbsp;        corso3.setDescrizione(&quot;Corso di Spagnolo avanzato.&quot;);</b>
+<b class="fc">&nbsp;        corso3.setLingua(Lingua.SPAGNOLO);</b>
+<b class="fc">&nbsp;        corso3.setPdf(&quot;6772e8dc30698b3a76d304ae&quot;);</b>
+<b class="fc">&nbsp;        corso3.setTitolo(&quot;Spagnolo Avanzato&quot;);</b>
+<b class="fc">&nbsp;        corso3.setProprietario(figura3);</b>
+&nbsp;
+<b class="fc">&nbsp;        Corso corso4 = new Corso();</b>
+<b class="fc">&nbsp;        corso4.setCategoriaCorso(CategoriaCorso.ALTRO);</b>
+<b class="fc">&nbsp;        corso4.setDescrizione(&quot;Corso di Inglese avanzato.&quot;);</b>
+<b class="fc">&nbsp;        corso4.setLingua(Lingua.ITALIANO);</b>
+<b class="fc">&nbsp;        corso4.setPdf(&quot;6772e98830698b3a76d304b0&quot;);</b>
+<b class="fc">&nbsp;        corso4.setTitolo(&quot;Inglese Avanzato&quot;);</b>
+<b class="fc">&nbsp;        corso4.setProprietario(figura1);</b>
+&nbsp;
+&nbsp;        // Creazione di una consulenza
+&nbsp;        // Creazione di quattro consulenze
+<b class="fc">&nbsp;        Consulenza consulenza1 = new Consulenza();</b>
+<b class="fc">&nbsp;        consulenza1.setTipo(TipoConsulenza.LEGALE); // Tipo di consulenza</b>
+<b class="fc">&nbsp;        consulenza1.setOrariDisponibili(&quot;Lunedi 12:43-23:42&quot;); // Orari di disponibilità</b>
+<b class="fc">&nbsp;        consulenza1.setDescrizione(&quot;Consulenza legale per rifugiati&quot;); // Descrizione</b>
+<b class="fc">&nbsp;        consulenza1.setNumero(&quot;3331234567&quot;);// Numero di telefono</b>
+<b class="fc">&nbsp;        Map&lt;String, Boolean&gt; candidatiMock1 = new HashMap&lt;&gt;();</b>
+<b class="fc">&nbsp;        candidatiMock1.put(rifugiato1.getEmail(), true);  // Accettato</b>
+<b class="fc">&nbsp;        candidatiMock1.put(rifugiato2.getEmail(), false); // Non accettato</b>
+<b class="fc">&nbsp;        consulenza1.setCandidati(candidatiMock1); // Candidati (inizialmente null)</b>
+<b class="fc">&nbsp;        consulenza1.setTitolo(&quot;Consulenza per la Gestione di Progetti Sociali&quot; );// Titolo</b>
+<b class="fc">&nbsp;        consulenza1.setDisponibilita(true); // Disponibilità</b>
+<b class="fc">&nbsp;        consulenza1.setIndirizzo(indirizzo1); // Indirizzo</b>
+<b class="fc">&nbsp;        consulenza1.setMaxCandidature(5);// Max candidature</b>
+<b class="fc">&nbsp;        consulenza1.setProprietario(figura1);// Proprietario</b>
+<b class="fc">&nbsp;        consulenza1.setTipologia(true); // Tipologia</b>
+&nbsp;
+<b class="fc">&nbsp;        Consulenza consulenza2 = new Consulenza();</b>
+<b class="fc">&nbsp;        consulenza2.setTipo(TipoConsulenza.SANITARIA); // Tipo di consulenza</b>
+<b class="fc">&nbsp;        consulenza2.setOrariDisponibili(&quot;Martedi 09:00-17:00&quot;); // Orari di disponibilità</b>
+<b class="fc">&nbsp;        consulenza2.setDescrizione(&quot;Consulenza psicologica per rifugiati&quot;); // Descrizione</b>
+<b class="fc">&nbsp;        consulenza2.setNumero(&quot;3337654321&quot;);// Numero di telefono</b>
+<b class="fc">&nbsp;        Map&lt;String, Boolean&gt; candidatiMock2 = new HashMap&lt;&gt;();</b>
+<b class="fc">&nbsp;        candidatiMock2.put(rifugiato1.getEmail(), false);  // Accettato</b>
+<b class="fc">&nbsp;        candidatiMock2.put(rifugiato3.getEmail(), false); // Non accettato</b>
+<b class="fc">&nbsp;        consulenza2.setCandidati(candidatiMock2); // Candidati (inizialmente null)</b>
+<b class="fc">&nbsp;        consulenza2.setTitolo(&quot;Consulenza Psicologica per il Benessere Mentale&quot; );// Titolo</b>
+<b class="fc">&nbsp;        consulenza2.setDisponibilita(true); // Disponibilità</b>
+<b class="fc">&nbsp;        consulenza2.setIndirizzo(indirizzo2); // Indirizzo</b>
+<b class="fc">&nbsp;        consulenza2.setMaxCandidature(3);// Max candidature</b>
+<b class="fc">&nbsp;        consulenza2.setProprietario(figura2);// Proprietario</b>
+<b class="fc">&nbsp;        consulenza2.setTipologia(true); // Tipologia</b>
+&nbsp;
+<b class="fc">&nbsp;        Consulenza consulenza3 = new Consulenza();</b>
+<b class="fc">&nbsp;        consulenza3.setTipo(TipoConsulenza.COMMERCIALE); // Tipo di consulenza</b>
+<b class="fc">&nbsp;        consulenza3.setOrariDisponibili(&quot;Mercoledi 10:00-18:00&quot;); // Orari di disponibilità</b>
+<b class="fc">&nbsp;        consulenza3.setDescrizione(&quot;Consulenza legale per rifugiati&quot;); // Descrizione</b>
+<b class="fc">&nbsp;        consulenza3.setNumero(&quot;3339876543&quot;);// Numero di telefono</b>
+<b class="fc">&nbsp;        Map&lt;String, Boolean&gt; candidatiMock3 = new HashMap&lt;&gt;();</b>
+<b class="fc">&nbsp;        candidatiMock3.put(rifugiato1.getEmail(), true);  // Accettato</b>
+<b class="fc">&nbsp;        candidatiMock3.put(rifugiato2.getEmail(), true); // Non accettato</b>
+<b class="fc">&nbsp;        consulenza3.setCandidati(candidatiMock3); // Candidati (inizialmente null)</b>
+<b class="fc">&nbsp;        consulenza3.setTitolo(&quot;Consulenza per la Gestione di Pratiche Legali&quot; );// Titolo</b>
+<b class="fc">&nbsp;        consulenza3.setDisponibilita(true); // Disponibilità</b>
+<b class="fc">&nbsp;        consulenza3.setIndirizzo(indirizzo3); // Indirizzo</b>
+<b class="fc">&nbsp;        consulenza3.setMaxCandidature(4);// Max candidature</b>
+<b class="fc">&nbsp;        consulenza3.setProprietario(figura3);// Proprietario</b>
+<b class="fc">&nbsp;        consulenza3.setTipologia(true); // Tipologia</b>
+&nbsp;
+<b class="fc">&nbsp;        Consulenza consulenza4 = new Consulenza();</b>
+<b class="fc">&nbsp;        consulenza4.setTipo(TipoConsulenza.PSICOLOGICA); // Tipo di consulenza</b>
+<b class="fc">&nbsp;        consulenza4.setOrariDisponibili(&quot;Giovedi 08:00-16:00&quot;); // Orari di disponibilità</b>
+<b class="fc">&nbsp;        consulenza4.setDescrizione(&quot;Consulenza sociale per rifugiati&quot;); // Descrizione</b>
+<b class="fc">&nbsp;        consulenza4.setNumero(&quot;3334567890&quot;);// Numero di telefono</b>
+<b class="fc">&nbsp;        consulenza4.setCandidati(new HashMap&lt;String, Boolean&gt;()); // Candidati (inizialmente null)</b>
+<b class="fc">&nbsp;        consulenza4.setTitolo(&quot;Consulenza per l&#39;Integrazione Sociale&quot; );// Titolo</b>
+<b class="fc">&nbsp;        consulenza4.setDisponibilita(true); // Disponibilità</b>
+<b class="fc">&nbsp;        consulenza4.setIndirizzo(indirizzo4); // Indirizzo</b>
+<b class="fc">&nbsp;        consulenza4.setMaxCandidature(6);// Max candidature</b>
+<b class="fc">&nbsp;        consulenza4.setProprietario(figura1);// Proprietario</b>
+<b class="fc">&nbsp;        consulenza4.setTipologia(true); // Tipologia</b>
+&nbsp;
+&nbsp;//     Creazione di quattro lavori
+<b class="fc">&nbsp;        Lavoro lavoro1 = new Lavoro();</b>
+<b class="fc">&nbsp;        lavoro1.setTitolo(&quot;Sviluppatore Java&quot;);</b>
+<b class="fc">&nbsp;        lavoro1.setDisponibilita(true);</b>
+<b class="fc">&nbsp;        lavoro1.setIndirizzo(indirizzo1);</b>
+<b class="fc">&nbsp;        lavoro1.setMaxCandidature(5);</b>
+<b class="fc">&nbsp;        lavoro1.setCandidati(new ArrayList&lt;&gt;());</b>
+<b class="fc">&nbsp;        lavoro1.setTipologia(true);</b>
+<b class="fc">&nbsp;        lavoro1.setPosizioneLavorativa(&quot;Sviluppatore Java&quot;);</b>
+<b class="fc">&nbsp;        lavoro1.setNomeAzienda(&quot;Tech Company&quot;);</b>
+<b class="fc">&nbsp;        lavoro1.setOrarioLavoro(&quot;09:00-17:00&quot;);</b>
+<b class="fc">&nbsp;        lavoro1.setTipoContratto(TipoContratto.APPRENDISTATO);</b>
+<b class="fc">&nbsp;        lavoro1.setRetribuzione(3000.00);</b>
+<b class="fc">&nbsp;        lavoro1.setNomeSede(&quot;Sede Centrale&quot;);</b>
+<b class="fc">&nbsp;        lavoro1.setProprietario(volontario1);</b>
+<b class="fc">&nbsp;        lavoro1.setInfoUtili(&quot;Esperienza di almeno 2 anni in Java&quot;);</b>
+&nbsp;
+<b class="fc">&nbsp;        Lavoro lavoro2 = new Lavoro();</b>
+<b class="fc">&nbsp;        lavoro2.setTitolo(&quot;Analista Dati&quot;);</b>
+<b class="fc">&nbsp;        lavoro2.setDisponibilita(true);</b>
+<b class="fc">&nbsp;        lavoro2.setIndirizzo(indirizzo2);</b>
+<b class="fc">&nbsp;        lavoro2.setMaxCandidature(3);</b>
+<b class="fc">&nbsp;        lavoro2.setCandidati(new ArrayList&lt;&gt;());</b>
+<b class="fc">&nbsp;        lavoro2.setTipologia(true);</b>
+<b class="fc">&nbsp;        lavoro2.setPosizioneLavorativa(&quot;Analista Dati&quot;);</b>
+<b class="fc">&nbsp;        lavoro2.setNomeAzienda(&quot;Data Corp&quot;);</b>
+<b class="fc">&nbsp;        lavoro2.setOrarioLavoro(&quot;10:00-18:00&quot;);</b>
+<b class="fc">&nbsp;        lavoro2.setTipoContratto(TipoContratto.FULL_TIME);</b>
+<b class="fc">&nbsp;        lavoro2.setRetribuzione(2800.00);</b>
+<b class="fc">&nbsp;        lavoro2.setNomeSede(&quot;Sede Nord&quot;);</b>
+<b class="fc">&nbsp;        lavoro2.setProprietario(volontario2);</b>
+<b class="fc">&nbsp;        lavoro2.setInfoUtili(&quot;Conoscenza avanzata di SQL e Python&quot;);</b>
+&nbsp;
+<b class="fc">&nbsp;        Lavoro lavoro3 = new Lavoro();</b>
+<b class="fc">&nbsp;        lavoro3.setTitolo(&quot;Progettista Interfacce&quot;);</b>
+<b class="fc">&nbsp;        lavoro3.setDisponibilita(true);</b>
+<b class="fc">&nbsp;        lavoro3.setIndirizzo(indirizzo3);</b>
+<b class="fc">&nbsp;        lavoro3.setMaxCandidature(4);</b>
+<b class="fc">&nbsp;        lavoro3.setCandidati(new ArrayList&lt;&gt;());</b>
+<b class="fc">&nbsp;        lavoro3.setTipologia(true);</b>
+<b class="fc">&nbsp;        lavoro3.setPosizioneLavorativa(&quot;Progettista Interfacce&quot;);</b>
+<b class="fc">&nbsp;        lavoro3.setNomeAzienda(&quot;Design Studio&quot;);</b>
+<b class="fc">&nbsp;        lavoro3.setOrarioLavoro(&quot;08:00-16:00&quot;);</b>
+<b class="fc">&nbsp;        lavoro3.setTipoContratto(TipoContratto.FULL_TIME);</b>
+<b class="fc">&nbsp;        lavoro3.setRetribuzione(3200.00);</b>
+<b class="fc">&nbsp;        lavoro3.setNomeSede(&quot;Sede Sud&quot;);</b>
+<b class="fc">&nbsp;        lavoro3.setProprietario(volontario3);</b>
+<b class="fc">&nbsp;        lavoro3.setInfoUtili(&quot;Esperienza con strumenti di design come Figma e Sketch&quot;);</b>
+&nbsp;
+<b class="fc">&nbsp;        Lavoro lavoro4 = new Lavoro();</b>
+<b class="fc">&nbsp;        lavoro4.setTitolo(&quot;Responsabile Marketing&quot;);</b>
+<b class="fc">&nbsp;        lavoro4.setDisponibilita(true);</b>
+<b class="fc">&nbsp;        lavoro4.setIndirizzo(indirizzo4);</b>
+<b class="fc">&nbsp;        lavoro4.setMaxCandidature(6);</b>
+<b class="fc">&nbsp;        lavoro4.setCandidati(new ArrayList&lt;&gt;());</b>
+<b class="fc">&nbsp;        lavoro4.setTipologia(true);</b>
+<b class="fc">&nbsp;        lavoro4.setPosizioneLavorativa(&quot;Responsabile Marketing&quot;);</b>
+<b class="fc">&nbsp;        lavoro4.setNomeAzienda(&quot;Marketing Agency&quot;);</b>
+<b class="fc">&nbsp;        lavoro4.setOrarioLavoro(&quot;11:00-19:00&quot;);</b>
+<b class="fc">&nbsp;        lavoro4.setTipoContratto(TipoContratto.FULL_TIME);</b>
+<b class="fc">&nbsp;        lavoro4.setRetribuzione(3500.00);</b>
+<b class="fc">&nbsp;        lavoro4.setNomeSede(&quot;Sede Ovest&quot;);</b>
+<b class="fc">&nbsp;        lavoro4.setProprietario(volontario1);</b>
+<b class="fc">&nbsp;        lavoro4.setInfoUtili(&quot;Esperienza in campagne di marketing digitale&quot;);</b>
+&nbsp;
+&nbsp;        // Salvataggio dei rifugiati nel database
+<b class="fc">&nbsp;        List.of(rifugiato1, rifugiato2, rifugiato3).forEach(rifugiato -&gt; {</b>
+&nbsp;            try {
+<b class="fc">&nbsp;                rifugiatoDAO.save(rifugiato);</b>
+&nbsp;            } catch (Exception e) {
+<b class="nc">&nbsp;                throw new RuntimeException(&quot;Errore durante la registrazione del rifugiato: &quot; + rifugiato.getEmail(), e);</b>
+&nbsp;            }
+&nbsp;        });
+&nbsp;
+&nbsp;        // Salvataggio delle figure specializzate nel database
+<b class="fc">&nbsp;        List.of(figura1, figura2, figura3).forEach(figura -&gt; {</b>
+&nbsp;            try {
+<b class="fc">&nbsp;                figuraSpecializzataDAO.save(figura);</b>
+&nbsp;            } catch (Exception e) {
+<b class="nc">&nbsp;                throw new RuntimeException(&quot;Errore durante la registrazione della figura specializzata: &quot; + figura.getEmail(), e);</b>
+&nbsp;            }
+&nbsp;        });
+&nbsp;
+&nbsp;        // Salvataggio dei volontari nel database
+<b class="fc">&nbsp;        List.of(volontario1, volontario2, volontario3).forEach(volontario -&gt; {</b>
+&nbsp;            try {
+<b class="fc">&nbsp;                volontarioDAO.save(volontario);</b>
+&nbsp;            } catch (Exception e) {
+<b class="nc">&nbsp;                throw new RuntimeException(&quot;Errore durante la registrazione del volontario: &quot; + volontario.getEmail(), e);</b>
+&nbsp;            }
+&nbsp;        });
+&nbsp;
+&nbsp;        // Salvataggio degli indirizzi nel database
+<b class="fc">&nbsp;        List.of(indirizzo1, indirizzo2, indirizzo3, indirizzo4).forEach(indirizzo -&gt; {</b>
+&nbsp;            try {
+<b class="fc">&nbsp;                indirizzoDAO.save(indirizzo);</b>
+&nbsp;            } catch (Exception e) {
+<b class="nc">&nbsp;                throw new RuntimeException(&quot;Errore durante la registrazione dell&#39;indirizzo: &quot; + indirizzo.getVia(), e);</b>
+&nbsp;            }
+&nbsp;        });
+&nbsp;
+&nbsp;        // Salvataggio degli eventi nel database
+<b class="fc">&nbsp;        List.of(evento1, evento2, evento3, evento4).forEach(evento -&gt; {</b>
+&nbsp;            try {
+<b class="fc">&nbsp;                eventoDAO.save(evento);</b>
+&nbsp;            } catch (Exception e) {
+<b class="nc">&nbsp;                throw new RuntimeException(&quot;Errore durante la registrazione dell&#39;evento: &quot; + evento.getNome(), e);</b>
+&nbsp;            }
+&nbsp;        });
+&nbsp;
+&nbsp;        // Salvataggio degli alloggi nel database
+<b class="fc">&nbsp;        List.of(alloggio1, alloggio2, alloggio3, alloggio4).forEach(alloggio -&gt; {</b>
+&nbsp;            try {
+<b class="fc">&nbsp;                alloggioDAO.save(alloggio);</b>
+&nbsp;            } catch (Exception e) {
+<b class="fc">&nbsp;                System.out.println(&quot;errore&quot;);</b>
+&nbsp;            }
+&nbsp;        });
+&nbsp;
+&nbsp;        // Salvataggio dei corsi nel database
+<b class="nc">&nbsp;        List.of(corso1, corso2, corso3, corso4).forEach(corso -&gt; {</b>
+&nbsp;            try {
+<b class="nc">&nbsp;                corsoDAO.save(corso);</b>
+&nbsp;            } catch (Exception e) {
+<b class="nc">&nbsp;                throw new RuntimeException(&quot;Errore durante la registrazione del corso: &quot; + corso.getTitolo(), e);</b>
+&nbsp;            }
+&nbsp;        });
+&nbsp;
+&nbsp;        // Salvataggio delle consulenze nel database
+<b class="nc">&nbsp;        List.of(consulenza1, consulenza2, consulenza3, consulenza4).forEach(consulenza -&gt; {</b>
+&nbsp;            try {
+<b class="nc">&nbsp;                consulenzaDAO.save(consulenza);</b>
+&nbsp;            } catch (Exception e) {
+<b class="nc">&nbsp;                throw new RuntimeException(&quot;Errore durante la registrazione della consulenza: &quot; + consulenza.getTitolo(), e);</b>
+&nbsp;            }
+&nbsp;        });
+&nbsp;
+&nbsp;//        // Salvataggio dei lavori nel database
+<b class="nc">&nbsp;        List.of(lavoro1, lavoro2, lavoro3, lavoro4).forEach(lavoro -&gt; {</b>
+&nbsp;            try {
+<b class="nc">&nbsp;                lavoroDAO.save(lavoro);</b>
+&nbsp;            } catch (Exception e) {
+<b class="nc">&nbsp;                throw new RuntimeException(&quot;Errore durante la registrazione del lavoro: &quot; + lavoro.getPosizioneLavorativa(), e);</b>
+&nbsp;            }
+&nbsp;        });
+&nbsp;    }
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2025-01-05 20:59</div>
+</div>
+</body>
+</html>

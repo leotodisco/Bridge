@@ -1,0 +1,256 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > Alloggio</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">com.project.bridgebackend.Model.Entity</a>
+</div>
+
+<h1>Coverage Summary for Class: Alloggio (com.project.bridgebackend.Model.Entity)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">Alloggio</td>
+<td class="coverageStat">
+  <span class="percent">
+    50%
+  </span>
+  <span class="absValue">
+    (1/2)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    66,7%
+  </span>
+  <span class="absValue">
+    (2/3)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">Alloggio$HibernateInstantiator$pmq1pDMp</td>
+  </tr>
+  <tr>
+    <td class="name">Alloggio$HibernateProxy$sKrGaNOf</td>
+  </tr>
+<tr>
+  <td class="name"><strong>Total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    50%
+  </span>
+  <span class="absValue">
+    (1/2)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    66,7%
+  </span>
+  <span class="absValue">
+    (2/3)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package com.project.bridgebackend.Model.Entity;
+&nbsp;
+&nbsp;import com.project.bridgebackend.Model.Entity.enumeration.Servizi;
+&nbsp;import jakarta.persistence.*;
+&nbsp;import lombok.Data;
+&nbsp;import java.io.Serializable;
+&nbsp;import java.util.ArrayList;
+&nbsp;import java.util.List;
+&nbsp;/**
+&nbsp; * @author: Mario Zurolo.
+&nbsp; * Creato in data 3/12/24.
+&nbsp; * Entity per la gestione degli alloggi.
+&nbsp; * Contiene tutte le informazioni relative agli alloggi gestiti.
+&nbsp; */
+&nbsp;@Data
+&nbsp;@Entity
+&nbsp;@Table(name = &quot;alloggio&quot;)
+&nbsp;public class Alloggio implements Serializable {
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Identificatore unico dell&#39;alloggio.
+&nbsp;     * Viene generato automaticamente.
+&nbsp;     */
+&nbsp;    @Id
+&nbsp;    @GeneratedValue(strategy = GenerationType.IDENTITY)
+&nbsp;    private long id;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Metratura dell&#39;alloggio, espressa in metri quadrati.
+&nbsp;     * Non può essere null e deve avere un valore positivo.
+&nbsp;     */
+&nbsp;    @Column(nullable = false)
+&nbsp;    //@Max(value = 99999, message = &quot;La metratura deve essere al massimo 99999&quot;)
+&nbsp;    //@Min(value = 1, message = &quot;La metratura deve essere almeno di 1&quot;)
+&nbsp;    private int metratura;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Numero massimo di persone che l&#39;alloggio può ospitare.
+&nbsp;     * Non può essere null e deve essere un valore positivo.
+&nbsp;     */
+&nbsp;    @Column(nullable = false)
+&nbsp;    //@Min(value = 1, message = &quot;deve esserci almeno una persona&quot;)
+&nbsp;    //@Max(value = 2, message = &quot;devono esserci al massimo 99 persone&quot;)
+&nbsp;    private int maxPersone;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Descrizione testuale dell&#39;alloggio.
+&nbsp;     * La descrizione può contenere fino a 400 caratteri.
+&nbsp;     */
+&nbsp;    @Column(nullable = false, length = 400)
+&nbsp;    //@Size(max = 400, message = &quot;la descrizione non può superare i 400 caratteri&quot;)
+&nbsp;    private String descrizione;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Riferimento al proprietario dell&#39;alloggio.
+&nbsp;     * La chiave di riferimento è l&#39;email dell&#39;utente proprietario.
+&nbsp;     * Non può essere null.
+&nbsp;     */
+&nbsp;    @JoinColumn(name = &quot;proprietario&quot;, referencedColumnName = &quot;email&quot;, nullable = false)
+&nbsp;    @ManyToOne()
+&nbsp;    private Utente proprietario;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Lista dei rifugiati che sono stati candidati per l&#39;alloggio.
+&nbsp;     * La lista può contenere uno o più rifugiati.
+&nbsp;     */
+<b class="fc">&nbsp;    @ManyToMany()</b>
+&nbsp;    private List&lt;Rifugiato&gt; listaCandidati = new ArrayList&lt;&gt;();
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Servizi offerti dall&#39;alloggio, rappresentati tramite un tipo enumerato.
+&nbsp;     * Il campo non può essere null.
+&nbsp;     */
+&nbsp;    @Column(nullable = false)
+&nbsp;    @Enumerated(EnumType.STRING)
+&nbsp;    private Servizi servizi;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Foto dell&#39;alloggio. Ogni foto è rappresentata tramite un URL.
+&nbsp;     * Il campo può contenere un massimo di 3 foto.
+&nbsp;     */
+&nbsp;    @ElementCollection
+&nbsp;    //@CollectionTable(name = &quot;alloggio_foto&quot;, joinColumns = @JoinColumn(name = &quot;alloggio_id&quot;))
+&nbsp;    @Column(name = &quot;foto_url&quot;)
+&nbsp;    //@NotNull
+&nbsp;    //@Size(min = 1, max = 3, message = &quot;Devi fornire almeno 1 foto e massimo 3.&quot;)
+&nbsp;    private List&lt;String&gt; foto;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Titolo univoco dell&#39;alloggio.
+&nbsp;     * Il campo deve essere unico e non può essere null.
+&nbsp;     */
+&nbsp;    @Column(nullable = false, unique = true)
+&nbsp;    private String titolo;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Indirizzo associato all&#39;alloggio.
+&nbsp;     * L&#39;indirizzo è una relazione uno a uno con l&#39;entità Indirizzo.
+&nbsp;     * Non può essere null.
+&nbsp;     */
+&nbsp;    @OneToOne()
+&nbsp;    @JoinColumn(name = &quot;indirizzo&quot;, referencedColumnName = &quot;id&quot;, nullable = false)
+&nbsp;    private Indirizzo indirizzo;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Riferimento al rifugiato assegnato a questo alloggio.
+&nbsp;     * La chiave di riferimento è l&#39;email del rifugiato.
+&nbsp;     * Può essere null, poiché l&#39;alloggio potrebbe non essere assegnato.
+&nbsp;     */
+&nbsp;    @JoinColumn(name = &quot;rifugiato_assegnato&quot;, referencedColumnName = &quot;email&quot;, nullable = true)
+&nbsp;    @ManyToOne
+&nbsp;    private Rifugiato assegnatoA;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Costruttore predefinito (senza argomenti) per inizializzare,
+&nbsp;     * un oggetto Alloggio.
+&nbsp;     * Questo costruttore viene utilizzato da JPA durante il caricamento,
+&nbsp;     * dell&#39;entità dal database.
+&nbsp;     */
+<b class="fc">&nbsp;    public Alloggio() {</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public String toString() {
+<b class="nc">&nbsp;        return &quot;Alloggio{&quot; +</b>
+&nbsp;                &quot;id=&quot; + id +
+&nbsp;                &quot;, metratura=&quot; + metratura +
+&nbsp;                &quot;, maxPersone=&quot; + maxPersone +
+&nbsp;                &quot;, descrizione=&#39;&quot; + descrizione + &#39;\&#39;&#39; +
+&nbsp;                &quot;, proprietario=&quot; + proprietario +
+&nbsp;                &quot;, listaCandidati=&quot; + listaCandidati +
+&nbsp;                &quot;, servizi=&quot; + servizi +
+&nbsp;                &quot;, foto=&quot; + foto +
+&nbsp;                &quot;, titolo=&#39;&quot; + titolo + &#39;\&#39;&#39; +
+&nbsp;                &quot;, indirizzo=&quot; + indirizzo +
+&nbsp;                &quot;, assegnatoA=&quot; + assegnatoA +
+&nbsp;                &#39;}&#39;;
+&nbsp;    }
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2025-01-05 20:59</div>
+</div>
+</body>
+</html>

@@ -8,7 +8,7 @@ import com.project.bridgebackend.Model.dao.AdminDAO;
 import com.project.bridgebackend.Model.dao.FiguraSpecializzataDAO;
 import com.project.bridgebackend.Model.dao.RifugiatoDAO;
 import com.project.bridgebackend.Model.dao.VolontarioDAO;
-import com.project.bridgebackend.Service.BridgeBackendApplicationTests;
+import com.project.bridgebackend.BridgeBackendApplicationTests;
 import com.project.bridgebackend.registrazione.service.RegistrazioneServiceImpl;
 import com.project.bridgebackend.util.AuthenticationRequest;
 import com.project.bridgebackend.util.JwtService;

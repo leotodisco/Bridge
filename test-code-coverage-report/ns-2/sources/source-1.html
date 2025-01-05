@@ -1,0 +1,184 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > CDNService</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">com.project.bridgebackend.CDN</a>
+</div>
+
+<h1>Coverage Summary for Class: CDNService (com.project.bridgebackend.CDN)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">CDNService</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    10%
+  </span>
+  <span class="absValue">
+    (1/10)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    4,8%
+  </span>
+  <span class="absValue">
+    (1/21)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package com.project.bridgebackend.CDN;
+&nbsp;
+&nbsp;import com.project.bridgebackend.CDN.Document.*;
+&nbsp;import com.project.bridgebackend.Model.dao.FotoAlloggioRepository;
+&nbsp;import com.project.bridgebackend.Model.dao.FotoProfiloRepository;
+&nbsp;import com.project.bridgebackend.Model.dao.PDFDocRepository;
+&nbsp;import org.springframework.beans.factory.annotation.Autowired;
+&nbsp;import org.springframework.stereotype.Service;
+&nbsp;import org.springframework.web.multipart.MultipartFile;
+&nbsp;
+&nbsp;import java.io.IOException;
+&nbsp;
+&nbsp;@Service
+<b class="fc">&nbsp;public class CDNService {</b>
+&nbsp;    @Autowired
+&nbsp;    private FotoAlloggioRepository fotoAlloggioRepository;
+&nbsp;
+&nbsp;    @Autowired
+&nbsp;    private PDFDocRepository pdfDocRepository;
+&nbsp;
+&nbsp;    @Autowired
+&nbsp;    private FotoProfiloRepository fotoProfiloRepository;
+&nbsp;
+&nbsp;
+&nbsp;    // Salvataggio foto profilo
+&nbsp;    public String saveFotoProfilo(final String nome, final byte[] file) throws IOException {
+<b class="nc">&nbsp;        FotoProfilo fotoProfilo = new FotoProfilo();</b>
+<b class="nc">&nbsp;        fotoProfilo.setNome(nome);</b>
+<b class="nc">&nbsp;        fotoProfilo.setData(file);</b>
+<b class="nc">&nbsp;        FotoProfilo fotoSalvata = fotoProfiloRepository.save(fotoProfilo);</b>
+<b class="nc">&nbsp;        return fotoSalvata.getId();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    // Recupero foto profilo
+&nbsp;    public FotoProfilo getFotoProfilo(final String id) throws IOException {
+<b class="nc">&nbsp;        return fotoProfiloRepository.findById(id).orElse(null);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    // Eliminazione foto profilo
+&nbsp;    public void deleteFotoProfilo(final String id) throws IOException {
+<b class="nc">&nbsp;        fotoProfiloRepository.deleteById(id);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    // Salvataggio foto alloggio
+&nbsp;    public String saveFotoAlloggio(final String nome, final byte[] file) throws IOException {
+<b class="nc">&nbsp;        FotoAlloggio fotoAlloggio = new FotoAlloggio();</b>
+<b class="nc">&nbsp;        fotoAlloggio.setNome(nome);</b>
+<b class="nc">&nbsp;        fotoAlloggio.setData(file);</b>
+<b class="nc">&nbsp;        FotoAlloggio fotoSalvata = fotoAlloggioRepository.save(fotoAlloggio);</b>
+<b class="nc">&nbsp;        return fotoSalvata.getId();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    // Recupero foto alloggio
+&nbsp;    public FotoAlloggio getFotoAlloggio(final String id) throws IOException {
+<b class="nc">&nbsp;        return fotoAlloggioRepository.findById(id).orElse(null);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    // Eliminazione foto alloggio
+&nbsp;    public void deleteFotoAlloggio(final String id) throws IOException {
+<b class="nc">&nbsp;        fotoAlloggioRepository.deleteById(id);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    // Salvataggio PDF
+&nbsp;    public PDFDoc savePdf(final String nome, final MultipartFile file) throws IOException {
+<b class="nc">&nbsp;        PDFDoc pdf = new PDFDoc();</b>
+<b class="nc">&nbsp;        pdf.setNomePdf(nome);</b>
+<b class="nc">&nbsp;        pdf.setPdf(file.getBytes());</b>
+<b class="nc">&nbsp;        return pdfDocRepository.save(pdf);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    // Recupero PDF
+&nbsp;    public PDFDoc getPdf(final String id) {
+<b class="nc">&nbsp;        return pdfDocRepository.findById(id).orElse(null);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    // Eliminazione PDF
+&nbsp;    public void deletePdf(final String id) {
+<b class="nc">&nbsp;        pdfDocRepository.deleteById(id);</b>
+&nbsp;    }
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2025-01-05 20:59</div>
+</div>
+</body>
+</html>

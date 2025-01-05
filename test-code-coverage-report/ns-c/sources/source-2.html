@@ -1,0 +1,144 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > UtenteService</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">com.project.bridgebackend.GestioneUtente.Service</a>
+</div>
+
+<h1>Coverage Summary for Class: UtenteService (com.project.bridgebackend.GestioneUtente.Service)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+</tr>
+<tr>
+  <td class="name">UtenteService</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package com.project.bridgebackend.GestioneUtente.Service;
+&nbsp;
+&nbsp;import com.project.bridgebackend.Model.Entity.Utente;
+&nbsp;import com.project.bridgebackend.CDN.Document.FotoProfilo;
+&nbsp;import java.io.IOException;
+&nbsp;import java.util.HashMap;
+&nbsp;
+&nbsp;/**
+&nbsp; * @author Antonio Ceruso.
+&nbsp; * Data creazione: 12/12/2024
+&nbsp; * Interfaccia Service per l&#39;utente e la sua area personale
+&nbsp; * */
+&nbsp;public interface UtenteService {
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Recupera la foto profilo di un utente dato il suo indirizzo email.
+&nbsp;     *
+&nbsp;     * @param email indirizzo email dell&#39;utente.
+&nbsp;     * @return l&#39;oggetto FotoProfilo associato all&#39;utente.
+&nbsp;     * @throws IOException se si verifica un errore durante il recupero della foto.
+&nbsp;     */
+&nbsp;    FotoProfilo getFotoUtente(String email) throws IOException;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Elimina un utente dal sistema dato il suo indirizzo email.
+&nbsp;     *
+&nbsp;     * @param email indirizzo email dell&#39;utente da eliminare.
+&nbsp;     * @throws Exception se si verifica un errore durante l&#39;eliminazione.
+&nbsp;     */
+&nbsp;    void eliminaUtente(String email) throws Exception;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Recupera un utente dal sistema dato il suo indirizzo email.
+&nbsp;     *
+&nbsp;     * @param email indirizzo email dell&#39;utente.
+&nbsp;     * @return l&#39;oggetto Utente associato all&#39;indirizzo email fornito.
+&nbsp;     */
+&nbsp;    Utente getUtente(String email);
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Modifica la password di un utente dato il suo indirizzo email.
+&nbsp;     *
+&nbsp;     * @param email indirizzo email dell&#39;utente.
+&nbsp;     * @param password nuova password da impostare.
+&nbsp;     * @throws Exception se si verifica un errore durante l&#39;aggiornamento della password.
+&nbsp;     */
+&nbsp;    void modificaPassword(String email, String password) throws Exception;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Modifica la foto profilo di un utente.
+&nbsp;     *
+&nbsp;     * @param email indirizzo email dell&#39;utente.
+&nbsp;     * @param base64Image nuova immagine in formato Base64.
+&nbsp;     * @throws IOException se si verifica un errore durante l&#39;aggiornamento della foto.
+&nbsp;     */
+&nbsp;    void modificaFotoUtente(String email, String base64Image) throws IOException;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Modifica i dati di un utente.
+&nbsp;     *
+&nbsp;     * @param email indirizzo email dell&#39;utente.
+&nbsp;     * @param aggiornamenti mappa contenente le chiavi e i valori dei dati da aggiornare.
+&nbsp;     * @return l&#39;oggetto Utente aggiornato.
+&nbsp;     * @throws IOException se si verifica un errore durante l&#39;aggiornamento.
+&nbsp;     */
+&nbsp;    Utente modificaUtente(String email, HashMap&lt;String, Object&gt; aggiornamenti) throws IOException;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Modifica la disponibilità di un utente specializzato.
+&nbsp;     *
+&nbsp;     * @param email indirizzo email dell&#39;utente.
+&nbsp;     * @param disp nuova disponibilità da impostare.
+&nbsp;     * @throws Exception se si verifica un errore durante l&#39;aggiornamento della disponibilità.
+&nbsp;     */
+&nbsp;    void modificaDisp(String email, String disp) throws Exception;
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2025-01-05 20:59</div>
+</div>
+</body>
+</html>

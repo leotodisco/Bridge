@@ -1,0 +1,397 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > GestioneEventoServiceImpl</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">com.project.bridgebackend.GestioneEvento.service</a>
+</div>
+
+<h1>Coverage Summary for Class: GestioneEventoServiceImpl (com.project.bridgebackend.GestioneEvento.service)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Branch, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">GestioneEventoServiceImpl</td>
+<td class="coverageStat">
+  <span class="percent">
+    16,7%
+  </span>
+  <span class="absValue">
+    (2/12)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    5%
+  </span>
+  <span class="absValue">
+    (1/20)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    5,6%
+  </span>
+  <span class="absValue">
+    (3/54)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">GestioneEventoServiceImpl$$SpringCGLIB$$0</td>
+  </tr>
+<tr>
+  <td class="name"><strong>Total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    16,7%
+  </span>
+  <span class="absValue">
+    (2/12)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    5%
+  </span>
+  <span class="absValue">
+    (1/20)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    5,6%
+  </span>
+  <span class="absValue">
+    (3/54)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package com.project.bridgebackend.GestioneEvento.service;
+&nbsp;
+&nbsp;import com.project.bridgebackend.Model.Entity.Evento;
+&nbsp;import com.project.bridgebackend.Model.Entity.Indirizzo;
+&nbsp;import com.project.bridgebackend.Model.Entity.Rifugiato;
+&nbsp;import com.project.bridgebackend.Model.Entity.Volontario;
+&nbsp;import com.project.bridgebackend.Model.dao.EventoDAO;
+&nbsp;import com.project.bridgebackend.Model.dao.IndirizzoDAO;
+&nbsp;import com.project.bridgebackend.Model.dao.RifugiatoDAO;
+&nbsp;import com.project.bridgebackend.Model.dao.VolontarioDAO;
+&nbsp;import jakarta.transaction.Transactional;
+&nbsp;import jakarta.validation.Valid;
+&nbsp;import org.springframework.beans.factory.annotation.Autowired;
+&nbsp;import org.springframework.stereotype.Service;
+&nbsp;import org.springframework.validation.annotation.Validated;
+&nbsp;
+&nbsp;import java.util.Collections;
+&nbsp;import java.util.List;
+&nbsp;import java.util.Optional;
+&nbsp;
+&nbsp;/**
+&nbsp; * @author Alessia De Filippo
+&nbsp; * Creato il: 05/12/2024
+&nbsp; * Implementazione dell&#39;interfaccia GestioneEventoService.
+&nbsp; **/
+&nbsp;
+&nbsp;@Service
+&nbsp;@Validated
+<b class="fc">&nbsp;public class GestioneEventoServiceImpl implements GestioneEventoService {</b>
+&nbsp;
+&nbsp;    /**
+&nbsp;     * DAO per la gestione degli eventi.
+&nbsp;     **/
+&nbsp;    @Autowired
+&nbsp;    private EventoDAO eventoDAO;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * DAO per la gestione degli indirizzi.
+&nbsp;     **/
+&nbsp;    @Autowired
+&nbsp;    private IndirizzoDAO indirizzoDAO;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * DAO per la gestione dei rifugiati.
+&nbsp;     **/
+&nbsp;    @Autowired
+&nbsp;    private RifugiatoDAO rifugiatoDAO;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * DAO per la gestione dei volontari.
+&nbsp;     **/
+&nbsp;    @Autowired
+&nbsp;    private VolontarioDAO volontarioDAO;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Permette di creare un evento.
+&nbsp;     * @param evento evento da creare.
+&nbsp;     * @return evento creato.
+&nbsp;     **/
+&nbsp;    @Transactional
+&nbsp;    @Override
+&nbsp;    public Evento insertEvento(final Evento evento) {
+&nbsp;        //Controllo su DTO nullo o id nullo
+<b class="pc">&nbsp;        if (evento == null) {</b>
+<b class="nc">&nbsp;            throw new IllegalArgumentException(&quot;Evento non valido.&quot;);</b>
+&nbsp;        }
+&nbsp;
+&nbsp;        //Salvataggio entità Evento
+<b class="fc">&nbsp;        return eventoDAO.save(evento);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Permette di avere tutti gli eventi.
+&nbsp;     * @return lista di tutti gli eventi.
+&nbsp;     */
+&nbsp;    @Override
+&nbsp;    public List&lt;Evento&gt; getAllEventi() {
+<b class="nc">&nbsp;        return eventoDAO.findAllWithOrganizzatore();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Permette di avere un evento tramite id.
+&nbsp;     * @param id identificativo dell&#39;evento.
+&nbsp;     * @return evento.
+&nbsp;     */
+&nbsp;    @Override
+&nbsp;    public Optional&lt;Evento&gt; getEventoById(final long id) {
+&nbsp;        //Controllo su id nullo
+<b class="nc">&nbsp;        if (id &lt;= 0) {</b>
+<b class="nc">&nbsp;            throw new IllegalArgumentException(&quot;Id evento non valido&quot;);</b>
+&nbsp;        }
+&nbsp;
+&nbsp;        //Recupero evento
+<b class="nc">&nbsp;        return eventoDAO.findById(id);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Permette di salvare l&#39;indirizzo di un evento.
+&nbsp;     * @param indirizzo indirizzo da salvare.
+&nbsp;     * @return indirizzo salvato.
+&nbsp;     */
+&nbsp;    @Override
+&nbsp;    public long salvaIndirizzoEvento(final Indirizzo indirizzo) {
+&nbsp;        //Controllo su Indirizzo nullo o id nullo
+<b class="nc">&nbsp;        if (indirizzo == null) {</b>
+<b class="nc">&nbsp;            throw new IllegalArgumentException(&quot;Id indirizzo non valido&quot;);</b>
+&nbsp;        }
+&nbsp;
+&nbsp;        //Salvataggio indirizzo e ritorno id
+<b class="nc">&nbsp;        return indirizzoDAO.save(indirizzo).getId();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Permette di iscriversi a un evento.
+&nbsp;     * @param eventoId identificativo dell&#39;evento.
+&nbsp;     * @param  partecipanteEmail email del volontario.
+&nbsp;     * @return evento a cui si è iscritti.
+&nbsp;     */
+&nbsp;    @Transactional
+&nbsp;    @Override
+&nbsp;    public Evento iscrizioneEvento(
+&nbsp;            final long eventoId,
+&nbsp;            final String partecipanteEmail) {
+&nbsp;        //Controlla che l&#39;evento esista
+<b class="nc">&nbsp;        Evento evento = eventoDAO.findById(eventoId)</b>
+<b class="nc">&nbsp;                .orElseThrow(() -&gt; new</b>
+&nbsp;                        IllegalArgumentException(&quot;Evento non trovato&quot;));
+&nbsp;
+&nbsp;        //Controlla che il partecipante esista
+<b class="nc">&nbsp;        Rifugiato partecipante = rifugiatoDAO.findByEmail(partecipanteEmail);</b>
+<b class="nc">&nbsp;        if (partecipante == null) {</b>
+<b class="nc">&nbsp;            throw new IllegalArgumentException(&quot;Partecipante non trovato&quot;);</b>
+&nbsp;        }
+&nbsp;
+&nbsp;        //Controlla che il rifugiato non sia già iscritto
+<b class="nc">&nbsp;        if (evento.getListaPartecipanti().contains(partecipante)) {</b>
+<b class="nc">&nbsp;            throw new IllegalArgumentException(&quot;Partecipante già iscritto&quot;);</b>
+&nbsp;        }
+&nbsp;
+&nbsp;        //Controlla che l&#39;evento non sia già pieno
+<b class="nc">&nbsp;        if (evento.getListaPartecipanti().size() &gt;= evento.getMaxPartecipanti()) {</b>
+<b class="nc">&nbsp;            throw new IllegalArgumentException(&quot;Evento pieno&quot;);</b>
+&nbsp;        }
+&nbsp;
+&nbsp;        //Aggiungi il partecipante alla lista
+<b class="nc">&nbsp;        evento.getListaPartecipanti().add(partecipante);</b>
+&nbsp;
+&nbsp;        //Salva l&#39;evento aggiornato
+<b class="nc">&nbsp;        return eventoDAO.save(evento);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Permette di disiscriversi a un evento.
+&nbsp;     * @param eventoId identificativo dell&#39;evento.
+&nbsp;     * @param  partecipanteEmail email del volontario.
+&nbsp;     * @return evento a cui si è disiscritti.
+&nbsp;     */
+&nbsp;    @Transactional
+&nbsp;    @Override
+&nbsp;    public Evento disiscrizioneEvento(
+&nbsp;            final long eventoId,
+&nbsp;            final String partecipanteEmail) {
+&nbsp;        //Controlla che l&#39;evento esista
+<b class="nc">&nbsp;        System.out.println(&quot;Evento id: &quot; + eventoId);</b>
+<b class="nc">&nbsp;        System.out.println(&quot;Partecipante email: &quot; + partecipanteEmail);</b>
+<b class="nc">&nbsp;        System.out.println(&quot;Evento: &quot; + eventoDAO.findById(eventoId));</b>
+<b class="nc">&nbsp;        Evento evento = eventoDAO.findEventoWithPartecipanti(eventoId)</b>
+<b class="nc">&nbsp;                .orElseThrow(() -&gt; new</b>
+&nbsp;                        IllegalArgumentException(&quot;Evento non trovato&quot;));
+&nbsp;
+&nbsp;        //Controlla che il partecipante esista
+<b class="nc">&nbsp;        System.out.println(&quot;Partecipante: &quot; + rifugiatoDAO.findByEmail(partecipanteEmail));</b>
+<b class="nc">&nbsp;        Rifugiato partecipante = rifugiatoDAO.findByEmail(partecipanteEmail);</b>
+<b class="nc">&nbsp;        if (partecipante == null) {</b>
+<b class="nc">&nbsp;            throw new IllegalArgumentException(&quot;Partecipante non trovato&quot;);</b>
+&nbsp;        }
+&nbsp;
+&nbsp;        //Controlla che il rifugiato sia iscritto
+<b class="nc">&nbsp;        System.out.println(&quot;Lista partecipanti: &quot; + evento.getListaPartecipanti());</b>
+<b class="nc">&nbsp;        if (!evento.getListaPartecipanti().contains(partecipante)) {</b>
+<b class="nc">&nbsp;            throw new IllegalArgumentException(&quot;Partecipante non iscritto&quot;);</b>
+&nbsp;        }
+&nbsp;
+&nbsp;        //Rimuovi il partecipante dalla lista
+<b class="nc">&nbsp;        System.out.println(&quot;Partecipante da rimuovere: &quot; + partecipante);</b>
+<b class="nc">&nbsp;        evento.getListaPartecipanti().remove(partecipante);</b>
+&nbsp;
+&nbsp;        //Salva l&#39;evento aggiornato
+<b class="nc">&nbsp;        return eventoDAO.save(evento);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Permette di trovare gli eventi di un volontario.
+&nbsp;     * @param emailOrganizzatore email del volontario.
+&nbsp;     * @return lista di eventi.
+&nbsp;     */
+&nbsp;    @Override
+&nbsp;    public List&lt;Evento&gt; getEventiByVolontario(
+&nbsp;            final String emailOrganizzatore) {
+<b class="nc">&nbsp;        System.out.println(&quot;Stampami qualcosa: &quot; + emailOrganizzatore);</b>
+<b class="nc">&nbsp;        Volontario organizzatore = volontarioDAO.findByEmail(emailOrganizzatore);</b>
+<b class="nc">&nbsp;        if (organizzatore == null) {</b>
+<b class="nc">&nbsp;            throw new IllegalArgumentException(&quot;Volontario non trovato con email: &quot; + emailOrganizzatore);</b>
+&nbsp;        }
+<b class="nc">&nbsp;        return eventoDAO.findByOrganizzatore(organizzatore);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Recupera un evento specifico, inclusa la lista dei partecipanti associati.
+&nbsp;     *
+&nbsp;     * @param eventoId Identificativo univoco dell&#39;evento da recuperare.
+&nbsp;     * @return L&#39;oggetto {@link Evento} che include la lista dei partecipanti.
+&nbsp;     * @throws IllegalArgumentException se l&#39;evento con l&#39;ID specificato non viene trovato.
+&nbsp;     */
+&nbsp;    @Override
+&nbsp;    public Evento trovaEventoConPartecipanti(
+&nbsp;            final long eventoId) {
+<b class="nc">&nbsp;        return eventoDAO.findEventoWithPartecipanti(eventoId)</b>
+<b class="nc">&nbsp;                .orElseThrow(() -&gt; new IllegalArgumentException(&quot;Evento non trovato&quot;));</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public List&lt;Evento&gt; getRandomEvents() {
+&nbsp;        // Recupera tutti gli eventi
+<b class="nc">&nbsp;        List&lt;Evento&gt; eventi = eventoDAO.findAllWithOrganizzatore();</b>
+&nbsp;
+&nbsp;        // Mischia la lista
+<b class="nc">&nbsp;        Collections.shuffle(eventi);</b>
+&nbsp;
+&nbsp;        //Restituisce solo 5 eventi
+<b class="nc">&nbsp;        return eventi.stream().limit(5).toList();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;
+&nbsp;
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public List&lt;Rifugiato&gt; getPartecipantiPerEvento(final long eventoId) {
+&nbsp;        // Recupera l&#39;evento specificato tramite ID
+<b class="nc">&nbsp;        Evento evento = eventoDAO.findById(eventoId)</b>
+<b class="nc">&nbsp;                .orElseThrow(() -&gt; new IllegalArgumentException(&quot;Evento non trovato&quot;));</b>
+&nbsp;
+&nbsp;        // Restituisce la lista dei partecipanti (Rifugiato) associati all&#39;evento
+<b class="nc">&nbsp;        return evento.getListaPartecipanti();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Restituisce la lista di eventi a cui un rifugiato è iscritto.
+&nbsp;     *
+&nbsp;     * @param email Email del rifugiato.
+&nbsp;     * @return Lista di eventi a cui il rifugiato è iscritto.
+&nbsp;     */
+&nbsp;    public List&lt;Evento&gt; getEventiIscritti(String email) {
+<b class="nc">&nbsp;        List&lt;Evento&gt; eventi = eventoDAO.findEventiByRifugiatoEmail(email);</b>
+<b class="nc">&nbsp;        if (eventi.isEmpty()) {</b>
+<b class="nc">&nbsp;            return Collections.emptyList();</b>
+&nbsp;        }
+<b class="nc">&nbsp;        return eventi;</b>
+&nbsp;    }
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2025-01-05 20:59</div>
+</div>
+</body>
+</html>

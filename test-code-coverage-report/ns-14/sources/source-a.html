@@ -1,0 +1,185 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > EventoDAO</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">com.project.bridgebackend.Model.dao</a>
+</div>
+
+<h1>Coverage Summary for Class: EventoDAO (com.project.bridgebackend.Model.dao)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+</tr>
+  <tr>
+    <td class="name">EventoDAO$MockitoMock$7S2Jy5s3</td>
+  </tr>
+  <tr>
+    <td class="name">EventoDAO$MockitoMock$7S2Jy5s3$auxiliary$jdT1PpT9</td>
+  </tr>
+  <tr>
+    <td class="name">EventoDAO$MockitoMock$7S2Jy5s3$auxiliary$q80H96rV</td>
+  </tr>
+<tr>
+  <td class="name"><strong>Total</strong></td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package com.project.bridgebackend.Model.dao;
+&nbsp;
+&nbsp;import com.project.bridgebackend.Model.Entity.Evento;
+&nbsp;import com.project.bridgebackend.Model.Entity.Indirizzo;
+&nbsp;import com.project.bridgebackend.Model.Entity.Volontario;
+&nbsp;import com.project.bridgebackend.Model.Entity.enumeration.Lingua;
+&nbsp;import jakarta.transaction.Transactional;
+&nbsp;import org.springframework.data.jpa.repository.JpaRepository;
+&nbsp;import org.springframework.data.jpa.repository.Query;
+&nbsp;import org.springframework.stereotype.Repository;
+&nbsp;
+&nbsp;import java.time.LocalDate;
+&nbsp;import java.util.List;
+&nbsp;import java.util.Optional;
+&nbsp;
+&nbsp;/**
+&nbsp; * @author Alessia De Filippo.
+&nbsp; * Creato il 03/12/2024.
+&nbsp; * Repository per la gestione degli oggetti {@link Evento}.
+&nbsp; * Fornisce metodi per l&#39;accesso e la manipolazione dei,
+&nbsp; * dati relativi agli eventi.
+&nbsp; * Utilizza Spring Data JPA per fornire implementazioni automatiche,
+&nbsp; * delle query. */
+&nbsp;
+&nbsp;@Repository
+&nbsp;public interface EventoDAO extends JpaRepository&lt;Evento, Long&gt; {
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Trova eventi per lingua parlata.
+&nbsp;     * @param lingua lista di lingue dell&#39;evento.
+&nbsp;     * @return lista di eventi.
+&nbsp;     */
+&nbsp;    List&lt;Evento&gt; findByLinguaParlata(Lingua lingua);
+&nbsp;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Restituisce gli eventi svolti in determinata data.
+&nbsp;     * @param data Data dell&#39;evento.
+&nbsp;     * @return Lista di eventi.
+&nbsp;     */
+&nbsp;    List&lt;Evento&gt; findByData(LocalDate data);
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Restituisce gli eventi che si svolgono in un determinato luogo.
+&nbsp;     * @param luogo Luogo dell&#39;evento.
+&nbsp;     * @return Lista di eventi.
+&nbsp;     */
+&nbsp;    List&lt;Evento&gt; findByLuogo(Indirizzo luogo);
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Restituisce gli eventi organizzati da un determinato volontario.
+&nbsp;     * @param organizzatore Volontario organizzatore dell&#39;evento.
+&nbsp;     * @return Lista di eventi.
+&nbsp;     */
+&nbsp;    List&lt;Evento&gt; findByOrganizzatore(Volontario organizzatore);
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Elimina gli eventi con data precedente a oggi.
+&nbsp;     * @param dataBefore Data per l&#39;eliminazione.
+&nbsp;     */
+&nbsp;    @Transactional
+&nbsp;    void deleteByDataBefore(LocalDate dataBefore);
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Restituisce gli eventi con spazio disponibile.
+&nbsp;     * @return Lista di evento.
+&nbsp;     */
+&nbsp;    @Query(&quot;SELECT e FROM Evento e WHERE &quot;
+&nbsp;            + &quot;SIZE(e.listaPartecipanti) &lt; e.maxPartecipanti&quot;)
+&nbsp;    List&lt;Evento&gt; findEventiConSpazioDisponibile();
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Questo metodo esegue una query per ottenere l&#39;evento specificato,
+&nbsp;     * e carica anche la lista dei partecipanti,
+&nbsp;     * attraverso una join con la tabella relativa.
+&nbsp;     * L&#39;evento restituito conterrà tutte le informazioni necessarie,
+&nbsp;     * sui partecipanti associati.
+&nbsp;     *
+&nbsp;     * @param eventoId l&#39;ID dell&#39;evento da recuperare.
+&nbsp;     * @return la lista dei partecipanti.
+&nbsp;     * Se non esiste un evento con l&#39;ID fornito, il metodo restituirà null.
+&nbsp;     */
+&nbsp;    @Query(&quot;SELECT e FROM Evento e JOIN FETCH e.listaPartecipanti WHERE e.id = :eventoId&quot;)
+&nbsp;    Optional&lt;Evento&gt; findEventoWithPartecipanti(long eventoId);
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Questo metodo esegue una query per ottenere una lista di eventi,
+&nbsp;     * e carica anche le informazioni relative,
+&nbsp;     * agli organizzatori di ciascun evento attraverso una join.
+&nbsp;     * Gli eventi restituiti conterranno tutte le informazioni
+&nbsp;     * sugli organizzatori associati.
+&nbsp;     *
+&nbsp;     * @return una lista di eventi, ciascuno con il proprio organizzatore.
+&nbsp;     *         La lista potrebbe essere vuota se non ci sono eventi nel sistema.
+&nbsp;     */
+&nbsp;    @Query(&quot;SELECT e FROM Evento e JOIN Fetch e.organizzatore&quot;)
+&nbsp;    List&lt;Evento&gt; findAllWithOrganizzatore();
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Restituisce una lista di eventi in base alla lista degli ID dei partecipanti
+&nbsp;     *
+&nbsp;     * @param email Email del rifugiato
+&nbsp;     * @return Lista di eventi
+&nbsp;     */
+&nbsp;    @Query(&quot;SELECT e FROM Evento e JOIN e.listaPartecipanti r WHERE r.email = :email&quot;)
+&nbsp;    List&lt;Evento&gt; findEventiByRifugiatoEmail(String email);
+&nbsp;
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2025-01-05 20:59</div>
+</div>
+</body>
+</html>

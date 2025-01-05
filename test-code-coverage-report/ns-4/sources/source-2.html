@@ -1,0 +1,168 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > AlloggioService</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">com.project.bridgebackend.GestioneAlloggio.Service</a>
+</div>
+
+<h1>Coverage Summary for Class: AlloggioService (com.project.bridgebackend.GestioneAlloggio.Service)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+</tr>
+<tr>
+  <td class="name">AlloggioService</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package com.project.bridgebackend.GestioneAlloggio.Service;
+&nbsp;
+&nbsp;import com.project.bridgebackend.Model.Entity.Alloggio;
+&nbsp;import com.project.bridgebackend.Model.Entity.Indirizzo;
+&nbsp;import com.project.bridgebackend.Model.Entity.Rifugiato;
+&nbsp;import org.springframework.web.bind.annotation.RequestBody;
+&nbsp;
+&nbsp;import java.util.List;
+&nbsp;
+&nbsp;public interface AlloggioService {
+&nbsp;    /**
+&nbsp;     *Firma del metodo che aggiunge un nuovo alloggio.
+&nbsp;     * @param alloggio alloggio da inserire nel sistema.
+&nbsp;     * @return l&#39;alloggio appena inserito.
+&nbsp;     */
+&nbsp;    Alloggio addAlloggio(Alloggio alloggio);
+&nbsp;
+&nbsp;    /**
+&nbsp;     *Firma del metodo che invia una email al Rifugiato.
+&nbsp;     * @param message messaggio che sarà mostrato nella email.
+&nbsp;     * @param emailRifugiato id del rifugiato a cui inviare l&#39;email.
+&nbsp;     */
+&nbsp;    void sendEmailRifugiato(String message, String emailRifugiato);
+&nbsp;
+&nbsp;
+&nbsp;    /** Firma del metodo che permette ad un rifugiato di manifesare interesse per un&#39;alloggio
+&nbsp;     * @param emailRifugiato l&#39;email del rifugiato
+&nbsp;     * @param idAlloggio l&#39;id dell&#39;alloggio al quale si manifesta interesse
+&nbsp;     *
+&nbsp;     * @return ResponseEntity con lo stato dell&#39;operazione
+&nbsp;     */
+&nbsp;    public boolean interesse(String emailRifugiato, long idAlloggio);
+&nbsp;
+&nbsp;    /**
+&nbsp;     *Firma del metodo che assegna un alloggio a un rifugiato.
+&nbsp;     * @param id l&#39;id dell&#39;alloggio
+&nbsp;     * @param emailRifugiato l&#39;identificativo del rifugiato a cui è stato assegnato un alloggio.
+&nbsp;     * @return l&#39;alloggio che è stato assegnato al rifugiato.
+&nbsp;     */
+&nbsp;    Alloggio assegnazioneAlloggio(long id, String emailRifugiato);
+&nbsp;
+&nbsp;    /**
+&nbsp;     *Firma del metodo che notifica il volontario nel caso,
+&nbsp;     * in cui ci sia una nuova manifestazione di interesse per il suo annuncio.
+&nbsp;     * @param message messaggio che viene inviato al volontario.
+&nbsp;     * @param emailVolontario id del volontario da notificare.
+&nbsp;     */
+&nbsp;    void sendEmailVolontario(String message, String emailVolontario);
+&nbsp;
+&nbsp;    /**
+&nbsp;     *Firma del metodo che mostra tutti gli alloggi presenti nel sistema.
+&nbsp;     * @return lista di tutti gli alloggi presenti nel db.
+&nbsp;     */
+&nbsp;    List&lt;Alloggio&gt; getAllAlloggio();
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Firma del metodo per salvare l&#39;indirizzo dell&#39;alloggio.
+&nbsp;     * @param indirizzo indirizzo dell&#39;alloggio con tutte le caratteristiche.
+&nbsp;     * @return l&#39;indirizzo salvato
+&nbsp;     */
+&nbsp;    long salvaIndirizzoAlloggio(Indirizzo indirizzo);
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Firma del metodo per prendere un alloggio,
+&nbsp;     * sulla base del titolo dato in input.
+&nbsp;     * @param titolo dell&#39;alloggio che si vuole prelevare.
+&nbsp;     * @return alloggio prelevato sulla base del titolo.
+&nbsp;     */
+&nbsp;    Alloggio getAlloggioByTitolo(@RequestBody String titolo);
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Firma del metodo per prendere l&#39;id dell&#39;indirizzo dell&#39;alloggio.
+&nbsp;     * @param indirizzo indirizzo dell&#39;alloggio con tutte le caratteristiche.
+&nbsp;     * @return l&#39;id dell&#39;indirizzo richiesto.
+&nbsp;     */
+&nbsp;    long getIdIndirizzo(Indirizzo indirizzo);
+&nbsp;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Firma del metodo per ottenere 5 alloggi casuali.
+&nbsp;     * @return lista di 5 alloggi casuali.
+&nbsp;     */
+&nbsp;    List&lt;Alloggio&gt; getRandomAlloggi();
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Firma del metodo per ottenere tutti gli alloggi di un proprietario.
+&nbsp;     * @param email l&#39;email del Volontario che ha caricato l&#39;annuncio.
+&nbsp;     * @return La lista di tutti gli alloggi caricati
+&nbsp;     */
+&nbsp;    List&lt;Alloggio&gt; getAllAlloggiByEmail(String email);
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Metodo per ottenere tutti i rifugiati che hanno manifestato interesse per un alloggio.
+&nbsp;     * @param id id dell&#39;alloggio.
+&nbsp;     * @return Lista di rifugiati che hanno manifestato interesse
+&nbsp;     * */
+&nbsp;    List&lt;Rifugiato&gt; getInteressati(long id);
+&nbsp;
+&nbsp;    List&lt;Alloggio&gt; getAllAlloggiByRifugiatoEmail(String email);
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2025-01-05 20:59</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,184 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > AlloggioDTO</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">com.project.bridgebackend.Model.dto</a>
+</div>
+
+<h1>Coverage Summary for Class: AlloggioDTO (com.project.bridgebackend.Model.dto)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">AlloggioDTO</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/1)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package com.project.bridgebackend.Model.dto;
+&nbsp;
+&nbsp;import com.project.bridgebackend.Model.Entity.Indirizzo;
+&nbsp;import com.project.bridgebackend.Model.Entity.enumeration.Servizi;
+&nbsp;import jakarta.validation.constraints.Email;
+&nbsp;import jakarta.validation.constraints.NotBlank;
+&nbsp;import jakarta.validation.constraints.NotNull;
+&nbsp;import jakarta.validation.constraints.Positive;
+&nbsp;import jakarta.validation.constraints.Size;
+&nbsp;import lombok.Data;
+&nbsp;
+&nbsp;import java.util.List;
+&nbsp;
+&nbsp;/**
+&nbsp; * Data Transfer Object (DTO) per rappresentare gli alloggi.
+&nbsp; * Utilizzato per il trasferimento dei dati relativi agli alloggi tra i livelli
+&nbsp; * del sistema. Include la validazione dei dati per garantire che siano
+&nbsp; * conformi alle regole definite.
+&nbsp; */
+&nbsp;@Data
+&nbsp;public class AlloggioDTO {
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Descrizione dell&#39;alloggio. Deve essere lunga al massimo 500 caratteri.
+&nbsp;     */
+&nbsp;    @Size(max = 500, message = &quot;La descrizione non può superare i 500 caratteri&quot;)
+&nbsp;    private String descrizione;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Numero massimo di persone che l&#39;alloggio può ospitare. Deve essere un valore positivo.
+&nbsp;     */
+&nbsp;    @NotNull(message = &quot;Il numero di posti è obbligatorio&quot;)
+&nbsp;    @Positive(message = &quot;Il numero di posti deve essere un valore positivo&quot;)
+&nbsp;    private Integer maxPersone;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * La metratura dell&#39;alloggio. Deve essere un valore positivo.
+&nbsp;     */
+&nbsp;    @NotNull(message = &quot;La metratura è obbligatoria&quot;)
+&nbsp;    @Positive(message = &quot;Il numero della metratura deve essere un valore positivo&quot;)
+&nbsp;    private Integer metratura;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Lista di foto dell&#39;alloggio. Può contenere più URL o stringhe base64 delle immagini.
+&nbsp;     */
+&nbsp;    private List&lt;String&gt; foto;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Email del proprietario dell&#39;alloggio. Deve essere un&#39;email valida.
+&nbsp;     */
+&nbsp;    @NotBlank(message = &quot;L&#39;email del proprietario è obbligatoria&quot;)
+&nbsp;    @Email(message = &quot;L&#39;email del proprietario deve essere valida&quot;)
+&nbsp;    private String emailProprietario;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Servizi offerti dall&#39;alloggio. Deve essere un valore non nullo.
+&nbsp;     */
+&nbsp;    @NotNull(message = &quot;Servizi obbligatori&quot;)
+&nbsp;    private Servizi servizi;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Titolo dell&#39;alloggio. Deve essere un valore non nullo.
+&nbsp;     */
+&nbsp;    @NotNull(message = &quot;Il titolo non può essere vuoto&quot;)
+&nbsp;    private String titolo;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Indirizzo dell&#39;alloggio. Deve essere un valore non nullo.
+&nbsp;     */
+&nbsp;    @NotNull(message = &quot;l&#39;indirizzo non può essere nullo&quot;)
+&nbsp;    private Indirizzo indirizzo;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Costruttore vuoto per la creazione di un&#39;istanza di AlloggioDTO.
+&nbsp;     */
+<b class="nc">&nbsp;    public AlloggioDTO() {</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    // Getters e Setters
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2025-01-05 20:59</div>
+</div>
+</body>
+</html>

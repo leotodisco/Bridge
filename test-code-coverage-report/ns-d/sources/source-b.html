@@ -1,0 +1,184 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > Annuncio</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">com.project.bridgebackend.Model.Entity</a>
+</div>
+
+<h1>Coverage Summary for Class: Annuncio (com.project.bridgebackend.Model.Entity)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+</tr>
+<tr>
+  <td class="name">Annuncio</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package com.project.bridgebackend.Model.Entity;
+&nbsp;
+&nbsp;import jakarta.persistence.Column;
+&nbsp;import jakarta.persistence.MappedSuperclass;
+&nbsp;import jakarta.persistence.Id;
+&nbsp;import jakarta.persistence.GenerationType;
+&nbsp;import jakarta.persistence.GeneratedValue;
+&nbsp;import jakarta.persistence.ManyToOne;
+&nbsp;import jakarta.persistence.FetchType;
+&nbsp;import jakarta.persistence.JoinColumn;
+&nbsp;import jakarta.persistence.OneToOne;
+&nbsp;import lombok.AllArgsConstructor;
+&nbsp;import lombok.Data;
+&nbsp;import lombok.NoArgsConstructor;
+&nbsp;import jakarta.validation.constraints.Min;
+&nbsp;import jakarta.validation.constraints.NotNull;
+&nbsp;import jakarta.validation.constraints.Size;
+&nbsp;
+&nbsp;
+&nbsp;/**
+&nbsp; *
+&nbsp; * @author Geraldine Montella.
+&nbsp; * Creato il: 03/12/2024.
+&nbsp; * Questa Java Persistence Entity per un annuncio,
+&nbsp; * la inheritance è settata a JOINED perciò Ogni entità ha la propria tabella,
+&nbsp; * e le tabelle sono unite tramite chiavi primarie.
+&nbsp; */
+&nbsp;
+&nbsp;@MappedSuperclass
+&nbsp;@Data
+&nbsp;@NoArgsConstructor
+&nbsp;@AllArgsConstructor
+&nbsp;public class Annuncio {
+&nbsp;
+&nbsp;    /**
+&nbsp;     * ID univoco per ogni annuncio.
+&nbsp;     */
+&nbsp;    @Id
+&nbsp;    @GeneratedValue(strategy = GenerationType.IDENTITY)
+&nbsp;    private long id;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Riferimento all&#39;utente proprietario dell&#39;annuncio.
+&nbsp;     * È una relazione @ManyToOne, in cui più annunci possono appartenere allo stesso utente,
+&nbsp;     * il fetch lazy è stato aggiunto per evitare che i dati vengano carricati,
+&nbsp;     * immediatamente appena l&#39;entità principale viene caricata, ma solo quando,
+&nbsp;     * richiesti nel codice.
+&nbsp;     */
+&nbsp;    @ManyToOne(fetch = FetchType.EAGER)
+&nbsp;    @JoinColumn(name = &quot;proprietario_email&quot;, referencedColumnName = &quot;email&quot;, nullable = false)
+&nbsp;    private Utente proprietario;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Indica la tipologia dell&#39;annuncio (es. privato/commerciale).
+&nbsp;     * È un campo obbligatorio, rappresentato da un valore booleano (true/false).
+&nbsp;     * La colonna nel database è chiamata tipologia.
+&nbsp;     */
+&nbsp;    @Column(name = &quot;tipologia&quot;, nullable = false)
+&nbsp;    @NotNull
+&nbsp;    private Boolean tipologia;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Titolo dell&#39;annuncio, che descrive brevemente il contenuto.
+&nbsp;     * È un campo obbligatorio, con una lunghezza massima di 100 caratteri.
+&nbsp;     * La colonna nel database è chiamata titolo.
+&nbsp;     */
+&nbsp;    @Column(name = &quot;titolo&quot;, nullable = false)
+&nbsp;    @Size(max = 100)
+&nbsp;    @NotNull
+&nbsp;    private String titolo;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Indica se l&#39;annuncio è attualmente disponibile.
+&nbsp;     * È un campo obbligatorio rappresentato da un valore booleano (true/false).
+&nbsp;     * La colonna nel database è chiamata disponibilita.
+&nbsp;     */
+&nbsp;    @Column(name = &quot;disponibilita&quot;, nullable = false)
+&nbsp;    @NotNull
+&nbsp;    private Boolean disponibilita;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Riferimento all&#39;entità Indirizzo, che rappresenta l&#39;indirizzo associato all&#39;annuncio.
+&nbsp;     * È una relazione @OneToOne, in cui più annunci possono condividere lo stesso indirizzo.
+&nbsp;     * Il fetch lazy è stato aggiunto per evitare che i dati vengano carricati
+&nbsp;     * immediatamente appena l&#39;entità principale viene caricata, ma solo quando
+&nbsp;     * richiesti nel codice
+&nbsp;     */
+&nbsp;    @OneToOne(fetch = FetchType.LAZY)
+&nbsp;    @JoinColumn(name = &quot;indirizzo_id&quot;, nullable = false)
+&nbsp;    private Indirizzo indirizzo;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Numero massimo di candidature che l&#39;annuncio può accettare.
+&nbsp;     * È un campo obbligatorio con un valore intero.
+&nbsp;     * La colonna nel database è chiamata max_candidature.
+&nbsp;     *
+&nbsp;     * si deve consentire ad almeno un rifugiato di candidarsi
+&nbsp;     */
+&nbsp;    @Column(name = &quot;max_candidature&quot;, nullable = false)
+&nbsp;    @NotNull
+&nbsp;    @Min(1)
+&nbsp;    private int maxCandidature;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Lista di candidati (di tipo Rifugiato) che hanno applicato per l&#39;annuncio.
+&nbsp;     * È una relazione @OneToMany, in cui un annuncio può essere associato a più candidati.
+&nbsp;     * La relazione è mappata dall&#39;attributo annuncio nell&#39;entità Rifugiato.
+&nbsp;     */
+&nbsp;//    @ElementCollection
+&nbsp;//    @CollectionTable(
+&nbsp;//            name = &quot;annuncio_rifugiati&quot;,
+&nbsp;//            joinColumns = @JoinColumn(name = &quot;annuncio_id&quot;)
+&nbsp;//    )
+&nbsp;//    @Column(name = &quot;rifugiato_email&quot;, nullable = false)
+&nbsp;//    private List&lt;String&gt; candidati;
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2025-01-05 20:59</div>
+</div>
+</body>
+</html>

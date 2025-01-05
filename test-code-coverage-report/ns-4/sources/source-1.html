@@ -1,0 +1,566 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > AlloggioServiceImplementazione</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">com.project.bridgebackend.GestioneAlloggio.Service</a>
+</div>
+
+<h1>Coverage Summary for Class: AlloggioServiceImplementazione (com.project.bridgebackend.GestioneAlloggio.Service)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Branch, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">AlloggioServiceImplementazione</td>
+<td class="coverageStat">
+  <span class="percent">
+    20%
+  </span>
+  <span class="absValue">
+    (3/15)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    31,6%
+  </span>
+  <span class="absValue">
+    (31/98)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    19,6%
+  </span>
+  <span class="absValue">
+    (28/143)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">AlloggioServiceImplementazione$$SpringCGLIB$$0</td>
+  </tr>
+<tr>
+  <td class="name"><strong>Total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    20%
+  </span>
+  <span class="absValue">
+    (3/15)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    31,6%
+  </span>
+  <span class="absValue">
+    (31/98)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    19,6%
+  </span>
+  <span class="absValue">
+    (28/143)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package com.project.bridgebackend.GestioneAlloggio.Service;
+&nbsp;
+&nbsp;import com.project.bridgebackend.Model.Entity.*;
+&nbsp;import com.project.bridgebackend.Model.dao.RifugiatoDAO;
+&nbsp;import com.project.bridgebackend.Model.dao.VolontarioDAO;
+&nbsp;import com.project.bridgebackend.Model.dao.AlloggioDAO;
+&nbsp;import com.project.bridgebackend.Model.dao.IndirizzoDAO;
+&nbsp;import org.slf4j.Logger;
+&nbsp;import org.slf4j.LoggerFactory;
+&nbsp;import org.springframework.beans.factory.annotation.Autowired;
+&nbsp;import org.springframework.mail.SimpleMailMessage;
+&nbsp;import org.springframework.mail.javamail.JavaMailSender;
+&nbsp;import org.springframework.scheduling.annotation.Async;
+&nbsp;import org.springframework.stereotype.Service;
+&nbsp;import org.springframework.validation.annotation.Validated;
+&nbsp;import org.springframework.web.bind.annotation.RequestBody;
+&nbsp;
+&nbsp;import java.util.Base64;
+&nbsp;import java.util.Collections;
+&nbsp;import java.util.List;
+&nbsp;import java.util.Optional;
+&nbsp;
+&nbsp;/**
+&nbsp; *@author Mario Zurolo.
+&nbsp; * Date 4/12/24.
+&nbsp; * Implementazione del servizio per la gestione degli alloggi.
+&nbsp; * Contiene metodi per l&#39;aggiunta, la manifestazione di interesse,
+&nbsp; * e l&#39;assegnazione degli alloggi,
+&nbsp; * oltre alla gestione delle email per comunicare con i rifugiati,
+&nbsp; * e i volontari.
+&nbsp; **/
+&nbsp;
+&nbsp;@Service
+&nbsp;@Validated
+<b class="fc">&nbsp;public class AlloggioServiceImplementazione implements AlloggioService {</b>
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Service per la logica di gestione degli utenti volontari.
+&nbsp;     */
+&nbsp;    @Autowired
+&nbsp;    private VolontarioDAO volontarioDAO;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Service per la logica di gestione degli utenti rifugiati.
+&nbsp;     */
+&nbsp;    @Autowired
+&nbsp;    RifugiatoDAO rifugiatoDAO;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Service per la logica di gestione degli alloggi.
+&nbsp;     */
+&nbsp;    @Autowired
+&nbsp;    private AlloggioDAO alloggioDAO;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Service per la logica di gestione degli indirizzi.
+&nbsp;     */
+&nbsp;    @Autowired
+&nbsp;    private IndirizzoDAO indirizzoDAO;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Bean per l&#39;invio di email tramite JavaMailSender.
+&nbsp;     * Utilizzato per inviare email al rifugiato e,
+&nbsp;     * al volontario nel sistema.
+&nbsp;     */
+&nbsp;
+&nbsp;    @Autowired
+&nbsp;    private JavaMailSender mailSender;
+&nbsp;
+<b class="fc">&nbsp;    private static final Logger logger = LoggerFactory.getLogger(AlloggioServiceImplementazione.class);</b>
+&nbsp;
+&nbsp;
+&nbsp;
+&nbsp;    /** Metodo che permette ad un rifugiato di manifesare interesse per un&#39;alloggio
+&nbsp;     * @param emailRifugiato l&#39;email del rifugiato
+&nbsp;     * @param idAlloggio l&#39;id dell&#39;alloggio al quale si manifesta interesse
+&nbsp;     *
+&nbsp;     * @return un booleano che specifica lo stato dell&#39;operazione. true andato a buon fine, false altrimenti
+&nbsp;     */
+&nbsp;    @Override
+&nbsp;    public boolean interesse(String emailRifugiato, long idAlloggio) {
+<b class="nc">&nbsp;        logger.info(&quot;Inizio metodo interesse&quot;);</b>
+<b class="nc">&nbsp;        System.out.println(&quot;inizio metodo interesse da Syout&quot;);</b>
+&nbsp;
+<b class="nc">&nbsp;        if (emailRifugiato == null || emailRifugiato.trim().isEmpty()) {</b>
+<b class="nc">&nbsp;            throw new IllegalArgumentException(&quot;Email vuota o nulla&quot;);</b>
+&nbsp;        }
+<b class="nc">&nbsp;        if (idAlloggio &lt;= 0) {</b>
+<b class="nc">&nbsp;            throw new IllegalArgumentException(&quot;ID alloggio non valido&quot;);</b>
+&nbsp;        }
+&nbsp;
+<b class="nc">&nbsp;        Rifugiato r = rifugiatoDAO.findByEmail(emailRifugiato);</b>
+<b class="nc">&nbsp;        if (r == null) {</b>
+<b class="nc">&nbsp;            throw new IllegalArgumentException(&quot;Rifugiato non trovato&quot;);</b>
+&nbsp;        }
+<b class="nc">&nbsp;        logger.info(&quot;Rifugiato trovato: {}&quot;, r);</b>
+&nbsp;
+<b class="nc">&nbsp;        Alloggio a = alloggioDAO.findAlloggioById(idAlloggio);</b>
+<b class="nc">&nbsp;        if (a == null) {</b>
+<b class="nc">&nbsp;            throw new IllegalArgumentException(&quot;Alloggio non trovato&quot;);</b>
+&nbsp;        }
+<b class="nc">&nbsp;        logger.info(&quot;Alloggio trovato: {}&quot;, a);</b>
+&nbsp;
+<b class="nc">&nbsp;        if (a.getListaCandidati().contains(r.getEmail())) {</b>
+<b class="nc">&nbsp;            throw new IllegalArgumentException(&quot;Interesse già manifestato&quot;);</b>
+&nbsp;        }
+&nbsp;
+<b class="nc">&nbsp;        a.getListaCandidati().add(r);</b>
+<b class="nc">&nbsp;        logger.info(&quot;Rifugiato aggiunto alla lista candidati&quot;);</b>
+&nbsp;
+<b class="nc">&nbsp;        String messaggio = String.format(&quot;Il rifugiato %s (%s) ha manifestato interesse per l&#39;alloggio &#39;%s&#39;.&quot;,</b>
+<b class="nc">&nbsp;                r.getNome(), r.getEmail(), a.getTitolo());</b>
+<b class="nc">&nbsp;        logger.info(&quot;Messaggio generato: {}&quot;, messaggio);</b>
+&nbsp;
+&nbsp;        try {
+<b class="nc">&nbsp;            sendEmailVolontario(messaggio, &quot;mariozurolo00@gmail.com&quot;);</b>
+&nbsp;        } catch (Exception e) {
+<b class="nc">&nbsp;            logger.error(&quot;Errore durante l&#39;invio dell&#39;email: {}&quot;, e.getMessage(), e);</b>
+&nbsp;        }
+&nbsp;
+<b class="nc">&nbsp;        alloggioDAO.save(a);</b>
+<b class="nc">&nbsp;        logger.info(&quot;Alloggio aggiornato con successo&quot;);</b>
+&nbsp;
+<b class="nc">&nbsp;        return true;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Aggiunge un nuovo alloggio nel sistema.
+&nbsp;     *
+&nbsp;     * @param alloggio l&#39;alloggio che si desidera caricare
+&nbsp;     * @return l&#39;alloggio appena creato
+&nbsp;     * @throws IllegalArgumentException se l&#39;alloggio è nullo
+&nbsp;     */
+&nbsp;    @Override
+&nbsp;    public Alloggio addAlloggio(final Alloggio alloggio) {
+&nbsp;
+<b class="pc">&nbsp;        if (alloggio == null) {</b>
+<b class="nc">&nbsp;            throw new IllegalArgumentException(&quot;L&#39;alloggio non può essere nullo&quot;);</b>
+&nbsp;        }
+&nbsp;
+<b class="pc">&nbsp;        if(alloggio.getIndirizzo().getNumCivico() &gt; 9999 || alloggio.getIndirizzo().getNumCivico() &lt;= 0) {</b>
+<b class="fc">&nbsp;            throw new IllegalArgumentException(&quot;Numero civico errato&quot;);</b>
+&nbsp;        }
+<b class="fc">&nbsp;        if (!alloggio.getIndirizzo().getCitta().matches(&quot;^[A-zÀ-ù ‘]{2,50}$&quot;)) {</b>
+<b class="fc">&nbsp;            throw new IllegalArgumentException(&quot;La città non può contenere numeri&quot;);</b>
+&nbsp;        }
+<b class="fc">&nbsp;        if(!alloggio.getIndirizzo().getProvincia().matches(&quot;^[A-Z]{2}$&quot;)){</b>
+<b class="fc">&nbsp;            throw new IllegalArgumentException(&quot;La provincia non rispetta il formato&quot;);</b>
+&nbsp;        }
+<b class="fc">&nbsp;        if(!alloggio.getIndirizzo().getVia().matches(&quot;^[A-zÀ-ù ‘]{2,50}$&quot;)){</b>
+<b class="fc">&nbsp;            throw new IllegalArgumentException(&quot;La provincia non rispetta il formato&quot;);</b>
+&nbsp;        }
+<b class="pc">&nbsp;        if (alloggio.getIndirizzo().getCap() == null || !alloggio.getIndirizzo().getCap().matches(&quot;\\d{5}&quot;)) {</b>
+<b class="fc">&nbsp;            throw new IllegalArgumentException(&quot;Il CAP non rispetta il formato: deve essere composto da 5 cifre.&quot;);</b>
+&nbsp;        }
+&nbsp;
+<b class="pc">&nbsp;        if (alloggio.getMetratura() &lt;= 0 || alloggio.getMetratura() &gt; 99999) {</b>
+<b class="fc">&nbsp;            throw new IllegalArgumentException(&quot;La metratura deve essere maggiore di zero&quot;);</b>
+&nbsp;        }
+&nbsp;
+<b class="pc">&nbsp;        if (alloggio.getMaxPersone() &lt;= 0 || alloggio.getMaxPersone() &gt; 99) {</b>
+<b class="fc">&nbsp;            throw new IllegalArgumentException(&quot;Il numero massimo di persone deve essere maggiore di zero&quot;);</b>
+&nbsp;        }
+<b class="pc">&nbsp;        if (alloggio.getDescrizione() == null || alloggio.getDescrizione().isEmpty() || !alloggio.getDescrizione().matches(&quot;^[A-Za-z0-9 ]{0,400}$&quot;)){</b>
+<b class="fc">&nbsp;            throw new IllegalArgumentException(&quot;La descrizione non può essere nulla o vuota&quot;);</b>
+&nbsp;        }
+<b class="pc">&nbsp;        if (alloggio.getServizi() == null) {</b>
+<b class="nc">&nbsp;            throw new IllegalArgumentException(&quot;I servizi non possono essere nulli&quot;);</b>
+&nbsp;        }
+&nbsp;
+<b class="pc">&nbsp;        if (alloggio.getTitolo() == null || alloggio.getTitolo().isEmpty() || !alloggio.getTitolo().matches(&quot;^[a-zA-Z0-9 ]{3,100}$&quot;)) {</b>
+<b class="fc">&nbsp;            throw new IllegalArgumentException(&quot;Il titolo non può essere nullo o vuoto&quot;);</b>
+&nbsp;        }
+&nbsp;
+<b class="fc">&nbsp;        Volontario proprietario = volontarioDAO.findByEmail(alloggio.getProprietario().getEmail());</b>
+<b class="fc">&nbsp;        if (proprietario == null) {</b>
+<b class="fc">&nbsp;            throw new IllegalArgumentException(&quot;Il proprietario non esiste&quot;);</b>
+&nbsp;        }
+&nbsp;
+<b class="pc">&nbsp;        if (alloggio.getIndirizzo() == null) {</b>
+<b class="nc">&nbsp;            throw new IllegalArgumentException(&quot;L&#39;indirizzo non può essere nullo&quot;);</b>
+&nbsp;        }
+&nbsp;
+<b class="fc">&nbsp;            Alloggio salvato = alloggioDAO.save(alloggio);</b>
+<b class="fc">&nbsp;            return salvato;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Metodo che invia una email al rifugiato.
+&nbsp;     *
+&nbsp;     * @param messaggio il messaggio da inviare
+&nbsp;     * @param emailRifugiato l&#39;email del rifugiato destinatario
+&nbsp;     */
+&nbsp;    @Override
+&nbsp;    public void sendEmailRifugiato(final String messaggio,
+&nbsp;                                   final String emailRifugiato) {
+&nbsp;
+&nbsp;        try {
+<b class="nc">&nbsp;            SimpleMailMessage message = new SimpleMailMessage();</b>
+<b class="nc">&nbsp;            message.setFrom(&quot;beehaveofficial@gmail.com&quot;);</b>
+<b class="nc">&nbsp;            message.setTo(&quot;mariozurolo00@gmail.com&quot;);</b>
+<b class="nc">&nbsp;            message.setSubject(&quot;PROVA&quot;);</b>
+<b class="nc">&nbsp;            message.setText(messaggio);</b>
+<b class="nc">&nbsp;            mailSender.send(message);</b>
+<b class="nc">&nbsp;            System.out.println(&quot;email inviata&quot;);</b>
+&nbsp;        } catch (Exception e) {
+<b class="nc">&nbsp;            System.out.println(&quot;Errore nell invio dell&#39;email a: &quot; + emailRifugiato + e.getMessage());</b>
+&nbsp;        }
+&nbsp;
+&nbsp;    }
+&nbsp;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Metodo che gestisce l&#39;assegnazione di un alloggio a un rifugiato.
+&nbsp;     *
+&nbsp;     * @param id l&#39;id dell&#39;alloggio.
+&nbsp;     * @param emailRifugiato l&#39;email del rifugiato.
+&nbsp;     * @return l&#39;alloggio assegnato o null se non viene,
+&nbsp;     * trovato un alloggio valido.
+&nbsp;     * @throws IllegalArgumentException se il rifugiato,
+&nbsp;     * non ha mostrato interesse per l&#39;alloggio.
+&nbsp;     */
+&nbsp;    @Override
+&nbsp;    public Alloggio assegnazioneAlloggio(final long id, final String emailRifugiato) {
+<b class="nc">&nbsp;        if (id &lt; 1) {</b>
+<b class="nc">&nbsp;            throw new IllegalArgumentException(&quot;ID non valido&quot;);</b>
+&nbsp;        }
+&nbsp;
+<b class="nc">&nbsp;        if (emailRifugiato == null || emailRifugiato.trim().isEmpty()) {</b>
+<b class="nc">&nbsp;            throw new IllegalArgumentException(&quot;Email vuota o nulla&quot;);</b>
+&nbsp;        }
+&nbsp;
+&nbsp;        // Recupera l&#39;alloggio dal database
+<b class="nc">&nbsp;        Alloggio alloggio = alloggioDAO.findAlloggioById(id);</b>
+<b class="nc">&nbsp;        if (alloggio == null) {</b>
+<b class="nc">&nbsp;            throw new IllegalArgumentException(&quot;Alloggio non trovato&quot;);</b>
+&nbsp;        }
+&nbsp;
+&nbsp;        // Verifica se l&#39;alloggio è già stato assegnato
+<b class="nc">&nbsp;        if (alloggio.getAssegnatoA() != null) {</b>
+<b class="nc">&nbsp;            throw new IllegalArgumentException(&quot;L&#39;alloggio è già stato assegnato a un altro rifugiato&quot;);</b>
+&nbsp;        }
+&nbsp;
+&nbsp;        // Recupera la lista dei candidati per l&#39;alloggio
+<b class="nc">&nbsp;        List&lt;Rifugiato&gt; listaCandidati = alloggio.getListaCandidati();</b>
+<b class="nc">&nbsp;        if (listaCandidati == null || listaCandidati.isEmpty()) {</b>
+&nbsp;            // Gestisci il caso in cui la lista è vuota
+<b class="nc">&nbsp;            throw new IllegalArgumentException(&quot;Nessun candidato disponibile per questo alloggio&quot;);</b>
+&nbsp;        }
+&nbsp;
+&nbsp;        // Cerca il rifugiato nella lista dei candidati
+<b class="nc">&nbsp;        Optional&lt;Rifugiato&gt; rifugiatoOpt = listaCandidati.stream()</b>
+<b class="nc">&nbsp;                .filter(r -&gt; r.getEmail().equals(emailRifugiato))</b>
+<b class="nc">&nbsp;                .findFirst();</b>
+&nbsp;
+<b class="nc">&nbsp;        if (rifugiatoOpt.isEmpty()) {</b>
+<b class="nc">&nbsp;            throw new IllegalArgumentException(&quot;Il rifugiato non ha manifestato interesse per questo alloggio&quot;);</b>
+&nbsp;        }
+&nbsp;
+<b class="nc">&nbsp;        Rifugiato rifugiato = rifugiatoOpt.get();</b>
+&nbsp;
+&nbsp;        // Assegna l&#39;alloggio al rifugiato
+<b class="nc">&nbsp;        alloggio.setAssegnatoA(rifugiato);</b>
+&nbsp;
+&nbsp;        // Svuota la lista dei candidati
+<b class="nc">&nbsp;        alloggio.getListaCandidati().clear();</b>
+&nbsp;
+<b class="nc">&nbsp;        sendEmailRifugiato(&quot;Sei stato selezionato&quot;, &quot;mariozurolo00@gmail.com&quot;);</b>
+&nbsp;
+&nbsp;        // Salva l&#39;alloggio aggiornato
+<b class="nc">&nbsp;        alloggioDAO.save(alloggio);</b>
+<b class="nc">&nbsp;        return alloggio;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Metodo asincrono che invia una email al volontario.
+&nbsp;     *
+&nbsp;     * @param messaggio il messaggio da inviare.
+&nbsp;     * @param emailVolontario l&#39;email del destinatario.
+&nbsp;     */
+&nbsp;    @Override
+&nbsp;    public void sendEmailVolontario(final String messaggio, final String emailVolontario) {
+<b class="nc">&nbsp;        logger.info(&quot;Invio email a: {}, con messaggio: {}&quot;, emailVolontario, messaggio);</b>
+&nbsp;        try {
+<b class="nc">&nbsp;            SimpleMailMessage message = new SimpleMailMessage();</b>
+<b class="nc">&nbsp;            message.setFrom(&quot;beehaveofficial@gmail.com&quot;);</b>
+<b class="nc">&nbsp;            message.setTo(emailVolontario);</b>
+<b class="nc">&nbsp;            message.setSubject(&quot;Notifica Interesse Alloggio&quot;);</b>
+<b class="nc">&nbsp;            message.setText(messaggio);</b>
+<b class="nc">&nbsp;            mailSender.send(message);</b>
+<b class="nc">&nbsp;            logger.info(&quot;Email inviata con successo a: {}&quot;, emailVolontario);</b>
+&nbsp;        } catch (Exception e) {
+<b class="nc">&nbsp;            logger.error(&quot;Errore nell&#39;invio dell&#39;email a: {} - {}&quot;, emailVolontario, e.getMessage(), e);</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;
+&nbsp;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Restituisce la lista di tutti gli alloggi.
+&nbsp;     *
+&nbsp;     * @return la lista di tutti gli alloggi.
+&nbsp;     */
+&nbsp;    @Override
+&nbsp;    public List&lt;Alloggio&gt; getAllAlloggio() {
+<b class="nc">&nbsp;        return alloggioDAO.findAllAlloggiWithProprietario();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Salva un indirizzo nel sistema.
+&nbsp;     *
+&nbsp;     * @param indirizzo l&#39;indirizzo da salvare.
+&nbsp;     * @return l&#39;ID dell&#39;indirizzo salvato.
+&nbsp;     * @throws IllegalArgumentException se l&#39;indirizzo è nullo.
+&nbsp;     */
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public long salvaIndirizzoAlloggio(final Indirizzo indirizzo) {
+<b class="nc">&nbsp;        if(indirizzo == null) {</b>
+<b class="nc">&nbsp;            throw new IllegalArgumentException(&quot;Indirizzo nullo&quot;);</b>
+&nbsp;        }
+<b class="nc">&nbsp;        if(indirizzo.getNumCivico() &gt; 9999){</b>
+<b class="nc">&nbsp;            throw new IllegalArgumentException(&quot;Numero civico troppo lungo&quot;);</b>
+&nbsp;        }
+<b class="nc">&nbsp;        if (!indirizzo.getCitta().matches(&quot;^[^\\d]*$&quot;)) {</b>
+<b class="nc">&nbsp;            throw new IllegalArgumentException(&quot;La città non può contenere numeri&quot;);</b>
+&nbsp;        }
+<b class="nc">&nbsp;        if(!indirizzo.getProvincia().matches(&quot;^[A-Z]{2}$&quot;)){</b>
+<b class="nc">&nbsp;            throw new IllegalArgumentException(&quot;La provincia non rispetta il formato&quot;);</b>
+&nbsp;        }
+<b class="nc">&nbsp;        if(!indirizzo.getVia().matches(&quot;^[A-zÀ-ù ‘]{2,50}$&quot;)){</b>
+<b class="nc">&nbsp;            throw new IllegalArgumentException(&quot;La provincia non rispetta il formato&quot;);</b>
+&nbsp;        }
+<b class="nc">&nbsp;        if (indirizzo.getCap() == null || !indirizzo.getCap().matches(&quot;\\d{5}&quot;)) {</b>
+<b class="nc">&nbsp;            throw new IllegalArgumentException(&quot;Il CAP non rispetta il formato: deve essere composto da 5 cifre.&quot;);</b>
+&nbsp;        }
+<b class="nc">&nbsp;        indirizzoDAO.save(indirizzo);</b>
+<b class="nc">&nbsp;        return indirizzo.getId();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Restituisce l&#39;ID di un indirizzo.
+&nbsp;     *
+&nbsp;     * @param indirizzo l&#39;indirizzo di cui si vuole ottenere l&#39;ID.
+&nbsp;     * @return l&#39;ID dell&#39;indirizzo.
+&nbsp;     * @throws IllegalArgumentException se l&#39;indirizzo è nullo.
+&nbsp;     */
+&nbsp;    @Override
+&nbsp;    public long getIdIndirizzo(final Indirizzo indirizzo) {
+<b class="nc">&nbsp;        if (indirizzo == null) {</b>
+<b class="nc">&nbsp;            throw new IllegalArgumentException(&quot;Indirizzo nullo&quot;);</b>
+&nbsp;        }
+&nbsp;
+<b class="nc">&nbsp;        return indirizzo.getId();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Restituisce un alloggio dato il suo titolo.
+&nbsp;     *
+&nbsp;     * @param titolo il titolo dell&#39;alloggio.
+&nbsp;     * @return l&#39;alloggio corrispondente al titolo.
+&nbsp;     * @throws IllegalArgumentException se l&#39;alloggio non viene trovato.
+&nbsp;     */
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public Alloggio getAlloggioByTitolo(
+&nbsp;            @RequestBody final String titolo) {
+&nbsp;
+<b class="nc">&nbsp;        Alloggio alloggio = alloggioDAO.findAlloggioByTitolo(titolo).get();</b>
+<b class="nc">&nbsp;        System.out.println(alloggio);</b>
+<b class="nc">&nbsp;        if (alloggio == null) {</b>
+<b class="nc">&nbsp;            throw new IllegalArgumentException(&quot;Alloggio non trovato&quot;);</b>
+&nbsp;        }
+<b class="nc">&nbsp;        System.out.println(alloggio);</b>
+<b class="nc">&nbsp;        return alloggio;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public List&lt;Alloggio&gt; getRandomAlloggi() {
+<b class="nc">&nbsp;        List&lt;Alloggio&gt; alloggi = alloggioDAO.findMyAll();</b>
+<b class="nc">&nbsp;        if (alloggi.isEmpty()) {</b>
+<b class="nc">&nbsp;            System.out.println(&quot;Nessun alloggio trovato nel database.&quot;);</b>
+<b class="nc">&nbsp;            return Collections.emptyList();</b>
+&nbsp;        }
+<b class="nc">&nbsp;        Collections.shuffle(alloggi);</b>
+<b class="nc">&nbsp;        return alloggi.stream().limit(5).toList();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public List&lt;Alloggio&gt; getAllAlloggiByEmail(String email){
+&nbsp;
+<b class="nc">&nbsp;        if(email == null || email.trim().isEmpty()) {</b>
+<b class="nc">&nbsp;            throw new IllegalArgumentException(&quot;Email nullo&quot;);</b>
+&nbsp;        }
+&nbsp;        try{
+<b class="nc">&nbsp;            List&lt;Alloggio&gt; allAlloggi= alloggioDAO.getAllAlloggiByEmail(email);</b>
+<b class="nc">&nbsp;            return allAlloggi;</b>
+&nbsp;        }catch(Exception e){
+<b class="nc">&nbsp;            throw new IllegalArgumentException(&quot;Non trovati gli alloggi &quot; + e.getMessage());</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public List&lt;Rifugiato&gt; getInteressati(long id) {
+&nbsp;        try {
+<b class="nc">&nbsp;            Optional&lt;Alloggio&gt; optionalAlloggio = alloggioDAO.findById(id);</b>
+<b class="nc">&nbsp;            if (!optionalAlloggio.isPresent()) {</b>
+<b class="nc">&nbsp;                throw new IllegalArgumentException(&quot;Alloggio non trovato&quot;);</b>
+&nbsp;            }
+&nbsp;
+<b class="nc">&nbsp;            Alloggio alloggio = optionalAlloggio.get();</b>
+<b class="nc">&nbsp;            List&lt;Rifugiato&gt; rifugiatiInteressati = alloggio.getListaCandidati();</b>
+<b class="nc">&nbsp;            if (rifugiatiInteressati.isEmpty()) {</b>
+<b class="nc">&nbsp;                throw new IllegalArgumentException(&quot;Lista dei interessati vuota&quot;);</b>
+&nbsp;            }
+<b class="nc">&nbsp;            return rifugiatiInteressati;</b>
+&nbsp;        } catch (Exception e) {
+&nbsp;            // Log dell&#39;errore lato server
+<b class="nc">&nbsp;            System.err.println(&quot;Errore durante il recupero dei rifugiati interessati: &quot; + e.getMessage());</b>
+<b class="nc">&nbsp;            throw new IllegalArgumentException(&quot;Non trovati i rifugiati: &quot; + e.getMessage());</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;
+&nbsp;    public List&lt;Alloggio&gt; getAllAlloggiByRifugiatoEmail(String email) {
+<b class="nc">&nbsp;        return alloggioDAO.findAllAlloggiByRifugiatoEmail(email);</b>
+&nbsp;    }
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2025-01-05 20:59</div>
+</div>
+</body>
+</html>

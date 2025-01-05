@@ -1,0 +1,323 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > RegistrazioneServiceImpl</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">com.project.bridgebackend.registrazione.service</a>
+</div>
+
+<h1>Coverage Summary for Class: RegistrazioneServiceImpl (com.project.bridgebackend.registrazione.service)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Branch, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">RegistrazioneServiceImpl</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    42,9%
+  </span>
+  <span class="absValue">
+    (3/7)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    12,5%
+  </span>
+  <span class="absValue">
+    (4/32)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    17,2%
+  </span>
+  <span class="absValue">
+    (10/58)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package com.project.bridgebackend.registrazione.service;
+&nbsp;
+&nbsp;import com.project.bridgebackend.Model.Entity.Admin;
+&nbsp;import com.project.bridgebackend.Model.Entity.FiguraSpecializzata;
+&nbsp;import com.project.bridgebackend.Model.Entity.Rifugiato;
+&nbsp;import com.project.bridgebackend.Model.Entity.Volontario;
+&nbsp;import com.project.bridgebackend.Model.dao.AdminDAO;
+&nbsp;import com.project.bridgebackend.Model.dao.FiguraSpecializzataDAO;
+&nbsp;import com.project.bridgebackend.Model.dao.RifugiatoDAO;
+&nbsp;import com.project.bridgebackend.Model.dao.VolontarioDAO;
+&nbsp;import com.project.bridgebackend.util.AuthenticationRequest;
+&nbsp;import com.project.bridgebackend.util.AuthenticationResponse;
+&nbsp;import com.project.bridgebackend.util.JwtService;
+&nbsp;import jakarta.validation.Valid;
+&nbsp;import org.springframework.beans.factory.annotation.Autowired;
+&nbsp;import org.springframework.security.authentication.AuthenticationManager;
+&nbsp;import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+&nbsp;import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+&nbsp;import org.springframework.stereotype.Service;
+&nbsp;
+&nbsp;/**
+&nbsp; * @author Antonio Ceruso.
+&nbsp; * Data creazione: 04/12/2024.
+&nbsp; * Classe che rappresenta il service della registrazione.
+&nbsp; */
+&nbsp;@Service
+<b class="fc">&nbsp;public class RegistrazioneServiceImpl implements RegistrazioneService {</b>
+&nbsp;    /**
+&nbsp;     * Si occupa delle operazioni relative all&#39;admin nel db.
+&nbsp;     * */
+&nbsp;    @Autowired
+&nbsp;    private AdminDAO adminDAO;
+&nbsp;    /**
+&nbsp;     * Si occupa delle operazioni relative al rifugiato nel db.
+&nbsp;     * */
+&nbsp;    @Autowired
+&nbsp;    private RifugiatoDAO rifugiatoDAO;
+&nbsp;    /**
+&nbsp;     * Si occupa delle operazioni relative al volontario nel db.
+&nbsp;     * */
+&nbsp;    @Autowired
+&nbsp;    private VolontarioDAO volontarioDAO;
+&nbsp;    /**
+&nbsp;     * Si occupa delle operazioni relative alla figura specializzata nel db.
+&nbsp;     * */
+&nbsp;    @Autowired
+&nbsp;    private FiguraSpecializzataDAO figSpecDAO;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Gestore delle autenticazioni che verifica le credenziali degli utenti
+&nbsp;     * (email e password) e valida il processo di autenticazione.
+&nbsp;     */
+&nbsp;    @Autowired
+&nbsp;    private AuthenticationManager authenticationManager;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Servizio per la generazione e la gestione dei token JWT, utilizzati
+&nbsp;     * per l&#39;autenticazione e l&#39;autorizzazione degli utenti.
+&nbsp;     */
+&nbsp;    @Autowired
+&nbsp;    private JwtService jwtService;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Metodo per la cifratura della password.
+&nbsp;     * @param password scritta dall&#39;utente
+&nbsp;     * @return la password cifrata come stringa.
+&nbsp;     * */
+&nbsp;    public String safePassword(final String password) {
+<b class="fc">&nbsp;        BCryptPasswordEncoder pwEncoder = new BCryptPasswordEncoder();</b>
+<b class="fc">&nbsp;        String pwCifrata = pwEncoder.encode(password);</b>
+<b class="fc">&nbsp;        return pwCifrata;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     *Implementazione metodo di registrazione di un volontario.
+&nbsp;     * @param volontario
+&nbsp;     * @param confermaPW
+&nbsp;     * */
+&nbsp;    @Override
+&nbsp;    public void registraVolontario(@Valid final Volontario volontario,
+&nbsp;                                   final String confermaPW)
+&nbsp;            throws Exception {
+<b class="nc">&nbsp;        if (volontario == null) {</b>
+<b class="nc">&nbsp;            throw new IllegalArgumentException(&quot;Volontario non valido&quot;);</b>
+<b class="nc">&nbsp;        } else if (volontarioDAO.findByEmail(volontario.getEmail()) != null) {</b>
+<b class="nc">&nbsp;            throw new IllegalArgumentException(&quot;Volontario già presente&quot;);</b>
+&nbsp;        }
+<b class="nc">&nbsp;        if (!volontario.getPassword().equals(confermaPW)) {</b>
+<b class="nc">&nbsp;            throw new</b>
+&nbsp;                    IllegalArgumentException(&quot;Le due password non combaciano&quot;);
+&nbsp;        }
+<b class="nc">&nbsp;        volontario.setPassword(safePassword(volontario.getPassword()));</b>
+<b class="nc">&nbsp;        volontarioDAO.save(volontario);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     *Implementazione metodo di registrazione di un rifugiato.
+&nbsp;     * @param rifugiato
+&nbsp;     * @param confermaPW
+&nbsp;     * */
+&nbsp;    @Override
+&nbsp;    public void registraRifugiato(@Valid final Rifugiato rifugiato,
+&nbsp;                                  final String confermaPW)
+&nbsp;            throws Exception {
+<b class="pc">&nbsp;        if (rifugiato == null) {</b>
+<b class="nc">&nbsp;            throw new IllegalArgumentException(&quot;Rifugiato non valido&quot;);</b>
+<b class="fc">&nbsp;        } else if (rifugiatoDAO.findByEmail(rifugiato.getEmail()) != null) {</b>
+<b class="fc">&nbsp;            throw new IllegalArgumentException(&quot;Rifugiato già presente&quot;);</b>
+&nbsp;        }
+&nbsp;
+<b class="pc">&nbsp;        if (!rifugiato.getPassword().equals(confermaPW)) {</b>
+<b class="nc">&nbsp;            throw new</b>
+&nbsp;                    IllegalArgumentException(&quot;Le due password non combaciano&quot;);
+&nbsp;        }
+<b class="fc">&nbsp;        rifugiato.setPassword(safePassword(rifugiato.getPassword()));</b>
+<b class="fc">&nbsp;        rifugiatoDAO.save(rifugiato);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     *Implementazione metodo di registrazione di un admin.
+&nbsp;     * @param admin
+&nbsp;     * @param confermaPW
+&nbsp;     * */
+&nbsp;    @Override
+&nbsp;    public void registraAdmin(@Valid final Admin admin,
+&nbsp;                              final String confermaPW)
+&nbsp;            throws Exception {
+<b class="nc">&nbsp;        if (admin == null) {</b>
+<b class="nc">&nbsp;            throw new IllegalArgumentException(&quot;Admin non valido&quot;);</b>
+<b class="nc">&nbsp;        } else if (adminDAO.findByEmail(admin.getEmail()) != null) {</b>
+<b class="nc">&nbsp;            throw new IllegalArgumentException(&quot;Admin già presente&quot;);</b>
+&nbsp;        }
+&nbsp;
+<b class="nc">&nbsp;        if (!admin.getPassword().equals(confermaPW)) {</b>
+<b class="nc">&nbsp;            throw new</b>
+&nbsp;                    IllegalArgumentException(&quot;Le due password non combaciano&quot;);
+&nbsp;        }
+<b class="nc">&nbsp;        admin.setPassword(safePassword(admin.getPassword()));</b>
+<b class="nc">&nbsp;        adminDAO.save(admin);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     *Implementazione metodo di registrazione di una Figura Specializzata.
+&nbsp;     * @param figspec
+&nbsp;     * @param confermaPW
+&nbsp;     * */
+&nbsp;    @Override
+&nbsp;    public void registraFiguraSpecializzata(@Valid
+&nbsp;                                            final FiguraSpecializzata figspec,
+&nbsp;                                            final String confermaPW)
+&nbsp;            throws Exception {
+<b class="nc">&nbsp;        if (figspec == null) {</b>
+<b class="nc">&nbsp;            throw new</b>
+&nbsp;                    IllegalArgumentException(&quot;Figura Specializzata non valida&quot;);
+<b class="nc">&nbsp;        } else if (figSpecDAO.findByEmail(figspec.getEmail()) != null) {</b>
+<b class="nc">&nbsp;            throw new</b>
+&nbsp;                    IllegalArgumentException(&quot;Figura Specializzata già presente&quot;);
+&nbsp;        }
+&nbsp;
+<b class="nc">&nbsp;        if (!figspec.getPassword().equals(confermaPW)) {</b>
+<b class="nc">&nbsp;            throw new</b>
+&nbsp;                    IllegalArgumentException(&quot;Le due password non combaciano&quot;);
+&nbsp;        }
+<b class="nc">&nbsp;        figspec.setPassword(safePassword(figspec.getPassword()));</b>
+<b class="nc">&nbsp;        figSpecDAO.save(figspec);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Implementazione per il metodo del login tramite token jwt.
+&nbsp;     * @param request parametro richiesta per il login.
+&nbsp;     * @return response.
+&nbsp;     */
+&nbsp;    @Override
+&nbsp;    public AuthenticationResponse login(final AuthenticationRequest request)
+&nbsp;            throws Exception {
+<b class="nc">&nbsp;        authenticationManager</b>
+<b class="nc">&nbsp;                .authenticate(new UsernamePasswordAuthenticationToken(</b>
+<b class="nc">&nbsp;                        request.getEmail(),</b>
+<b class="nc">&nbsp;                        request.getPassword()</b>
+&nbsp;                ));
+&nbsp;        String jwtToken;
+&nbsp;        //setto anche il ruolo
+<b class="nc">&nbsp;        String ruoloUtente = &quot;&quot;;</b>
+&nbsp;
+<b class="nc">&nbsp;        if (adminDAO.findByEmail(request.getEmail()) != null) {</b>
+<b class="nc">&nbsp;            jwtToken = jwtService.generateToken(adminDAO.findByEmail(request.getEmail()));</b>
+<b class="nc">&nbsp;            ruoloUtente = &quot;Admin&quot;;</b>
+<b class="nc">&nbsp;        } else if (volontarioDAO.findByEmail(request.getEmail()) != null) {</b>
+<b class="nc">&nbsp;            jwtToken = jwtService.generateToken(volontarioDAO.findByEmail(request.getEmail()));</b>
+<b class="nc">&nbsp;            ruoloUtente = &quot;Volontario&quot;;</b>
+<b class="nc">&nbsp;        } else if (rifugiatoDAO.findByEmail(request.getEmail()) != null) {</b>
+<b class="nc">&nbsp;            jwtToken = jwtService.generateToken(rifugiatoDAO.findByEmail(request.getEmail()));</b>
+<b class="nc">&nbsp;            ruoloUtente = &quot;Rifugiato&quot;;</b>
+<b class="nc">&nbsp;        } else if (figSpecDAO.findByEmail(request.getEmail()) != null) {</b>
+<b class="nc">&nbsp;            jwtToken = jwtService.generateToken(figSpecDAO.findByEmail(request.getEmail()));</b>
+<b class="nc">&nbsp;            ruoloUtente = &quot;FiguraSpecializzata&quot;;</b>
+&nbsp;        } else {
+<b class="nc">&nbsp;            throw new IllegalArgumentException(&quot;Utente non trovato&quot;);</b>
+&nbsp;        }
+&nbsp;
+<b class="nc">&nbsp;        return AuthenticationResponse.builder()</b>
+<b class="nc">&nbsp;                .token(jwtToken)</b>
+<b class="nc">&nbsp;                .ruolo(ruoloUtente)</b>
+<b class="nc">&nbsp;                .build();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2025-01-05 20:59</div>
+</div>
+</body>
+</html>

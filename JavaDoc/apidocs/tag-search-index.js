@@ -1,0 +1,1 @@
+tagSearchIndex = [{"l":"Funzionalità principali del package:","h":"package com.project.bridgebackend.GestioneCorso.Controller","d":"Section","u":"com/project/bridgebackend/GestioneCorso/Controller/package-summary.html#funzionalit-principali-del-package--heading"},{"l":"Serialized Form","h":"","u":"serialized-form.html"}];updateSearchResults();

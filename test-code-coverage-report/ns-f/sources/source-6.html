@@ -1,0 +1,127 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > CorsoDTO</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">com.project.bridgebackend.Model.dto</a>
+</div>
+
+<h1>Coverage Summary for Class: CorsoDTO (com.project.bridgebackend.Model.dto)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+</tr>
+<tr>
+  <td class="name">CorsoDTO</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;/**
+&nbsp; * Questo è il package che contiene i DTO per la gestione dei corsi.
+&nbsp; */
+&nbsp;package com.project.bridgebackend.Model.dto;
+&nbsp;
+&nbsp;
+&nbsp;import com.project.bridgebackend.Model.Entity.enumeration.CategoriaCorso;
+&nbsp;import com.project.bridgebackend.Model.Entity.enumeration.Lingua;
+&nbsp;import jakarta.validation.constraints.Email;
+&nbsp;import jakarta.validation.constraints.NotBlank;
+&nbsp;import jakarta.validation.constraints.NotNull;
+&nbsp;import lombok.Data;
+&nbsp;
+&nbsp;/**
+&nbsp; * @author Biagio Gallo.
+&nbsp; * Creato il: 04/12/2024.
+&nbsp; *
+&nbsp; */
+&nbsp;
+&nbsp;@Data
+&nbsp;public class CorsoDTO {
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Descrizione del corso.
+&nbsp;     */
+&nbsp;    @NotBlank(message = &quot;La descrizione del corso non può essere vuota.&quot;)
+&nbsp;    private String descrizione;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Categoria del corso.
+&nbsp;     */
+&nbsp;    @NotNull(message = &quot;La categoria del corso è obbligatoria.&quot;)
+&nbsp;    private CategoriaCorso categoria;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Titolo del corso.
+&nbsp;     */
+&nbsp;    @NotBlank(message = &quot;Il titolo del corso è obbligatorio.&quot;)
+&nbsp;    private String titolo;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * PDF del corso.
+&nbsp;     */
+&nbsp;    @NotBlank(message = &quot;Il PDF del corso è obbligatorio.&quot;)
+&nbsp;    private String pdf;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Lingua del corso.
+&nbsp;     */
+&nbsp;    @NotNull(message = &quot;La lingua del corso è obbligatoria.&quot;)
+&nbsp;    private Lingua lingua;
+&nbsp;
+&nbsp;    /**
+&nbsp;    * Email del proprietario del corso.
+&nbsp;     */
+&nbsp;    @NotBlank(message = &quot;L&#39;email del proprietario è obbligatoria.&quot;)
+&nbsp;    @Email(message = &quot;L&#39;email del proprietario non è valida.&quot;)
+&nbsp;    private String proprietario;
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2025-01-05 20:59</div>
+</div>
+</body>
+</html>

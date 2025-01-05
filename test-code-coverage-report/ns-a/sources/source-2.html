@@ -1,0 +1,163 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > GestioneEventoService</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">com.project.bridgebackend.GestioneEvento.service</a>
+</div>
+
+<h1>Coverage Summary for Class: GestioneEventoService (com.project.bridgebackend.GestioneEvento.service)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+</tr>
+<tr>
+  <td class="name">GestioneEventoService</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package com.project.bridgebackend.GestioneEvento.service;
+&nbsp;
+&nbsp;import com.project.bridgebackend.Model.Entity.Evento;
+&nbsp;import com.project.bridgebackend.Model.Entity.Indirizzo;
+&nbsp;import com.project.bridgebackend.Model.Entity.Rifugiato;
+&nbsp;
+&nbsp;import java.util.List;
+&nbsp;import java.util.Optional;
+&nbsp;
+&nbsp;/**
+&nbsp; * @author Alessia De Filippo
+&nbsp; * Creato il: 05/12/2024
+&nbsp; * Interfaccia per la gestione degli eventi.
+&nbsp; **/
+&nbsp;
+&nbsp;public interface GestioneEventoService {
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Permette di creare un evento.
+&nbsp;     * @param evento evento da creare.
+&nbsp;     * @return evento creato.
+&nbsp;     **/
+&nbsp;    Evento insertEvento(Evento evento);
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Permette di avere tutti gli eventi.
+&nbsp;     * @return lista di eventi.
+&nbsp;     */
+&nbsp;    List&lt;Evento&gt; getAllEventi();
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Permette di avere un evento tramite id.
+&nbsp;     * @param id identificativo dell&#39;evento.
+&nbsp;     * @return evento.
+&nbsp;     */
+&nbsp;    Optional&lt;Evento&gt; getEventoById(long id);
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Permette di salvare l&#39;indirizzo di un evento.
+&nbsp;     * @param indirizzo indirizzo da salvare.
+&nbsp;     * @return indirizzo salvato.
+&nbsp;     */
+&nbsp;    long salvaIndirizzoEvento(Indirizzo indirizzo);
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Permette di iscriversi a un evento.
+&nbsp;     * @param eventoId identificativo dell&#39;evento.
+&nbsp;     * @param  partecipanteEmail email del volontario.
+&nbsp;     * @return evento a cui si è iscritti.
+&nbsp;     */
+&nbsp;    Evento iscrizioneEvento(long eventoId, String partecipanteEmail);
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Permette di disiscriversi da un evento.
+&nbsp;     * @param eventoId identificativo dell&#39;evento.
+&nbsp;     * @param partecipanteEmail email del volontario.
+&nbsp;     * @return evento da cui ci si è disiscritti.
+&nbsp;     */
+&nbsp;    Evento disiscrizioneEvento(long eventoId, String partecipanteEmail);
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Permette di trovare gli eventi di un volontario.
+&nbsp;     * @param email email del volontario.
+&nbsp;     * @return lista di eventi.
+&nbsp;     */
+&nbsp;    List&lt;Evento&gt; getEventiByVolontario(String email);
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Permette di trovare i partecipanti di un evento.
+&nbsp;     * @param eventoId identificativo dell&#39;evento.
+&nbsp;     * @return evento con partecipanti.
+&nbsp;     */
+&nbsp;    Evento trovaEventoConPartecipanti(long eventoId);
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Permette di ottenere la lista dei partecipanti di un evento.
+&nbsp;     * @param eventoId identificativo dell&#39;evento.
+&nbsp;     * @return lista dei partecipanti.
+&nbsp;     */
+&nbsp;    List&lt;Rifugiato&gt; getPartecipantiPerEvento(final long eventoId);
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Permette di avere eventi random.
+&nbsp;     * @return lista di eventi random.
+&nbsp;     */
+&nbsp;    List&lt;Evento&gt; getRandomEvents();
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Restituisce la lista degli eventi a cui un rifugiato è iscritto.
+&nbsp;     *
+&nbsp;     * @param email Email del rifugiato
+&nbsp;     * @return Lista di ID degli eventi a cui il rifugiato è iscritto
+&nbsp;     */
+&nbsp;    List&lt;Evento&gt; getEventiIscritti(String email);
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2025-01-05 20:59</div>
+</div>
+</body>
+</html>

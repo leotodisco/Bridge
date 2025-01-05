@@ -1,0 +1,247 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > ApplicationConfig</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">com.project.bridgebackend.util</a>
+</div>
+
+<h1>Coverage Summary for Class: ApplicationConfig (com.project.bridgebackend.util)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">ApplicationConfig</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (6/6)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (19/19)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">ApplicationConfig$$SpringCGLIB$$0</td>
+  </tr>
+  <tr>
+    <td class="name">ApplicationConfig$$SpringCGLIB$$FastClass$$0</td>
+  </tr>
+  <tr>
+    <td class="name">ApplicationConfig$$SpringCGLIB$$FastClass$$1</td>
+  </tr>
+<tr>
+  <td class="name"><strong>Total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (6/6)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (19/19)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package com.project.bridgebackend.util;
+&nbsp;
+&nbsp;import com.project.bridgebackend.Model.dao.UtenteDAO;
+&nbsp;import org.springframework.beans.factory.annotation.Autowired;
+&nbsp;import org.springframework.beans.factory.annotation.Qualifier;
+&nbsp;import org.springframework.context.annotation.Bean;
+&nbsp;import org.springframework.context.annotation.Configuration;
+&nbsp;import org.springframework.mail.javamail.JavaMailSender;
+&nbsp;import org.springframework.mail.javamail.JavaMailSenderImpl;
+&nbsp;import org.springframework.scheduling.annotation.EnableAsync;
+&nbsp;import org.springframework.security.authentication.AuthenticationManager;
+&nbsp;import org.springframework.security.authentication.AuthenticationProvider;
+&nbsp;import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+&nbsp;import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+&nbsp;import org.springframework.security.core.userdetails.UserDetailsService;
+&nbsp;import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+&nbsp;import org.springframework.security.crypto.password.PasswordEncoder;
+&nbsp;
+&nbsp;import java.util.Properties;
+&nbsp;
+&nbsp;/**
+&nbsp; * Classe di configurazione principale dell&#39;applicazione.
+&nbsp; * Contiene i bean per la gestione dell&#39;autenticazione,
+&nbsp; * della codifica delle password, e delle funzionalità di posta elettronica.
+&nbsp; *
+&nbsp; * @author Benedetta Colella.
+&nbsp; */
+&nbsp;@Configuration
+&nbsp;@EnableAsync
+<b class="fc">&nbsp;public class ApplicationConfig {</b>
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Servizio per l&#39;invio di email all&#39;interno dell&#39;applicazione.
+&nbsp;     */
+&nbsp;    @Autowired
+&nbsp;    private JavaMailSender mailSender;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * DAO per l&#39;accesso ai dati degli utenti.
+&nbsp;     */
+&nbsp;    @Autowired
+&nbsp;    @Qualifier(&quot;utenteDAO&quot;)
+&nbsp;    private UtenteDAO usrdao;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Estrae il bean relativo al service.
+&nbsp;     * @return user detail, contiene le info del token.
+&nbsp;     */
+&nbsp;    @Bean
+&nbsp;    public UserDetailsService userDetailsService() {
+<b class="fc">&nbsp;        return username -&gt; usrdao.findByEmail(username);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Configura un encoder per cifrare le password utilizzando
+&nbsp;     * l&#39;algoritmo BCrypt.
+&nbsp;     *
+&nbsp;     * @return un&#39;istanza di {@link PasswordEncoder}.
+&nbsp;     */
+&nbsp;    @Bean
+&nbsp;    public PasswordEncoder passwordEncoder() {
+<b class="fc">&nbsp;        return new BCryptPasswordEncoder();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Configura un provider di autenticazione basato su DAO,
+&nbsp;     * utilizzando un {@link PasswordEncoder} e un,
+&nbsp;     * {@link UserDetailsService}.
+&nbsp;     *
+&nbsp;     * @param passwordEncoder il componente per la cifratura,
+&nbsp;     *                       delle password.
+&nbsp;     * @param userDetailsService il servizio per caricare i,
+&nbsp;     *                          dettagli degli utenti.
+&nbsp;     * @return un&#39;istanza di {@link AuthenticationProvider}.
+&nbsp;     */
+&nbsp;    @Bean
+&nbsp;    public AuthenticationProvider authenticationProvider(
+&nbsp;            final PasswordEncoder passwordEncoder,
+&nbsp;            final UserDetailsService userDetailsService) {
+<b class="fc">&nbsp;        DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();</b>
+<b class="fc">&nbsp;        authProvider.setPasswordEncoder(passwordEncoder);</b>
+<b class="fc">&nbsp;        authProvider.setUserDetailsService(userDetailsService);</b>
+<b class="fc">&nbsp;        return authProvider;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Configura il gestore di autenticazione,
+&nbsp;     * per l&#39;applicazione.
+&nbsp;     *
+&nbsp;     * @param authenticationConfiguration configurazione,
+&nbsp;     *                                   dell&#39;autenticazione.
+&nbsp;     * @return un&#39;istanza di {@link AuthenticationManager}.
+&nbsp;     * @throws Exception se si verifica un errore durante la configurazione.
+&nbsp;     */
+&nbsp;    @Bean
+&nbsp;    public AuthenticationManager authenticationManager(
+&nbsp;            final AuthenticationConfiguration authenticationConfiguration) throws Exception {
+<b class="fc">&nbsp;        return authenticationConfiguration.getAuthenticationManager();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Configura un servizio per l&#39;invio di email tramite,
+&nbsp;     * il protocollo SMTP.
+&nbsp;     *
+&nbsp;     * @return un&#39;istanza configurata di,
+&nbsp;     * {@link JavaMailSender}.
+&nbsp;     */
+&nbsp;    @Bean
+&nbsp;    public static JavaMailSender getJavaMailSender() {
+<b class="fc">&nbsp;        JavaMailSenderImpl mailSender = new JavaMailSenderImpl();</b>
+<b class="fc">&nbsp;        mailSender.setHost(&quot;smtp.gmail.com&quot;);</b>
+<b class="fc">&nbsp;        mailSender.setPort(587);</b>
+&nbsp;
+<b class="fc">&nbsp;        mailSender.setUsername(&quot;beehaveofficial@gmail.com&quot;);</b>
+<b class="fc">&nbsp;        mailSender.setPassword(&quot;wqvjngkoeuuafctd&quot;);</b>
+&nbsp;
+<b class="fc">&nbsp;        Properties props = mailSender.getJavaMailProperties();</b>
+<b class="fc">&nbsp;        props.put(&quot;mail.transport.protocol&quot;, &quot;smtp&quot;);</b>
+<b class="fc">&nbsp;        props.put(&quot;mail.smtp.auth&quot;, &quot;true&quot;);</b>
+<b class="fc">&nbsp;        props.put(&quot;mail.smtp.starttls.enable&quot;, &quot;true&quot;);</b>
+<b class="fc">&nbsp;        props.put(&quot;mail.debug&quot;, &quot;true&quot;);</b>
+&nbsp;
+<b class="fc">&nbsp;        return mailSender;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2025-01-05 20:59</div>
+</div>
+</body>
+</html>

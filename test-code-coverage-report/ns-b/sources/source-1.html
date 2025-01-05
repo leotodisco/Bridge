@@ -1,0 +1,326 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > UtenteController</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">com.project.bridgebackend.GestioneUtente.Controller</a>
+</div>
+
+<h1>Coverage Summary for Class: UtenteController (com.project.bridgebackend.GestioneUtente.Controller)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Branch, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">UtenteController</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    14,3%
+  </span>
+  <span class="absValue">
+    (1/7)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/12)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    1,9%
+  </span>
+  <span class="absValue">
+    (1/54)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package com.project.bridgebackend.GestioneUtente.Controller;
+&nbsp;
+&nbsp;import com.project.bridgebackend.GestioneUtente.Service.UtenteService;
+&nbsp;import com.project.bridgebackend.Model.Entity.FiguraSpecializzata;
+&nbsp;import com.project.bridgebackend.Model.Entity.Utente;
+&nbsp;import com.project.bridgebackend.Model.dto.UtenteDTO;
+&nbsp;import com.project.bridgebackend.CDN.Document.FotoProfilo;
+&nbsp;import org.springframework.beans.factory.annotation.Autowired;
+&nbsp;import org.springframework.http.HttpStatus;
+&nbsp;import org.springframework.http.ResponseEntity;
+&nbsp;import org.springframework.web.bind.annotation.RequestBody;
+&nbsp;import org.springframework.web.bind.annotation.CrossOrigin;
+&nbsp;import org.springframework.web.bind.annotation.RestController;
+&nbsp;import org.springframework.web.bind.annotation.RequestMapping;
+&nbsp;import org.springframework.web.bind.annotation.PostMapping;
+&nbsp;import org.springframework.web.bind.annotation.RequestParam;
+&nbsp;import org.springframework.web.bind.annotation.PathVariable;
+&nbsp;import org.springframework.web.bind.annotation.GetMapping;
+&nbsp;import org.springframework.web.bind.annotation.DeleteMapping;
+&nbsp;import org.springframework.web.multipart.MultipartFile;
+&nbsp;import java.io.IOException;
+&nbsp;import java.util.Base64;
+&nbsp;import java.util.HashMap;
+&nbsp;
+&nbsp;/**
+&nbsp; * @author Antonio Ceruso
+&nbsp; * Data creazione: 12/12/2024
+&nbsp; * Classe controller che implementa i metodi per l&#39;area personale utente
+&nbsp; * */
+&nbsp;@RestController
+&nbsp;@CrossOrigin(origins = &quot;http://localhost:5174&quot;, allowedHeaders = &quot;*&quot;)
+&nbsp;@RequestMapping(path = &quot;areaPersonale&quot;)
+<b class="fc">&nbsp;public class UtenteController {</b>
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Service per la gestione degli utenti.
+&nbsp;     */
+&nbsp;    @Autowired
+&nbsp;    private UtenteService utenteService;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Metodo per eliminare un utente specifico in base all&#39;email.
+&nbsp;     *
+&nbsp;     * @param email L&#39;email dell&#39;utente da eliminare.
+&nbsp;     * @return Una risposta HTTP che indica il risultato dell&#39;operazione.
+&nbsp;     */
+&nbsp;    @DeleteMapping(&quot;/elimina/{email}&quot;)
+&nbsp;    public ResponseEntity&lt;String&gt; eliminaUtente(
+&nbsp;            @PathVariable(&quot;email&quot;) final String email) {
+&nbsp;        try {
+&nbsp;
+<b class="nc">&nbsp;            utenteService.eliminaUtente(email);</b>
+<b class="nc">&nbsp;            return ResponseEntity.ok(&quot;Utente con email &quot; + email + &quot; eliminato con successo.&quot;);</b>
+&nbsp;        } catch (Exception e) {
+<b class="nc">&nbsp;            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(&quot;Errore durante l&#39;eliminazione dell&#39;utente: &quot; + e.getMessage());</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Metodo per recuperare i dati di un utente in formato DTO.
+&nbsp;     *
+&nbsp;     * @param email L&#39;email dell&#39;utente da recuperare.
+&nbsp;     * @return Un oggetto {@link UtenteDTO} contenente i dati dell&#39;utente.
+&nbsp;     */
+&nbsp;    @GetMapping(&quot;/DatiUtente/{email}&quot;)
+&nbsp;    public UtenteDTO retrieveDateUtente(
+&nbsp;            @PathVariable(&quot;email&quot;) final String email) {
+&nbsp;        try {
+<b class="nc">&nbsp;            Utente u = utenteService.getUtente(email);</b>
+<b class="nc">&nbsp;            UtenteDTO dto = new UtenteDTO();</b>
+<b class="nc">&nbsp;            dto.setPasswordUtente(u.getPassword());</b>
+<b class="nc">&nbsp;            dto.setCognomeUtente(u.getCognome());</b>
+<b class="nc">&nbsp;            dto.setEmailUtente(u.getEmail());</b>
+<b class="nc">&nbsp;            dto.setFotoUtente(u.getFotoProfilo());</b>
+<b class="nc">&nbsp;            dto.setNomeUtente(u.getNome());</b>
+<b class="nc">&nbsp;            dto.setNazionalitaUtente(u.getNazionalita());</b>
+<b class="nc">&nbsp;            dto.setDataNascitaUtente(u.getDataNascita());</b>
+<b class="nc">&nbsp;            dto.setGenderUtente(u.getGender());</b>
+<b class="nc">&nbsp;            dto.setTitoloDiStudioUtente(u.getTitoloDiStudio());</b>
+<b class="nc">&nbsp;            dto.setLingueParlateUtente(u.getLingueParlate());</b>
+<b class="nc">&nbsp;            dto.setSkillUtente(u.getSkill());</b>
+<b class="nc">&nbsp;            dto.setRuoloUtente(u.getRole());</b>
+<b class="nc">&nbsp;            if (u instanceof FiguraSpecializzata) {</b>
+<b class="nc">&nbsp;                FiguraSpecializzata fs = (FiguraSpecializzata) u;</b>
+<b class="nc">&nbsp;                dto.setDisponibilitaUtente(fs.getDisponibilita());</b>
+&nbsp;            }
+<b class="nc">&nbsp;            System.out.println(dto);</b>
+<b class="nc">&nbsp;            return dto;</b>
+&nbsp;        } catch (Exception e) {
+<b class="nc">&nbsp;            throw new RuntimeException(e);</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Metodo per recuperare la foto profilo di un utente in formato Base64.
+&nbsp;     *
+&nbsp;     * @param email L&#39;email dell&#39;utente di cui recuperare la foto.
+&nbsp;     * @return La foto profilo codificata in Base64.
+&nbsp;     * @throws IOException Se la foto non viene trovata o si verifica,
+&nbsp;     * un errore di I/O.
+&nbsp;     */
+&nbsp;    @GetMapping(&quot;/DatiFotoUtente/{email}&quot;)
+&nbsp;    public String retrieveFotoUtente(
+&nbsp;            @PathVariable(&quot;email&quot;) final String email) throws IOException {
+<b class="nc">&nbsp;        Utente u = utenteService.getUtente(email);</b>
+<b class="nc">&nbsp;        FotoProfilo fp = utenteService.getFotoUtente(u.getEmail());</b>
+<b class="nc">&nbsp;        if (fp != null &amp;&amp; fp.getData() != null) {</b>
+<b class="nc">&nbsp;            return Base64.getEncoder().encodeToString(fp.getData());</b>
+&nbsp;        } else {
+<b class="nc">&nbsp;            throw new IOException(&quot;Foto non trovata per l&#39;utente: &quot; + email);</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Metodo per modificare la foto profilo di un utente.
+&nbsp;     *
+&nbsp;     * @param email L&#39;email dell&#39;utente.
+&nbsp;     * @param image L&#39;immagine da aggiornare come foto profilo.
+&nbsp;     * @return Una risposta HTTP che indica il risultato dell&#39;operazione.
+&nbsp;     * @throws IOException Se si verifica un errore durante l&#39;elaborazione,
+&nbsp;     * del file.
+&nbsp;     */
+&nbsp;    @PostMapping(&quot;/modificaFotoUtente/{email}&quot;)
+&nbsp;    public ResponseEntity&lt;String&gt; editFotoUtente(
+&nbsp;            @PathVariable(&quot;email&quot;) final String email,
+&nbsp;            @RequestParam(&quot;image&quot;) final MultipartFile image) throws IOException {
+&nbsp;
+&nbsp;        try {
+&nbsp;            // Verifica se il file è stato ricevuto correttamente
+<b class="nc">&nbsp;            if (image.isEmpty()) {</b>
+<b class="nc">&nbsp;                return ResponseEntity.badRequest().body(&quot;Nessuna immagine ricevuta&quot;);</b>
+&nbsp;            }
+&nbsp;
+<b class="nc">&nbsp;            System.out.println(&quot;File ricevuto: &quot; + image.getOriginalFilename());</b>
+<b class="nc">&nbsp;            byte[] bytes = image.getBytes();</b>
+<b class="nc">&nbsp;            String base64Image = Base64.getEncoder().encodeToString(bytes);</b>
+&nbsp;            // Chiamata al servizio per modificare la foto
+<b class="nc">&nbsp;            utenteService.modificaFotoUtente(email, base64Image);</b>
+&nbsp;
+<b class="nc">&nbsp;            return ResponseEntity.ok(&quot;Foto profilo aggiornata con successo.&quot;);</b>
+&nbsp;        } catch (Exception e) {
+<b class="nc">&nbsp;            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)</b>
+<b class="nc">&nbsp;                    .body(&quot;Errore durante l&#39;aggiornamento della foto profilo: &quot; + e.getMessage());</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Metodo per modificare la password di un utente.
+&nbsp;     *
+&nbsp;     * @param password La nuova password da impostare.
+&nbsp;     * @param email L&#39;email dell&#39;utente.
+&nbsp;     * @return Una risposta HTTP che indica il risultato dell&#39;operazione.
+&nbsp;     * @throws IOException Se si verifica un errore durante l&#39;aggiornamento,
+&nbsp;     * della password.
+&nbsp;     */
+&nbsp;    @PostMapping(&quot;modificaPassword/{email}&quot;)
+&nbsp;    public ResponseEntity&lt;String&gt; editPassword(
+&nbsp;            @RequestBody final String password,
+&nbsp;            @PathVariable final String email) throws IOException {
+&nbsp;        try {
+<b class="nc">&nbsp;            utenteService.modificaPassword(email, password);</b>
+<b class="nc">&nbsp;            return ResponseEntity.ok(&quot;Password aggiornata con successo&quot;);</b>
+&nbsp;
+&nbsp;        } catch (Exception e) {
+<b class="nc">&nbsp;            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)</b>
+<b class="nc">&nbsp;                    .body(&quot;Errore durante l&#39;aggiornamento dell&#39;utente: &quot; + e.getMessage());</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Metodo per modificare i dati di un utente.
+&nbsp;     *
+&nbsp;     * @param aggiornamenti Una mappa con i dati da aggiornare.
+&nbsp;     * @param email L&#39;email dell&#39;utente.
+&nbsp;     * @return L&#39;oggetto {@link Utente} aggiornato.
+&nbsp;     * @throws IOException Se si verifica un errore durante l&#39;aggiornamento.
+&nbsp;     */
+&nbsp;
+&nbsp;    @PostMapping(&quot;/modificaUtente/{email}&quot;)
+&nbsp;    public ResponseEntity&lt;?&gt; editUtente(
+&nbsp;            @RequestBody final HashMap&lt;String, Object&gt; aggiornamenti,
+&nbsp;            @PathVariable final String email) throws IOException {
+&nbsp;        try {
+&nbsp;            // Recupera l&#39;utente dal servizio
+<b class="nc">&nbsp;            Utente u = utenteService.getUtente(email);</b>
+&nbsp;
+<b class="nc">&nbsp;            if (u instanceof FiguraSpecializzata) {</b>
+&nbsp;                // Se l&#39;utente è una FiguraSpecializzata, aggiorna la disponibilità
+<b class="nc">&nbsp;                if (aggiornamenti.containsKey(&quot;disponibilitaUtente&quot;)) {</b>
+<b class="nc">&nbsp;                    String disponibilita = (String) aggiornamenti.get(&quot;disponibilitaUtente&quot;);</b>
+<b class="nc">&nbsp;                    FiguraSpecializzata fs = (FiguraSpecializzata) u;</b>
+<b class="nc">&nbsp;                    fs.setDisponibilita(disponibilita);  // Aggiorna la disponibilità solo per FiguraSpecializzata</b>
+<b class="nc">&nbsp;                    aggiornamenti.remove(&quot;disponibilitaUtente&quot;);  // Rimuovi la disponibilità dalla mappa</b>
+&nbsp;                }
+&nbsp;            } else {
+&nbsp;                // Se l&#39;utente non è una FiguraSpecializzata, non aggiorniamo la disponibilità
+<b class="nc">&nbsp;                aggiornamenti.remove(&quot;disponibilitaUtente&quot;);</b>
+&nbsp;            }
+&nbsp;
+&nbsp;            // Aggiorna i restanti dati dell&#39;utente
+<b class="nc">&nbsp;            Utente updatedUser = utenteService.modificaUtente(email, aggiornamenti);</b>
+<b class="nc">&nbsp;            return ResponseEntity.ok(updatedUser);</b>
+&nbsp;        } catch (Exception e) {
+<b class="nc">&nbsp;            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)</b>
+<b class="nc">&nbsp;                    .body(&quot;Errore durante l&#39;aggiornamento dell&#39;utente: &quot; + e.getMessage());</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2025-01-05 20:59</div>
+</div>
+</body>
+</html>

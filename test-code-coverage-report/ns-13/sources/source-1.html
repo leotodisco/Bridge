@@ -1,0 +1,211 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > IndirizzoServiceImp</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">com.project.bridgebackend.util.Indirizzo.service</a>
+</div>
+
+<h1>Coverage Summary for Class: IndirizzoServiceImp (com.project.bridgebackend.util.Indirizzo.service)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Branch, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">IndirizzoServiceImp</td>
+<td class="coverageStat">
+  <span class="percent">
+    50%
+  </span>
+  <span class="absValue">
+    (1/2)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/12)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    6,2%
+  </span>
+  <span class="absValue">
+    (1/16)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">IndirizzoServiceImp$$SpringCGLIB$$0</td>
+  </tr>
+<tr>
+  <td class="name"><strong>Total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    50%
+  </span>
+  <span class="absValue">
+    (1/2)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/12)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    6,2%
+  </span>
+  <span class="absValue">
+    (1/16)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package com.project.bridgebackend.util.Indirizzo.service;
+&nbsp;
+&nbsp;import com.project.bridgebackend.Model.Entity.Indirizzo;
+&nbsp;import com.project.bridgebackend.Model.dao.IndirizzoDAO;
+&nbsp;import jakarta.transaction.Transactional;
+&nbsp;import org.springframework.beans.factory.annotation.Autowired;
+&nbsp;import org.springframework.stereotype.Service;
+&nbsp;
+&nbsp;import java.util.HashMap;
+&nbsp;import java.util.Optional;
+&nbsp;
+&nbsp;/**
+&nbsp; * Implementazione del servizio per la gestione degli indirizzi.
+&nbsp; * Fornisce metodi per aggiornare i dati degli indirizzi nel sistema.
+&nbsp; */
+&nbsp;@Service
+<b class="fc">&nbsp;public class IndirizzoServiceImp implements IndirizzoService {</b>
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Oggetto per l&#39;accesso e la gestione degli indirizzi nel database.
+&nbsp;     * Utilizza il DAO per interagire con la tabella degli indirizzi.
+&nbsp;     */
+&nbsp;    @Autowired
+&nbsp;    private IndirizzoDAO indirizzoDAO;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Metodo per aggiornare un indirizzo esistente nel database.
+&nbsp;     * &lt;p&gt;
+&nbsp;     * Aggiorna i campi dell&#39;indirizzo identificato tramite il suo ID.
+&nbsp;     * Se i campi sono presenti nella mappa,
+&nbsp;     * verranno aggiornati nel database.
+&nbsp;     * In caso di ID non valido,
+&nbsp;     * viene lanciata un&#39;eccezione.
+&nbsp;     * &lt;/p&gt;
+&nbsp;     *
+&nbsp;     * @param idIndirizzo ID univoco dell&#39;indirizzo da aggiornare.
+&nbsp;     * @param indirizzoData Mappa contenente i dati da aggiornare nell&#39;indirizzo.
+&nbsp;     *                      Le chiavi della mappa sono: &quot;via&quot;, &quot;citta&quot;, &quot;cap&quot;,
+&nbsp;     *                      &quot;num_civico&quot; e &quot;provincia&quot;. I valori devono essere
+&nbsp;     *                      di tipo String per le stringhe e Integer per i numeri.
+&nbsp;     * @throws IllegalArgumentException se l&#39;indirizzo con l&#39;ID fornito non esiste.
+&nbsp;     */
+&nbsp;    @Override
+&nbsp;    @Transactional
+&nbsp;    public void aggiornaIndirizzo(
+&nbsp;            final long idIndirizzo,
+&nbsp;            final HashMap&lt;String, Object&gt; indirizzoData) {
+<b class="nc">&nbsp;        Optional&lt;Indirizzo&gt; indirizzoOptional = indirizzoDAO.findById(idIndirizzo);</b>
+&nbsp;
+<b class="nc">&nbsp;        if (indirizzoOptional.isEmpty()) {</b>
+<b class="nc">&nbsp;            throw new IllegalArgumentException(&quot;Indirizzo non trovato per l&#39;ID: &quot; + idIndirizzo);</b>
+&nbsp;        }
+&nbsp;
+<b class="nc">&nbsp;        Indirizzo indirizzo = indirizzoOptional.get();</b>
+&nbsp;
+&nbsp;        // Aggiorna i campi solo se presenti nella mappa
+<b class="nc">&nbsp;        if (indirizzoData.containsKey(&quot;via&quot;)) {</b>
+<b class="nc">&nbsp;            indirizzo.setVia((String) indirizzoData.get(&quot;via&quot;));</b>
+&nbsp;        }
+<b class="nc">&nbsp;        if (indirizzoData.containsKey(&quot;citta&quot;)) {</b>
+<b class="nc">&nbsp;            indirizzo.setCitta((String) indirizzoData.get(&quot;citta&quot;));</b>
+&nbsp;        }
+<b class="nc">&nbsp;        if (indirizzoData.containsKey(&quot;cap&quot;)) {</b>
+<b class="nc">&nbsp;            indirizzo.setCap((String) indirizzoData.get(&quot;cap&quot;));</b>
+&nbsp;        }
+<b class="nc">&nbsp;        if (indirizzoData.containsKey(&quot;num_civico&quot;)) {</b>
+<b class="nc">&nbsp;            indirizzo.setNumCivico((Integer) indirizzoData.get(&quot;num_civico&quot;));</b>
+&nbsp;        }
+<b class="nc">&nbsp;        if (indirizzoData.containsKey(&quot;provincia&quot;)) {</b>
+<b class="nc">&nbsp;            indirizzo.setProvincia((String) indirizzoData.get(&quot;provincia&quot;));</b>
+&nbsp;        }
+&nbsp;
+&nbsp;        // Salva l&#39;indirizzo aggiornato
+<b class="nc">&nbsp;        indirizzoDAO.save(indirizzo);</b>
+&nbsp;    }
+&nbsp;}
+&nbsp;
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2025-01-05 20:59</div>
+</div>
+</body>
+</html>

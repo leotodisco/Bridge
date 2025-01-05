@@ -1,0 +1,276 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > JwtService</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">com.project.bridgebackend.util</a>
+</div>
+
+<h1>Coverage Summary for Class: JwtService (com.project.bridgebackend.util)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Branch, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">JwtService</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    10%
+  </span>
+  <span class="absValue">
+    (1/10)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/2)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    6,7%
+  </span>
+  <span class="absValue">
+    (2/30)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package com.project.bridgebackend.util;
+&nbsp;
+&nbsp;import com.project.bridgebackend.Model.Entity.Utente;
+&nbsp;import io.jsonwebtoken.Claims;
+&nbsp;import io.jsonwebtoken.Jwts;
+&nbsp;import io.jsonwebtoken.io.Decoders;
+&nbsp;import io.jsonwebtoken.security.Keys;
+&nbsp;import org.springframework.security.core.userdetails.UserDetails;
+&nbsp;import org.springframework.stereotype.Service;
+&nbsp;import io.jsonwebtoken.SignatureAlgorithm;
+&nbsp;import java.security.Key;
+&nbsp;import java.util.Date;
+&nbsp;import java.util.HashMap;
+&nbsp;import java.util.Map;
+&nbsp;import java.util.function.Function;
+&nbsp;
+&nbsp;/**
+&nbsp; * @author Benedetta Colella
+&nbsp; * Creato il: 04/12/2024
+&nbsp; * Questa classe fornisce un servizio per la gestione dei token JWT (JSON Web Token), utilizzati per
+&nbsp; * autenticazione e autorizzazione nelle applicazioni. I principali compiti di questa classe sono:
+&nbsp; * - Generazione dei token JWT: Creazione di token firmati con una chiave segreta, includendo informazioni
+&nbsp; *   personalizzate (claims) come identificativo utente e ruolo.
+&nbsp; * - Validazione dei token JWT: Verifica che un token sia valido, non scaduto e appartenga all&#39;utente corretto.
+&nbsp; * - Estrazione di informazioni dai token JWT: Recupero di dati come il subject (es. email) o la data di scadenza.
+&nbsp; * La chiave segreta utilizzata per firmare i token è configurata esternamente, migliorando la sicurezza e la
+&nbsp; * flessibilità. La durata del token è anch&#39;essa configurabile, consentendo un controllo preciso sul ciclo di vita
+&nbsp; * dei token.
+&nbsp; * Principali caratteristiche:
+&nbsp; * - Sicurezza: Utilizza l&#39;algoritmo HMAC-SHA256 per la firma dei token.
+&nbsp; * - Modularità: Separazione chiara tra generazione, validazione ed estrazione di informazioni.
+&nbsp; * - Configurabilità: Chiave segreta e durata del token sono gestite tramite file di configurazione.
+&nbsp; * Questo servizio è un componente essenziale per l&#39;integrazione con meccanismi di autenticazione basati su JWT
+&nbsp; * in un&#39;applicazione Spring.
+&nbsp; */
+&nbsp;@Service
+<b class="fc">&nbsp;public class JwtService {</b>
+&nbsp;    /**
+&nbsp;     * Chiave segreta configurata in application.properties.
+&nbsp;     */
+<b class="fc">&nbsp;    private String secretKey = &quot;UmdVa1hwMnI1dTh4L0E/RChHK0tiUGVTaFZtWXEzdDY=&quot;;</b>
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Metodo per la generazione di un token.
+&nbsp;     * @param userDetails
+&nbsp;     * @return token.
+&nbsp;     */
+&nbsp;    public String generateToken(
+&nbsp;            final Utente userDetails) {
+<b class="nc">&nbsp;        HashMap&lt;String, Object&gt; mappaClaims = new HashMap&lt;&gt;();</b>
+<b class="nc">&nbsp;        mappaClaims.put(&quot;id&quot;, userDetails.getEmail());</b>
+<b class="nc">&nbsp;        mappaClaims.put(&quot;ruolo&quot;, userDetails.getRole());</b>
+<b class="nc">&nbsp;        return generateToken(mappaClaims, userDetails);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Metodo per la generazione di un token.
+&nbsp;     * Un token dura 24 ore.
+&nbsp;     * Al suo interno, il token contiene: email, data di scadenza,
+&nbsp;     * id, ruolo.
+&nbsp;     * @param extraClaims
+&nbsp;     * @param userDetails
+&nbsp;     * @return token.
+&nbsp;     *
+&nbsp;     */
+&nbsp;    public String generateToken(final Map&lt;String, Object&gt; extraClaims,
+&nbsp;                                final Utente userDetails) {
+<b class="nc">&nbsp;        Date now = new Date();</b>
+<b class="nc">&nbsp;        Date expiration = new Date(now.getTime() + 1000 * 60 * 60 * 24);</b>
+<b class="nc">&nbsp;        return Jwts.builder()</b>
+<b class="nc">&nbsp;                .setClaims(extraClaims)</b>
+<b class="nc">&nbsp;                .setSubject(userDetails.getEmail())</b>
+<b class="nc">&nbsp;                .setIssuedAt(now)</b>
+<b class="nc">&nbsp;                .setExpiration(expiration)</b>
+<b class="nc">&nbsp;                .signWith(getSignInKey(), SignatureAlgorithm.HS256)</b>
+<b class="nc">&nbsp;                .compact();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Metodo che restituisce l&#39;email presente nel token.
+&nbsp;     * @param token
+&nbsp;     * @return username/password.
+&nbsp;     */
+&nbsp;    public String extractUsername(
+&nbsp;            final String token) {
+<b class="nc">&nbsp;        return extractClaim(token, Claims::getSubject);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Estrae la data di scadenza dal token.
+&nbsp;     * @param token Token JWT.
+&nbsp;     * @return Data di scadenza.
+&nbsp;     */
+&nbsp;    public Date extractExpiration(
+&nbsp;            final String token) {
+<b class="nc">&nbsp;        return extractClaim(token, Claims::getExpiration);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Metodo che controlla che il token sia valido.
+&nbsp;     * @param token
+&nbsp;     * @param userDetails
+&nbsp;     * @return booleano si o no.
+&nbsp;     */
+&nbsp;    public boolean isTokenValid(final String token,
+&nbsp;                                final UserDetails userDetails) {
+<b class="nc">&nbsp;        final String username = extractUsername(token);</b>
+<b class="nc">&nbsp;        return (username.equals(userDetails.getUsername()))</b>
+<b class="nc">&nbsp;                &amp;&amp; !isTokenExpired(token);</b>
+&nbsp;
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Metodo che controlla se il token è scaduto.
+&nbsp;     * @param token
+&nbsp;     * @return true o false.
+&nbsp;     */
+&nbsp;    private boolean isTokenExpired(final String token) {
+<b class="nc">&nbsp;        return extractExpiration(token).before(new Date());</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Estrae un claim specifico dal token.
+&nbsp;     *
+&nbsp;     * @param &lt;T&gt; Il tipo del valore del claim estratto.
+&nbsp;     * @param token Token JWT da cui estrarre il claim.
+&nbsp;     * @param claimsResolver Funzione per risolvere il claim.
+&nbsp;     * @return Valore del claim estratto.
+&nbsp;     */
+&nbsp;    private &lt;T&gt; T extractClaim(
+&nbsp;            final String token,
+&nbsp;            final Function&lt;Claims, T&gt; claimsResolver) {
+<b class="nc">&nbsp;        final Claims claims = extractAllClaims(token);</b>
+<b class="nc">&nbsp;        return claimsResolver.apply(claims);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Estrae tutti i claims dal token.
+&nbsp;     * @param token Token JWT.
+&nbsp;     * @return Tutti i claims.
+&nbsp;     */
+&nbsp;    private Claims extractAllClaims(
+&nbsp;            final String token) {
+<b class="nc">&nbsp;        return Jwts.parserBuilder()</b>
+<b class="nc">&nbsp;                .setSigningKey(getSignInKey())</b>
+<b class="nc">&nbsp;                .build()</b>
+<b class="nc">&nbsp;                .parseClaimsJws(token)</b>
+<b class="nc">&nbsp;                .getBody();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Metodo che ottiene la chiave di firma utilizzata per verificare e firmare i token.
+&nbsp;     * @return Key una chiave segreta basata sull&#39;algoritmo HMAC.
+&nbsp;     */
+&nbsp;    private Key getSignInKey() {
+<b class="nc">&nbsp;        byte[] keyBytes = Decoders.BASE64.decode(secretKey);</b>
+<b class="nc">&nbsp;        return Keys.hmacShaKeyFor(keyBytes);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2025-01-05 20:59</div>
+</div>
+</body>
+</html>

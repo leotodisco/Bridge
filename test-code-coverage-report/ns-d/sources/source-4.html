@@ -1,0 +1,182 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > FiguraSpecializzata</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">com.project.bridgebackend.Model.Entity</a>
+</div>
+
+<h1>Coverage Summary for Class: FiguraSpecializzata (com.project.bridgebackend.Model.Entity)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">FiguraSpecializzata</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (2/2)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (3/3)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">FiguraSpecializzata$HibernateInstantiator$HrjRAHnx</td>
+  </tr>
+  <tr>
+    <td class="name">FiguraSpecializzata$HibernateProxy$noWsxosE</td>
+  </tr>
+<tr>
+  <td class="name"><strong>Total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (2/2)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (3/3)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package com.project.bridgebackend.Model.Entity;
+&nbsp;
+&nbsp;import com.project.bridgebackend.Model.Entity.enumeration.Gender;
+&nbsp;import com.project.bridgebackend.Model.Entity.enumeration.Ruolo;
+&nbsp;import com.project.bridgebackend.Model.Entity.enumeration.TitoloDiStudio;
+&nbsp;import jakarta.persistence.Entity;
+&nbsp;import jakarta.validation.constraints.Pattern;
+&nbsp;import lombok.Data;
+&nbsp;
+&nbsp;import java.time.LocalDate;
+&nbsp;/**
+&nbsp; * @author Antonio Ceruso.
+&nbsp; * Creato il: 03/12/2024.
+&nbsp; * Questa è la classe relativa ad una Figura Specializzata.
+&nbsp; * */
+&nbsp;@Entity
+&nbsp;@Data
+&nbsp;public class FiguraSpecializzata extends Utente {
+&nbsp;    /**
+&nbsp;     * Disponibilità orarie della Figura Specializzata.
+&nbsp;     * */
+&nbsp;    @Pattern(regexp = &quot;^[A-Za-z0-9 ì,.:;-]+$&quot;, message = &quot;Regexp per la disponibilita&#39; non rispettata&quot;)
+&nbsp;    private String disponibilita;
+&nbsp;    /**
+&nbsp;     * costruttore vuoto.
+&nbsp;     */
+<b class="fc">&nbsp;    public FiguraSpecializzata() {</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Costruttore con tutti i campi dell&#39;utente.
+&nbsp;     * @param email
+&nbsp;     * @param nome
+&nbsp;     * @param cognome
+&nbsp;     * @param lingueParlate
+&nbsp;     * @param fotoProfilo
+&nbsp;     * @param skill
+&nbsp;     * @param dataNascita
+&nbsp;     * @param titoloDiStudio
+&nbsp;     * @param role
+&nbsp;     * @param gender
+&nbsp;     * @param nazionalita
+&nbsp;     * @param password
+&nbsp;     * @param disponibilita
+&nbsp;     */
+&nbsp;    public FiguraSpecializzata(final String email,
+&nbsp;                               final String nome,
+&nbsp;                               final String cognome,
+&nbsp;                               final String lingueParlate,
+&nbsp;                               final String fotoProfilo,
+&nbsp;                               final String skill,
+&nbsp;                               final LocalDate dataNascita,
+&nbsp;                               final TitoloDiStudio titoloDiStudio,
+&nbsp;                               final Ruolo role,
+&nbsp;                               final Gender gender,
+&nbsp;                               final String nazionalita,
+&nbsp;                               final String password,
+&nbsp;                               final String disponibilita) {
+<b class="fc">&nbsp;        super(email, nome, cognome,</b>
+&nbsp;                lingueParlate, fotoProfilo, skill,
+&nbsp;                dataNascita, titoloDiStudio, role,
+&nbsp;                gender, nazionalita, password);
+<b class="fc">&nbsp;        this.disponibilita = disponibilita;</b>
+&nbsp;    }
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2025-01-05 20:59</div>
+</div>
+</body>
+</html>
