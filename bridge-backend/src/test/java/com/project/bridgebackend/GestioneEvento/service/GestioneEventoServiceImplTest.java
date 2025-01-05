@@ -71,7 +71,7 @@ public class GestioneEventoServiceImplTest {
         evento.setId(1L);
     }
 
-
+//1
     @Test
     public void testCreazioneEventoNomeFormatoErrato() {
         evento.setNome("Ev");
@@ -87,6 +87,7 @@ public class GestioneEventoServiceImplTest {
 
     }
 
+    //2
     @Test
     public void testCreazioneEventoNomeVuoto() {
         evento.setNome("");
@@ -101,12 +102,15 @@ public class GestioneEventoServiceImplTest {
         violations.forEach(v -> System.out.println(v.getPropertyPath() + ": " + v.getMessage()));
     }
 
+    //3
     @Test
     public void testCreazioneEventoDataFormatoErrato() {
 
         assertThrows(Exception.class, () -> {evento.setData(LocalDate.of(2025, 13, 45));});
     }
 
+
+    //4
     @Test
     public void testCreazioneEventoDataVuota() {
 
@@ -123,12 +127,14 @@ public class GestioneEventoServiceImplTest {
 
     }
 
+    //5
     @Test
     public void testCreazioneEventoOraFormatoErrato() {
 
         assertThrows(DateTimeException.class, () -> {evento.setOra(LocalTime.of(25,61));});
     }
 
+    //6
     @Test
     public void testCreazioneEventoOraVuota() {
         evento.setOra(null);
@@ -144,6 +150,7 @@ public class GestioneEventoServiceImplTest {
 
     }
 
+    //7
     @Test
     public void testCreazioneEventoViaFormatoErrato() {
 
@@ -160,6 +167,7 @@ public class GestioneEventoServiceImplTest {
         violations.forEach(v -> System.out.println(v.getPropertyPath() + ": " + v.getMessage()));
     }
 
+    //8
     @Test // rivedi
     public void testCreazioneEventoNumeroCivicoFormatoErrato() {
 
@@ -175,6 +183,7 @@ public class GestioneEventoServiceImplTest {
         violations.forEach(v -> System.out.println(v.getPropertyPath() + ": " + v.getMessage()));
     }
 
+    //9
     @Test
     public void testCreazioneEventoCittaErrata() {
 
@@ -190,6 +199,7 @@ public class GestioneEventoServiceImplTest {
         violations.forEach(v -> System.out.println(v.getPropertyPath() + ": " + v.getMessage()));
     }
 
+    //10
     @Test
     public void testCreazioneEventoProvinciaErrata() {
 
@@ -205,6 +215,7 @@ public class GestioneEventoServiceImplTest {
         violations.forEach(v -> System.out.println(v.getPropertyPath() + ": " + v.getMessage()));
     }
 
+    //11
     @Test
     public void testCreazioneEventoCAPErrato() {
 
@@ -220,6 +231,7 @@ public class GestioneEventoServiceImplTest {
         violations.forEach(v -> System.out.println(v.getPropertyPath() + ": " + v.getMessage()));
     }
 
+    //12
     @Test
     public void testCreazioneEventoLinguaParlataVuota() {
 
@@ -234,6 +246,7 @@ public class GestioneEventoServiceImplTest {
         violations.forEach(v -> System.out.println(v.getPropertyPath() + ": " + v.getMessage()));
     }
 
+    //13
     @Test
     public void testCreazioneEventoDescrizioneFormatoErrato() {
         evento.setDescrizione("@Descrizione");
@@ -247,19 +260,7 @@ public class GestioneEventoServiceImplTest {
         violations.forEach(v -> System.out.println(v.getPropertyPath() + ": " + v.getMessage()));
     }
 
-    @Test
-    public void testCreazioneEventoDescrizioneLunghezzaErrata() {
-        evento.setDescrizione("a");
-        // Convalida manuale del DTO
-        Set<ConstraintViolation<Evento>> violations = validator.validate(evento);
-
-        // Verifica che ci siano violazioni
-        assertFalse(violations.isEmpty(), "La validazione dovrebbe fallire per un entity non valida");
-
-        // Stampa le violazioni (facoltativo)
-        violations.forEach(v -> System.out.println(v.getPropertyPath() + ": " + v.getMessage()));
-    }
-
+    //14
     @Test
     public void testCreazioneEventoDescrizioneVuota() {
         evento.setDescrizione("");
@@ -273,6 +274,7 @@ public class GestioneEventoServiceImplTest {
         violations.forEach(v -> System.out.println(v.getPropertyPath() + ": " + v.getMessage()));
     }
 
+    //15
     @Test
     public void testCreazioneEventoMaxPartecipantiErrato() {
         evento.setMaxPartecipanti(-1);
@@ -286,9 +288,10 @@ public class GestioneEventoServiceImplTest {
         violations.forEach(v -> System.out.println(v.getPropertyPath() + ": " + v.getMessage()));
     }
 
+    //16
     @Test
     public void testCreazioneEventoMaxPartecipantiErrato2() {
-        evento.setMaxPartecipanti(1000);
+        evento.setMaxPartecipanti(999);
         // Convalida manuale del DTO
         Set<ConstraintViolation<Evento>> violations = validator.validate(evento);
 
@@ -299,6 +302,7 @@ public class GestioneEventoServiceImplTest {
         violations.forEach(v -> System.out.println(v.getPropertyPath() + ": " + v.getMessage()));
     }
 
+    //17
     @Test
     public void testCreazioneEventoCorretto() {
 

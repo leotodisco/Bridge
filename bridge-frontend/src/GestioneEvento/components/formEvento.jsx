@@ -104,9 +104,6 @@ const CreaEvento = ( {onClose} ) => {
         });
     }
 
-    // Aggiorna il numero massimo di partecipanti
-    const aggiornaMaxPartecipanti = (event) => setMaxPartecipanti(Number(event.target.value));
-
     // Const per validazione dei campi
     const [nomeErrore, setNomeErrore] = useState("");
     const[dataErrore, setDataErrore] = useState("");
@@ -191,7 +188,7 @@ const CreaEvento = ( {onClose} ) => {
     // Funzione per validare il campo descrizione
     const validaDescrizione = () => {
         // Regex del campo descrizione
-        const descrizionePattern = /^[A-Za-z0-9-ÿ .,'-]{1,1000}$/;
+        const descrizionePattern = /^[\wÀ-ÿ\s,.!?'-]{1,1000}$/;
 
         // Controllo: Pattern
         if(!descrizionePattern.test(descrizione)) {
@@ -218,39 +215,40 @@ const CreaEvento = ( {onClose} ) => {
 
     // Funzione per validare il campo numero massimo di partecipanti
     const validaMaxPartecipanti = () => {
-        //Regex del campo maxPartecipanti
-        const maxPartecipantiPattern = /^([1-9][0-9]?|100)$/;
+        // Regex del campo maxPartecipanti: solo numeri da 0 a 999
+        const maxPartecipantiPattern = /^\d{1,3}$/;
 
-        // Controllo: non vuoto e valore valido
-        if (!maxPartecipanti || !maxPartecipantiPattern.test(maxPartecipanti)) {
-            setMaxPartecipantiErrore("Il numero massimo di partecipanti deve essere tra 1 e 100.");
+        // Controllo: non vuoto
+        if (!maxPartecipanti) {
+            setMaxPartecipantiErrore("Il numero massimo di partecipanti è obbligatorio.");
             return false;
         }
 
-        // Controllo: Pattern
-        if(!maxPartecipantiPattern.test(maxPartecipanti)) {
-            setMaxPartecipantiErrore("Il numero massimo di partecipanti deve essere tra 1 e 100.");
+        // Controllo: Pattern e range valido (1-999)
+        const numero = parseInt(maxPartecipanti, 10);
+        if (!maxPartecipantiPattern.test(maxPartecipanti) || numero < 1 || numero > 999) {
+            setMaxPartecipantiErrore("Il numero massimo di partecipanti deve essere tra 1 e 999.");
             return false;
         }
 
         // Se tutti i controlli passano
         setMaxPartecipantiErrore("");
         return true;
-    }
+    };
 
     // Funzione per validare il campo luogo
     const validaLuogo = () => {
         let errore = "";
-        if (!/^[A-Za-z0-9àèéìòùÀÈÉÌÒÙ ]{2,100}$/.test(luogo.via)) {
-            errore = "La via deve avere almeno 2 caratteri.";
+        if (!/^[A-zÀ-ù ‘]{2,50}$/.test(luogo.via)) {
+            errore = "La via non rispetta il formato corretto";
         } else if (!/^\d{1,5}$/.test(luogo.numCivico)) {
             errore = "Il numero civico deve essere valido.";
-        } else if (!/^[A-Za-z ]{2,100}$/.test(luogo.citta)) {
-            errore = "La città deve avere almeno 2 caratteri.";
+        } else if (!/^[A-zÀ-ù ‘]{2,50}$/.test(luogo.citta)) {
+            errore = "La città non rispetta il corretto formato.";
         } else if (!/^\d{5}$/.test(luogo.cap)) {
             errore = "Il CAP deve essere di 5 cifre.";
-        } else if (!/^[A-Za-z]{2,10}$/.test(luogo.provincia)) {
-            errore = "La provincia deve avere tra 2 e 10 caratteri.";
+        } else if (!/^[A-Z]{2}$/.test(luogo.provincia)) {
+            errore = "La sigla della provincia non rispetta il formato corretto.";
         }
 
         if (errore) {
@@ -436,8 +434,19 @@ const CreaEvento = ( {onClose} ) => {
                                 title="Seleziona il numero massimo di partecipanti"
                                 className={`formEditText ${maxPartecipantiErrore ? "erroreInput" : ""}`}
                                 value={maxPartecipanti}
-                                onChange={aggiornaMaxPartecipanti}
+                                onChange={(e) => {
+                                    const valore = parseInt(e.target.value, 10);
+                                    if (valore >= 0 || e.target.value === "") {
+                                        setMaxPartecipanti(e.target.value);
+                                    }
+                                }}
+                                min="0"
                                 required
+                                onKeyDown={(e) => {
+                                    if (e.key === "-" || e.key === "e") {
+                                        e.preventDefault(); // Impedisce l'inserimento del simbolo meno o della notazione esponenziale
+                                    }
+                                }}
                             />
                             {maxPartecipantiErrore ? <span className="errore">{maxPartecipantiErrore}</span> : null}
                         </div>
