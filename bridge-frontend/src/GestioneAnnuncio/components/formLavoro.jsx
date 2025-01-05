@@ -289,7 +289,7 @@ const CreaLavoro = () => {
                         type="text"
                         value={retribuzione || ""}
                         onChange={aggiornaRetribuzione}
-                        placeholder="Inserisci la retribuzione annua lorda"
+                        placeholder="Inserisci la retribuzione lorda"
                         required
                     />
                 </div>

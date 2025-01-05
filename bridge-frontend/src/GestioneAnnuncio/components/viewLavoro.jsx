@@ -46,7 +46,7 @@ const AllLavoroView = () => {
                 : `http://localhost:8080/api/annunci/view_lavori`;
 
             if (!email || !token) {
-                alert("Non sei autenticato. Effettua il login.");
+                toast.error("Non sei autenticato. Effettua il login.");
                 nav('/login');
                 return;
             }
