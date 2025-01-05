@@ -1,7 +1,8 @@
 import {useEffect, useState} from "react";
-import './CreaUtente.css';
+import '../css/CreaUtente.css';
 import {useNavigate} from "react-router";
-
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const TitolodiStudio = {
     ScuolaPrimaria: "Scuola Primaria",
@@ -31,7 +32,7 @@ const regexPatterns = {
     cognome: /^[A-Za-zÀ-ÖØ-öø-ÿ' -]{2,30}$/,
     nazionalita: /^[a-zA-Z\s]{5,30}$/,
     lingueParlate: /^[a-zA-Z ,]{5,30}$/,
-    email: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+    email: /^[^\s@]+@[^\s@]+\.([^\s@]+\.)?[a-zA-Z]{2,}$/,
     disponibilita: /^[A-Za-z0-9 ì,.:;-]+$/,
     password: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,16}$/,
     skill: /^[^<>{}[\]]{1,255}$/,
@@ -54,6 +55,7 @@ const CreaUtente = () => {
     const [errorMessages, setErrorMessages] = useState({});
     const [orariDisponibili, setOrariDisponibili] = useState([]);
     const navigate = useNavigate();
+    const [isDisabled, setButton] = useState(false);
 
     const aggiornaDataDiNascita = (event) => {
         const value = event.target.value;
@@ -115,6 +117,7 @@ const CreaUtente = () => {
         const value = event.target.value;
         setNome(value);
         validateField("nome", value);
+        console.log(errorMessages);
     };
 
     const aggiornaCognome = (event) => {
@@ -207,6 +210,7 @@ const CreaUtente = () => {
             // Controlla se il file è di tipo JPEG/JPG
             if (file.type === "image/jpeg" || file.type === "image/jpg") {
                 const reader = new FileReader();
+                setButton(false);
                 reader.onload = () => {
                     setFotoProfilo(reader.result); // Aggiorna l'immagine con il file caricato
                 };
@@ -219,6 +223,7 @@ const CreaUtente = () => {
                     return updatedErrors;
                 });
             } else {
+                setButton(true);
                 // Imposta un messaggio di errore per tipi di file non validi
                 setErrorMessages((prev) => ({
                     ...prev,
@@ -253,14 +258,10 @@ const CreaUtente = () => {
         setOrariDisponibili(orariDisponibili.filter((_, i) => i !== index));
     };
 
-    const isFormValid = () => {
-        return Object.keys(errorMessages).length === 0;
-    };
 
     const gestisciSubmit = async (event) => {
-            if (!isFormValid()) {
-                alert("Correggi i campi non validi prima di continuare.");
-                return;
+            if (Object.keys(errorMessages).length > 0) {
+                toast.warning("Correggi i campi non validi prima di continuare.");
             }
         event.preventDefault();
 
@@ -304,15 +305,15 @@ const CreaUtente = () => {
             if (response.ok) {
                 const data = await response.text();
                 console.log("Registrazione avvenuta con successo:", data);
-                alert("Registrazione avvenuta con successo");
+                toast.success("Registrazione avvenuta con successo");
                 navigate('/login');
             } else {
                 console.error("Errore durante la registrazione");
-                alert("Errore, riprova!");
+                toast.error("Errore, riprova!");
             }
         } catch (error) {
             console.error("Errore nella richiesta di registrazione:", error);
-            alert("Errore nel collegamento al server.");
+            toast.error("Errore nel collegamento al server.");
         }
     };
 
@@ -541,7 +542,7 @@ const CreaUtente = () => {
                         onChange={aggiornaPassword}
                         required={true}
                     />
-                    <button type="button" onClick={togglePasswordVisibility}>
+                    <button type="button" className= "showPW"  onClick={togglePasswordVisibility}>
                         {showPassword ? "Nascondi Password" : "Mostra Password"}
                     </button>
                 </div>
@@ -551,8 +552,9 @@ const CreaUtente = () => {
                     </p>
                 )}
 
-                <div className="password-field">
+                <div className="password-field" >
                     <input
+                        id = "conferma-password"
                         type={showConfirmPassword ? "text" : "password"}
                         placeholder="Conferma Password"
                         className={`formEditText  field ${errorMessages.confermaPW ? 'error-field' : ''}`}
@@ -575,7 +577,7 @@ const CreaUtente = () => {
                 />
                 {errorMessages.fotoProfilo && <p className="error">{errorMessages.fotoProfilo}</p>}
 
-                <button type="submit" className="formButton">
+                <button type="submit" className="formButton" disabled={isDisabled}>
                     Invio
                 </button>
             </form>

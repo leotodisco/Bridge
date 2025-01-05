@@ -3,11 +3,9 @@ package com.project.bridgebackend.GestioneAnnuncio.Controller;
 import com.project.bridgebackend.GestioneAnnuncio.Service.GestioneAnnuncioService;
 import com.project.bridgebackend.GestioneCorso.Controller.GestioneCorsoController;
 import com.project.bridgebackend.Model.Entity.*;
-import com.project.bridgebackend.Model.dao.ConsulenzaDAO;
+import com.project.bridgebackend.Model.Entity.enumeration.TipoContratto;
+import com.project.bridgebackend.Model.dao.*;
 import com.project.bridgebackend.Model.Entity.enumeration.TipoConsulenza;
-import com.project.bridgebackend.Model.dao.FiguraSpecializzataDAO;
-import com.project.bridgebackend.Model.dao.IndirizzoDAO;
-import com.project.bridgebackend.Model.dao.VolontarioDAO;
 import com.project.bridgebackend.Model.dto.ConsulenzaDTO;
 import com.project.bridgebackend.Model.dto.LavoroDTO;
 import com.project.bridgebackend.util.JwtService;
@@ -39,7 +37,7 @@ import java.util.Map;
 public class GestioneAnnuncioController {
 
     /**
-    * logger per la stampa di warning o errori.
+     * logger per la stampa di warning o errori.
      */
     private static final Logger LOGGER = LoggerFactory.getLogger(GestioneCorsoController.class);
 
@@ -61,6 +59,12 @@ public class GestioneAnnuncioController {
      */
     @Autowired
     private VolontarioDAO volontarioDAO;
+
+    /**
+     * DAO per accedere ai dati dei rifugiati.
+     */
+    @Autowired
+    private RifugiatoDAO rifugiatoDAO;
 
     /**
      * DAO per accedere ai dati degli indirizzi.
@@ -91,7 +95,7 @@ public class GestioneAnnuncioController {
      *                      il proprietario e altri dettagli rilevanti.
      *                      Semplifica la gestione e validazione dei dati passati con JSON.
      * @return ResponseEntity contenente l'entità `Consulenza` appena creata.
-     *         Oppure un errore se le operazioni non vanno a buon fine.
+     * Oppure un errore se le operazioni non vanno a buon fine.
      */
     @PostMapping("/creaConsulenza")
     public ResponseEntity<Consulenza> creaConsulenza(@Valid @RequestBody final ConsulenzaDTO consulenzaDTO) {
@@ -150,7 +154,7 @@ public class GestioneAnnuncioController {
      *                  il proprietario e altri dettagli rilevanti.
      *                  Semplifica la gestione e validazione dei dati passati con JSON.
      * @return ResponseEntity contenente l'entità `Lavoro` appena creata.
-     *         Oppure un errore se le operazioni non vanno a buon fine.
+     * Oppure un errore se le operazioni non vanno a buon fine.
      */
     @PostMapping("/creaLavoro")
     public ResponseEntity<Lavoro> creaLavoro(@Valid @RequestBody final LavoroDTO lavoroDTO) {
@@ -215,6 +219,7 @@ public class GestioneAnnuncioController {
 
     /**
      * Metodo per ottenere una consulenza specifica dal DB.
+     *
      * @param id della consulenza che si vuole visualizzare.
      * @return ResponseEntity contenente la consulenza.
      */
@@ -243,18 +248,19 @@ public class GestioneAnnuncioController {
 
         return ResponseEntity.ok(consulenze);
     }
+
     /**
      * Metodo per attuare modifiche su una specifica consulenza.
-     * @param idConsulenza è l'id della modifica che si vuole effettuare.
-     * @param aggiornamenti è un hashmap di stinga oggetto per il,
-     *                      passaggio delle informazioni modificate,
-     *                      nella consulenza e degli oggetti,
-     *                      relativamente coinvolti (es. indirizzo).
+     *
+     * @param idConsulenza        è l'id della modifica che si vuole effettuare.
+     * @param aggiornamenti       è un hashmap di stinga oggetto per il,
+     *                            passaggio delle informazioni modificate,
+     *                            nella consulenza e degli oggetti,
+     *                            relativamente coinvolti (es. indirizzo).
      * @param authorizationHeader Stringa idi autorizzazione,
      *                            in modo da poter verificare,
      *                            se l'utente attualmente loggato,
      *                            può effettivamente attuare modifiche.
-     *
      * @return ResponseEntity contenente la consulenza modificata
      */
 
@@ -296,13 +302,13 @@ public class GestioneAnnuncioController {
     /**
      * Metodo per salvare l'interesse dimostrato da un rifugiato,
      * per una consulenza.
-     * @param idConsulenza è l'id della consulenza che il rifugiato
-     *                     vuole dimostrare interesse.
+     *
+     * @param idConsulenza        è l'id della consulenza che il rifugiato
+     *                            vuole dimostrare interesse.
      * @param authorizationHeader Stringa di autorizzazione,
      *                            in modo da poter verificare,
      *                            se l'utente attualmente loggato,
      *                            può effettivamente manifestare interesse.
-     *
      * @return ResponseEntity contenente la risposta positiva se l'utente,
      * è stato registrato nella lista della consulenza, negativa in caso,
      * contrario.
@@ -321,6 +327,8 @@ public class GestioneAnnuncioController {
 
         try {
             gestioneAnnuncioService.interesseConsulenza(idConsulenza, emailUtenteLoggato);
+            //invio l'email
+            gestioneAnnuncioService.sendEmailVolontario("Hai ricevuto una nuova candidatura", "geraldinemontella2@gmail.com");
             return ResponseEntity.ok("Interesse manifestato con successo");
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
@@ -331,15 +339,15 @@ public class GestioneAnnuncioController {
     /**
      * Metodo per salvare l'interesse dimostrato da un rifugiato,
      * per una consulenza.
-     * @param idConsulenza è l'id della consulenza per cui si vuole,
-     *                     verificare se l'utente ha già manifestato,
-     *                     interesse.
+     *
+     * @param idConsulenza        è l'id della consulenza per cui si vuole,
+     *                            verificare se l'utente ha già manifestato,
+     *                            interesse.
      * @param authorizationHeader Stringa di autorizzazione,
      *                            in modo da poter verificare,
      *                            se l'utente attualmente loggato,
      *                            ha effettivamente già manifestato,
      *                            il suo interesse.
-     *
      * @return ResponseEntity contenente la risposta positiva se l'utente,
      * è stato già registrato nella lista candidati della consulenza, negativa in caso,
      * contrario.
@@ -363,7 +371,7 @@ public class GestioneAnnuncioController {
             // Estrai il token JWT dall'header Authorization
             String token = authorizationHeader.replace("Bearer ", "");
             // Estrae l'email dell'utente dal token
-            String emailUtente= jwtService.extractUsername(token);
+            String emailUtente = jwtService.extractUsername(token);
             if (emailUtente == null || emailUtente.trim().isEmpty()) {
                 return ResponseEntity.badRequest().body("Token non valido o email non trovata.");
             }
@@ -389,15 +397,15 @@ public class GestioneAnnuncioController {
     /**
      * Metodo per rimuovere l'interesse dimostrato da un rifugiato,
      * per una consulenza.
-     * @param idConsulenza è l'id della consulenza per cui si vuole,
-     *                     verificare se l'utente ha già manifestato,
-     *                     interesse.
+     *
+     * @param idConsulenza        è l'id della consulenza per cui si vuole,
+     *                            verificare se l'utente ha già manifestato,
+     *                            interesse.
      * @param authorizationHeader Stringa di autorizzazione,
      *                            in modo da poter verificare,
      *                            se l'utente attualmente loggato,
      *                            ha effettivamente già manifestato,
      *                            il suo interesse.
-     *
      * @return ResponseEntity contenente la risposta positiva se l'utente,
      * è stato già registrato nella lista candidati della consulenza, negativa in caso,
      * contrario.
@@ -421,17 +429,17 @@ public class GestioneAnnuncioController {
             // Estrai il token JWT dall'header Authorization
             String token = authorizationHeader.replace("Bearer ", "");
             // Estrae l'email dell'utente dal token
-            String emailUtente= jwtService.extractUsername(token);
+            String emailUtente = jwtService.extractUsername(token);
             if (emailUtente == null || emailUtente.trim().isEmpty()) {
                 return ResponseEntity.badRequest().body("Token non valido o email non trovata.");
             }
 
             // Verifica se l'utente è candidato per questa consulenza
-           if (!c.getCandidati().containsKey(emailUtente)) {
-               return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Rifugiato non presente tra i candidati");
-           }
+            if (!c.getCandidati().containsKey(emailUtente)) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Rifugiato non presente tra i candidati");
+            }
 
-           //metodo per rimuovere l'interesse di un rifugiato da una candidatura
+            //metodo per rimuovere l'interesse di un rifugiato da una candidatura
             gestioneAnnuncioService.rimuoviInteresseConsulenza(idConsulenza, emailUtente);
             return ResponseEntity.ok("Rifugiato " + emailUtente
                     + " rimosso tra i candidati della consulenza");
@@ -450,13 +458,12 @@ public class GestioneAnnuncioController {
 
     /**
      * Metodo per attuare modifiche su una specifica consulenza.
-     * @param id è l'id della consulenza che si vuole eliminare.
      *
+     * @param id                  è l'id della consulenza che si vuole eliminare.
      * @param authorizationHeader Stringa di autorizzazione,
      *                            in modo da poter verificare,
      *                            se l'utente attualmente loggato,
      *                            può effettivamente attuare modifiche.
-     *
      * @return ResponseEntity contenente la stringa se l'operazione,
      * è andata a buon fine o meno.
      */
@@ -514,6 +521,27 @@ public class GestioneAnnuncioController {
         return new ResponseEntity<>(consulenze, HttpStatus.OK);
     }
 
+    @GetMapping("/candidature")
+    public ResponseEntity<List<Consulenza>> getConsulezeCandidate(
+            @RequestParam("email") final String email) {
+
+        // Recupera il volontario tramite email
+        Rifugiato candidato = rifugiatoDAO.findByEmail(email);
+        System.out.println("Rifugiato trovato: " + candidato);
+        if (candidato == null) {
+            System.out.println("Rifugiato non trovato");
+            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+        }
+
+        List<Consulenza> consulenze = gestioneAnnuncioService.getConsulenzeByCandidato(candidato);
+        consulenze.forEach(System.out::println);
+        if (consulenze.isEmpty()) {
+            System.out.println("Nessuna consulenza trovata in cui il rifugiato risulta candidato");
+            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(consulenze, HttpStatus.OK);
+    }
+
     @GetMapping("/view_consulenze/filter")
     public ResponseEntity<List<Consulenza>> getConsulenzeByTipo(
             @RequestParam(required = false) TipoConsulenza tipo) {
@@ -524,6 +552,18 @@ public class GestioneAnnuncioController {
             consulenze = gestioneAnnuncioService.getAllConsulenze();
         }
         return ResponseEntity.ok(consulenze);
+    }
+
+    @GetMapping("/view_lavori/filter")
+    public ResponseEntity<List<Lavoro>> getLavoroByTipoContratto(
+            @RequestParam(required = false) TipoContratto tipo) {
+        List<Lavoro> lavori;
+        if (tipo != null) {
+            lavori = gestioneAnnuncioService.getLavoroByTipoContratto(tipo);
+        } else {
+            lavori = gestioneAnnuncioService.getAllLavori();
+        }
+        return ResponseEntity.ok(lavori);
     }
 
     /**
@@ -545,7 +585,7 @@ public class GestioneAnnuncioController {
      * @param id ID dell'annuncio di lavoro.
      * @return ResponseEntity contenente l'annuncio di lavoro specificato.
      */
-    @GetMapping("/view_lavori/retrive/{id}")
+    @GetMapping("/view_lavori/retrieve/{id}")
     public ResponseEntity<Lavoro> getLavoroById(@PathVariable final long id) {
         Lavoro lavoro = gestioneAnnuncioService.getLavori(id);
         System.out.println(lavoro);
@@ -573,20 +613,19 @@ public class GestioneAnnuncioController {
      * tramite l'ID, utilizzando una mappa di aggiornamenti e un token,
      * di autorizzazione.
      *
-     * @param id L'ID dell'annuncio di lavoro da modificare.
-     * @param aggiornamenti La mappa contenente i dati da aggiornare,
-     *                      nell'annuncio di lavoro.
-     *                      Le chiavi della mappa corrispondono ai campi,
-     *                      dell'annuncio di lavoro,
-     *                      e i valori sono i nuovi dati da applicare.
+     * @param id                  L'ID dell'annuncio di lavoro da modificare.
+     * @param aggiornamenti       La mappa contenente i dati da aggiornare,
+     *                            nell'annuncio di lavoro.
+     *                            Le chiavi della mappa corrispondono ai campi,
+     *                            dell'annuncio di lavoro,
+     *                            e i valori sono i nuovi dati da applicare.
      * @param authorizationHeader L'intestazione di autorizzazione che contiene,
-     *                           il token JWT per verificare l'identità dell'utente.
-     *
+     *                            il token JWT per verificare l'identità dell'utente.
      * @return Una risposta HTTP che può essere:
-     *         - 200 OK se l'annuncio di lavoro è stato modificato con successo,
-     *         - 400 BAD REQUEST se la mappa degli aggiornamenti è nulla o vuota,
-     *         - 403 FORBIDDEN se l'utente non è autorizzato a modificare l'annuncio di lavoro,
-     *         - 500 INTERNAL SERVER ERROR in caso di errore generico durante l'operazione.
+     * - 200 OK se l'annuncio di lavoro è stato modificato con successo,
+     * - 400 BAD REQUEST se la mappa degli aggiornamenti è nulla o vuota,
+     * - 403 FORBIDDEN se l'utente non è autorizzato a modificare l'annuncio di lavoro,
+     * - 500 INTERNAL SERVER ERROR in caso di errore generico durante l'operazione.
      */
     @PostMapping("/modifica_lavoro/{id}")
     public ResponseEntity<?> modificaLavoro(@PathVariable final long id,
@@ -629,15 +668,14 @@ public class GestioneAnnuncioController {
      * Questo metodo permette di eliminare un annuncio di lavoro specificato tramite l'ID,
      * previa verifica dell'autorizzazione dell'utente tramite token JWT.
      *
-     * @param id L'ID dell'annuncio di lavoro da eliminare.
+     * @param id                  L'ID dell'annuncio di lavoro da eliminare.
      * @param authorizationHeader L'intestazione di autorizzazione che contiene il token JWT
      *                            per verificare l'identità dell'utente.
-     *
      * @return Una risposta HTTP che può essere:
-     *         - 200 OK con un messaggio di successo se l'annuncio di lavoro è stato eliminato con successo,
-     *         - 403 FORBIDDEN se l'utente non è autorizzato a eliminare l'annuncio di lavoro,
-     *         - 400 BAD REQUEST se si verifica un errore legato ai dati forniti,
-     *         - 500 INTERNAL SERVER ERROR in caso di errore generico durante l'operazione.
+     * - 200 OK con un messaggio di successo se l'annuncio di lavoro è stato eliminato con successo,
+     * - 403 FORBIDDEN se l'utente non è autorizzato a eliminare l'annuncio di lavoro,
+     * - 400 BAD REQUEST se si verifica un errore legato ai dati forniti,
+     * - 500 INTERNAL SERVER ERROR in caso di errore generico durante l'operazione.
      */
 
     @DeleteMapping("/elimina_lavoro/{id}")
@@ -697,10 +735,13 @@ public class GestioneAnnuncioController {
             }
 
             //metodo per rimuovere l'interesse di un rifugiato da una candidatura
-            gestioneAnnuncioService.rimuoviInteresseConsulenza(idConsulenza,emailRifugiato);
+            gestioneAnnuncioService.rimuoviInteresseConsulenza(idConsulenza, emailRifugiato);
 
             gestioneAnnuncioService.accettaConsulenzaRifugiato(idConsulenza, emailRifugiato);
-
+            //invia email al rifugiato per notificare che è stato selezionato
+            gestioneAnnuncioService.sendEmailRifugiato("La tua candidatura per la consulenza '"
+                    + c.getTitolo() + "' è stata accettata\n"
+                    + "verrai contattato per ulteriore supporto", "geraldinemontella2@gmail.com");
             return ResponseEntity.ok("Rifugiato " + emailRifugiato
                     + " rimosso tra i candidati della consulenza");
         } catch (IllegalArgumentException e) {
@@ -744,7 +785,10 @@ public class GestioneAnnuncioController {
             }
 
             //metodo per rimuovere l'interesse di un rifugiato da una candidatura
-            gestioneAnnuncioService.rimuoviInteresseConsulenza(idConsulenza,emailRifugiato);
+            gestioneAnnuncioService.rimuoviInteresseConsulenza(idConsulenza, emailRifugiato);
+            gestioneAnnuncioService.sendEmailRifugiato("La tua candidatura per la consulenza '"
+                    + c.getTitolo() + "' è stata rifiutata.\n"
+                    + "Ci dispiace.", "geraldinemontella2@gmail.com");
 
             return ResponseEntity.ok("Rifugiato " + emailRifugiato
                     + " rimosso tra i candidati della consulenza");
@@ -760,16 +804,16 @@ public class GestioneAnnuncioController {
                     .body("Errore durante l'elaborazione della richiesta: " + e.getMessage());
         }
     }
+
     /**
      * Verifica se l'utente loggato è autorizzato a modificare o eliminare un annuncio di lavoro.
      * L'autorizzazione è basata sul fatto che l'utente loggato (identificato tramite email)
      * deve essere il proprietario dell'annuncio di lavoro specificato.
      *
      * @param emailUtenteLoggato L'email dell'utente attualmente loggato nel sistema, estratta dal token JWT.
-     * @param lavoroEsistente L'annuncio di lavoro da verificare per l'autorizzazione.
-     *
+     * @param lavoroEsistente    L'annuncio di lavoro da verificare per l'autorizzazione.
      * @return {@code true} se l'utente loggato è il proprietario dell'annuncio di lavoro,
-     *         {@code false} se l'utente non è autorizzato ad accedere all'annuncio.
+     * {@code false} se l'utente non è autorizzato ad accedere all'annuncio.
      */
 
     private boolean isAuthorized(final String emailUtenteLoggato,
@@ -800,4 +844,87 @@ public class GestioneAnnuncioController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         }
     }
+
+    @PostMapping("/invia-candidatura-lavoro/{id}")
+    public ResponseEntity<?> inviaCandidaturaLavoro(@PathVariable final long id,
+                                                    @RequestHeader("Authorization") final String authorizationHeader) {
+        try {
+            // Estrai l'email del rifugiato dal token JWT
+            String emailRifugiato = jwtService.extractUsername(authorizationHeader.replace("Bearer ", ""));
+
+            // Verifica se l'email del rifugiato è già nella lista dei candidati
+            List<String> candidati = gestioneAnnuncioService.getCandidatiPerLavoro(id);
+            if (candidati.contains(emailRifugiato)) {
+                return ResponseEntity.status(HttpStatus.CONFLICT).body("Hai già inviato una candidatura per questo lavoro.");
+            }
+
+            // Recupera i dettagli del lavoro
+            Lavoro lavoro = gestioneAnnuncioService.getLavori(id);
+            if (lavoro == null) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Annuncio di lavoro non trovato.");
+            }
+
+            // Verifica che il proprietario sia un Volontario
+            if (!(lavoro.getProprietario() instanceof Volontario)) {
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Proprietario non valido.");
+            }
+            Volontario proprietario = (Volontario) lavoro.getProprietario();
+
+            // Invia la candidatura
+            gestioneAnnuncioService.invioCandidaturaLavoro(id, emailRifugiato);
+
+            // Prepara e invia l'email al proprietario dell'annuncio
+            String emailContent = "Oggetto: Nuova candidatura ricevuta\n" +
+                    "Messaggio: Il rifugiato con email " + emailRifugiato +
+                    " si è candidato per il lavoro: " + lavoro.getTitolo() + ".";
+            gestioneAnnuncioService.sendEmailVolontario(emailContent, "v.vernellati@studenti.unisa.it");
+
+            return ResponseEntity.ok("Candidatura inviata con successo!");
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        }
+    }
+
+    @GetMapping("/check-candidatura-lavoro/{id}")
+    public ResponseEntity<Boolean> isCandidato(@PathVariable final long id,
+                                               @RequestHeader("Authorization") final String authorizationHeader) {
+        try {
+            // Estrai l'email del rifugiato dal token JWT
+            String emailRifugiato = jwtService.extractUsername(authorizationHeader.replace("Bearer ", ""));
+
+            // Verifica se il rifugiato è già candidato
+            List<String> candidati = gestioneAnnuncioService.getCandidatiPerLavoro(id);
+            boolean isCandidato = candidati.contains(emailRifugiato);
+
+            return ResponseEntity.ok(isCandidato);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(false);
+        }
+    }
+
+    @PostMapping("/rimuovi-candidatura-lavoro/{id}")
+    public ResponseEntity<?> rimuoviCandidaturaLavoro(@PathVariable final long id,
+                                                      @RequestHeader("Authorization") final String authorizationHeader) {
+        try {
+            // Estrai l'email del rifugiato dal token JWT
+            String emailRifugiato = jwtService.extractUsername(authorizationHeader.replace("Bearer ", ""));
+
+            // Verifica se l'email del rifugiato è già nella lista dei candidati
+            List<String> candidati = gestioneAnnuncioService.getCandidatiPerLavoro(id);
+            if (!candidati.contains(emailRifugiato)) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Non sei candidato per questo lavoro.");
+            }
+
+            // Rimuovi la candidatura
+            gestioneAnnuncioService.rimuoviCandidaturaLavoro(id, emailRifugiato);
+            return ResponseEntity.ok("Candidatura ritirata con successo!");
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        }
+    }
+
 }

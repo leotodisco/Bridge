@@ -9,8 +9,10 @@ import com.project.bridgebackend.Model.dao.IndirizzoDAO;
 import com.project.bridgebackend.Model.dao.RifugiatoDAO;
 import com.project.bridgebackend.Model.dao.VolontarioDAO;
 import jakarta.transaction.Transactional;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.validation.annotation.Validated;
 
 import java.util.Collections;
 import java.util.List;
@@ -23,6 +25,7 @@ import java.util.Optional;
  **/
 
 @Service
+@Validated
 public class GestioneEventoServiceImpl implements GestioneEventoService {
 
     /**
@@ -243,4 +246,18 @@ public class GestioneEventoServiceImpl implements GestioneEventoService {
         return evento.getListaPartecipanti();
     }
 
+
+    /**
+     * Restituisce la lista di eventi a cui un rifugiato è iscritto.
+     *
+     * @param email Email del rifugiato.
+     * @return Lista di eventi a cui il rifugiato è iscritto.
+     */
+    public List<Evento> getEventiIscritti(String email) {
+        List<Evento> eventi = eventoDAO.findEventiByRifugiatoEmail(email);
+        if (eventi.isEmpty()) {
+            return Collections.emptyList();
+        }
+        return eventi;
+    }
 }

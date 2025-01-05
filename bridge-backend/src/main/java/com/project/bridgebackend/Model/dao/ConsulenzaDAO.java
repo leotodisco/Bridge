@@ -35,10 +35,30 @@ public interface ConsulenzaDAO extends JpaRepository<Consulenza, Long> {
         */
        List<Consulenza> findByProprietario(Utente proprietario);
 
-
        @Query("SELECT c FROM Consulenza c WHERE c.id =:id")
        Consulenza findConsulenzaById(long id);
 
        @Query("SELECT c FROM Consulenza c WHERE c.tipo =:tipo")
        List<Consulenza> findByTipo(TipoConsulenza tipo);
+
+       /**
+        * Recupera tutte le consulenze a cui un rifugiato si è candidato,
+        * filtrando in base all'email.
+        *
+        * @param rifugiatoEmail l'email del rifugiato.
+        * @return la lista delle consulenze corrispondenti.
+        */
+       @Query("SELECT c FROM Consulenza c JOIN c.candidati cand WHERE KEY(cand) = :rifugiatoEmail")
+       List<Consulenza> findAllByRifugiatoEmail(String rifugiatoEmail);
+
+       /**
+        * Recupera tutte le consulenze a cui un rifugiato si è candidato,
+        * filtrando in base all'email e allo stato della candidatura.
+        *
+        * @param rifugiatoEmail l'email del rifugiato.
+        * @param stato lo stato della candidatura (true o false).
+        * @return la lista delle consulenze corrispondenti.
+        */
+       @Query("SELECT c FROM Consulenza c JOIN c.candidati cand WHERE KEY(cand) = :rifugiatoEmail AND VALUE(cand) = :stato")
+       List<Consulenza> findAllByRifugiatoEmailAndStato(String rifugiatoEmail, Boolean stato);
 }

@@ -19,6 +19,7 @@ import ListaCorsiView from "./GestioneCorso/components/listaCorsiView.jsx";
 import AreaPersonale from "./GestioneUtente/components/AreaPersonale.jsx";
 import AboutUs from "./Components/AboutUs/AboutUs.jsx";
 import EventiUtente from "./GestioneUtente/components/dashboardEventi.jsx";
+import ConsulenzeCandidate from "./GestioneUtente/components/dashboardCandidatureConsulenza.jsx";
 import Alloggio from "./GestioneAlloggio/components/Alloggio.jsx";
 import Chatbot from "./GestioneChatbot/components/Chatbot.jsx";
 import LavoriUtente from "./GestioneUtente/components/dashboardLavoro.jsx";
@@ -26,11 +27,12 @@ import AlloggiByProprietario from "./GestioneAlloggio/components/AlloggiByPropri
 import "./GestioneChatbot/css/Chatbot.css"
 import {FaRobot} from "react-icons/fa";
 import { ToastContainer } from 'react-toastify';
+import CorsiUtente from "./GestioneUtente/components/dashboardCorso.jsx";
+import IntroPage from "./Components/Homepage/introPage.jsx";
 
 function App() {
     const [isAuthenticated, setIsAuthenticated] = useState(false);
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-
     // Stato per il chatbot
     const [isChatbotOpen, setIsChatbotOpen] = useState(false);
 
@@ -45,16 +47,18 @@ function App() {
         setIsAuthenticated(true);
     };
 
+    // Gestione del logout
     const handleLogout = () => {
         setIsAuthenticated(false);
         localStorage.clear();
         sessionStorage.clear();
+        window.location.href = "/login";
     };
 
+    // Funzione per aprire e chiudere la sidebar
     const toggleSidebar = () => {
         setIsSidebarOpen(!isSidebarOpen);
     };
-
 
     // Funzione toggle
     const toggleChatbotPopup = () => {
@@ -66,12 +70,15 @@ function App() {
         <Router>
             <Sidebar isOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />
             <main className={`main-content ${isSidebarOpen ? 'shifted' : ''}`}>
+                <ToastContainer />
                 {isAuthenticated ? (
                     <>
-                        <ToastContainer />
                         <Routes>
-                            <Route path="/" element={<Homepage />} />
+                            <Route path="/" element={<IntroPage />} />
+                            <Route path="/homepage" element={<Homepage />} />
                             <Route path="/eventi-utente" element={<EventiUtente />} />
+                            <Route path="/consulenze-candidato" element={<ConsulenzeCandidate />} />
+                            <Route path="/corsi-utente" element={<CorsiUtente />} />
                             <Route path="/consuleza-utente" element={<ConsulenzaUtente />} />
                             <Route path="/crea-lavoro" element={<CreaLavoro />} />
                             <Route path="/view-eventi" element={<AllEventsView />} />
@@ -95,7 +102,8 @@ function App() {
                 ) : (
                     <>
                         <Routes>
-                            <Route path="/" element={<Homepage />} />
+                            <Route path="/" element={<IntroPage />} />
+                            <Route path="/homepage" element={<Homepage />} />
                             <Route path="/view-eventi" element={<AllEventsView />} />
                             <Route path="/view-lavoro" element={<ViewLavoro />} />
                             <Route path="/alloggi/SingoloAlloggio/:titolo" element={<Alloggio />} />

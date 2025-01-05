@@ -1,13 +1,12 @@
 package com.project.bridgebackend.GestioneAlloggio.Service;
 
-import com.project.bridgebackend.Model.Entity.Alloggio;
-import com.project.bridgebackend.Model.Entity.Consulenza;
-import com.project.bridgebackend.Model.Entity.Indirizzo;
-import com.project.bridgebackend.Model.Entity.Rifugiato;
+import com.project.bridgebackend.Model.Entity.*;
 import com.project.bridgebackend.Model.dao.RifugiatoDAO;
 import com.project.bridgebackend.Model.dao.VolontarioDAO;
 import com.project.bridgebackend.Model.dao.AlloggioDAO;
 import com.project.bridgebackend.Model.dao.IndirizzoDAO;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -15,6 +14,8 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RequestBody;
+
+import java.util.Base64;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -66,6 +67,9 @@ public class AlloggioServiceImplementazione implements AlloggioService {
     @Autowired
     private JavaMailSender mailSender;
 
+    private static final Logger logger = LoggerFactory.getLogger(AlloggioServiceImplementazione.class);
+
+
 
     /** Metodo che permette ad un rifugiato di manifesare interesse per un'alloggio
      * @param emailRifugiato l'email del rifugiato
@@ -74,36 +78,52 @@ public class AlloggioServiceImplementazione implements AlloggioService {
      * @return un booleano che specifica lo stato dell'operazione. true andato a buon fine, false altrimenti
      */
     @Override
-    public boolean interesse(String emailRifugiato, long idAlloggio){
+    public boolean interesse(String emailRifugiato, long idAlloggio) {
+        logger.info("Inizio metodo interesse");
+        System.out.println("inizio metodo interesse da Syout");
+
         if (emailRifugiato == null || emailRifugiato.trim().isEmpty()) {
             throw new IllegalArgumentException("Email vuota o nulla");
         }
         if (idAlloggio <= 0) {
-            throw new IllegalArgumentException("ID consulenza non valido");
+            throw new IllegalArgumentException("ID alloggio non valido");
         }
 
-        // Recupera il rifugiato dal database
         Rifugiato r = rifugiatoDAO.findByEmail(emailRifugiato);
         if (r == null) {
             throw new IllegalArgumentException("Rifugiato non trovato");
         }
+        logger.info("Rifugiato trovato: {}", r);
 
         Alloggio a = alloggioDAO.findAlloggioById(idAlloggio);
-        if(a == null) {
+        if (a == null) {
             throw new IllegalArgumentException("Alloggio non trovato");
         }
+        logger.info("Alloggio trovato: {}", a);
 
-        // Verifica se l'email del rifugiato è già nella lista candidati
         if (a.getListaCandidati().contains(r.getEmail())) {
             throw new IllegalArgumentException("Interesse già manifestato");
         }
 
         a.getListaCandidati().add(r);
-        //aggiorno la consulenza
+        logger.info("Rifugiato aggiunto alla lista candidati");
+
+        String messaggio = String.format("Il rifugiato %s (%s) ha manifestato interesse per l'alloggio '%s'.",
+                r.getNome(), r.getEmail(), a.getTitolo());
+        logger.info("Messaggio generato: {}", messaggio);
+
+        try {
+            sendEmailVolontario(messaggio, "mariozurolo00@gmail.com");
+        } catch (Exception e) {
+            logger.error("Errore durante l'invio dell'email: {}", e.getMessage(), e);
+        }
+
         alloggioDAO.save(a);
-        sendEmailRifugiato("Interesse manifestat", "mariozurolo00@gmail.com");
+        logger.info("Alloggio aggiornato con successo");
+
         return true;
     }
+
 
     /**
      * Aggiunge un nuovo alloggio nel sistema.
@@ -114,11 +134,58 @@ public class AlloggioServiceImplementazione implements AlloggioService {
      */
     @Override
     public Alloggio addAlloggio(final Alloggio alloggio) {
+
         if (alloggio == null) {
             throw new IllegalArgumentException("L'alloggio non può essere nullo");
         }
-        return alloggioDAO.save(alloggio);
+
+        if(alloggio.getIndirizzo().getNumCivico() > 9999 || alloggio.getIndirizzo().getNumCivico() <= 0) {
+            throw new IllegalArgumentException("Numero civico errato");
+        }
+        if (!alloggio.getIndirizzo().getCitta().matches("^[A-zÀ-ù ‘]{2,50}$")) {
+            throw new IllegalArgumentException("La città non può contenere numeri");
+        }
+        if(!alloggio.getIndirizzo().getProvincia().matches("^[A-Z]{2}$")){
+            throw new IllegalArgumentException("La provincia non rispetta il formato");
+        }
+        if(!alloggio.getIndirizzo().getVia().matches("^[A-zÀ-ù ‘]{2,50}$")){
+            throw new IllegalArgumentException("La provincia non rispetta il formato");
+        }
+        if (alloggio.getIndirizzo().getCap() == null || !alloggio.getIndirizzo().getCap().matches("\\d{5}")) {
+            throw new IllegalArgumentException("Il CAP non rispetta il formato: deve essere composto da 5 cifre.");
+        }
+
+        if (alloggio.getMetratura() <= 0 || alloggio.getMetratura() > 99999) {
+            throw new IllegalArgumentException("La metratura deve essere maggiore di zero");
+        }
+
+        if (alloggio.getMaxPersone() <= 0 || alloggio.getMaxPersone() > 99) {
+            throw new IllegalArgumentException("Il numero massimo di persone deve essere maggiore di zero");
+        }
+        if (alloggio.getDescrizione() == null || alloggio.getDescrizione().isEmpty() || !alloggio.getDescrizione().matches("^[A-Za-z0-9 ]{0,400}$")){
+            throw new IllegalArgumentException("La descrizione non può essere nulla o vuota");
+        }
+        if (alloggio.getServizi() == null) {
+            throw new IllegalArgumentException("I servizi non possono essere nulli");
+        }
+
+        if (alloggio.getTitolo() == null || alloggio.getTitolo().isEmpty() || !alloggio.getTitolo().matches("^[a-zA-Z0-9 ]{3,100}$")) {
+            throw new IllegalArgumentException("Il titolo non può essere nullo o vuoto");
+        }
+
+        Volontario proprietario = volontarioDAO.findByEmail(alloggio.getProprietario().getEmail());
+        if (proprietario == null) {
+            throw new IllegalArgumentException("Il proprietario non esiste");
+        }
+
+        if (alloggio.getIndirizzo() == null) {
+            throw new IllegalArgumentException("L'indirizzo non può essere nullo");
+        }
+
+            Alloggio salvato = alloggioDAO.save(alloggio);
+            return salvato;
     }
+
 
     /**
      * Metodo che invia una email al rifugiato.
@@ -171,9 +238,15 @@ public class AlloggioServiceImplementazione implements AlloggioService {
             throw new IllegalArgumentException("Alloggio non trovato");
         }
 
+        // Verifica se l'alloggio è già stato assegnato
+        if (alloggio.getAssegnatoA() != null) {
+            throw new IllegalArgumentException("L'alloggio è già stato assegnato a un altro rifugiato");
+        }
+
         // Recupera la lista dei candidati per l'alloggio
         List<Rifugiato> listaCandidati = alloggio.getListaCandidati();
         if (listaCandidati == null || listaCandidati.isEmpty()) {
+            // Gestisci il caso in cui la lista è vuota
             throw new IllegalArgumentException("Nessun candidato disponibile per questo alloggio");
         }
 
@@ -188,17 +261,16 @@ public class AlloggioServiceImplementazione implements AlloggioService {
 
         Rifugiato rifugiato = rifugiatoOpt.get();
 
-        // Verifica se l'alloggio è già stato assegnato
-        if (alloggio.getAssegnatoA() != null) {
-            throw new IllegalArgumentException("L'alloggio è già stato assegnato a un altro rifugiato");
-        }
-
         // Assegna l'alloggio al rifugiato
         alloggio.setAssegnatoA(rifugiato);
 
+        // Svuota la lista dei candidati
+        alloggio.getListaCandidati().clear();
+
+        sendEmailRifugiato("Sei stato selezionato", "mariozurolo00@gmail.com");
+
         // Salva l'alloggio aggiornato
         alloggioDAO.save(alloggio);
-
         return alloggio;
     }
 
@@ -208,25 +280,25 @@ public class AlloggioServiceImplementazione implements AlloggioService {
      * Metodo asincrono che invia una email al volontario.
      *
      * @param messaggio il messaggio da inviare.
-     * @param emailDestinatario l'email del destinatario.
+     * @param emailVolontario l'email del destinatario.
      */
     @Override
-    @Async
-    public void sendEmailVolontario(
-            final String messaggio,
-            final String emailDestinatario) {
+    public void sendEmailVolontario(final String messaggio, final String emailVolontario) {
+        logger.info("Invio email a: {}, con messaggio: {}", emailVolontario, messaggio);
         try {
             SimpleMailMessage message = new SimpleMailMessage();
             message.setFrom("beehaveofficial@gmail.com");
-            message.setTo("mariozurolo00@gmail.com");
-            message.setSubject("PROVA");
+            message.setTo(emailVolontario);
+            message.setSubject("Notifica Interesse Alloggio");
             message.setText(messaggio);
             mailSender.send(message);
-            System.out.println("email inviata");
+            logger.info("Email inviata con successo a: {}", emailVolontario);
         } catch (Exception e) {
-            System.out.println("Errore nell invio dell'email a: " + emailDestinatario + e.getMessage());
+            logger.error("Errore nell'invio dell'email a: {} - {}", emailVolontario, e.getMessage(), e);
         }
     }
+
+
 
     /**
      * Restituisce la lista di tutti gli alloggi.
@@ -248,6 +320,24 @@ public class AlloggioServiceImplementazione implements AlloggioService {
 
     @Override
     public long salvaIndirizzoAlloggio(final Indirizzo indirizzo) {
+        if(indirizzo == null) {
+            throw new IllegalArgumentException("Indirizzo nullo");
+        }
+        if(indirizzo.getNumCivico() > 9999){
+            throw new IllegalArgumentException("Numero civico troppo lungo");
+        }
+        if (!indirizzo.getCitta().matches("^[^\\d]*$")) {
+            throw new IllegalArgumentException("La città non può contenere numeri");
+        }
+        if(!indirizzo.getProvincia().matches("^[A-Z]{2}$")){
+            throw new IllegalArgumentException("La provincia non rispetta il formato");
+        }
+        if(!indirizzo.getVia().matches("^[A-zÀ-ù ‘]{2,50}$")){
+            throw new IllegalArgumentException("La provincia non rispetta il formato");
+        }
+        if (indirizzo.getCap() == null || !indirizzo.getCap().matches("\\d{5}")) {
+            throw new IllegalArgumentException("Il CAP non rispetta il formato: deve essere composto da 5 cifre.");
+        }
         indirizzoDAO.save(indirizzo);
         return indirizzo.getId();
     }
@@ -292,13 +382,12 @@ public class AlloggioServiceImplementazione implements AlloggioService {
 
     @Override
     public List<Alloggio> getRandomAlloggi() {
-        // Recupera tutti gli eventi
-        List<Alloggio> alloggi = alloggioDAO.findAll();
-
-        // Mischia la lista
+        List<Alloggio> alloggi = alloggioDAO.findMyAll();
+        if (alloggi.isEmpty()) {
+            System.out.println("Nessun alloggio trovato nel database.");
+            return Collections.emptyList();
+        }
         Collections.shuffle(alloggi);
-
-        //Restituisce solo 5 eventi
         return alloggi.stream().limit(5).toList();
     }
 
@@ -337,4 +426,7 @@ public class AlloggioServiceImplementazione implements AlloggioService {
         }
     }
 
+    public List<Alloggio> getAllAlloggiByRifugiatoEmail(String email) {
+        return alloggioDAO.findAllAlloggiByRifugiatoEmail(email);
+    }
 }

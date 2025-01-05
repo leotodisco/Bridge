@@ -4,6 +4,7 @@ import "../css/AreaPersonaleStyle.css";
 import '@fortawesome/fontawesome-free/css/all.min.css';
 import ModificaPassword from "./formModificaPassword.jsx";
 import ModificaUtente from "./formModificaUtente.jsx";
+import {toast} from "react-toastify";
 
 // eslint-disable-next-line react/prop-types
 const AreaPersonale = ({ onLogout }) => {
@@ -19,15 +20,14 @@ const AreaPersonale = ({ onLogout }) => {
     const [showDeletePopup, setShowDeletePopup] = useState(false);
 
     const ruolo = localStorage.getItem('ruolo');
-    console.log('Ruolo letto:', ruolo);
-
+    const token = localStorage.getItem('authToken');
     const fetchUserData = async () => {
         try {
             const email = localStorage.getItem('email');
-            const token = localStorage.getItem('authToken');
+
 
             if (!email || !token) {
-                alert("Non sei autenticato. Effettua il login.");
+                toast.error("Non sei autenticato. Effettua il login.");
                 nav('/login');
                 return;
             }
@@ -50,8 +50,8 @@ const AreaPersonale = ({ onLogout }) => {
             ]);
 
 
-            if (!userResponse.ok || !imgResponse.ok) {
-                throw new Error(`Errore HTTP: ${userResponse.status} o ${imgResponse.status}`);
+            if (!userResponse.ok) {
+                throw new Error(`Errore HTTP userResponse: ${userResponse.status}`);
             }
 
             const userData = await userResponse.json();
@@ -62,12 +62,21 @@ const AreaPersonale = ({ onLogout }) => {
             localStorage.setItem('ruolo', userData.ruoloUtente);
         } catch (error) {
             console.error("Errore durante il recupero dei dati personali o immagine:", error);
-            alert("Errore durante il caricamento dei dati.");
+            toast.error("Errore durante il caricamento dei dati.");
         }
     };
 
     useEffect(() => {
-        fetchUserData();
+        const email = localStorage.getItem('email');
+        const token = localStorage.getItem('authToken');
+
+        // Controlla se l'utente è autenticato
+        if (!email || !token) {
+            toast.error("Non sei autenticato. Effettua il login.");
+            nav('/login');
+        } else {
+            fetchUserData();
+        }
     }, [nav]);
 
     const updateUserData = (newUserData) => {
@@ -84,7 +93,7 @@ const AreaPersonale = ({ onLogout }) => {
             const token = localStorage.getItem('authToken');
 
             if (!email || !token) {
-                alert("Non sei autenticato. Effettua il login.");
+                toast.error("Non sei autenticato. Effettua il login.");
                 nav('/login');
                 return;
             }
@@ -146,7 +155,7 @@ const AreaPersonale = ({ onLogout }) => {
 
     const handleSubmitImage = async () => {
         if (!imageFile) {
-            alert("Per favore seleziona un'immagine.");
+            toast.warning("Per favore seleziona un'immagine.");
             return;
         }
 
@@ -155,7 +164,7 @@ const AreaPersonale = ({ onLogout }) => {
             const token = localStorage.getItem('authToken');  // Assicurati che il token sia nel localStorage
 
             if (!token) {
-                alert("Token non trovato. Effettua nuovamente il login.");
+                toast.error("Token non trovato. Effettua nuovamente il login.");
                 return;
             }
 
@@ -179,7 +188,7 @@ const AreaPersonale = ({ onLogout }) => {
             setShowImageForm(false);  // Nasconde il form dopo il successo
         } catch (error) {
             console.error("Errore durante l'aggiornamento della foto del profilo:", error);
-            alert("Errore durante l'aggiornamento della foto.");
+            toast.error("Errore durante l'aggiornamento della foto.");
         }
     };
 
@@ -195,7 +204,7 @@ const AreaPersonale = ({ onLogout }) => {
                         <div className="profile-section">
                             {/* Foto Profilo */}
                             <img
-                                src={fotoProfilo || (imgData ? `data:image/jpeg;base64,${imgData}` : '/default-profile.png')}
+                                src={fotoProfilo || (imgData ? `data:image/jpeg;base64,${imgData}` : '/immagineProfiloVuota.jpg')}
                                 alt="Foto Profilo"
                                 className="profile-picture"
                             />
@@ -228,7 +237,7 @@ const AreaPersonale = ({ onLogout }) => {
                                 </button>
 
                                 {/* Pulsante Delete Account */}
-                                <button onClick={() => setShowDeletePopup(true)} className="deleteButton"
+                                <button onClick={() => setShowDeletePopup(true)  } className="deleteButton"
                                         title="Elimina Account">
                                     <i className="fas fa-trash-alt"></i>
                                 </button>
@@ -256,18 +265,31 @@ const AreaPersonale = ({ onLogout }) => {
 
                             <div className="sectionButtons">
                                 {ruolo=="Volontario" ? (
-                                <button onClick={() => navigate('/eventi-utente')}>I miei Eventi</button>
-                                ) : null}
-                                <button>I miei Corsi</button>
-
-                                {ruolo=="Volontario" ? (
-                                    <button onClick={() => navigate('/view-my-alloggi/:email')}>I miei Alloggi</button>
+                                    <div>
+                                        <button onClick={() => navigate('/eventi-utente')}>I miei Eventi</button>
+                                        <button onClick={() => navigate('/view-my-alloggi/:email')}>I miei Alloggi
+                                        </button>
+                                        <button onClick={() => navigate('/lavori-utente')}>I miei Annunci di Lavoro
+                                        </button>
+                                    </div>
                                 ) : null}
 
                                 {ruolo == "FiguraSpecializzata" ? (
-                                    <button onClick={() => navigate('/consuleza-utente')}>Le mie Consulenze</button>
+                                    <div>
+                                        <button onClick={() => navigate('/corsi-utente')}>I miei Corsi</button>
+                                        <button onClick={() => navigate('/consuleza-utente')}>Le mie Consulenze</button>
+                                    </div>
                                 ) : null}
-                                <button onClick={() => navigate('/lavori-utente')}>I miei Annunci di Lavoro</button>
+
+                                {ruolo === "Rifugiato" ? (
+                                    <div>
+                                        <button>Candidature Lavoro</button>
+                                        <button onClick={() => navigate('/view-my-alloggi/:email')}>Richieste di alloggio</button>
+                                        <button onClick={() => navigate('/eventi-utente')}>Partecipazione Eventi</button>
+                                        <button onClick={() => navigate('/consulenze-candidato')}>Richieste di Consulenza</button>
+                                    </div>
+                                ) : null}
+
                             </div>
                         </div>
                     </div>

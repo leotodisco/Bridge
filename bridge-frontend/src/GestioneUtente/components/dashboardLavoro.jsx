@@ -44,8 +44,9 @@ const LavoriUtente = () => {
     };
 
     return (
-        <div>
+        <div className="dashboardContainer">
             <h1>Tutti gli Annunci di Lavoro</h1>
+            <hr/>
             {lavori.length > 0 ? (
                 <div className="cards-container">
                     {lavori.map((lavoro) => (
@@ -67,7 +68,7 @@ const LavoriUtente = () => {
                                 parameter3: "Azienda",
                             }}
                             onClick={() => console.log(`Cliccato su annuncio: ${lavoro.titolo}`)}
-                            onInfoClick={() =>  handleInfoClick(lavoro.id)}
+                            onInfoClick={() => handleInfoClick(lavoro.id)}
                         />
                     ))}
                 </div>

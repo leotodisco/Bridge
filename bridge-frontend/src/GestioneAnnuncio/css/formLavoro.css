@@ -96,6 +96,11 @@ body {
     cursor: pointer;
 }
 
+.close-button {
+    background-color: transparent !important;
+    color: #333;
+}
+
 .switch-slider::before {
     content: '';
     position: absolute;
@@ -187,4 +192,6 @@ p.errorText {
         padding: 0.65rem;
     }
 }
+
+
 

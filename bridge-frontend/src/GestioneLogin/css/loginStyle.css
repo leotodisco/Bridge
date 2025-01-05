@@ -24,6 +24,7 @@ body {
 
 /* Contenitore principale */
 .login-container {
+    grid-column: span 2;
     max-width: 400px;
     width: 100%;
     padding: 2rem;

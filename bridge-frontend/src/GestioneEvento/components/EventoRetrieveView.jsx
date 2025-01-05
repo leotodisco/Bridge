@@ -3,6 +3,7 @@ import PropTypes from "prop-types"; // Importa PropTypes per validare le props
 import { format } from "date-fns"; // Importa date-fns per la formattazione
 import "../../GestioneEvento/css/eventoView.css";
 import {useNavigate} from "react-router-dom";
+import {toast} from "react-toastify";
 
 // Funzione per formattare la data
 const formatDate = (dateString) => {
@@ -52,7 +53,7 @@ const EventView = ({ id, onClose }) => {
         try {
 
             if (!token) {
-                alert("Non sei autenticato. Effettua il login.");
+                toast.error("Sessione scaduta. Esegui di nuovo il login.");
                 nav('/login');
                 return;
             }
@@ -87,7 +88,7 @@ const EventView = ({ id, onClose }) => {
             const url = `http://localhost:8080/api/eventi/${id}/iscrizione?emailPartecipante=${encodeURIComponent(emailPartecipante)}`;
 
             if (!token) {
-                alert("Non sei autenticato. Effettua il login.");
+                toast.error("Sessione scaduta. Esegui di nuovo il login.");
                 nav('/login');
                 return;
             }
@@ -121,11 +122,11 @@ const EventView = ({ id, onClose }) => {
             if (!response.ok) {
                 throw new Error("Errore durante l'iscrizione");
             }
-            alert("Iscrizione avvenuta con successo!");
+            toast.success("Iscrizione avvenuta con successo!");
             setIsSubscribed(true); // Aggiorna lo stato
         } catch (error) {
             console.error(error);
-            alert("Errore durante l'iscrizione.");
+            toast.error("Errore durante l'iscrizione.");
         }
     };
 
@@ -134,7 +135,7 @@ const EventView = ({ id, onClose }) => {
             const token = localStorage.getItem('authToken');
 
             if (!token) {
-                alert("Non sei autenticato. Effettua il login.");
+                toast.error("Sessione scaduta. Esegui di nuovo il login.");
                 nav('/login');
                 return;
             }
@@ -151,11 +152,11 @@ const EventView = ({ id, onClose }) => {
             if (!response.ok) {
                 throw new Error("Errore durante la disiscrizione");
             }
-            alert("Disiscrizione avvenuta con successo!");
+            toast.success("Disiscrizione avvenuta con successo");
             setIsSubscribed(false); // Aggiorna lo stato
         } catch (error) {
             console.error(error);
-            alert("Errore durante la disiscrizione.");
+            toast.error("Errore durante la disiscrizione.");
         }
     };
 
@@ -164,7 +165,7 @@ const EventView = ({ id, onClose }) => {
             setPartecipantiLoading(true);
 
             if (!token) {
-                alert("Non sei autenticato. Effettua il login.");
+                toast.error("Sessione scaduta. Esegui di nuovo il login.");
                 nav('/login');
                 return;
             }
@@ -244,7 +245,7 @@ const EventView = ({ id, onClose }) => {
                                 <span className="popup-value">{eventData.organizzatore.nome} {eventData.organizzatore.cognome}</span>
                             </div>
                         </div>
-                        {ruoloPartecipante === "RIFUGIATO" && emailPartecipante !== eventData.organizzatore.email && (
+                        {ruoloPartecipante === "Rifugiato" && emailPartecipante !== eventData.organizzatore.email && (
                             <div className="popup-actions">
                                 {isSubscribed ? (
                                     <button className="popup-button" onClick={handleUnsubscription}>

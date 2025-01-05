@@ -17,7 +17,6 @@
 /* Contenitore principale del popup */
 .FormPopup-container {
     background-color: #fff; /* Sfondo bianco */
-    border-radius: 12px; /* Angoli arrotondati */
     width: 90%;
     max-width: 600px;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2); /* Ombra leggera */
@@ -29,6 +28,16 @@
     animation: fadeIn 0.3s ease-in-out;
     box-sizing: border-box;
     z-index: 1100;
+}
+
+/* Aggiunge una transizione visiva */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
 }
 
 .header-FormContainer {

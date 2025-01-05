@@ -82,9 +82,10 @@ public class Lavoro extends Annuncio {
      */
     @Column(name = "info_utili", nullable = false, length = 500)
     @NotBlank(message = "Le info utili sono obbligatorie")
-    @Pattern(regexp = "^[\\wÀ-ÿ\\s,.!?\\'\\-]{1,500}$", message = "Formato info utili non valido ")
+    @Pattern(regexp = "^[\\wÀ-ÿ\\s,.!?@\\'\\-]{1,500}$", message = "Formato info utili non valido ")
     @Size(max = 500, message = "Le info utili non possono superare i 500 caratteri ")
     private String infoUtili;
+
 
     /**
      * Lista di candidati (di tipo Rifugiato) che hanno applicato per l'annuncio.

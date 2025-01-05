@@ -2,6 +2,7 @@ import { useState } from "react";
 import '../../GestioneEvento/css/formEventoStyle.css';
 import { useNavigate } from "react-router-dom";
 import PropTypes from "prop-types";
+import {toast} from "react-toastify";
 
 
 // Oggetto contenente le lingue disponibili
@@ -19,7 +20,7 @@ const Lingua = {
 };
 
 // Funzione per creare l'evento
-const CreaEvento = (  ) => {
+const CreaEvento = ( {onClose} ) => {
     const nav = useNavigate();
     // Stato per gestire i dati del modulo
     const [nome, setNome] = useState(""); // Nome dell'evento
@@ -37,12 +38,11 @@ const CreaEvento = (  ) => {
     const [maxPartecipanti, setMaxPartecipanti] = useState(1); // Numero massimo di partecipanti
 
     const emailUtenteLoggato = localStorage.getItem("email");
-    const navigate = useNavigate();
 
     // Funzione per chiudere il popup o reindirizzare
     const handleClose = () => {
-        if (emailUtenteLoggato) {
-            navigate('/view-eventi'); // Reindirizza a /view-listacorsi
+        if (onClose) {
+            onClose(); // Chiama la funzione di chiusura passata come prop
         }
     };
 
@@ -103,9 +103,6 @@ const CreaEvento = (  ) => {
             provincia: event.target.value
         });
     }
-
-    // Aggiorna il numero massimo di partecipanti
-    const aggiornaMaxPartecipanti = (event) => setMaxPartecipanti(Number(event.target.value));
 
     // Const per validazione dei campi
     const [nomeErrore, setNomeErrore] = useState("");
@@ -191,7 +188,7 @@ const CreaEvento = (  ) => {
     // Funzione per validare il campo descrizione
     const validaDescrizione = () => {
         // Regex del campo descrizione
-        const descrizionePattern = /^[A-Za-z0-9-ÿ .,'-]{1,1000}$/;
+        const descrizionePattern = /^[\wÀ-ÿ\s,.!?'-]{1,1000}$/;
 
         // Controllo: Pattern
         if(!descrizionePattern.test(descrizione)) {
@@ -218,39 +215,40 @@ const CreaEvento = (  ) => {
 
     // Funzione per validare il campo numero massimo di partecipanti
     const validaMaxPartecipanti = () => {
-        //Regex del campo maxPartecipanti
-        const maxPartecipantiPattern = /^([1-9][0-9]?|100)$/;
+        // Regex del campo maxPartecipanti: solo numeri da 0 a 999
+        const maxPartecipantiPattern = /^\d{1,3}$/;
 
-        // Controllo: non vuoto e valore valido
-        if (!maxPartecipanti || !maxPartecipantiPattern.test(maxPartecipanti)) {
-            setMaxPartecipantiErrore("Il numero massimo di partecipanti deve essere tra 1 e 100.");
+        // Controllo: non vuoto
+        if (!maxPartecipanti) {
+            setMaxPartecipantiErrore("Il numero massimo di partecipanti è obbligatorio.");
             return false;
         }
 
-        // Controllo: Pattern
-        if(!maxPartecipantiPattern.test(maxPartecipanti)) {
-            setMaxPartecipantiErrore("Il numero massimo di partecipanti deve essere tra 1 e 100.");
+        // Controllo: Pattern e range valido (1-999)
+        const numero = parseInt(maxPartecipanti, 10);
+        if (!maxPartecipantiPattern.test(maxPartecipanti) || numero < 1 || numero > 999) {
+            setMaxPartecipantiErrore("Il numero massimo di partecipanti deve essere tra 1 e 999.");
             return false;
         }
 
         // Se tutti i controlli passano
         setMaxPartecipantiErrore("");
         return true;
-    }
+    };
 
     // Funzione per validare il campo luogo
     const validaLuogo = () => {
         let errore = "";
-        if (!/^[A-Za-z0-9àèéìòùÀÈÉÌÒÙ ]{2,100}$/.test(luogo.via)) {
-            errore = "La via deve avere almeno 2 caratteri.";
+        if (!/^[A-zÀ-ù ‘]{2,50}$/.test(luogo.via)) {
+            errore = "La via non rispetta il formato corretto";
         } else if (!/^\d{1,5}$/.test(luogo.numCivico)) {
             errore = "Il numero civico deve essere valido.";
-        } else if (!/^[A-Za-z ]{2,100}$/.test(luogo.citta)) {
-            errore = "La città deve avere almeno 2 caratteri.";
+        } else if (!/^[A-zÀ-ù ‘]{2,50}$/.test(luogo.citta)) {
+            errore = "La città non rispetta il corretto formato.";
         } else if (!/^\d{5}$/.test(luogo.cap)) {
             errore = "Il CAP deve essere di 5 cifre.";
-        } else if (!/^[A-Za-z]{2,10}$/.test(luogo.provincia)) {
-            errore = "La provincia deve avere tra 2 e 10 caratteri.";
+        } else if (!/^[A-Z]{2}$/.test(luogo.provincia)) {
+            errore = "La sigla della provincia non rispetta il formato corretto.";
         }
 
         if (errore) {
@@ -279,7 +277,7 @@ const CreaEvento = (  ) => {
         console.log("Validazione campi: ", isNomeValido, isDataValida, isOraValida, isLinguaParlataValida, isDescrizioneValida, isMaxPartecipantiValido, isLuogoValido);
 
         if (!emailUtenteLoggato) {
-            alert("Sessione scaduta. Esegui di nuovo il login.");
+            toast.error("Sessione scaduta. Esegui di nuovo il login.");
             return;
         }
 
@@ -306,7 +304,7 @@ const CreaEvento = (  ) => {
             const token = localStorage.getItem("authToken");
 
             if (!token) {
-                alert("Non sei autenticato. Effettua il login.");
+                toast.error("Sessione scaduta. Esegui di nuovo il login.");
                 nav('/login');
                 return;
             }
@@ -348,11 +346,12 @@ const CreaEvento = (  ) => {
 
             // Se la richiesta va a buon fine, stampa il risultato
             const result = await response.json();
+            toast.success("Evento creato con successo!");
             console.log("Evento creato con successo: ", result);
             handleClose(); // Chiude il popup dopo la creazione
         } catch (error) {
             console.error("Errore durante la creazione dell'evento: ", error);
-            alert("Errore durante la creazione dell'evento");
+            toast.error("Errore nella creazione dell'evento. Riprova.");
         }
     };
 
@@ -435,8 +434,19 @@ const CreaEvento = (  ) => {
                                 title="Seleziona il numero massimo di partecipanti"
                                 className={`formEditText ${maxPartecipantiErrore ? "erroreInput" : ""}`}
                                 value={maxPartecipanti}
-                                onChange={aggiornaMaxPartecipanti}
+                                onChange={(e) => {
+                                    const valore = parseInt(e.target.value, 10);
+                                    if (valore >= 0 || e.target.value === "") {
+                                        setMaxPartecipanti(e.target.value);
+                                    }
+                                }}
+                                min="0"
                                 required
+                                onKeyDown={(e) => {
+                                    if (e.key === "-" || e.key === "e") {
+                                        e.preventDefault(); // Impedisce l'inserimento del simbolo meno o della notazione esponenziale
+                                    }
+                                }}
                             />
                             {maxPartecipantiErrore ? <span className="errore">{maxPartecipantiErrore}</span> : null}
                         </div>
@@ -536,8 +546,9 @@ const CreaEvento = (  ) => {
     );
 };
 
+// Definizione del tipo di prop richiesto
 CreaEvento.propTypes = {
-    onClose: PropTypes.func.isRequired,
+    onClose: PropTypes.func.isRequired, // onClose è obbligatorio
 };
 
 // Esporta il componente CreaEvento

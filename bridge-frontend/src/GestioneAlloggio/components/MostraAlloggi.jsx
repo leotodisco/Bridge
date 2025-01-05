@@ -1,12 +1,16 @@
 import { useEffect, useState } from "react";
-import Card from "../../GestioneEvento/components/Card.jsx";
 import { useNavigate } from "react-router-dom";
+import Card from "../../GestioneEvento/components/Card.jsx";
+import "../css/crea-alloggio.css";
+import "../../GestioneAnnuncio/css/PopUpForm.css";
+import {toast} from "react-toastify";
 
 const MostraAlloggi = () => {
     const [alloggi, setAlloggi] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-    const [userImages, setUserImages] = useState({}); // Stato per le immagini degli alloggi
+    const [userImages, setUserImages] = useState({});
+    const [isVolontario, setIsVolontario] = useState(false); // Stato per verificare se l'utente è volontario
     const navigate = useNavigate();
 
     const handleInfoClick = (titolo) => {
@@ -23,7 +27,7 @@ const MostraAlloggi = () => {
             const token = localStorage.getItem('authToken');
 
             if (!email || !token) {
-                alert("Non sei autenticato. Effettua il login.");
+                toast.error("Non sei autenticato. Effettua il login.");
                 navigate('/login');
                 return;
             }
@@ -82,6 +86,12 @@ const MostraAlloggi = () => {
 
     useEffect(() => {
         fetchAlloggi();
+
+        // Controllo del ruolo utente
+        const ruolo = localStorage.getItem('ruolo');
+        if (ruolo === 'Volontario') {
+            setIsVolontario(true);
+        }
     }, []);
 
     if (loading) return <p>Caricamento in corso...</p>;
@@ -89,8 +99,18 @@ const MostraAlloggi = () => {
 
     return (
         <div>
-            <h1>Tutti gli Alloggi</h1>
-            <button onClick={handleGoToCreaAlloggi}>crea</button>
+            {/* Mostra il pulsante "Crea" solo se l'utente è un volontario */}
+            {isVolontario && (
+                <div className="headerForm-container">
+                    <h1 className="header-title">Tutti gli Alloggi</h1>
+                    <button
+                        className="btn btn-circle"
+                        onClick={handleGoToCreaAlloggi} // Apri il popup
+                    >
+                        +
+                    </button>
+                </div>
+            )}
             {loading ? (
                 <p>Caricamento in corso...</p>
             ) : alloggi.length > 0 ? (
@@ -105,7 +125,7 @@ const MostraAlloggi = () => {
                                 data={{
                                     title: alloggio.titolo,
                                     image: alloggioImage,
-                                    alloggiProprietario: `${alloggio.proprietario.nome}`,
+                                    userName: alloggio.proprietario.nome, // Passa il nome del proprietario
                                     parameter1: alloggio.maxPersone,
                                     parameter2: alloggio.metratura,
                                     parameter3: alloggio.servizi,

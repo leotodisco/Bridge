@@ -6,6 +6,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Column;
+import jakarta.validation.constraints.Pattern;
 import lombok.Data;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -37,6 +38,8 @@ public final class Indirizzo implements Serializable {
      */
     @NotNull
     @NotBlank
+    @Pattern(regexp = "^[A-zÀ-ù ‘]{2,50}$",
+            message = "La città contiene caratteri non validi")
     @Column(name = "citta")
     private String citta;
 
@@ -52,14 +55,18 @@ public final class Indirizzo implements Serializable {
      * deve essere un numero intero di 5 cifre
      */
     @NotNull
+    @Pattern(regexp = "^\\d{5}$",
+            message = "Il CAP contiene caratteri non validi")
     @Column(name = "cap")
-    private int cap;
+    private String cap;
     //todo cambiare il cap in stringa
 
     /**
      * Stringa che rappresenta la provincia dell'indirizzo.
      */
     @NotNull
+    @Pattern(regexp = "^[A-Z]{2}$",
+            message = "La provincia contiene caratteri non validi")
     @Column(name = "provincia")
     private String provincia;
 
@@ -67,6 +74,8 @@ public final class Indirizzo implements Serializable {
      * Stringa che rappresenta la via dell'indirizzo.
      */
     @NotNull
+    @Pattern(regexp = "^[A-zÀ-ù ‘]{2,50}$",
+            message = "La via contiene caratteri non validi")
     @Column(name = "via")
     private String via;
 
@@ -88,7 +97,7 @@ public final class Indirizzo implements Serializable {
      */
     public Indirizzo(final String citta,
                      final int numCivico,
-                     final int cap,
+                     final String cap,
                      final String provincia,
                      final String via) {
         this.citta = citta;

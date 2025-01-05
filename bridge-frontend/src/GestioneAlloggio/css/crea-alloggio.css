@@ -1,0 +1,15 @@
+.crea-alloggio-button {
+    font-size: 12px; /* Riduci la dimensione del testo */
+    padding: 5px 10px; /* Riduci l'imbottitura */
+    width: 100px; /* Imposta una larghezza fissa */
+    border-radius: 4px; /* Angoli arrotondati */
+    background-color: #4CAF50; /* Colore di sfondo */
+    color: white; /* Colore del testo */
+    border: none; /* Rimuovi il bordo */
+    cursor: pointer; /* Cambia il cursore al passaggio del mouse */
+    text-align: center; /* Allinea il testo al centro */
+}
+
+.crea-alloggio-button:hover {
+    background-color: #45a049; /* Cambia colore al passaggio del mouse */
+}

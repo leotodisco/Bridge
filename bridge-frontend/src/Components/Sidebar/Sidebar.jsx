@@ -17,6 +17,8 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
         setIsServicesExpanded(!isServicesExpanded);
     };
 
+    const token = localStorage.getItem('authToken');
+
     // Funzione per chiudere la sidebar quando si clicca fuori
     const handleOverlayClick = () => {
         if (isOpen) toggleSidebar();
@@ -46,17 +48,18 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
                 <ul className={`menu ${isServicesExpanded ? 'shifted-up' : ''}`}>
                     {/* Voce di menu: Home */}
                     <li>
-                        <Link to="/">
+                        <Link to="/homepage">
                             <FaHome className="icon"/> <span>Home</span>
                         </Link>
                     </li>
 
                     {/* Voce di menu: Preferiti */}
+                    {token !== null && (
                     <li>
                         <Link to="/area-personale">
                             <FaUser className="icon"/> <span>Area Personale</span>
                         </Link>
-                    </li>
+                    </li>)}
 
 
                     {/* Voce di menu: Servizi */}
@@ -97,7 +100,7 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
                         className={`log-out ${isServicesExpanded ? 'shifted-down' : ''}`}
                         onClick={() => {
                             localStorage.clear(); // Rimuove il token e altri dati utente
-                            window.location.href = "/login"; // Reindirizza alla pagina di login
+                            window.location.href = "/"; // Reindirizza alla pagina di login
                         }}
                     >
                         <FaSignOutAlt className="icon"/> <span>Log out</span>

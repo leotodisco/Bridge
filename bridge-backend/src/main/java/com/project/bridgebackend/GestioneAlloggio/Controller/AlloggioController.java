@@ -1,12 +1,9 @@
 package com.project.bridgebackend.GestioneAlloggio.Controller;
 
-import com.project.bridgebackend.GestioneAlloggio.FotoAlloggio.FotoAlloggio;
-import com.project.bridgebackend.GestioneAlloggio.FotoAlloggio.FotoAlloggioService;
+import com.project.bridgebackend.CDN.CDNService;
+import com.project.bridgebackend.CDN.Document.FotoAlloggio;
 import com.project.bridgebackend.GestioneAlloggio.Service.AlloggioService;
-import com.project.bridgebackend.Model.Entity.Alloggio;
-import com.project.bridgebackend.Model.Entity.Indirizzo;
-import com.project.bridgebackend.Model.Entity.Rifugiato;
-import com.project.bridgebackend.Model.Entity.Volontario;
+import com.project.bridgebackend.Model.Entity.*;
 import com.project.bridgebackend.Model.dao.VolontarioDAO;
 import com.project.bridgebackend.Model.dao.IndirizzoDAO;
 import com.project.bridgebackend.Model.dao.UtenteDAO;
@@ -44,7 +41,7 @@ public class AlloggioController {
      * Service per la logica di gestione delle foto alloggio.
      */
     @Autowired
-    private FotoAlloggioService fotoAlloggioService;
+    private CDNService fotoAlloggioService;
 
     /**
      * Service per la logica di gestione degli utenti volontari.
@@ -76,6 +73,42 @@ public class AlloggioController {
     @Autowired
     private RifugiatoDAO rifugiatoDAO;
 
+
+    /**
+     * Metodo per rimuovere interesse per un alloggio.
+     * @param emailRifugiato email del rifugiato che ha rimosso l'interesse.
+     * @param idAlloggio identificativo dell'alloggio a cui è stato rimosso l'interesse.
+     * @return ResponseEntity con lo stato dell'operazione.
+     */
+    @PostMapping("/rimuoviInteresse")
+    public ResponseEntity<String> rimuoviInteresse(@RequestParam String emailRifugiato, @RequestParam long idAlloggio) {
+        try {
+            Alloggio alloggio = alloggioDAO.findAlloggioById(idAlloggio);
+            if (alloggio == null) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Alloggio non trovato.");
+            }
+
+            Rifugiato rifugiato = rifugiatoDAO.findByEmail(emailRifugiato);
+            if (rifugiato == null) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Rifugiato non trovato.");
+            }
+
+            if (alloggio.getListaCandidati() == null || !alloggio.getListaCandidati().contains(rifugiato)) {
+                return ResponseEntity.ok("Interesse non trovato per questo alloggio.");
+            }
+
+            // Rimuovi il rifugiato dalla lista dei candidati
+            alloggio.getListaCandidati().remove(rifugiato);
+            alloggioDAO.save(alloggio);
+
+            return ResponseEntity.ok("Interesse rimosso con successo.");
+        } catch (Exception e) {
+            System.out.println("Errore interno del server: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Errore interno al server.");
+        }
+    }
+
+
     /**
      * Aggiungi un nuovo alloggio nel sistema.
      *
@@ -102,7 +135,7 @@ public class AlloggioController {
                     if (foto.startsWith("data:image/jpeg;base64,")) {
                         foto = foto.split(",")[1]; // Estrai solo la parte Base64 dopo la virgola
                         byte[] fotoData = Base64.getDecoder().decode(foto);
-                        fotoProfiloId = fotoAlloggioService.saveIMG(foto, fotoData);
+                        fotoProfiloId = fotoAlloggioService.saveFotoAlloggio(foto, fotoData);
                     }
                     fotoIds.add(fotoProfiloId); // Aggiungiamo l'ID alla lista
                 }
@@ -115,9 +148,7 @@ public class AlloggioController {
             indirizzo.setVia(alloggio.getIndirizzo().getVia());
             indirizzo.setNumCivico(alloggio.getIndirizzo().getNumCivico());
             indirizzo.setProvincia(alloggio.getIndirizzo().getProvincia());
-
             long checkIndirizzo = alloggioService.salvaIndirizzoAlloggio(indirizzo);
-
             /*if (checkIndirizzo) {
                 throw new RuntimeException("Indirizzo non trovato");
             }*/
@@ -137,7 +168,6 @@ public class AlloggioController {
             newalloggio.setServizi(alloggio.getServizi());
             newalloggio.setTitolo(alloggio.getTitolo());
             newalloggio.setIndirizzo(indirizzoDAO.getReferenceById(checkIndirizzo));
-            System.out.println("alLOGGIO CREATO: " + newalloggio);
 
 
             // Rimuoviamo le foto dalla DTO, non ci servono più per il salvataggio dell'alloggio
@@ -162,19 +192,22 @@ public class AlloggioController {
      * @param emailRifugiato l'email del rifugiato
      * @return ResponseEntity con lo stato dell'operazione
      */
-    @PostMapping("/assegnazione")
-    public ResponseEntity<String> assegnazioneAlloggio(@RequestParam final long idAlloggio, @RequestParam final String emailRifugiato) {
-        try{
+    @PostMapping("/assegnazione/{idAlloggio}")
+    public ResponseEntity<?> assegnazioneAlloggio(@PathVariable long idAlloggio, @RequestParam String emailRifugiato) {
+        try {
+            if (idAlloggio < 1 || emailRifugiato == null || emailRifugiato.trim().isEmpty()) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Dati mancanti.");
+            }
             Alloggio a = alloggioService.assegnazioneAlloggio(idAlloggio, emailRifugiato);
-            return ResponseEntity.ok("L'alloggio '" + a.getTitolo() + "' è stato assegnato al rifugiato con email: " + emailRifugiato);
-        }catch (IllegalArgumentException e) {
-            // Gestione degli errori previsti
-            return ResponseEntity.badRequest().body("Errore: " + e.getMessage());
+            return ResponseEntity.ok(a); // Restituisci l'alloggio aggiornato
+        } catch (IllegalArgumentException e) {
+            // Se la lista dei rifugiati è vuota, restituire un errore 404 con un messaggio chiaro
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Nessun rifugiato disponibile per l'assegnazione.");
         } catch (Exception e) {
-            // Gestione degli errori generici
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Si è verificato un errore durante l'assegnazione dell'alloggio.");
         }
     }
+
 
     /** Metodo che permette ad un rifugiato di manifesare interesse per un'alloggio
      * @param emailRifugiato l'email del rifugiato
@@ -209,6 +242,8 @@ public class AlloggioController {
 
             // Aggiungi il rifugiato alla lista dei candidati
             alloggio.getListaCandidati().add(rifugiato);
+
+            alloggioService.sendEmailVolontario("Hai ricevuto una nuova manifestazione", "mariozurolo00@gmail.com");
             alloggioDAO.save(alloggio); // Salva l'alloggio aggiornato nel database
 
             return ResponseEntity.ok("Interesse manifestato con successo.");
@@ -286,7 +321,7 @@ public class AlloggioController {
         List<String> fotoBase64 = new ArrayList<>();
         if (alloggio.getFoto() != null) {
             for (String fotoId : alloggio.getFoto()) {
-                FotoAlloggio fotoAlloggio = fotoAlloggioService.getIMG(fotoId);
+                FotoAlloggio fotoAlloggio = fotoAlloggioService.getFotoAlloggio(fotoId);
                 if (fotoAlloggio != null) {
                     // Converti l'immagine in base64
                     String base64Image = Base64.getEncoder().encodeToString(fotoAlloggio.getData());
@@ -330,4 +365,40 @@ public class AlloggioController {
                     .body(Collections.emptyList());
         }
     }
+
+    @GetMapping("/alloggiPreferitiUtente/{email}")
+    public List<Alloggio> getAllAlloggiByRifugiatoEmail(@PathVariable String email) {
+        return alloggioService.getAllAlloggiByRifugiatoEmail(email);
+    }
+
+    @GetMapping("/random")
+    public ResponseEntity<List<Alloggio>> getRandomAccommodations() throws IOException {
+        List<Alloggio> alloggi = alloggioService.getRandomAlloggi();
+
+        // Itera su ogni alloggio per aggiungere una parte delle immagini in Base64
+        for (Alloggio alloggio : alloggi) {
+            if (alloggio.getFoto() != null) {
+                List<String> fotoBase64 = new ArrayList<>();
+                int count = 0;
+
+                for (String fotoId : alloggio.getFoto()) {
+                    if (count >= 3) break; // Limita a 3 immagini per alloggio
+                    FotoAlloggio fotoAlloggio = fotoAlloggioService.getFotoAlloggio(fotoId);
+                    if (fotoAlloggio != null) {
+                        // Converti l'immagine in Base64
+                        String base64Image = Base64.getEncoder().encodeToString(fotoAlloggio.getData());
+                        fotoBase64.add(base64Image);
+                        count++;
+                    }
+                }
+
+                alloggio.setFoto(fotoBase64); // Sostituisci con le immagini convertite
+            }
+        }
+
+        System.out.println("Alloggi con immagini: " + alloggi); // Debug
+        return new ResponseEntity<>(alloggi, HttpStatus.OK);
+    }
+
+
 }

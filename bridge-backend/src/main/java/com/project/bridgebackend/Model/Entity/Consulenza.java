@@ -1,17 +1,23 @@
 package com.project.bridgebackend.Model.Entity;
 
 import com.project.bridgebackend.Model.Entity.enumeration.TipoConsulenza;
-import jakarta.persistence.*;
+import jakarta.persistence.Inheritance;
+import jakarta.persistence.Entity;
+import jakarta.persistence.InheritanceType;
+import jakarta.persistence.Table;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.Column;
+import jakarta.persistence.ElementCollection;
+import jakarta.persistence.CollectionTable;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.MapKeyColumn;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
-
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
-
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -44,13 +50,17 @@ public class Consulenza extends Annuncio {
     * todo: to verify if string is a valid option
      */
     @Column(name = "orari_disponibili", nullable = false, length = 500)
+    @NotBlank(message = "Gli orari di disponibilità non possono essere vuoti")
+    @Pattern(
+            regexp = "^(Lunedi|Martedi|Mercoledi|Giovedi|Venerdi|Sabato|Domenica)\\s+(0\\d|1\\d|2[0-3]):[0-5]\\d\\s*-\\s*(0\\d|1\\d|2[0-3]):[0-5]\\d$",
+            message = "Formato orario non valido! Usa: <Giorno> HH:MM - HH:MM (es. Lunedi 09:30-10:45)"
+    )
     private String orariDisponibili;
 
     /**
     * Descrizione è una stringa atta a discriminare come la,
     * consulenza mira ad aiutare il rifugiato.
     */
-    @NotBlank(message = "la descrizione non può essere vuota")
     @Column(name = "descrizione", nullable = false, length = 1000)
     private String descrizione;
 

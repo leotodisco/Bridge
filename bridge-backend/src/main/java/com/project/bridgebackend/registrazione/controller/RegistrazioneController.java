@@ -1,5 +1,6 @@
 package com.project.bridgebackend.registrazione.controller;
 
+import com.project.bridgebackend.CDN.CDNService;
 import com.project.bridgebackend.Model.Entity.Admin;
 import com.project.bridgebackend.Model.Entity.Volontario;
 import com.project.bridgebackend.Model.Entity.FiguraSpecializzata;
@@ -8,7 +9,6 @@ import com.project.bridgebackend.Model.Entity.enumeration.Gender;
 import com.project.bridgebackend.Model.Entity.enumeration.Ruolo;
 import com.project.bridgebackend.Model.Entity.enumeration.TitoloDiStudio;
 import com.project.bridgebackend.Model.dto.UtenteDTO;
-import com.project.bridgebackend.fotoProfilo.FotoProfiloService;
 import com.project.bridgebackend.registrazione.service.RegistrazioneService;
 import com.project.bridgebackend.util.AuthenticationRequest;
 import com.project.bridgebackend.util.AuthenticationResponse;
@@ -43,7 +43,7 @@ public class RegistrazioneController {
      * delle foto.
      * */
     @Autowired
-    private FotoProfiloService fotoser;
+    private CDNService fotoser;
 
 
     /**
@@ -93,7 +93,7 @@ public class RegistrazioneController {
                 if (base64Image.startsWith("data:image/jpeg;base64,")) {
                     base64Image = base64Image.split(",")[1]; // Estrai solo la parte Base64 dopo la virgola
                     byte[] fotoData = Base64.getDecoder().decode(base64Image);
-                    fotoProfiloId = fotoser.saveIMG(nome, fotoData);
+                    fotoProfiloId = fotoser.saveFotoProfilo(nome, fotoData);
 
                 } else {
                     System.err.println("Formato immagine non valido: la stringa Base64 non contiene il prefisso corretto.");

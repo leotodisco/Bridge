@@ -1,4 +1,6 @@
 import { useState } from "react";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const regexPatterns = {
     password: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,16}$/
@@ -7,9 +9,6 @@ const regexPatterns = {
 const ModificaPassword = () => {
     const [password, setPassword] = useState("");
     const [confermaPW, setConfermaPW] = useState("");
-    const [showSuccessPopup, setShowSuccessPopup] = useState(false);
-
-    const [showFailurePopup, setShowFailurePopup] = useState(false);
 
     const [errorMessages, setErrorMessages] = useState({});
 
@@ -59,8 +58,16 @@ const ModificaPassword = () => {
     };
 
     const isFormValid = () => {
+        if (password !== confermaPW) {
+            setErrorMessages((prev) => ({
+                ...prev,
+                confermaPW: "Le password non corrispondono.",
+            }));
+            return false;
+        }
         return Object.keys(errorMessages).length === 0;
     };
+
 
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -107,17 +114,18 @@ const ModificaPassword = () => {
     };
 
     const gestisciSubmit = async (event) => {
+
+        event.preventDefault();
         if (!isFormValid()) {
-            alert("Correggi i campi non validi prima di continuare.");
+            toast.error("Correggi i campi non validi prima di continuare.");
             return;
         }
-        event.preventDefault();
 
-        const token = localStorage.getItem('Token');
+        const token = localStorage.getItem('authToken');
         const email = localStorage.getItem('email');
         try {
             if (!token) {
-                alert("Token non trovato. Effettua nuovamente il login.");
+                toast.error("Token non trovato. Effettua nuovamente il login.");
                 return;
             }
 
@@ -134,23 +142,27 @@ const ModificaPassword = () => {
             if (response.ok) {
                 const data = await response.text();
                 console.log(data)
-                setShowSuccessPopup(true);  // Mostra il pop-up di successo
-                setTimeout(() => {
-                    localStorage.removeItem('token');
-                    localStorage.removeItem('email');
+                toast.info("Password modificata con successo! Verrai reinderizzato alla pagina di log-in");
+                setTimeout(async () => {
+                    // Effettua il logout
+                    await fetch('/authentication/logout', {
+                        method: 'POST',
+                        headers: {
+                            'Authorization': `Bearer ${token}`,
+                        },
+                    });
+
+                    localStorage.clear();
+                    sessionStorage.clear();
                     window.location.href = "/login";
                 }, 5000);
             } else {
-                setShowFailurePopup(true);
+                toast.error("Errore nella richiesta di modifica:");
             }
         } catch (error) {
-            console.error("Errore nella richiesta di registrazione:", error);
-            setShowFailurePopup(true);
+            console.error("Errore nella richiesta di modifica:", error);
+            toast.error("Errore nella richiesta di modifica:");
         }
-    };
-
-    const closePopup = () => {
-        setShowSuccessPopup(false);
     };
 
     return (
@@ -186,7 +198,7 @@ const ModificaPassword = () => {
                         onChange={aggiornaConfermaPW}
                         required={true}
                     />
-                    <button type="button" onClick={toggleConfirmPasswordVisibility}>
+                    <button type="button" className="showPW" onClick={toggleConfirmPasswordVisibility}>
                         {showConfirmPassword ? "Nascondi Password" : "Mostra Password"}
                     </button>
                 </div>
@@ -195,24 +207,6 @@ const ModificaPassword = () => {
                     Invio
                 </button>
             </form>
-            {/* Success Pop-up */}
-            {showSuccessPopup && (
-                <div className="popup">
-                    <div className="popup-content">
-                        <h3>Password modificata con successo!</h3>
-                        <h4>A breve verrai reindirizzato al login</h4>
-                        <button onClick={closePopup} className="close-btn">Chiudi</button>
-                    </div>
-                </div>
-            )}
-            {showFailurePopup && (
-                <div className="popup">
-                    <div className="popup-content">
-                        <h3>Errore nella modifica della Password</h3>
-                        <button onClick={closePopup} className="close-btn">Chiudi</button>
-                    </div>
-                </div>
-            )}
         </div>
     )
 };

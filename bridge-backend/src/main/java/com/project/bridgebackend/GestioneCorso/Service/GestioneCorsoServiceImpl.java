@@ -1,13 +1,16 @@
 package com.project.bridgebackend.GestioneCorso.Service;
 
-import com.project.bridgebackend.GestioneCorso.pdf.PDFService;
+import com.project.bridgebackend.CDN.CDNService;
 import com.project.bridgebackend.Model.Entity.Corso;
 import com.project.bridgebackend.Model.dao.CorsoDAO;
+import com.project.bridgebackend.Model.dao.FiguraSpecializzataDAO;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.List;
+import java.util.regex.Pattern;
+import java.util.regex.Matcher;
 
 /**
  * @author Biagio Gallo.
@@ -33,7 +36,10 @@ public class GestioneCorsoServiceImpl implements GestioneCorsoService {
      * Iniezione logica di gestione per i pdf.
      */
     @Autowired
-    private final PDFService pdfService;
+    private final CDNService pdfService;
+    @Autowired
+    private FiguraSpecializzataDAO figuraSpecializzataDAO;
+
     /**
      * Crea un nuovo corso.
      * @param corso il DTO del corso contenente i dettagli del corso.
@@ -41,12 +47,64 @@ public class GestioneCorsoServiceImpl implements GestioneCorsoService {
      */
 
     @Override
-    public Corso creaCorso(final Corso corso) {
+    public Corso creaCorso(final Corso corso) throws Exception {
         if (corso == null) {
             throw new IllegalArgumentException("Corso non valido");
         }
 
-        return corsoDAO.save(corso);
+        // Controllo del titolo
+        if (corso.getTitolo() == null || corso.getTitolo().trim().isEmpty()) {
+            throw new IllegalArgumentException("Il titolo del corso non può essere vuoto");
+        }
+        if (corso.getTitolo().length() < 3) {
+            throw new IllegalArgumentException("Il titolo del corso deve contenere almeno 3 caratteri");
+        }
+
+        // Controllo della descrizione
+        if (corso.getDescrizione() == null || corso.getDescrizione().trim().isEmpty()) {
+            throw new IllegalArgumentException("La descrizione del corso non può essere vuota");
+        }
+        if (corso.getDescrizione().length() < 10) {
+            throw new IllegalArgumentException("La descrizione del corso deve contenere almeno 10 caratteri");
+        }
+
+        // Controllo della categoria del corso
+        if (corso.getCategoriaCorso() == null) {
+            throw new IllegalArgumentException("La categoria del corso è obbligatoria");
+        }
+
+        // Controllo della lingua
+        if (corso.getLingua() == null) {
+            throw new IllegalArgumentException("La lingua del corso è obbligatoria");
+        }
+
+        // Controllo del proprietario del corso
+        if (corso.getProprietario() == null) {
+            throw new IllegalArgumentException("Il proprietario del corso è obbligatorio");
+        }
+
+        if (figuraSpecializzataDAO.findByEmail(corso.getProprietario().getEmail()) == null) {
+            throw new IllegalArgumentException("Il proprietario del corso non è valido");
+        }
+
+        if (!corso.getTitolo().matches("^[A-Za-z0-9À-ÿ .,'-]{3,100}$")) {
+            throw new Exception("Il titolo del corso non è valido");
+        }
+
+        if (!corso.getCategoriaCorso().toString().matches("^[A-Za-zÀ-ÿ' -]{3,50}$")) {
+            throw new Exception("La categoria del corso non è valida");
+        }
+
+        if (!corso.getLingua().toString().matches("(?i)^(Italiano|Inglese|Francese|Tedesco|Spagnolo|Portoghese|Russo|Cinese|Ucraino, Arabo)(,\\s*(Italiano|Inglese|Francese|Tedesco|Spagnolo|Portoghese|Russo|Cinese|Ucraino, Arabo))*$")) {
+            throw new Exception("La lingua del corso non è valida");
+        }
+        System.out.println("Proprietario trovato: " + figuraSpecializzataDAO.findByEmail(corso.getProprietario().getEmail()));
+
+        var result = corsoDAO.save(corso);
+        System.out.println(corso);
+        System.out.println(result);
+        return result;
+        //return corsoDAO.save(corso);
     }
     /**
      * Modifica un corso esistente.

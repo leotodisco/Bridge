@@ -1,13 +1,13 @@
 package com.project.bridgebackend.GestioneUtente.Service;
 
+import com.project.bridgebackend.CDN.CDNService;
 import com.project.bridgebackend.Model.Entity.FiguraSpecializzata;
 import com.project.bridgebackend.Model.Entity.Utente;
 import com.project.bridgebackend.Model.Entity.enumeration.Gender;
 import com.project.bridgebackend.Model.Entity.enumeration.TitoloDiStudio;
 import com.project.bridgebackend.Model.dao.FiguraSpecializzataDAO;
 import com.project.bridgebackend.Model.dao.UtenteDAO;
-import com.project.bridgebackend.fotoProfilo.FotoProfilo;
-import com.project.bridgebackend.fotoProfilo.FotoProfiloService;
+import com.project.bridgebackend.CDN.Document.FotoProfilo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -33,7 +33,7 @@ public class UtenteServiceImpl implements UtenteService {
      * Service per la gestione delle foto.
      */
     @Autowired
-    private FotoProfiloService fotoProfiloService;
+    private CDNService fotoProfiloService;
 
     /**
      * Dao per la gestione degli utenti.
@@ -80,7 +80,7 @@ public class UtenteServiceImpl implements UtenteService {
         try {
             String idFoto = utenteDAO.findByEmail(email).getFotoProfilo();
             utenteDAO.delete(utenteDAO.findByEmail(email));
-            fotoProfiloService.deleteIMG(idFoto);
+            fotoProfiloService.deleteFotoProfilo(idFoto);
         } catch (Exception e) {
             throw new Exception(e.getMessage());
         }
@@ -96,7 +96,7 @@ public class UtenteServiceImpl implements UtenteService {
     public FotoProfilo getFotoUtente(
             final String email) throws IOException {
         Utente u = utenteDAO.findByEmail(email);
-        FotoProfilo fp = fotoProfiloService.getIMG(u.getFotoProfilo());
+        FotoProfilo fp = fotoProfiloService.getFotoProfilo(u.getFotoProfilo());
         return fp;
     }
 
@@ -210,7 +210,7 @@ public class UtenteServiceImpl implements UtenteService {
                 byte[] fotoData = Base64.getDecoder().decode(base64Image);
 
                 // Salva l'immagine tramite il servizio FotoProfiloService (deve restituire un ID unico per la foto)
-                String fotoProfiloId = fotoProfiloService.saveIMG(utente.getEmail(), fotoData);
+                String fotoProfiloId = fotoProfiloService.saveFotoProfilo(utente.getEmail(), fotoData);
 
                 // Aggiorna l'utente con il nuovo ID foto
                 utente.setFotoProfilo(fotoProfiloId);

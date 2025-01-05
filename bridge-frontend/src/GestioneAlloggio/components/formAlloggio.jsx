@@ -1,5 +1,8 @@
 import {useEffect, useState} from "react";
 import {useNavigate} from "react-router-dom";
+import "../css/formAlloggioStyle.css";
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const Servizi = {
     WIFI: "WIFI",
@@ -15,6 +18,7 @@ const CreaAlloggio = () => {
     const [fotos, setFotos] = useState([]);
     const [servizi, setServizi] = useState("");
     const [titolo, setTitolo] = useState("");
+    const [isDisabled, setButton] = useState(false);
     const [volontario, setVolontario] = useState(false);
     const [indirizzo, setIndirizzo] = useState({
         via: "",
@@ -42,6 +46,18 @@ const CreaAlloggio = () => {
             return;
         }
 
+        const validFormats = ["image/jpeg", "image/jpg"];
+        const invalidFiles = files.filter((file) => !validFormats.includes(file.type));
+
+        if (invalidFiles.length > 0) {
+            setErrori((prev) => ({ ...prev, fotos: "Tutte le immagini devono essere in formato JPG o JPEG." }));
+            setButton(true);
+            return;
+        }
+        else{
+            setButton(false);
+        }
+
         const readers = files.map((file) => {
             return new Promise((resolve, reject) => {
                 const reader = new FileReader();
@@ -54,13 +70,14 @@ const CreaAlloggio = () => {
         Promise.all(readers)
             .then((base64Images) => {
                 setFotos(base64Images);
-                setErrori((prev) => ({ ...prev, fotos: "" }));
+                setErrori((prev) => ({ ...prev, fotos: "" })); // Rimuove gli errori in caso di successo
             })
             .catch((error) => {
                 console.error("Errore nella lettura delle immagini:", error);
                 setErrori((prev) => ({ ...prev, fotos: "Errore nella lettura delle immagini." }));
             });
     };
+
 
     const validaCampi = () => {
         const nuoviErrori = {};
@@ -69,45 +86,48 @@ const CreaAlloggio = () => {
             nuoviErrori.titolo = "Il titolo deve essere tra 3 e 100 caratteri.";
         }
 
-        if (!descrizione || descrizione.length < 1 || descrizione.length > 400) {
+        if (!/^[A-Za-z0-9 ]{1,400}$/.test(descrizione)) {
             nuoviErrori.descrizione = "La descrizione deve essere tra 1 e 400 caratteri.";
         }
 
-        if (maxPersone < 1 || maxPersone > 99) {
+
+        if (!/^\d{1,2}$/.test(maxPersone)) {
             nuoviErrori.maxPersone = "Il numero massimo di persone deve essere tra 1 e 99.";
         }
 
-        if (!/^[0-9]+$/.test(metratura)) {
+        if (!/^\d{1,5}$/.test(metratura)) {
             nuoviErrori.metratura = "La metratura deve essere un numero valido.";
         }
+
 
         if (!servizi) {
             nuoviErrori.servizi = "Devi selezionare un servizio.";
         }
 
-        if (!indirizzo.via || indirizzo.via.length < 2 || indirizzo.via > 51) {
+        if (!/^[A-zÀ-ù ‘]{2,50}$/.test(indirizzo.via)) {
             nuoviErrori.via = "La via deve avere almeno 2 caratteri e massimo 50.";
         }
 
-        if (!/^[0-9]+$/.test(indirizzo.numCivico)) {
+        if (!/^\d{1,3}$/.test(indirizzo.numCivico)) {
             nuoviErrori.numCivico = "Il numero civico deve essere un numero valido.";
         }
 
-        if (!indirizzo.citta || indirizzo.citta.length < 2 || indirizzo.citta.length >51) {
-            nuoviErrori.citta = "La città deve avere almeno 2 caratteri e massimo 50.";
+        if (!/^[A-zÀ-ù ‘]{2,50}$/.test(indirizzo.citta)) {
+            nuoviErrori.citta = "Errore nell'inserimento della cità.";
         }
 
         if (!/^[0-9]{5}$/.test(indirizzo.cap)) {
             nuoviErrori.cap = "Il CAP deve essere di 5 cifre.";
         }
 
-        if (!indirizzo.provincia || indirizzo.provincia.length < 2) {
-            nuoviErrori.provincia = "La provincia deve avere 2 caratteri.";
+        if (!/^[A-Za-z]{2}$/.test(indirizzo.provincia)) {
+            nuoviErrori.provincia = "La provincia deve avere esattamente 2 caratteri alfabetici.";
         }
 
-        if (fotos.length === 0) {
-            nuoviErrori.fotos = "Devi caricare almeno 1 foto.";
-        }
+        /*if (fotos.length === 0 || !(fotos.type === "image/jpeg" || fotos.type === "image/jpg")) {
+            console.log("L'estensione delle foto ", fotos.type);
+            nuoviErrori.fotos = "Devi caricare almeno 1 foto in formato JPG o JPEG.";
+        }*/
 
         setErrori(nuoviErrori);
         return Object.keys(nuoviErrori).length === 0;
@@ -117,7 +137,7 @@ const CreaAlloggio = () => {
     useEffect(() => {
         const ruoloUtente = localStorage.getItem('ruolo'); // Recupera il ruolo dal localStorage
 
-        if (ruoloUtente === 'VOLONTARIO') {
+        if (ruoloUtente === 'Volontario') {
             setVolontario(true); // Imposta che l'utente è un volontario
         }
     }, []);
@@ -147,7 +167,7 @@ const CreaAlloggio = () => {
             const token = localStorage.getItem('authToken');
 
             if (!email || !token) {
-                alert("Non sei autenticato. Effettua il login.");
+                toast.error("Non sei autenticato. Effettua il login.");
                 nav('/login');
                 return;
             }
@@ -183,130 +203,134 @@ const CreaAlloggio = () => {
             }
 
             const result = await response.text();
-            alert("Alloggio creato con successo: " + result);
-        } catch (error) {
-            console.error("Errore creazione alloggio: ", error);
-            alert("Errore durante la creazione dell'alloggio: " + error.message);
+           toast.success("Alloggio creato con successo: " + result);
+
+            nav("/area-personale");
+        } catch (errore) {
+            console.error("Errore creazione alloggio: ", errore);
+            toast.error("Errore durante la creazione dell'alloggio: " + errore.message);
         }
     };
 
     return (
-        <form className="formContainer" onSubmit={handleSubmit}>
-            <h2>Crea un nuovo alloggio</h2>
+        <div className= "form-generale">
+            <form className="formContainer" onSubmit={handleSubmit}>
+                <h2>Crea un nuovo alloggio</h2>
 
-            <div className="formField">
-                <input
-                    type="text"
-                    placeholder="Titolo alloggio"
-                    value={titolo}
-                    onChange={aggiornaCampo(setTitolo)}
-                />
-                {errori.titolo && <span className="errore">{errori.titolo}</span>}
-            </div>
+                <div className="formField">
+                    <input
+                        type="text"
+                        placeholder="Titolo alloggio"
+                        value={titolo}
+                        onChange={aggiornaCampo(setTitolo)}
+                    />
+                    {errori.titolo && <span className="errore">{errori.titolo}</span>}
+                </div>
 
-            <div className="formField">
-                <textarea
-                    placeholder="Descrizione"
-                    value={descrizione}
-                    onChange={aggiornaCampo(setDescrizione)}
-                />
-                {errori.descrizione && <span className="errore">{errori.descrizione}</span>}
-            </div>
+                <div className="formField">
+                    <textarea
+                        placeholder="Descrizione"
+                        value={descrizione}
+                        onChange={aggiornaCampo(setDescrizione)}
+                    />
+                    {errori.descrizione && <span className="errore">{errori.descrizione}</span>}
+                </div>
 
-            <div className="formField">
-                <select value={servizi} onChange={aggiornaCampo(setServizi)}>
-                    <option value="" disabled>Seleziona un servizio</option>
-                    {Object.values(Servizi).map((servizio) => (
-                        <option key={servizio} value={servizio}>{servizio}</option>
-                    ))}
-                </select>
-                {errori.servizi && <span className="errore">{errori.servizi}</span>}
-            </div>
+                <div className="formField">
+                    <select value={servizi} onChange={aggiornaCampo(setServizi)}>
+                        <option value="" disabled>Seleziona un servizio</option>
+                        {Object.values(Servizi).map((servizio) => (
+                            <option key={servizio} value={servizio}>{servizio}</option>
+                        ))}
+                    </select>
+                    {errori.servizi && <span className="errore">{errori.servizi}</span>}
+                </div>
 
-            <div className="formField">
-                <input
-                    type="number"
-                    placeholder="Max persone"
-                    value={maxPersone}
-                    onChange={aggiornaCampo(setMaxPersone)}
-                />
-                {errori.maxPersone && <span className="errore">{errori.maxPersone}</span>}
-            </div>
+                <div className="formField">
+                    <input
+                        type="number"
+                        placeholder="Max persone"
+                        value={maxPersone}
+                        onChange={aggiornaCampo(setMaxPersone)}
+                    />
+                    {errori.maxPersone && <span className="errore">{errori.maxPersone}</span>}
+                </div>
 
-            <div className="formField">
-                <input
-                    type="number"
-                    placeholder="Metratura"
-                    value={metratura}
-                    onChange={aggiornaCampo(setMetratura)}
-                />
-                {errori.metratura && <span className="errore">{errori.metratura}</span>}
-            </div>
+                <div className="formField">
+                    <input
+                        type="number"
+                        placeholder="Metratura"
+                        value={metratura}
+                        onChange={aggiornaCampo(setMetratura)}
+                    />
+                    {errori.metratura && <span className="errore">{errori.metratura}</span>}
+                </div>
 
-            <h3>Indirizzo</h3>
+                <h3>Indirizzo</h3>
 
-            <div className="formField">
-                <input
-                    type="text"
-                    placeholder="Via"
-                    value={indirizzo.via}
-                    onChange={aggiornaIndirizzo("via")}
-                />
-                {errori.via && <span className="errore">{errori.via}</span>}
-            </div>
+                <div className="formField">
+                    <input
+                        type="text"
+                        placeholder="Via"
+                        value={indirizzo.via}
+                        onChange={aggiornaIndirizzo("via")}
+                    />
+                    {errori.via && <span className="errore">{errori.via}</span>}
+                </div>
 
-            <div className="formField">
-                <input
-                    type="text"
-                    placeholder="Numero Civico"
-                    value={indirizzo.numCivico}
-                    onChange={aggiornaIndirizzo("numCivico")}
-                />
-                {errori.numCivico && <span className="errore">{errori.numCivico}</span>}
-            </div>
+                <div className="formField">
+                    <input
+                        type="text"
+                        placeholder="Numero Civico"
+                        value={indirizzo.numCivico}
+                        onChange={aggiornaIndirizzo("numCivico")}
+                    />
+                    {errori.numCivico && <span className="errore">{errori.numCivico}</span>}
+                </div>
 
-            <div className="formField">
-                <input
-                    type="text"
-                    placeholder="Città"
-                    value={indirizzo.citta}
-                    onChange={aggiornaIndirizzo("citta")}
-                />
-                {errori.citta && <span className="errore">{errori.citta}</span>}
-            </div>
+                <div className="formField">
+                    <input
+                        type="text"
+                        placeholder="Città"
+                        value={indirizzo.citta}
+                        onChange={aggiornaIndirizzo("citta")}
+                    />
+                    {errori.citta && <span className="errore">{errori.citta}</span>}
+                </div>
 
-            <div className="formField">
-                <input
-                    type="text"
-                    placeholder="CAP"
-                    value={indirizzo.cap}
-                    onChange={aggiornaIndirizzo("cap")}
-                />
-                {errori.cap && <span className="errore">{errori.cap}</span>}
-            </div>
+                <div className="formField">
+                    <input
+                        type="text"
+                        placeholder="CAP"
+                        value={indirizzo.cap}
+                        onChange={aggiornaIndirizzo("cap")}
+                    />
+                    {errori.cap && <span className="errore">{errori.cap}</span>}
+                </div>
 
-            <div className="formField">
-                <input
-                    type="text"
-                    placeholder="Provincia"
-                    value={indirizzo.provincia}
-                    onChange={aggiornaIndirizzo("provincia")}
-                />
-                {errori.provincia && <span className="errore">{errori.provincia}</span>}
-            </div>
+                <div className="formField">
+                    <input
+                        type="text"
+                        placeholder="Provincia"
+                        value={indirizzo.provincia}
+                        onChange={aggiornaIndirizzo("provincia")}
+                    />
+                    {errori.provincia && <span className="errore">{errori.provincia}</span>}
+                </div>
 
-            <div className="formField">
-                <input
-                    type="file"
-                    multiple
-                    accept="image/*"
-                    onChange={aggiornaFotoAlloggio}
-                />
-                {errori.fotos && <span className="errore">{errori.fotos}</span>}
-            </div>
+                <div className="formField">
+                    <input
+                        type="file"
+                        multiple
+                        accept="image/*"
+                        onChange={aggiornaFotoAlloggio}
+                    />
+                    {errori.fotos && <span className="errore">{errori.fotos}</span>}
+                </div>
 
-            <button type="submit">Crea Alloggio</button>
-        </form>
+                <button type="submit" disabled={isDisabled}>Crea Alloggio</button>
+            </form>
+        </div>
     );
 };
 

@@ -1,5 +1,7 @@
 import { useState } from "react";
 import {useNavigate} from "react-router-dom";
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const Tipo = {
     SANITARIA: "SANITARIA",
@@ -89,18 +91,36 @@ const CreaConsulenza = () => {
 
 
     const validaCampi = () => {
-        const nuoviErrori = { numero: "", orariDisponibili: "", cap: "" };
+        const nuoviErrori = {};
         let valido = true;
 
-        //validazione titolo
-        if (titolo.length<=2 && titolo.length<=100) {
-            nuoviErrori.titolo = "Il titolo deve contenere più di due caratteri";
+        // Validazione Titolo
+        if (!titolo || titolo.trim().length < 3 || titolo.trim().length > 100) {
+            nuoviErrori.titolo = "Il titolo deve avere tra 3 e 100 caratteri.";
             valido = false;
         }
 
-        // Validazione numero telefono
+        // Validazione Descrizione
+        if (!descrizione || descrizione.trim().length === 0) {
+            nuoviErrori.descrizione = "La descrizione è obbligatoria.";
+            valido = false;
+        }
+
+        // Validazione Tipo
+        if (!tipo) {
+            nuoviErrori.tipo = "La tipologia è obbligatoria.";
+            valido = false;
+        }
+
+        // Validazione Numero massimo candidature
+        if (maxCandidature < 1 || maxCandidature > 99) {
+            nuoviErrori.maxCandidature = "Il numero massimo di candidature deve essere tra 1 e 99.";
+            valido = false;
+        }
+
+        // Validazione Numero di telefono
         if (numero && !/^((00|\+)39[. ]??)??3\d{2}[. ]??\d{6,7}$/.test(numero)) {
-            nuoviErrori.numero = "Numero di telefono non valido. Deve seguire il formato italiano (+39 o 0039 opzionali).";
+            nuoviErrori.numero = "Numero di telefono non valido. Deve seguire il formato italiano.";
             valido = false;
         }
 
@@ -116,16 +136,25 @@ const CreaConsulenza = () => {
             valido = false;
         }
 
-        // Validazione formato orari disponibili
-        //const orariPattern = /^(\w+\s+\d{2}:\d{2}-\d{2}:\d{2})(,\s*\w+\s+\d{2}:\d{2}-\d{2}:\d{2})*$/;
-        //if (orariDisponibili && !orariPattern.test(orariDisponibili)) {
-        //    nuoviErrori.orariDisponibili = "Formato errato: 'Giorno hh:mm-hh:mm'.";
-        //    valido = false;
-        //}
-
-        // Validazione CAP
-        if (indirizzo.cap && !/^\d{5}$/.test(indirizzo.cap)) {
-            nuoviErrori.cap = "Il CAP deve contenere esattamente 5 cifre.";
+        // Validazione Indirizzo
+        if (!indirizzo.via || !/^[A-zÀ-ù ‘]{2,50}$/.test(indirizzo.via)) {
+            nuoviErrori.via = "La via deve avere tra 2 e 50 caratteri.";
+            valido = false;
+        }
+        if (!indirizzo.numCivico || indirizzo.numCivico > 999) {
+            nuoviErrori.numCivico = "Il numero civico deve essere al massimo 999.";
+            valido = false;
+        }
+        if (!indirizzo.citta || !/^[A-zÀ-ù ‘]{2,50}$/.test(indirizzo.citta)) {
+            nuoviErrori.citta = "La città deve avere tra 2 e 50 caratteri.";
+            valido = false;
+        }
+        if (!indirizzo.provincia || indirizzo.provincia.trim().length !== 2) {
+            nuoviErrori.provincia = "La provincia deve essere di 2 caratteri.";
+            valido = false;
+        }
+        if (!indirizzo.cap || !/^\d{5}$/.test(indirizzo.cap)) {
+            nuoviErrori.cap = "Il CAP deve essere composto da 5 cifre.";
             valido = false;
         }
 
@@ -133,11 +162,9 @@ const CreaConsulenza = () => {
         return valido;
     };
 
-    const handleSubmit = async (event) => {
-        event.preventDefault();
-
+    const handleSubmit = async () => {
         if (!emailUtenteLoggato) {
-            alert("Sessione scaduta. Esegui di nuovo il login.");
+            toast.error("Sessione scaduta. Esegui di nuovo il login.");
             return;
         }
 
@@ -180,7 +207,7 @@ const CreaConsulenza = () => {
             const token = localStorage.getItem("authToken");
             // check su token:
             if (!token) {
-                alert("Non sei autenticato. Effettua il login.");
+                toast.error("Non sei autenticato. Effettua il login.");
                 nav('/login');
                 return;
             }
@@ -188,9 +215,8 @@ const CreaConsulenza = () => {
             const response = await fetch("http://localhost:8080/api/annunci/creaConsulenza", {
                 method: "POST",
                 headers: {
-                    'Authentication': `Bearer ${token}`,
-                    "Content-Type": "application/json",
-                    "Accept": "application/json"
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`,
                 },
                 body: JSON.stringify(consulenzaDTO)
             });
@@ -201,10 +227,10 @@ const CreaConsulenza = () => {
 
             const result = await response.json();
             console.log("Consulenza creata con successo: ", result);
-            alert("Consulenza creata con successo!");
+            toast.info("Consulenza creata con successo!");
         } catch (error) {
             console.error("Errore durante la creazione della consulenza: ", error);
-            alert("Errore durante la creazione della consulenza: " + error.message);
+            toast.error("Errore durante la creazione della consulenza: " + error.message);
         }
     };
 
@@ -243,6 +269,7 @@ const CreaConsulenza = () => {
                     onChange={aggiornaCampo(setDescrizione)}
                     required
                 />
+                {errori.descrizione && <p className="error">{errori.descrizione}</p>}
 
                 <h3>Orari Disponibili</h3>
                 {orariDisponibili.map((orario, index) => (
@@ -308,6 +335,7 @@ const CreaConsulenza = () => {
                         required
                     />
                 </div>
+                {errori.maxCandidature && <p className="error">{errori.maxCandidature}</p>}
 
                 <h3>Indirizzo</h3>
                 <hr/>
@@ -358,6 +386,10 @@ const CreaConsulenza = () => {
                     />
                 </div>
                 {errori.cap && <p className="error">{errori.cap}</p>}
+                {errori.via && <p className="error">{errori.via}</p>}
+                {errori.numCivico && <p className="error">{errori.numCivico}</p>}
+                {errori.citta && <p className="error">{errori.citta}</p>}
+                {errori.provincia && <p className="error">{errori.provincia}</p>}
 
 
                 <button id="creaConsulenzaButton" type="submit" className="formButton">

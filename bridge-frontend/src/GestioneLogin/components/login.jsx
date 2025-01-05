@@ -1,24 +1,31 @@
-import { useState} from "react";
-import {useNavigate} from "react-router";
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router";
 import "../../GestioneLogin/css/loginStyle.css";
 import PropTypes from 'prop-types';
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
-
-const Login = ({ onLogin }) =>  {
+const Login = ({ onLogin }) => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const nav = useNavigate();
 
-    const token = localStorage.getItem('authToken');
-
-
     const aggiornaEmail = (event) => {
         setEmail(event.target.value);
-    }
+    };
 
     const aggiornaPassword = (event) => {
         setPassword(event.target.value);
-    }
+    };
+
+    useEffect(() => {
+        const token = localStorage.getItem('authToken');
+
+        // Controlla se l'utente è autenticato
+        if (token) {
+            nav('/homepage');
+        }
+    }, [nav]);
 
     const handleSubmit = async (event) => {
         event.preventDefault();
@@ -27,7 +34,6 @@ const Login = ({ onLogin }) =>  {
             const response = await fetch('http://localhost:8080/authentication/login', {
                 method: 'POST',
                 headers: {
-                    'Authorization': `Barer ${token}`,
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({
@@ -45,22 +51,22 @@ const Login = ({ onLogin }) =>  {
             localStorage.setItem('email', email);
             localStorage.setItem('ruolo', data.ruolo);
             onLogin(data.token);
-                nav("/");
+            toast.success("Login avvenuto con successo!");
+            nav("/homepage");
         } catch (error) {
-            document.getElementById("spanErrore").style.display = "block";
+            toast.error("Errore durante il login. Controlla i dati inseriti!");
             console.error("Error during login:", error);
         }
-    }
+    };
 
     const sendToRegistrazione = () => {
         nav("/crea-utente");
-    }
-
+    };
 
     return (
         <div className="login-container">
             <h2>Login</h2>
-            <hr/>
+            <hr />
             <div className="formGroup">
                 <label htmlFor="email" className="formLabel">Email</label>
                 <input
@@ -85,14 +91,14 @@ const Login = ({ onLogin }) =>  {
                     required
                 />
             </div>
-            <span className="errore" id="spanErrore">Controlla i dati inseriti</span>
             <button className="formButton" onClick={handleSubmit}>Accedi</button>
             <span onClick={sendToRegistrazione}
                   className="formLink centerFlexItem">Non hai un account? Registrati</span>
+            {/* Toast container */}
+            <ToastContainer />
         </div>
     );
-
-}
+};
 
 Login.propTypes = {
     onLogin: PropTypes.func.isRequired, // Deve essere una funzione e obbligatoria
