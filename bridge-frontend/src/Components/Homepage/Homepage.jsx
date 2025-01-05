@@ -5,6 +5,7 @@ import Footer from "../Footer/Footer.jsx"
 import EventoRetrieveView from "../../GestioneEvento/components/EventoRetrieveView.jsx";
 import {Link, useNavigate} from "react-router-dom";
 import AboutUs from "../AboutUs/AboutUs.jsx";
+import LavoroView from "../../GestioneAnnuncio/components/LavoroRetrieve.jsx";
 
 
 const Homepage = () => {
@@ -14,8 +15,13 @@ const Homepage = () => {
     const [selectedEventId, setSelectedEventId] = useState(null);
     const [isPopupOpen, setIsPopupOpen] = useState(false);
     const [isAboutUsOpen, setIsAboutUsOpen] = useState(false); // Stato per gestire la visibilità del popup About Us
+    const [selectedJobId, setSelectedJobId] = useState(null);
+    const [isJobPopupOpen, setIsJobPopupOpen] = useState(false);
     const nav = useNavigate();
 
+    const handleInfoClick = (titolo) => {
+        nav(`/alloggi/SingoloAlloggio/${titolo}`);
+    };
 
     useEffect(() => {
 
@@ -93,6 +99,19 @@ const Homepage = () => {
         setIsAboutUsOpen((prev) => !prev);
     };
 
+    // Gestisce l'apertura del popup per i lavori
+    const handleOpenJobPopup = (id) => {
+        setSelectedJobId(id);
+        setIsJobPopupOpen(true);
+    };
+
+    // Gestisce la chiusura del popup per i lavori
+    const handleCloseJobPopup = () => {
+        setSelectedJobId(null);
+        setIsJobPopupOpen(false);
+    };
+
+
     return (
         <div className="homepage">
             <section className="welcome-banner">
@@ -127,17 +146,26 @@ const Homepage = () => {
                         </div>
                     </section>
 
-                    <section className="section">
+                    <section className="section lavori">
                         <Link to="/view-lavoro" className="section-title">
                             <h3>Lavori per te</h3>
                         </Link>
                         <div className="scrollable-list">
                             {jobs.map((job, index) => (
                                 <div className="list-item" key={index}>
-                                    <p>{job.nome}</p>
+                                    <p>{job.nomeAzienda}</p>
                                     <p>{job.posizioneLavorativa}</p>
-                                    <p>{job.tipoContratto}</p>
-                                    <div className="list-options">•••</div>
+                                    <p>{job.tipoContratto.replace(/_/g, ' ')}</p>
+                                    <div
+                                        className="list-options"
+                                        onClick={() => {
+                                            console.log(`Cliccato sul lavoro con ID: ${job.id}`);
+                                            handleOpenJobPopup(job.id); // Apri il popup con l'ID del lavoro selezionato
+                                        }}
+                                    >
+                                        •••
+                                    </div>
+
                                 </div>
                             ))}
                         </div>
@@ -146,11 +174,11 @@ const Homepage = () => {
 
                 {/* Colonna destra */}
                 <div className="right-column">
-                    <section className="section">
+                    <section className="section alloggi">
                         <Link to="/mostraAlloggio" className="section-title">
-                            <h3>Alloggi</h3>
+                            <h3>Alloggi aggiunti di recente</h3>
                         </Link>
-                        <div className="scrollable-list">
+                        <div className="accommodations-grid">
                             {accommodations.length > 0 ? (
                                 accommodations.map((accommodation, index) => {
                                     const imageBase64 = accommodation.foto && accommodation.foto[0]
@@ -160,26 +188,22 @@ const Homepage = () => {
                                         : "https://via.placeholder.com/150";
 
                                     return (
-                                        <div className="list-item" key={index}>
+                                        <div
+                                            className="accommodation-item"
+                                            key={index}
+                                            onClick={() => handleInfoClick(accommodation.titolo)}
+                                            style={{cursor: "pointer"}}
+                                        >
                                             <img
                                                 src={imageBase64}
                                                 alt={`Immagine di ${accommodation.descrizione || "Alloggio"}`}
-                                                style={{
-                                                    width: "100px",
-                                                    height: "100px",
-                                                    objectFit: "cover",
-                                                    borderRadius: "8px",
-                                                    marginBottom: "8px",
-                                                }}
                                             />
-                                            <p>{accommodation.descrizione || "Nessuna descrizione"}</p>
                                         </div>
                                     );
                                 })
                             ) : (
-                                <p>Nessun alloggio disponibile al momento.</p>
+                                <p className="no-accommodations">Nessun alloggio disponibile al momento.</p>
                             )}
-
                         </div>
                     </section>
                 </div>
@@ -188,6 +212,11 @@ const Homepage = () => {
             {/* Popup EVENTO dettagliato */}
             {isPopupOpen && selectedEventId && (
                 <EventoRetrieveView id={selectedEventId} onClose={handleClosePopup}/>
+            )}
+
+            {/* Popup LAVORO dettagliato */}
+            {isJobPopupOpen && selectedJobId && (
+                <LavoroView id={selectedJobId} onClose={handleCloseJobPopup}/>
             )}
 
             {/* Popup ABOUT US */}

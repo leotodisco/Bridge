@@ -117,6 +117,51 @@
     box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2); /* Ombra più profonda */
 }
 
+/* Sezione degli alloggi */
+.section.alloggi {
+    display: flex;
+    flex-direction: column;
+    height: 485px; /* Adattamento automatico in base al contenuto */
+    padding: 20px;
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Griglia degli alloggi */
+.accommodations-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr); /* Due colonne */
+    gap: 15px; /* Spazio tra le immagini */
+    margin-top: 15px;
+}
+
+/* Elemento della griglia */
+.accommodation-item {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 1; /* Imposta un rapporto di 1:1 (quadrato) */
+    overflow: hidden; /* Assicurati che l'immagine non esca dal contenitore */
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.accommodation-item img {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Adatta l'immagine senza distorsioni */
+    transform: translate(-50%, -50%); /* Centra l'immagine */
+}
+/* Messaggio quando non ci sono alloggi */
+.no-accommodations {
+    text-align: center;
+    font-size: 1rem;
+    color: #666;
+}
+
 /* Scrollable lista */
 .scrollable-list {
     display: flex;
