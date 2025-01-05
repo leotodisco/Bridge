@@ -426,7 +426,7 @@ public class GestioneAnnuncioLavoroServiceImplTest {
         lavoro.setPosizioneLavorativa("Sviluppatore Software");
         lavoro.setNomeAzienda("Azienda informatica");
         //orario di lavoro nel formato errato
-        lavoro.setOrarioLavoro("09:00-18:00");
+        lavoro.setOrarioLavoro("09:-- --:00");
 
         lavoro.setTitolo("Cercasi Sviluppatore Software");
         lavoro.setDisponibilita(true);
