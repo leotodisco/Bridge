@@ -28,7 +28,7 @@ import "./GestioneChatbot/css/Chatbot.css"
 import {FaRobot} from "react-icons/fa";
 import { ToastContainer } from 'react-toastify';
 import CorsiUtente from "./GestioneUtente/components/dashboardCorso.jsx";
-import IntroPage from "./Components/Homepage/introPage.jsx";
+import IntroPage from "./Components/Homepage/IntroPage.jsx";
 
 function App() {
     const [isAuthenticated, setIsAuthenticated] = useState(false);

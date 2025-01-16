@@ -1,0 +1,46 @@
+services:
+  mysql-docker:
+    image: mysql:5.7
+    restart: unless-stopped
+    container_name: mysql-docker
+    environment:
+      MYSQL_ROOT_PASSWORD: guardian
+      MYSQL_PASSWORD: guardian
+      MYSQL_DATABASE: bridge
+    ports:
+      - "3308:3306"  # Mappa la porta 3308 sulla macchina locale alla porta 3306 del container
+    networks:
+      - shared-network
+    volumes:
+      - mysql-data:/var/lib/mysql
+
+  backend:
+    image: guardianmont/bridge-backend:latest
+    container_name: backend-1
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql-docker:3306/bridge?createDatabaseIfNotExist=true
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: guardian
+    ports:
+      - "8080:8080"
+    depends_on:
+      - mysql-docker
+    networks:
+      - shared-network
+
+  frontend:
+    image: guardianmont/bridge-frontend:latest
+    container_name: frontend-1
+    ports:
+      - "5174:5174"
+    networks:
+      - shared-network
+
+
+
+networks:
+  shared-network:
+    driver: bridge
+
+volumes:
+  mysql-data:
