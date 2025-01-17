@@ -48,3 +48,43 @@ La seguente repository contiene tutti gli artefatti relativi al progetto combina
 - **Mario Zurolo**  - *Sviluppatore*      - [Github](https://github.com/MarioZurolo)
   
 - **Vito Vernellati**  - *Sviluppatore*      - [Github](https://github.com/Vito-03)
+
+
+---
+
+## Guida all'installazione di Bridge
+
+### Prerequisiti
+Per eseguire il progetto sono necessari:
+- **Docker**
+- **Docker Compose**
+
+### Installazione
+1. Clona il repository:
+   ```bash
+   git clone https://github.com/<tuo-username>/<nome-repository>.git
+   cd <nome-repository>
+   
+2. Avvia i servizi con Docker Compose:
+    ```bash
+   git clone https://github.com/<tuo-username>/<nome-repository>.git
+   cd <nome-repository>
+
+3. Accedi alle interfacce
+- **Frontend**: [http://localhost:5174](http://localhost:5174)
+- **Backend API**: [http://localhost:8080](http://localhost:8080)
+- **MySQL**: Usa un client MySQL e connettiti con le seguenti credenziali:
+    - **Host**: `localhost`
+    - **Porta**: `3308`
+    - **Utente**: `root`
+    - **Password**: `guardian`
+    - **Database**: `bridge`
+
+### Comandi utili
+- **Per fermare i container:
+    ```bash
+   docker-compose down
+
+- **Per fermare e rimuovere i volumi (attenzione: i dati saranno persi):
+    ```bash
+   docker-compose down -v
