@@ -1,0 +1,95 @@
+<mxfile host="app.diagrams.net" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36" version="26.0.4">
+  <diagram name="Pagina-1" id="DehigGwKZMRwZZSncwXY">
+    <mxGraphModel grid="1" page="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="r7w-Z8Pqdnhfb6ZyPYdG-8" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="AgiAoZI2gG5sLD2JsjZj-1" target="D2z74ii9eQMLdaZzBzBn-1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="AgiAoZI2gG5sLD2JsjZj-1" value="" style="ellipse;html=1;shape=startState;fillColor=#000000;strokeColor=#ff0000;" vertex="1" parent="1">
+          <mxGeometry x="130" y="60" width="30" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="AgiAoZI2gG5sLD2JsjZj-5" value="volontario/figura specializzata crea un nuovo annuncio" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="140" y="110" width="130" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="r7w-Z8Pqdnhfb6ZyPYdG-9" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="D2z74ii9eQMLdaZzBzBn-1" target="MM1a7asqePDvJaksuXe2-2">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="145" y="250" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="D2z74ii9eQMLdaZzBzBn-1" value="Creato" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="85" y="160" width="120" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="r7w-Z8Pqdnhfb6ZyPYdG-5" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=1;entryDx=0;entryDy=0;" edge="1" parent="1" source="MM1a7asqePDvJaksuXe2-2" target="r7w-Z8Pqdnhfb6ZyPYdG-4">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="MM1a7asqePDvJaksuXe2-2" value="Pubblicato" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="380" y="230" width="120" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="r7w-Z8Pqdnhfb6ZyPYdG-2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="MM1a7asqePDvJaksuXe2-5" target="MM1a7asqePDvJaksuXe2-2">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="550" y="380" />
+              <mxPoint x="550" y="250" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="MM1a7asqePDvJaksuXe2-5" value="Modificato" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="380" y="360" width="120" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="MM1a7asqePDvJaksuXe2-6" value="" style="endArrow=classic;html=1;rounded=0;fontSize=12;startSize=8;endSize=8;curved=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;exitX=0.5;exitY=1;exitDx=0;exitDy=0;" edge="1" parent="1" source="MM1a7asqePDvJaksuXe2-2" target="MM1a7asqePDvJaksuXe2-5">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="430" y="310" as="sourcePoint" />
+            <mxPoint x="440" y="240" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="MM1a7asqePDvJaksuXe2-8" value="Eliminato" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="670" y="140" width="70" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="MM1a7asqePDvJaksuXe2-9" value="" style="endArrow=classic;html=1;rounded=0;fontSize=12;startSize=8;endSize=8;entryX=0;entryY=0.5;entryDx=0;entryDy=0;exitX=0.5;exitY=0;exitDx=0;exitDy=0;edgeStyle=orthogonalEdgeStyle;" edge="1" parent="1" source="MM1a7asqePDvJaksuXe2-2" target="MM1a7asqePDvJaksuXe2-8">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="520" y="270" as="sourcePoint" />
+            <mxPoint x="570" y="220" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="480" y="230" />
+              <mxPoint x="480" y="160" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="MM1a7asqePDvJaksuXe2-10" value="" style="ellipse;html=1;shape=endState;fillColor=#000000;strokeColor=#ff0000;" vertex="1" parent="1">
+          <mxGeometry x="790" y="145" width="30" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="MM1a7asqePDvJaksuXe2-11" value="" style="endArrow=classic;html=1;rounded=0;fontSize=12;startSize=8;endSize=8;curved=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;exitX=1;exitY=0.5;exitDx=0;exitDy=0;" edge="1" parent="1" source="MM1a7asqePDvJaksuXe2-8" target="MM1a7asqePDvJaksuXe2-10">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="630" y="160" as="sourcePoint" />
+            <mxPoint x="600" y="220" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="hxqtjFuVHppDBqRU-uFY-1" value="&lt;font style=&quot;font-size: 12px;&quot;&gt;Pubblicazione nella sezione annunci&lt;/font&gt;" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=16;" vertex="1" parent="1">
+          <mxGeometry x="150" y="230" width="215" height="10" as="geometry" />
+        </mxCell>
+        <mxCell id="hxqtjFuVHppDBqRU-uFY-2" value="&lt;font style=&quot;font-size: 13px;&quot;&gt;Annuncio non più necessario&lt;/font&gt;" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=16;" vertex="1" parent="1">
+          <mxGeometry x="480" y="130" width="180" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="hxqtjFuVHppDBqRU-uFY-3" value="&lt;font style=&quot;font-size: 13px;&quot;&gt;Annuncio da&amp;nbsp;&lt;/font&gt;&lt;div&gt;&lt;font style=&quot;font-size: 13px;&quot;&gt;modificare&lt;/font&gt;&lt;/div&gt;" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=16;" vertex="1" parent="1">
+          <mxGeometry x="340" y="290" width="95" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="r7w-Z8Pqdnhfb6ZyPYdG-3" value="&lt;span style=&quot;font-size: 13px;&quot;&gt;aggiorna&lt;/span&gt;&lt;div&gt;&lt;span style=&quot;font-size: 13px;&quot;&gt;campi&lt;/span&gt;&lt;/div&gt;" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=16;" vertex="1" parent="1">
+          <mxGeometry x="550" y="290" width="65" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="r7w-Z8Pqdnhfb6ZyPYdG-4" value="Manifestazione Interesse" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="380" y="60" width="120" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="r7w-Z8Pqdnhfb6ZyPYdG-6" value="&lt;span style=&quot;font-size: 13px;&quot;&gt;il rifugiato decide di candidarsi per l&#39;annuncio&lt;/span&gt;" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=16;" vertex="1" parent="1">
+          <mxGeometry x="347" y="140" width="95" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="r7w-Z8Pqdnhfb6ZyPYdG-7" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;" edge="1" parent="1" source="r7w-Z8Pqdnhfb6ZyPYdG-6" target="r7w-Z8Pqdnhfb6ZyPYdG-6">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
