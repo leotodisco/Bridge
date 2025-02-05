@@ -1,5 +1,9 @@
 package com.project.bridgebackend.Model.Entity;
 
+
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.project.bridgebackend.Model.Entity.enumeration.Gender;
 import com.project.bridgebackend.Model.Entity.enumeration.Ruolo;
 import com.project.bridgebackend.Model.Entity.enumeration.TitoloDiStudio;
@@ -15,10 +19,16 @@ import lombok.Data;
 import lombok.ToString;
 import lombok.experimental.SuperBuilder;
 import jakarta.validation.constraints.Pattern;
+import org.postgresql.util.PGobject;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.hibernate.annotations.ColumnTransformer;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
 
+import java.sql.SQLException;
+import java.util.Arrays;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.Collection;
@@ -144,6 +154,37 @@ public class Utente implements Serializable, UserDetails {
             message = "regexp per le lingue parlate non rispettate")
     private String lingueParlate;
 
+
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    @Column(name = "embeddingsJson", columnDefinition = "LONGTEXT")
+    private String embeddingsJson;
+
+    public void setEmbeddings(float[] values) {
+        try {
+            ObjectMapper objectMapper = new ObjectMapper();
+            String json = objectMapper.writeValueAsString(values);
+            System.out.println("🔍 Lunghezza JSON embeddings: " + json.length()); // Debug
+            System.out.println("🔍 JSON embeddings: " + json); // Debug
+            this.embeddingsJson = json;
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException("Errore nella serializzazione degli embeddings", e);
+        }
+    }
+
+
+    public float[] getEmbeddings() {
+        try {
+            if (this.embeddingsJson == null || this.embeddingsJson.isEmpty()) {
+                return new float[0]; // Restituisce un array vuoto se non ci sono embeddings
+            }
+            System.out.println("🔍 JSON embeddings recuperato: " + this.embeddingsJson); // Debug
+            ObjectMapper objectMapper = new ObjectMapper();
+            return objectMapper.readValue(this.embeddingsJson, float[].class);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException("Errore nella deserializzazione degli embeddings", e);
+        }
+    }
+
     /**
      * Costruttore vuoto per utente.
      * */
@@ -189,9 +230,36 @@ public class Utente implements Serializable, UserDetails {
         this.gender = gender;
         this.nazionalita = nazionalita;
         this.password = password;
-
+        this.embeddingsJson = null;
     }
 
+    public Utente(final String email,
+                  final String nome,
+                  final String cognome,
+                  final String lingueParlate,
+                  final String fotoProfilo,
+                  final String skill,
+                  final LocalDate dataNascita,
+                  final TitoloDiStudio titoloDiStudio,
+                  final Ruolo role,
+                  final Gender gender,
+                  final String nazionalita,
+                  final String password,
+                  final String embedding) {
+        this.email = email;
+        this.nome = nome;
+        this.cognome = cognome;
+        this.lingueParlate = lingueParlate;
+        this.fotoProfilo = fotoProfilo;
+        this.skill = skill;
+        this.dataNascita = dataNascita;
+        this.titoloDiStudio = titoloDiStudio;
+        this.role = role;
+        this.gender = gender;
+        this.nazionalita = nazionalita;
+        this.password = password;
+        this.embeddingsJson = embedding;
+    }
     /**
      * Metodo che ritorna una lista di ruoli.
      */

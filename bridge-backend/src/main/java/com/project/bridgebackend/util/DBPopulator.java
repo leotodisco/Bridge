@@ -3,6 +3,7 @@ package com.project.bridgebackend.util;
 import com.project.bridgebackend.Model.Entity.*;
 import com.project.bridgebackend.Model.Entity.enumeration.*;
 import com.project.bridgebackend.Model.dao.*;
+import com.project.bridgebackend.ModuloFiaUtil.CSVImportService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
@@ -26,6 +27,9 @@ import java.util.Map;
 @Component
 @Scope("singleton")
 public class DBPopulator {
+
+    @Autowired
+    private CSVImportService csvImportService;
 
     @Autowired
     private RifugiatoDAO rifugiatoDAO;
@@ -525,7 +529,7 @@ public class DBPopulator {
             }
         });
 
-//        // Salvataggio dei lavori nel database
+        // Salvataggio dei lavori nel database
         List.of(lavoro1, lavoro2, lavoro3, lavoro4).forEach(lavoro -> {
             try {
                 lavoroDAO.save(lavoro);
@@ -533,5 +537,10 @@ public class DBPopulator {
                 throw new RuntimeException("Errore durante la registrazione del lavoro: " + lavoro.getPosizioneLavorativa(), e);
             }
         });
+
+        //modulo fia
+        //aggiunge 50 rifugiati per aumentare il db
+        csvImportService.importCSV("bridge-backend/src/main/java/com/project/bridgebackend/ModuloFia/rifugiati_with_embeddings.csv");
+
     }
 }

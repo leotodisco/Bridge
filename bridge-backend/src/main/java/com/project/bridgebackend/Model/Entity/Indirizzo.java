@@ -11,6 +11,7 @@ import lombok.Data;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.Objects;
 
 /**
@@ -77,6 +78,18 @@ public final class Indirizzo implements Serializable {
     @Column(name = "via")
     private String via;
 
+
+    /**
+     * modulo fia
+     * latitudine e longitudine per semplificare i calcoli
+     */
+    @NotNull
+    @Column(name = "latitudine")
+    private Double latitudine;
+
+    @NotNull
+    @Column(name = "longitudine")
+    private Double longitudine;
     /**
      * Costruttore vuoto.
      */
@@ -103,6 +116,27 @@ public final class Indirizzo implements Serializable {
         this.cap = cap;
         this.provincia = provincia;
         this.via = via;
+        this.latitudine = (double) 0;
+        this.longitudine = (double) 0;
+    }
+
+    /**
+     * Costruttore con parametri. + latitudine e longitudine
+     */
+    public Indirizzo(final String citta,
+                     final int numCivico,
+                     final String cap,
+                     final String provincia,
+                     final String via,
+                     final double latitudine,
+                     final double longitudine) {
+        this.citta = citta;
+        this.numCivico = numCivico;
+        this.cap = cap;
+        this.provincia = provincia;
+        this.via = via;
+        this.latitudine = latitudine;
+        this.longitudine = longitudine;
     }
 
     /**
@@ -132,11 +166,6 @@ public final class Indirizzo implements Serializable {
      */
     @Override
     public int hashCode() {
-        return Objects.hash(id,
-                getCitta(),
-                getNumCivico(),
-                getCap(),
-                getProvincia(),
-                getVia());
+        return Objects.hash(id, getCitta(), getNumCivico(), getCap(), getProvincia(), getVia());
     }
 }
