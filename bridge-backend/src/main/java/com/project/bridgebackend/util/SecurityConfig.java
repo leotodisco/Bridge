@@ -132,7 +132,7 @@ public class SecurityConfig {
                 "/alloggi/mostra",
                 "/alloggi/preferiti",
                 "/alloggi/isFavorito",
-                "alloggi/assegnazione",
+                "/alloggi/assegnazione",
                 "/alloggi/SingoloAlloggio/{titolo}",
                 "/alloggi/interesse",
                 "/alloggi/random",
@@ -144,7 +144,11 @@ public class SecurityConfig {
                 "/areaPersonale/DatiFotoUtente/{email}",
                 "/areaPersonale/modificaUtente/{email}",
                 "/areaPersonale/modificaPassword/{email}",
-                "/areaPersonale/modificaFotoUtente/{email}"
+                "/areaPersonale/modificaFotoUtente/{email}",
+
+                //FIA
+                "/receive_data_from_python",
+                "/sendToPython"
         };
     }
 
@@ -160,8 +164,7 @@ public class SecurityConfig {
         configuration.setAllowedOrigins(List.of(
                 "http://localhost:5174",
                 "http://localhost:5173",
-                "http://localhost:8080",
-                "https://your-production-domain.com"
+                "http://localhost:8080"
         ));
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"));
         configuration.setAllowedHeaders(List.of("Authorization", "Content-Type"));
