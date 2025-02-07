@@ -212,8 +212,15 @@ public class DBPopulator {
         Indirizzo indirizzo6 = new Indirizzo("Lombardia", 12, "20121", "MI", "Via Roma");
         Indirizzo indirizzo7 = new Indirizzo("Piemonte", 5, "10122", "TO", "Via Garibaldi");
         Indirizzo indirizzo8 = new Indirizzo("Toscana", 20, "50123", "FI", "Via Dante");
-        indirizzoDAO.saveAll(List.of(indirizzo1, indirizzo2, indirizzo3, indirizzo4, indirizzo5, indirizzo6, indirizzo7, indirizzo8));
 
+
+        List.of(indirizzo1, indirizzo2, indirizzo3, indirizzo4, indirizzo5, indirizzo6, indirizzo7, indirizzo8).forEach(indirizzo ->{
+            try{
+                indirizzoDAO.save(indirizzo);
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        });
 
         Evento evento1 = new Evento();
         evento1.setNome("Evento di Benvenuto");
@@ -392,7 +399,7 @@ public class DBPopulator {
         consulenza4.setProprietario(figura1);// Proprietario
         consulenza4.setTipologia(true); // Tipologia
 
-//     Creazione di quattro lavori
+        //Creazione di quattro lavori
         Lavoro lavoro1 = new Lavoro();
         lavoro1.setTitolo("Sviluppatore Java");
         lavoro1.setDisponibilita(true);
@@ -540,7 +547,13 @@ public class DBPopulator {
 
         //modulo fia
         //aggiunge 50 rifugiati per aumentare il db
-        csvImportService.importCSV("bridge-backend/src/main/java/com/project/bridgebackend/ModuloFia/rifugiati_with_embeddings.csv");
+        csvImportService.importCSV("bridge-backend/src/main/java/com/project/bridgebackend/ModuloFiaUtil/rifugiati_with_embeddings.csv");
+
+        //aggiunge 250 indirizzi
+        csvImportService.importCSVIndirizzi("bridge-backend/src/main/java/com/project/bridgebackend/ModuloFiaUtil/Indirizzi.csv");
+
+        //aggiungiamo 250 annunci di lavor
+        csvImportService.importCSVLavori("bridge-backend/src/main/java/com/project/bridgebackend/ModuloFiaUtil/annunci_lav.csv");
 
     }
 }

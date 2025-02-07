@@ -1,0 +1,246 @@
+citta;provincia;via;numero_civico;cap;latitudine;longitudine
+Roma; RM; Via del Corso;123;186;41.90528;12.47868
+Firenze; FI; Piazza della Signoria;45;50122;43.76978;11.2563
+Milano; MI; Via Dante;78;20121;45.46754;9.18333
+Napoli; NA; Via Toledo;56;80134;40.8456;14.24932
+Bologna; BO; Via Rizzoli;99;40125;44.49457;11.34535
+Torino; TO; Corso Vittorio Emanuele II;34;10123;45.06089;7.68491
+Genova; GE; Via Garibaldi;12;16124;44.41124;8.93238
+Venezia; VE; Piazza San Marco;5;30124;45.43384;12.33933
+Verona; VR; Piazza Bra;18;37121;45.43853;10.99199
+Palermo; PA; Via Maqueda;25;90133;38.11089;13.36469
+Milano; MI; Via Roma;10;20121;45.54392;9.11578
+Roma; RM; Piazza Venezia;25;186;41.89606;12.4829
+Napoli; NA; Via Partenope;12;80121;40.83102;14.24441
+Firenze; FI; Via de' Tornabuoni;18;50123;43.77038;11.25144
+Torino; TO; Corso Francia;45;10139;45.07584;7.65758
+Bologna; BO; Via Indipendenza;30;40121;44.49819;11.34333
+Palermo; PA; Via Libertà;50;90143;38.13437;13.34934
+Verona; VR; Via Mazzini;15;37121;45.44165;10.99665
+Roma; RM; Via della Condotta;21;186;41.90508;12.48039
+Venezia; VE; Calle Larga;10;30124;45.43463;12.34959
+Milano; MI; Via Ripamonti;23;20141;45.44797;9.1977
+Roma; RM; Via Appia Nuova;56;179;41.88428;12.51082
+Bologna; BO; Via Stalingrado;45;40128;44.51393;11.35935
+Torino; TO; Corso Giulio Cesare;78;10155;45.08934;7.69203
+Firenze; FI; Via Pisana;12;50143;43.7707;11.23939
+Napoli; NA; Via Marina;67;80133;40.84529;14.26068
+Verona; VR; Via Albere;23;37138;45.43201;10.9759
+Genova; GE; Via Gramsci;15;16126;44.4137;8.92592
+Palermo; PA; Via Messina Marine;34;90123;38.10748;13.38219
+Venezia; VE; Via della Libertà;22;30175;45.46595;12.2744
+Bologna; BO; Via Emilia;123;40138;44.51856;11.27305
+Firenze; FI; Via del Campo;45;50123;43.77959;11.27636
+Torino; TO; Strada della Pellerina;78;10146;45.09227;7.61979
+Verona; VR; Via Agraria;33;37138;45.50247;11.01319
+Perugia; PG; Viale del Vino;12;6132;43.05016;12.3848
+Roma; RM; Via Campagna;56;138;41.92007;12.57365
+Napoli; NA; Contrada Animali;34;80131;40.83921;14.24623
+Palermo; PA; Via Oliveti;22;90134;38.14214;13.32872
+Milano; MI; Via Fiori;11;20139;45.49573;9.15428
+Genova; GE; Contrada Verde;5;16132;44.40616;8.94773
+Roma; RM; Via del Sole;45;142;41.73839;12.27754
+Milano; MI; Via della Salute;10;20135;45.46796;9.18178
+Torino; TO; Corso Genova;23;10129;45.03951;7.6722
+Napoli; NA; Via dei Fiori;12;80126;40.86112;14.17952
+Firenze; FI; Via Pulita;56;50129;43.78237;11.25501
+Bologna; BO; Via della Scuola;78;40125;44.5176;11.27881
+Verona; VR; Via Inclusiva;33;37122;45.43831;10.99171
+Genova; GE; Via Multicultura;11;16128;44.40167;8.93396
+Palermo; PA; Via della Cucina;15;90131;38.08859;13.3151
+Venezia; VE; Via Pulizia;5;30172;45.48217;12.24261
+Roma; RM; Via del Commercio;23;154;41.87158;12.47538
+Milano; MI; Via delle Spese;45;20122;45.46257;9.19842
+Torino; TO; Corso Fresco;78;10138;45.06898;7.65603
+Firenze; FI; Piazza Manager;12;50123;43.75355;11.23279
+Bologna; BO; Via Digitale;67;40125;44.49007;11.35394
+Napoli; NA; Via Estetica;34;80133;40.84014;14.25227
+Verona; VR; Via Notturna;22;37122;45.43831;10.99171
+Genova; GE; Via Bellezza;15;16121;44.40576;8.94041
+Palermo; PA; Via Online;56;90131;38.19942;13.31555
+Venezia; VE; Campo Mercato;3;30122;45.47541;12.2252
+Roma; RM; Via Turismo;23;187;41.83708;12.46702
+Firenze; FI; Via Arte;45;50123;43.77078;11.2547
+Milano; MI; Via Accoglienza;12;20121;45.49243;9.23677
+Napoli; NA; Via Divertimento;34;80132;40.83626;14.24545
+Venezia; VE; Via Pulita;67;30121;45.38661;12.07597
+Bologna; BO; Via Feste;89;40125;44.49007;11.35394
+Verona; VR; Via Relax;21;37121;45.44915;10.99828
+Torino; TO; Corso Viaggi;33;10121;45.06777;7.67355
+Palermo; PA; Via Sapori;56;90139;38.1271;13.35812
+Genova; GE; Via Notte;11;16128;44.4072;8.92625
+Roma; RM; Via Digitale;12;199;41.90325;12.49563
+Milano; MI; Via Codice;45;20122;45.46781;9.20536
+Torino; TO; Corso Sistema;33;10121;45.05976;7.66265
+Firenze; FI; Via Creativa;78;50123;43.77159;11.24701
+Napoli; NA; Via Connessa;56;80132;40.83626;14.24545
+Bologna; BO; Via Codici;22;40125;44.49007;11.35394
+Verona; VR; Via Circuito;11;37121;45.44163;10.99597
+Palermo; PA; Via Colori;34;90139;38.11788;13.33346
+Genova; GE; Via Dati;67;16128;44.40371;8.93697
+Venezia; VE; Via Social;15;30121;45.4441;12.38098
+Milano; MI; Via Sartoria;12;20122;45.46207;9.19105
+Torino; TO; Via Legno;45;10121;45.06777;7.67355
+Firenze; FI; Via Tessile;78;50123;43.77024;11.25248
+Napoli; NA; Via Industria;34;80133;40.8527;14.30649
+Roma; RM; Via Riparazione;22;199;41.87094;12.44725
+Bologna; BO; Via Scarpe;11;40125;44.49513;11.34278
+Verona; VR; Via Metallica;67;37121;45.44163;10.99597
+Genova; GE; Via Restauro;33;16128;44.41332;8.92685
+Palermo; PA; Via Arte;56;90139;38.12842;13.35562
+Venezia; VE; Via Oro;15;30121;45.4441;12.38098
+Milano; MI; Via Ufficio;12;20122;45.46183;9.19239
+Roma; RM; Via Salute;45;199;41.75744;12.22785
+Napoli; NA; Via Contabilità;33;80133;40.85339;14.22102
+Torino; TO; Via Digitale;67;10121;45.21367;7.73114
+Firenze; FI; Via Supporto;89;50123;43.77425;11.24721
+Bologna; BO; Via Telefono;22;40125;44.49007;11.35394
+Genova; GE; Via Reception;11;16128;44.40167;8.93396
+Verona; VR; Via Documenti;15;37121;45.44163;10.99597
+Palermo; PA; Via Pratiche;56;90139;38.1271;13.35812
+Venezia; VE; Via Legale;78;30121;45.4441;12.38098
+Milano; MI; Via Cottura;12;20122;45.46257;9.19842
+Roma; RM; Via Sapori;45;199;41.81085;12.48426
+Napoli; NA; Via Accoglienza;33;80133;40.84611;14.26153
+Torino; TO; Corso Cocktail;67;10121;45.06777;7.67355
+Firenze; FI; Piazza Vino;78;50123;43.77683;11.254
+Bologna; BO; Via Dolci;22;40125;44.50143;11.33232
+Verona; VR; Via Strada;11;37121;45.34061;11.2404
+Palermo; PA; Via Eventi;56;90139;38.1271;13.35812
+Genova; GE; Via Stagioni;15;16128;44.41459;8.94887
+Venezia; VE; Via Forno;78;30121;45.4441;12.38098
+Milano; MI; Via Colore;12;20122;45.45573;9.19284
+Roma; RM; Via Pavimenti;45;199;41.86899;12.6694
+Napoli; NA; Via Infissi;33;80133;40.87369;14.20873
+Torino; TO; Via Progetti;67;10121;45.07029;7.66873
+Roma; RM; Via del Tritone;45;187;41.90239;12.48348
+Bologna; BO; Via Macchine;22;40125;44.27995;11.03933
+Verona; VR; Via Costruzioni;11;37121;45.44435;10.99018
+Genova; GE; Via Cantieri;15;16128;44.42824;8.74674
+Palermo; PA; Via Acqua;56;90139;38.11377;13.36634
+Venezia; VE; Via Restauri;78;30121;45.44208;12.3324
+Milano; MI; Via Magazzino;12;20122;45.46257;9.19842
+Roma; RM; Via Consegne;45;199;42.0396;12.30755
+Napoli; NA; Via Trasporti;33;80133;40.83263;14.25013
+Torino; TO; Via Logistica;67;10121;45.06777;7.67355
+Firenze; FI; Via Muletti;78;50123;43.77425;11.24721
+Bologna; BO; Via Freschi;22;40125;44.51065;11.48235
+Verona; VR; Via Turismo;11;37121;45.43883;10.99232
+Genova; GE; Via Merci;15;16128;44.4776;9.10188
+Palermo; PA; Via Flotta;56;90139;38.11197;13.35061
+Venezia; VE; Via Ricevimento;78;30121;45.58841;12.85231
+Milano; MI; Via Verde;12;20122;45.50396;9.17954
+Roma; RM; Via Campi;45;199;41.87709;12.57792
+Napoli; NA; Via Idroponica;33;80133;40.84014;14.25227
+Firenze; FI; Via Bio;67;50123;43.77425;11.24721
+Torino; TO; Via Paesaggi;78;10121;45.06491;7.69233
+Verona; VR; Via Irrigazione;22;37121;45.48016;10.90772
+Palermo; PA; Via Frutteti;11;90139;38.1271;13.35812
+Genova; GE; Via Api;15;16128;44.40167;8.93396
+Bologna; BO; Via Vino;56;40125;44.51154;11.45906
+Venezia; VE; Via Allevamenti;78;30121;45.4441;12.38098
+Milano; MI; Via Comunità;12;20122;45.50334;9.20942
+Roma; RM; Via Anziani;45;199;41.75884;12.26779
+Napoli; NA; Via Inclusione;33;80133;40.84014;14.25227
+Torino; TO; Via Inclusiva;67;10121;45.06777;7.67355
+Firenze; FI; Via Cura;78;50123;43.77425;11.24721
+Bologna; BO; Via Salute;22;40125;44.52798;11.27512
+Verona; VR; Via Scuola;11;37121;45.44123;10.99619
+Genova; GE; Via Mediazione;15;16128;44.40353;8.94965
+Palermo; PA; Via Migranti;56;90139;37.81583;14.1486
+Venezia; VE; Via Lavoro;78;30121;45.39603;11.99443
+Milano; MI; Via Verde;10;20122;45.504;9.17961
+Roma; RM; Piazza Mercato;45;199;41.80886;12.68132
+Napoli; NA; Via Gestione;33;80133;40.83022;14.24693
+Torino; TO; Corso Tecnologia;67;10121;45.06495;7.67356
+Firenze; FI; Piazza Cibo;78;50123;43.77789;11.24929
+Bologna; BO; Via Vendite;22;40125;44.49007;11.35394
+Verona; VR; Via Riciclo;11;37121;45.44163;10.99597
+Genova; GE; Via Scaffali;15;16128;44.40167;8.93396
+Palermo; PA; Via Freschezza;56;90139;38.1271;13.35812
+Venezia; VE; Via Artigianato;78;30121;45.75462;12.81457
+Milano; MI; Via Viaggi;12;20122;45.46257;9.19842
+Roma; RM; Via Accoglienza;45;199;41.79281;12.40851
+Napoli; NA; Via Cucina;33;80133;40.84192;14.25566
+Firenze; FI; Via Natura;67;50123;43.77425;11.24721
+Torino; TO; Via Servizio;78;10121;45.06755;7.66913
+Verona; VR; Via Divertimento;22;37121;45.44163;10.99597
+Genova; GE; Via Mare;15;16128;44.38563;9.01151
+Bologna; BO; Via Clienti;56;40125;44.49007;11.35394
+Palermo; PA; Via Lusso;78;90139;38.09894;13.32227
+Venezia; VE; Via Manutenzione;11;30121;45.50328;12.21064
+Milano; MI; Via Tecnologia;12;20122;45.54785;8.85246
+Roma; RM; Via Server;45;199;0.0;0.0
+Torino; TO; Via Disegni;33;10121;45.06907;7.66947
+Napoli; NA; Via Mobile;67;80133;40.84014;14.25227
+Firenze; FI; Via Sicurezza;78;50123;43.77061;11.26312
+Bologna; BO; Via Web;22;40125;44.49007;11.35394
+Verona; VR; Via Software;11;37121;45.43908;11.02544
+Genova; GE; Via Stampa;15;16128;44.40781;8.92888
+Palermo; PA; Via Dati;56;90139;38.08505;13.43285
+Venezia; VE; Via Motori;78;30121;45.4441;12.38098
+Milano; MI; Via Ceramica;12;20122;45.46691;9.19957
+Roma; RM; Via Sartoria;45;199;41.90408;12.39488
+Napoli; NA; Via Manutenzione;33;80133;40.84014;14.25227
+Firenze; FI; Via Legno;67;50123;43.77425;11.24721
+Torino; TO; Via Vernici;78;10121;45.06777;7.67355
+Roma; RM; Viale del Campo Sportivo;15;100;41.87493;12.47863
+Genova; GE; Via Pelle;15;16128;44.40167;8.93396
+Bologna; BO; Via Metalli;56;40125;44.49007;11.35394
+Palermo; PA; Via Restauro;78;90139;38.1271;13.35812
+Venezia; VE; Via Alimentare;11;30121;45.4441;12.38098
+Milano; MI; Via Uffici;12;20122;45.46183;9.19239
+Roma; RM; Via Solidarietà;45;199;42.07391;11.81603
+Napoli; NA; Via Risorse;33;80133;40.84014;14.25227
+Firenze; FI; Via Famiglia;67;50123;43.80686;11.22081
+Torino; TO; Corso Salute;78;10121;45.0987;7.68067
+Verona; VR; Via Contabilità;22;37121;45.44163;10.99597
+Genova; GE; Via Legale;15;16128;44.40167;8.93396
+Bologna; BO; Via Cultura;56;40125;44.43554;11.65452
+Palermo; PA; Via Progetti;78;90139;38.12974;13.35984
+Venezia; VE; Via Startup;11;30121;45.49895;12.62587
+Milano; MI; Via Monte Rosa;15;20149;45.4719;9.15311
+Milano; MI; Corso Garibaldi;23;20121;45.47304;9.18365
+Roma; RM; Via Nazionale;45;184;41.90008;12.49243
+Milano; MI; Via Torino;67;20123;45.46052;9.18251
+Milano; MI; Via Monte Napoleone;12;20121;45.4685;9.19502
+Bologna; BO; Via Indipendenza;15;40121;44.49669;11.34319
+Napoli; NA; Via Toledo;90;80134;40.83752;14.2482
+Torino; TO; Corso Vittorio Emanuele II;30;10121;45.06065;7.68561
+Bologna; BO; Via Santo Stefano;120;40125;44.48638;11.35405
+Milano; MI; Corso Buenos Aires;120;20127;45.48203;9.2128
+Roma; RM; Via del Babuino;50;187;41.90855;12.47892
+Torino; TO; Corso Vittorio Emanuele II;101;10123;45.06666;7.6673
+Roma; RM; Via del Tritone;56;187;41.90253;12.484
+Torino; TO; Corso Giulio Cesare;70;10154;45.08881;7.69169
+Roma; RM; Via Appia Nuova;89;183;41.88378;12.51207
+Napoli; NA; Via Chiaia;58;80121;40.8363;14.2461
+Napoli; NA; Via Toledo;115;80134;40.83753;14.2482
+Napoli; NA; Via Toledo;56;80134;40.8456;14.24932
+Torino; TO; Via Po;34;10124;45.06544;7.69884
+Torino; TO; Via Roma;18;10121;45.07028;7.68418
+Milano; MI; Via Montenapoleone;5;20121;45.46776;9.19568
+Roma; RM; Via Veneto;22;187;41.90516;12.48796
+Napoli; NA; Via Toledo;67;80134;40.84511;14.24926
+Torino; TO; Corso Vittorio Emanuele II;45;10128;45.06177;7.68072
+Bologna; BO; Via Indipendenza;11;40121;44.49621;11.34311
+Firenze; FI; Via dei Calzaiuoli;30;50122;43.77044;11.25548
+Genova; GE; Via XX Settembre;89;16121;44.40569;8.94095
+Verona; VR; Strada della Giustizia;3;37135;0.0;0.0
+Palermo; PA; Via della Libertà;14;90139;38.12608;13.35445
+Catania; CT; Via Etnea;200;95131;37.50864;15.086
+Bari; BA; Via Sparano;12;70121;41.12564;16.86941
+Cagliari; CA; Viale Regina Elena;55;9124;39.21586;9.11701
+Venezia; VE; Via Garibaldi;88;30122;45.50024;12.2473
+Messina; ME; Corso Cavour;17;98122;38.19084;15.55235
+Trieste; TS; Piazza Unità d’Italia;1;34121;45.65015;13.76694
+Ancona; AN; Via Roma;101;60121;43.52623;13.43751
+Perugia; PG; Corso Vannucci;99;6121;43.10969;12.38809
+Reggio Calabria; RC; Via Marina;7;89123;38.16815;15.64248
+Modena; MO; Via Emilia;55;41121;44.64477;10.92983
+Pisa; PI; Lungarno Pacinotti;2;56126;43.71643;10.4019
+Livorno; LI; Via Grande;10;57123;43.55181;10.31192
+Arezzo; AR; Corso Italia;44;52100;43.46474;11.88276
+Siena; SI; Strada Massetana;9;53100;43.30569;11.31905
+Grosseto; GR; Via Roma;14;58100;42.76461;11.11151
+Pistoia; PT; Via degli Orafi;3;51100;43.93354;10.91646

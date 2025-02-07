@@ -56,8 +56,8 @@ public final class Indirizzo implements Serializable {
      * deve essere un numero intero di 5 cifre
      */
     @NotNull
-    @Pattern(regexp = "^\\d{5}$",
-            message = "Il CAP contiene caratteri non validi")
+    //@Pattern(regexp = "^\\d{5}$",
+    //        message = "Il CAP contiene caratteri non validi")
     @Column(name = "cap")
     private String cap;
     /**
