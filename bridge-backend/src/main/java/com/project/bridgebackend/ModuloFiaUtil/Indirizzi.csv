@@ -1,8 +1,8 @@
 citta;provincia;via;numero_civico;cap;latitudine;longitudine
-Roma; RM; Via del Corso;123;186;41.90528;12.47868
-Firenze; FI; Piazza della Signoria;45;50122;43.76978;11.2563
+Roma; RM; Via del Corso;123;00186;41.90528;12.47868
+Firenze; FI; Piazza della Signoria;45;50122;43.76978;1.12563
 Milano; MI; Via Dante;78;20121;45.46754;9.18333
-Napoli; NA; Via Toledo;56;80134;40.8456;14.24932
+Napoli; NA; Via Toledo;56;80134;4.08456;14.24932
 Bologna; BO; Via Rizzoli;99;40125;44.49457;11.34535
 Torino; TO; Corso Vittorio Emanuele II;34;10123;45.06089;7.68491
 Genova; GE; Via Garibaldi;12;16124;44.41124;8.93238
@@ -10,46 +10,46 @@ Venezia; VE; Piazza San Marco;5;30124;45.43384;12.33933
 Verona; VR; Piazza Bra;18;37121;45.43853;10.99199
 Palermo; PA; Via Maqueda;25;90133;38.11089;13.36469
 Milano; MI; Via Roma;10;20121;45.54392;9.11578
-Roma; RM; Piazza Venezia;25;186;41.89606;12.4829
+Roma; RM; Piazza Venezia;25;00186;41.89606;1.24829
 Napoli; NA; Via Partenope;12;80121;40.83102;14.24441
 Firenze; FI; Via de' Tornabuoni;18;50123;43.77038;11.25144
 Torino; TO; Corso Francia;45;10139;45.07584;7.65758
 Bologna; BO; Via Indipendenza;30;40121;44.49819;11.34333
 Palermo; PA; Via Libertà;50;90143;38.13437;13.34934
 Verona; VR; Via Mazzini;15;37121;45.44165;10.99665
-Roma; RM; Via della Condotta;21;186;41.90508;12.48039
+Roma; RM; Via della Condotta;21;00186;41.90508;12.48039
 Venezia; VE; Calle Larga;10;30124;45.43463;12.34959
-Milano; MI; Via Ripamonti;23;20141;45.44797;9.1977
-Roma; RM; Via Appia Nuova;56;179;41.88428;12.51082
+Milano; MI; Via Ripamonti;23;20141;45.44797;.91977
+Roma; RM; Via Appia Nuova;56;00179;41.88428;12.51082
 Bologna; BO; Via Stalingrado;45;40128;44.51393;11.35935
 Torino; TO; Corso Giulio Cesare;78;10155;45.08934;7.69203
-Firenze; FI; Via Pisana;12;50143;43.7707;11.23939
+Firenze; FI; Via Pisana;12;50143;4.37707;11.23939
 Napoli; NA; Via Marina;67;80133;40.84529;14.26068
-Verona; VR; Via Albere;23;37138;45.43201;10.9759
-Genova; GE; Via Gramsci;15;16126;44.4137;8.92592
+Verona; VR; Via Albere;23;37138;45.43201;1.09759
+Genova; GE; Via Gramsci;15;16126;4.44137;8.92592
 Palermo; PA; Via Messina Marine;34;90123;38.10748;13.38219
-Venezia; VE; Via della Libertà;22;30175;45.46595;12.2744
+Venezia; VE; Via della Libertà;22;30175;45.46595;1.22744
 Bologna; BO; Via Emilia;123;40138;44.51856;11.27305
 Firenze; FI; Via del Campo;45;50123;43.77959;11.27636
 Torino; TO; Strada della Pellerina;78;10146;45.09227;7.61979
 Verona; VR; Via Agraria;33;37138;45.50247;11.01319
-Perugia; PG; Viale del Vino;12;6132;43.05016;12.3848
-Roma; RM; Via Campagna;56;138;41.92007;12.57365
+Perugia; PG; Viale del Vino;12;06132;43.05016;1.23848
+Roma; RM; Via Campagna;56;00138;41.92007;12.57365
 Napoli; NA; Contrada Animali;34;80131;40.83921;14.24623
 Palermo; PA; Via Oliveti;22;90134;38.14214;13.32872
 Milano; MI; Via Fiori;11;20139;45.49573;9.15428
 Genova; GE; Contrada Verde;5;16132;44.40616;8.94773
-Roma; RM; Via del Sole;45;142;41.73839;12.27754
+Roma; RM; Via del Sole;45;00142;41.73839;12.27754
 Milano; MI; Via della Salute;10;20135;45.46796;9.18178
-Torino; TO; Corso Genova;23;10129;45.03951;7.6722
+Torino; TO; Corso Genova;23;10129;45.03951;.76722
 Napoli; NA; Via dei Fiori;12;80126;40.86112;14.17952
 Firenze; FI; Via Pulita;56;50129;43.78237;11.25501
-Bologna; BO; Via della Scuola;78;40125;44.5176;11.27881
+Bologna; BO; Via della Scuola;78;40125;4.45176;11.27881
 Verona; VR; Via Inclusiva;33;37122;45.43831;10.99171
 Genova; GE; Via Multicultura;11;16128;44.40167;8.93396
-Palermo; PA; Via della Cucina;15;90131;38.08859;13.3151
+Palermo; PA; Via della Cucina;15;90131;38.08859;1.33151
 Venezia; VE; Via Pulizia;5;30172;45.48217;12.24261
-Roma; RM; Via del Commercio;23;154;41.87158;12.47538
+Roma; RM; Via del Commercio;23;00154;41.87158;12.47538
 Milano; MI; Via delle Spese;45;20122;45.46257;9.19842
 Torino; TO; Corso Fresco;78;10138;45.06898;7.65603
 Firenze; FI; Piazza Manager;12;50123;43.75355;11.23279
@@ -58,18 +58,18 @@ Napoli; NA; Via Estetica;34;80133;40.84014;14.25227
 Verona; VR; Via Notturna;22;37122;45.43831;10.99171
 Genova; GE; Via Bellezza;15;16121;44.40576;8.94041
 Palermo; PA; Via Online;56;90131;38.19942;13.31555
-Venezia; VE; Campo Mercato;3;30122;45.47541;12.2252
-Roma; RM; Via Turismo;23;187;41.83708;12.46702
-Firenze; FI; Via Arte;45;50123;43.77078;11.2547
+Venezia; VE; Campo Mercato;3;30122;45.47541;1.22252
+Roma; RM; Via Turismo;23;00187;41.83708;12.46702
+Firenze; FI; Via Arte;45;50123;43.77078;1.12547
 Milano; MI; Via Accoglienza;12;20121;45.49243;9.23677
 Napoli; NA; Via Divertimento;34;80132;40.83626;14.24545
 Venezia; VE; Via Pulita;67;30121;45.38661;12.07597
 Bologna; BO; Via Feste;89;40125;44.49007;11.35394
 Verona; VR; Via Relax;21;37121;45.44915;10.99828
 Torino; TO; Corso Viaggi;33;10121;45.06777;7.67355
-Palermo; PA; Via Sapori;56;90139;38.1271;13.35812
-Genova; GE; Via Notte;11;16128;44.4072;8.92625
-Roma; RM; Via Digitale;12;199;41.90325;12.49563
+Palermo; PA; Via Sapori;56;90139;3.81271;13.35812
+Genova; GE; Via Notte;11;16128;4.44072;8.92625
+Roma; RM; Via Digitale;12;00199;41.90325;12.49563
 Milano; MI; Via Codice;45;20122;45.46781;9.20536
 Torino; TO; Corso Sistema;33;10121;45.05976;7.66265
 Firenze; FI; Via Creativa;78;50123;43.77159;11.24701
@@ -78,89 +78,89 @@ Bologna; BO; Via Codici;22;40125;44.49007;11.35394
 Verona; VR; Via Circuito;11;37121;45.44163;10.99597
 Palermo; PA; Via Colori;34;90139;38.11788;13.33346
 Genova; GE; Via Dati;67;16128;44.40371;8.93697
-Venezia; VE; Via Social;15;30121;45.4441;12.38098
+Venezia; VE; Via Social;15;30121;4.54441;12.38098
 Milano; MI; Via Sartoria;12;20122;45.46207;9.19105
 Torino; TO; Via Legno;45;10121;45.06777;7.67355
 Firenze; FI; Via Tessile;78;50123;43.77024;11.25248
-Napoli; NA; Via Industria;34;80133;40.8527;14.30649
-Roma; RM; Via Riparazione;22;199;41.87094;12.44725
+Napoli; NA; Via Industria;34;80133;4.08527;14.30649
+Roma; RM; Via Riparazione;22;00199;41.87094;12.44725
 Bologna; BO; Via Scarpe;11;40125;44.49513;11.34278
 Verona; VR; Via Metallica;67;37121;45.44163;10.99597
 Genova; GE; Via Restauro;33;16128;44.41332;8.92685
 Palermo; PA; Via Arte;56;90139;38.12842;13.35562
-Venezia; VE; Via Oro;15;30121;45.4441;12.38098
+Venezia; VE; Via Oro;15;30121;4.54441;12.38098
 Milano; MI; Via Ufficio;12;20122;45.46183;9.19239
-Roma; RM; Via Salute;45;199;41.75744;12.22785
+Roma; RM; Via Salute;45;00199;41.75744;12.22785
 Napoli; NA; Via Contabilità;33;80133;40.85339;14.22102
 Torino; TO; Via Digitale;67;10121;45.21367;7.73114
 Firenze; FI; Via Supporto;89;50123;43.77425;11.24721
 Bologna; BO; Via Telefono;22;40125;44.49007;11.35394
 Genova; GE; Via Reception;11;16128;44.40167;8.93396
 Verona; VR; Via Documenti;15;37121;45.44163;10.99597
-Palermo; PA; Via Pratiche;56;90139;38.1271;13.35812
-Venezia; VE; Via Legale;78;30121;45.4441;12.38098
+Palermo; PA; Via Pratiche;56;90139;3.81271;13.35812
+Venezia; VE; Via Legale;78;30121;4.54441;12.38098
 Milano; MI; Via Cottura;12;20122;45.46257;9.19842
-Roma; RM; Via Sapori;45;199;41.81085;12.48426
+Roma; RM; Via Sapori;45;00199;41.81085;12.48426
 Napoli; NA; Via Accoglienza;33;80133;40.84611;14.26153
 Torino; TO; Corso Cocktail;67;10121;45.06777;7.67355
-Firenze; FI; Piazza Vino;78;50123;43.77683;11.254
+Firenze; FI; Piazza Vino;78;50123;43.77683;.11254
 Bologna; BO; Via Dolci;22;40125;44.50143;11.33232
-Verona; VR; Via Strada;11;37121;45.34061;11.2404
-Palermo; PA; Via Eventi;56;90139;38.1271;13.35812
+Verona; VR; Via Strada;11;37121;45.34061;1.12404
+Palermo; PA; Via Eventi;56;90139;3.81271;13.35812
 Genova; GE; Via Stagioni;15;16128;44.41459;8.94887
-Venezia; VE; Via Forno;78;30121;45.4441;12.38098
+Venezia; VE; Via Forno;78;30121;4.54441;12.38098
 Milano; MI; Via Colore;12;20122;45.45573;9.19284
-Roma; RM; Via Pavimenti;45;199;41.86899;12.6694
+Roma; RM; Via Pavimenti;45;00199;41.86899;1.26694
 Napoli; NA; Via Infissi;33;80133;40.87369;14.20873
 Torino; TO; Via Progetti;67;10121;45.07029;7.66873
-Roma; RM; Via del Tritone;45;187;41.90239;12.48348
+Roma; RM; Via del Tritone;45;00187;41.90239;12.48348
 Bologna; BO; Via Macchine;22;40125;44.27995;11.03933
 Verona; VR; Via Costruzioni;11;37121;45.44435;10.99018
 Genova; GE; Via Cantieri;15;16128;44.42824;8.74674
 Palermo; PA; Via Acqua;56;90139;38.11377;13.36634
-Venezia; VE; Via Restauri;78;30121;45.44208;12.3324
+Venezia; VE; Via Restauri;78;30121;45.44208;1.23324
 Milano; MI; Via Magazzino;12;20122;45.46257;9.19842
-Roma; RM; Via Consegne;45;199;42.0396;12.30755
+Roma; RM; Via Consegne;45;00199;4.20396;12.30755
 Napoli; NA; Via Trasporti;33;80133;40.83263;14.25013
 Torino; TO; Via Logistica;67;10121;45.06777;7.67355
 Firenze; FI; Via Muletti;78;50123;43.77425;11.24721
 Bologna; BO; Via Freschi;22;40125;44.51065;11.48235
 Verona; VR; Via Turismo;11;37121;45.43883;10.99232
-Genova; GE; Via Merci;15;16128;44.4776;9.10188
+Genova; GE; Via Merci;15;16128;4.44776;9.10188
 Palermo; PA; Via Flotta;56;90139;38.11197;13.35061
 Venezia; VE; Via Ricevimento;78;30121;45.58841;12.85231
 Milano; MI; Via Verde;12;20122;45.50396;9.17954
-Roma; RM; Via Campi;45;199;41.87709;12.57792
+Roma; RM; Via Campi;45;00199;41.87709;12.57792
 Napoli; NA; Via Idroponica;33;80133;40.84014;14.25227
 Firenze; FI; Via Bio;67;50123;43.77425;11.24721
 Torino; TO; Via Paesaggi;78;10121;45.06491;7.69233
 Verona; VR; Via Irrigazione;22;37121;45.48016;10.90772
-Palermo; PA; Via Frutteti;11;90139;38.1271;13.35812
+Palermo; PA; Via Frutteti;11;90139;3.81271;13.35812
 Genova; GE; Via Api;15;16128;44.40167;8.93396
 Bologna; BO; Via Vino;56;40125;44.51154;11.45906
-Venezia; VE; Via Allevamenti;78;30121;45.4441;12.38098
+Venezia; VE; Via Allevamenti;78;30121;4.54441;12.38098
 Milano; MI; Via Comunità;12;20122;45.50334;9.20942
-Roma; RM; Via Anziani;45;199;41.75884;12.26779
+Roma; RM; Via Anziani;45;00199;41.75884;12.26779
 Napoli; NA; Via Inclusione;33;80133;40.84014;14.25227
 Torino; TO; Via Inclusiva;67;10121;45.06777;7.67355
 Firenze; FI; Via Cura;78;50123;43.77425;11.24721
 Bologna; BO; Via Salute;22;40125;44.52798;11.27512
 Verona; VR; Via Scuola;11;37121;45.44123;10.99619
 Genova; GE; Via Mediazione;15;16128;44.40353;8.94965
-Palermo; PA; Via Migranti;56;90139;37.81583;14.1486
+Palermo; PA; Via Migranti;56;90139;37.81583;1.41486
 Venezia; VE; Via Lavoro;78;30121;45.39603;11.99443
-Milano; MI; Via Verde;10;20122;45.504;9.17961
-Roma; RM; Piazza Mercato;45;199;41.80886;12.68132
+Milano; MI; Via Verde;10;20122;.45504;9.17961
+Roma; RM; Piazza Mercato;45;00199;41.80886;12.68132
 Napoli; NA; Via Gestione;33;80133;40.83022;14.24693
 Torino; TO; Corso Tecnologia;67;10121;45.06495;7.67356
 Firenze; FI; Piazza Cibo;78;50123;43.77789;11.24929
 Bologna; BO; Via Vendite;22;40125;44.49007;11.35394
 Verona; VR; Via Riciclo;11;37121;45.44163;10.99597
 Genova; GE; Via Scaffali;15;16128;44.40167;8.93396
-Palermo; PA; Via Freschezza;56;90139;38.1271;13.35812
+Palermo; PA; Via Freschezza;56;90139;3.81271;13.35812
 Venezia; VE; Via Artigianato;78;30121;45.75462;12.81457
 Milano; MI; Via Viaggi;12;20122;45.46257;9.19842
-Roma; RM; Via Accoglienza;45;199;41.79281;12.40851
+Roma; RM; Via Accoglienza;45;00199;41.79281;12.40851
 Napoli; NA; Via Cucina;33;80133;40.84192;14.25566
 Firenze; FI; Via Natura;67;50123;43.77425;11.24721
 Torino; TO; Via Servizio;78;10121;45.06755;7.66913
@@ -170,7 +170,7 @@ Bologna; BO; Via Clienti;56;40125;44.49007;11.35394
 Palermo; PA; Via Lusso;78;90139;38.09894;13.32227
 Venezia; VE; Via Manutenzione;11;30121;45.50328;12.21064
 Milano; MI; Via Tecnologia;12;20122;45.54785;8.85246
-Roma; RM; Via Server;45;199;0.0;0.0
+Roma; RM; Via Server;45;00199;0.0;0.0
 Torino; TO; Via Disegni;33;10121;45.06907;7.66947
 Napoli; NA; Via Mobile;67;80133;40.84014;14.25227
 Firenze; FI; Via Sicurezza;78;50123;43.77061;11.26312
@@ -178,49 +178,49 @@ Bologna; BO; Via Web;22;40125;44.49007;11.35394
 Verona; VR; Via Software;11;37121;45.43908;11.02544
 Genova; GE; Via Stampa;15;16128;44.40781;8.92888
 Palermo; PA; Via Dati;56;90139;38.08505;13.43285
-Venezia; VE; Via Motori;78;30121;45.4441;12.38098
+Venezia; VE; Via Motori;78;30121;4.54441;12.38098
 Milano; MI; Via Ceramica;12;20122;45.46691;9.19957
-Roma; RM; Via Sartoria;45;199;41.90408;12.39488
+Roma; RM; Via Sartoria;45;00199;41.90408;12.39488
 Napoli; NA; Via Manutenzione;33;80133;40.84014;14.25227
 Firenze; FI; Via Legno;67;50123;43.77425;11.24721
 Torino; TO; Via Vernici;78;10121;45.06777;7.67355
-Roma; RM; Viale del Campo Sportivo;15;100;41.87493;12.47863
+Roma; RM; Viale del Campo Sportivo;15;00100;41.87493;12.47863
 Genova; GE; Via Pelle;15;16128;44.40167;8.93396
 Bologna; BO; Via Metalli;56;40125;44.49007;11.35394
-Palermo; PA; Via Restauro;78;90139;38.1271;13.35812
-Venezia; VE; Via Alimentare;11;30121;45.4441;12.38098
+Palermo; PA; Via Restauro;78;90139;3.81271;13.35812
+Venezia; VE; Via Alimentare;11;30121;4.54441;12.38098
 Milano; MI; Via Uffici;12;20122;45.46183;9.19239
-Roma; RM; Via Solidarietà;45;199;42.07391;11.81603
+Roma; RM; Via Solidarietà;45;00199;42.07391;11.81603
 Napoli; NA; Via Risorse;33;80133;40.84014;14.25227
 Firenze; FI; Via Famiglia;67;50123;43.80686;11.22081
-Torino; TO; Corso Salute;78;10121;45.0987;7.68067
+Torino; TO; Corso Salute;78;10121;4.50987;7.68067
 Verona; VR; Via Contabilità;22;37121;45.44163;10.99597
 Genova; GE; Via Legale;15;16128;44.40167;8.93396
 Bologna; BO; Via Cultura;56;40125;44.43554;11.65452
 Palermo; PA; Via Progetti;78;90139;38.12974;13.35984
 Venezia; VE; Via Startup;11;30121;45.49895;12.62587
-Milano; MI; Via Monte Rosa;15;20149;45.4719;9.15311
+Milano; MI; Via Monte Rosa;15;20149;4.54719;9.15311
 Milano; MI; Corso Garibaldi;23;20121;45.47304;9.18365
-Roma; RM; Via Nazionale;45;184;41.90008;12.49243
+Roma; RM; Via Nazionale;45;00184;41.90008;12.49243
 Milano; MI; Via Torino;67;20123;45.46052;9.18251
-Milano; MI; Via Monte Napoleone;12;20121;45.4685;9.19502
+Milano; MI; Via Monte Napoleone;12;20121;4.54685;9.19502
 Bologna; BO; Via Indipendenza;15;40121;44.49669;11.34319
-Napoli; NA; Via Toledo;90;80134;40.83752;14.2482
+Napoli; NA; Via Toledo;90;80134;40.83752;1.42482
 Torino; TO; Corso Vittorio Emanuele II;30;10121;45.06065;7.68561
 Bologna; BO; Via Santo Stefano;120;40125;44.48638;11.35405
-Milano; MI; Corso Buenos Aires;120;20127;45.48203;9.2128
-Roma; RM; Via del Babuino;50;187;41.90855;12.47892
-Torino; TO; Corso Vittorio Emanuele II;101;10123;45.06666;7.6673
-Roma; RM; Via del Tritone;56;187;41.90253;12.484
+Milano; MI; Corso Buenos Aires;120;20127;45.48203;.92128
+Roma; RM; Via del Babuino;50;00187;41.90855;12.47892
+Torino; TO; Corso Vittorio Emanuele II;101;10123;45.06666;.76673
+Roma; RM; Via del Tritone;56;00187;41.90253;.12484
 Torino; TO; Corso Giulio Cesare;70;10154;45.08881;7.69169
-Roma; RM; Via Appia Nuova;89;183;41.88378;12.51207
-Napoli; NA; Via Chiaia;58;80121;40.8363;14.2461
-Napoli; NA; Via Toledo;115;80134;40.83753;14.2482
-Napoli; NA; Via Toledo;56;80134;40.8456;14.24932
+Roma; RM; Via Appia Nuova;89;00183;41.88378;12.51207
+Napoli; NA; Via Chiaia;58;80121;4.08363;1.42461
+Napoli; NA; Via Toledo;115;80134;40.83753;1.42482
+Napoli; NA; Via Toledo;56;80134;4.08456;14.24932
 Torino; TO; Via Po;34;10124;45.06544;7.69884
 Torino; TO; Via Roma;18;10121;45.07028;7.68418
 Milano; MI; Via Montenapoleone;5;20121;45.46776;9.19568
-Roma; RM; Via Veneto;22;187;41.90516;12.48796
+Roma; RM; Via Veneto;22;00187;41.90516;12.48796
 Napoli; NA; Via Toledo;67;80134;40.84511;14.24926
 Torino; TO; Corso Vittorio Emanuele II;45;10128;45.06177;7.68072
 Bologna; BO; Via Indipendenza;11;40121;44.49621;11.34311
@@ -228,19 +228,233 @@ Firenze; FI; Via dei Calzaiuoli;30;50122;43.77044;11.25548
 Genova; GE; Via XX Settembre;89;16121;44.40569;8.94095
 Verona; VR; Strada della Giustizia;3;37135;0.0;0.0
 Palermo; PA; Via della Libertà;14;90139;38.12608;13.35445
-Catania; CT; Via Etnea;200;95131;37.50864;15.086
+Catania; CT; Via Etnea;200;95131;37.50864;.15086
 Bari; BA; Via Sparano;12;70121;41.12564;16.86941
-Cagliari; CA; Viale Regina Elena;55;9124;39.21586;9.11701
-Venezia; VE; Via Garibaldi;88;30122;45.50024;12.2473
+Cagliari; CA; Viale Regina Elena;55;09124;39.21586;9.11701
+Venezia; VE; Via Garibaldi;88;30122;45.50024;1.22473
 Messina; ME; Corso Cavour;17;98122;38.19084;15.55235
 Trieste; TS; Piazza Unità d’Italia;1;34121;45.65015;13.76694
 Ancona; AN; Via Roma;101;60121;43.52623;13.43751
-Perugia; PG; Corso Vannucci;99;6121;43.10969;12.38809
+Perugia; PG; Corso Vannucci;99;06121;43.10969;12.38809
 Reggio Calabria; RC; Via Marina;7;89123;38.16815;15.64248
 Modena; MO; Via Emilia;55;41121;44.64477;10.92983
-Pisa; PI; Lungarno Pacinotti;2;56126;43.71643;10.4019
+Pisa; PI; Lungarno Pacinotti;2;56126;43.71643;1.04019
 Livorno; LI; Via Grande;10;57123;43.55181;10.31192
 Arezzo; AR; Corso Italia;44;52100;43.46474;11.88276
 Siena; SI; Strada Massetana;9;53100;43.30569;11.31905
 Grosseto; GR; Via Roma;14;58100;42.76461;11.11151
 Pistoia; PT; Via degli Orafi;3;51100;43.93354;10.91646
+ Anconetta ;VI;Stretto Milena;12;36100;45.5661;11.5686
+ Sant'Angelo Di Cetraro ;CS;Vicolo Letizia;66;87022;39.55521;15.95348
+ Lambrugo ;CO;Via Mastroianni;8;22045;45.75779;9.24152
+ Valdastico ;VI;Strada Persico;3;36040;45.86633;11.36133
+ Sover ;TN;Canale Comencini;1;38048;46.22238;11.31401
+ Cesara ;VB;Incrocio Benedetto;1;28891;45.83491;8.36602
+ Corinaldo ;AN;Via Federico;5;60013;43.65495;13.04615
+ Fraciscio ;SO;Borgo Zetticci;21;23021;46.40326;9.36259
+ Pontebba ;UD;Piazza Alberico;25;33016;46.5067;13.30672
+ Settimello ;FI;Contrada Salvini;63;50041;43.8499;11.18258
+ Pieve Fosciana ;LU;Piazza Federigo;73;55036;44.13445;10.41504
+ Trieste ;TS;Contrada Mannoia;4;34148;45.67285;13.75984
+ Martano ;LE;Stretto Greggio;945;73025;40.20311;18.30479
+ Salerno ;SA;Incrocio Elmo;149;84126;40.67727;14.76485
+ Milano ;MI;Contrada Spallanzani;16;20142;45.47593;9.20747
+ Mulargia ;NU;Strada Fornaciari;215;08012;40.29377;8.79326
+ Roma ;RM;Viale Biagio;1;00146;41.91678;12.50941
+ Corteolona ;PV;Piazza Trupiano;643;27014;45.15697;9.36982
+ Moehlen In Taufer ;BZ;Rotonda Treccani;1;39032;46.90095;11.94111
+ Fontanelle ;TV;Strada Giunti;5;31043;45.83352;12.47114
+ Rocca D'Arce ;FR;Viale Flavio;6;03030;41.58627;13.58662
+ Petriccione ;TE;Incrocio Scaramucci;475;64020;42.69929;13.83713
+ Padova ;PD;Piazza Giorgio;6;35122;45.38553;11.89209
+ Chiocchio ;FI;Borgo Serao;31;50027;43.63964;11.3134
+ Pera ;TN;Viale Sole;12;38036;46.43544;11.69002
+ Aielli ;AQ;Contrada Lauretta;97;67041;42.25391;14.31636
+ Livorno ;LI;Canale Alfonsi;7;57124;43.51226;10.33416
+ Fontanelle Casasanta ;TP;Contrada Pasquale;65;91100;37.9969;12.54853
+ Bella ;PZ;Stretto Pierina;84;85051;40.7345;15.61917
+ Ciro' Marina ;KR;Via Golino;44;88811;39.36792;17.12427
+ Campagnola ;BS;Rotonda Viviani;13;25081;45.48716;10.40914
+ Caraglio ;CN;Viale Mariana;43;12023;44.41263;7.38212
+ Fossombrone ;PU;Contrada Longhena;25;61034;43.69317;12.81925
+ Milano ;MI;Vicolo Antonio;19;20137;45.46125;9.20935
+ Acceglio ;CN;Incrocio Baracca;1;12021;44.47513;6.98824
+ Petralia Sottana ;PA;Rotonda Ammaniti;73;90027;37.80635;14.0908
+ Procida ;NA;Rotonda Costantino;30;80079;40.92495;14.15743
+ Roma ;RM;Via Temistocle;12;00196;41.93878;12.46911
+ Aci Castello ;CT;Incrocio Goldoni;23;95021;37.5551;15.14644
+ Treviolo ;BG;Viale Camillo;5;24048;45.67353;9.62293
+ Montottone ;FM;Viale Fiorino;91;63843;43.06209;13.58674
+ Saronno ;VA;Canale Foà;4;21047;45.62813;9.04546
+ Monticchiello ;SI;Via Gianmarco;12;53026;43.06769;11.72472
+ Peregallo ;MB;Canale Ginesio;1;20855;45.71584;9.23287
+ Gonte ;VB;Vicolo Fabrizio;1;28824;45.99502;8.65148
+ Bornate Sesia ;VC;Contrada Musatti;835;13037;45.69734;8.28709
+ Staffoli ;PI;Vicolo Lucia;914;56029;43.75694;10.70358
+ Vologno Di Sotto ;RE;Stretto Andreotti;1;42035;44.40399;10.43442
+ Ruffre' ;TN;Strada Arnaldo;4;38010;46.24866;11.04712
+ Dogliani ;CN;Piazza Aldo;713;12063;44.53386;7.93798
+ Forano ;RI;Canale Jacopo;2;02044;42.2957;12.59514
+ Torino ;TO;Viale Damiano;85;10143;45.08645;7.68445
+ Ururi ;CB;Stretto Marcello;1;86049;41.8148;15.0115
+ Villanova D'Asti ;AT;Canale Lando;48;14019;44.98568;7.98741
+ Ficuzza ;PA;Canale Dina;40;90034;37.8827;13.37731
+ Trebisacce ;CS;Strada Giacinto;41;87075;39.90478;16.57053
+ Massenzatica ;FE;Borgo Beffa;29;44026;44.92762;12.17333
+ Decontra ;PE;Contrada Montecchi;85;65027;42.24596;14.01632
+ Pompeiana ;IM;Borgo Achille;11;18015;43.85407;7.88859
+ Stazione Di Montale ;PT;Rotonda Anguissola;3;51037;43.91403;11.0092
+ Mandia Di Ascea ;SA;Rotonda Gemma;8;84046;40.12918;15.18844
+ Canale ;CN;Stretto Sonnino;4;12043;44.79651;7.98874
+ Quargnento ;AL;Rotonda Gramsci;3;15044;44.94498;8.48722
+ Doganella Di Ninfa ;LT;Borgo Beppe;7;04013;41.55361;12.95521
+ Cleulis ;UD;Contrada Scandone;1;33026;46.5645;13.00407
+ Donnafugata ;RG;Borgo Ida;79;97017;36.92528;14.74165
+ Roncaglia ;AL;Canale Gaiatto;5;15033;45.07123;8.46925
+ Arborea ;OR;Canale Fattori;5;09092;39.7701;8.8103
+ Staffarda ;CN;Via Inzaghi;475;12036;44.72053;7.43664
+ Rialto ;SV;Incrocio Niccolò;42;17020;44.21032;8.28839
+ Sant'Amato ;FI;Canale Angelica;7;50059;43.80558;10.94106
+ Cassago Brianza ;LC;Incrocio Adriana;12;23893;45.73779;9.29284
+ Bogliaco ;BS;Strada Chinnici;4;25084;45.67549;10.65121
+ Trieste ;TS;Borgo Greco;22;34122;45.62234;13.82147
+ Mignano Monte Lungo ;CE;Stretto Majewski;1;81049;41.40484;13.98289
+ Morlupo ;RM;Vicolo Dina;736;00067;42.14854;12.50479
+ Sermugnano ;VT;Canale Toso;9;01024;42.66888;12.16777
+ Orgosolo ;NU;Viale Manacorda;8;08027;40.20404;9.34919
+ Premilcuore ;FC;Borgo Maura;2;47010;43.98007;11.7845
+ Orta Nova ;FG;Strada Gianna;5;71045;41.327;15.70644
+ Tronzano Vercellese ;VC;Via Musatti;5;13049;45.34209;8.17388
+ Bazzana ;AT;Borgo Rossetti;6;14046;44.77778;8.39827
+ Carema ;TO;Piazza Lollobrigida;7;10010;45.58406;7.81246
+ Tor San Lorenzo ;RM;Contrada Troisi;5;00040;41.56742;12.52385
+ Morolo ;FR;Strada Uberto;11;03017;41.64828;13.21361
+ Affile ;RM;Strada Giuseppe;1;00021;41.88488;13.10203
+ Nuraminis ;CA;Via Terragni;8;09024;39.44356;9.01167
+ Bardolino ;VR;Piazza Garibaldi;1;37011;45.54923;10.72127
+ Peseggia ;VE;Contrada Ottone;1;30037;45.56494;12.18328
+ Carpineto Romano ;RM;Contrada Bulzoni;9;00032;41.60489;13.08448
+ Cervia ;RA;Canale Licia;6;48015;44.26451;12.35142
+ Nichelino ;TO;Vicolo Santino;3;10042;44.97604;7.62947
+ Cala Gonone ;NU;Via Passalacqua;1;08022;40.28108;9.62254
+ Cascine Vica ;TO;Rotonda Telemaco;1;10098;45.06983;7.54047
+ Olmi ;TV;Canale Baldassare;1;31048;45.67225;12.3288
+ San Lazzaro ;CN;Borgo Farina;1;12037;44.65717;7.45922
+ Livorno ;LI;Contrada Rensi;3;57122;43.55291;10.31998
+ Pallanzeno ;VB;Piazza Sophia;6;28884;46.0442;8.26048
+ Madonna Della Neve ;FR;Viale Gastone;34;03100;43.8132;7.67785
+ Piedimonte Matese ;CE;Strada Petrucci;54;81016;41.35257;14.36922
+ Bologna ;BO;Vicolo Mattia;893;40100;44.49424;11.35257
+ Segno ;TN;Via del Brennero;2;38012;45.8993;11.03621
+ Villafranca Piemonte ;TO;Rotonda Romolo;75;10068;44.78065;7.50043
+ Belmonte Mezzagno ;PA;Stretto Abate;9;90031;38.04687;13.39302
+ Campodarsego ;PD;Borgo Ferrata;4;35011;45.50142;11.90948
+ Padova ;PD;Via Pellegrino;41;35133;45.41428;11.87091
+ Messina ;ME;Strada Griselda;28;98154;38.25174;15.49111
+ Persico Dosimo ;CR;Borgo Pignatti;26;26043;45.18313;10.10118
+ Milano ;MI;Stretto Piergiuseppe;1;20145;45.46981;9.15848
+ Caivano ;NA;Strada Ninetta;24;80023;40.95503;14.30427
+ Passalacqua ;AL;Strada Pomponio;9;15057;44.89893;8.867
+ Mezzane ;BS;Via Roma;1;25012;45.34958;10.34317
+ Gnocchetto ;AL;Incrocio Guicciardini;73;15076;44.58752;8.66235
+ San Pietro Vernotico ;BR;Contrada Melina;17;72027;40.48504;18.00158
+ San Pietro In Guarano ;CS;Vicolo Annetta;6;87047;39.34181;16.31111
+ Messina ;ME;Rotonda Alessia;29;98161;38.13216;15.52244
+ Mamoiada ;NU;Via Gemito;2;08024;40.21459;9.28452
+ Fornoli ;LU;Incrocio Pacomio;6;55022;44.0047;10.66334
+ Santa Maria La Stella ;CT;Borgo Fuseli;41;95025;37.62578;15.13126
+ Cosio Di Arroscia ;IM;Vicolo Milena;72;18023;44.0789;7.83258
+ Viggiano ;PZ;Incrocio Azeglio;36;85059;40.33958;15.89717
+ Summaga ;VE;Borgo Simonetta;8;30026;45.78131;12.79749
+ Alberobello ;BA;Borgo Fernanda;6;70011;40.78431;17.23792
+ Casarile ;MI;Vicolo Zichichi;85;20059;45.31913;9.10534
+ Manzi ;SA;Piazza Priscilla;1;84082;41.17691;-89.12807
+ Agira ;EN;Via Germana;23;94011;37.65664;14.51893
+ Ospedaletto D'Alpinolo ;AV;Via Bartolomeo;3;83014;40.93799;14.74528
+ Castelminio ;TV;Viale Annalisa;8;31023;45.64389;11.98957
+ Castelletto ;BS;Contrada Moschino;3;25024;45.33242;10.21525
+ Castelnuovo Belbo ;AT;Contrada Rolando;23;14043;44.80136;8.41107
+ Carzago Della Riviera ;BS;Stretto Tirabassi;84;25080;45.52597;10.45715
+ Montenero Di Bisaccia ;CB;Vicolo Rosina;194;86036;41.95471;14.78412
+ Colli Di Fontanelle ;NA;Viale Calvo;10;80065;40.61446;14.41265
+ Arre ;PD;Stretto Mastandrea;54;35020;45.34451;11.8701
+ Vicovaro ;RM;Via Fernanda;13;00029;42.0191;12.90603
+ Borgo Petilia ;CL;Stretto Ermanno;83;93100;37.54405;14.05701
+ Rebibbia ;RM;Piazza Arturo;40;00156;41.92613;12.56976
+ Pogli ;SV;Via Panfilo;521;17037;44.05459;8.06902
+ Dimaro ;TN;Piazza Platini;84;38025;46.32497;10.87512
+ Freto ;MO;Strada Greco;5;41100;17.50167;-99.18226
+ Seriate ;BG;Via Simonetta;11;24068;37.15757;-80.41511
+ Calzolaro ;PG;Borgo Castioni;3;06019;43.34854;12.22592
+ Priverno ;LT;Stretto Berengario;5;04015;41.47364;13.17667
+ Pescocostanzo ;AQ;Stretto Majorana;57;67033;41.88828;14.0673
+ Cornovecchio ;LO;Contrada Tonia;4;26842;45.13751;9.79978
+ Laceno ;AV;Rotonda Verga;9;83043;40.80772;15.1149
+ Santo Stefano Di Magra ;SP;Contrada Nedda;43;19037;44.16632;9.91991
+ Torino ;TO;Strada Marino;641;10139;45.07021;7.64474
+ Zibido San Giacomo ;MI;Piazza Luisa;11;20058;45.36856;9.12642
+ Brescia ;BS;Borgo Gelsomina;4;25121;45.53367;10.22288
+ Zerbolo' ;PV;Vicolo Ilaria;7;27020;45.20647;9.01585
+ Torino ;TO;Incrocio Cundari;9;10138;45.01748;7.63684
+ Ville Di Lucoli ;AQ;Viale Caironi;6;67045;42.30742;13.33062
+ Mazzarra' Sant'Andrea ;ME;Rotonda Salvini;9;98056;38.08924;15.13701
+ Casabianca ;TO;Via Gaggini;1;10038;45.2157;7.9629
+ Francavilla Al Mare ;CH;Contrada Rocco;36;66023;42.41546;14.2922
+ Coverciano ;FI;Strada Baracca;9;50135;43.77828;11.29628
+ Cilavegna ;PV;Strada Antonello;74;27024;45.31101;8.74889
+ Resana ;TV;Stretto Sante;6;31023;45.64512;11.99084
+ Pisa ;PI;Rotonda Battelli;38;56126;43.71931;10.41073
+ Stupinigi ;TO;Viale Alina;55;10042;44.99835;7.60797
+ Terres ;TN;Stretto Vianello;4;38093;46.30977;11.02284
+ Toritto ;BA;Stretto Cipriano;7;70020;40.96916;16.57964
+ Baragiano Scalo ;PZ;Contrada Salvi;4;85050;40.6803;15.59349
+ Pietraperzia ;EN;Vicolo Bignami;96;94016;37.41641;14.13605
+ Ospitaletto Mantovano ;MN;Rotonda Morena;80;46014;45.15654;10.79006
+ Montagnana Pistoiese ;PT;Vicolo Baggio;2;51030;43.95343;10.82589
+ Venezia Mestre ;VE;Stretto Cortese;394;30170;45.49749;12.24939
+ Pontelongo ;PD;Piazza Andreozzi;17;35029;45.24915;12.02037
+ Pontestura ;AL;Incrocio Adele;57;15027;45.14184;8.33287
+ San Rocco ;TS;Incrocio Pietro;21;34015;45.60533;13.75299
+ Lariano ;RM;Rotonda Armando;16;00076;41.72701;12.83223
+ Torre De' Passeri ;PE;Vicolo Stoppani;320;65029;42.24132;13.92674
+ Trito ;BA;Vicolo Concetta;33;70010;40.76869;17.36004
+ Castiglion Fibocchi ;AR;Via Borgia;51;52029;43.0068;11.6163
+ Lapedona ;FM;Via Nina;1;63823;43.11068;13.77484
+ San Giovanni Incarico ;FR;Borgo Martino;29;03028;41.4694;13.49159
+ San Rocco Al Porto ;LO;Contrada Allegra;11;26865;45.08403;9.69913
+ Arpino ;NA;Incrocio Vasari;11;80026;40.87573;14.30714
+ Sparanise ;CE;Strada Dovara;84;81056;41.19045;14.09618
+ Mariano Comense ;CO;Viale Fredo;35;22066;45.69446;9.17483
+ Caspoli ;CE;Rotonda Forza;1;81049;41.38158;13.96717
+ Flumignano ;UD;Strada Colletti;32;33030;45.89118;13.12485
+ Lesmo ;MB;Vicolo Sante;44;20855;45.6503;9.30833
+ Padova ;PD;Via Capecchi;5;35100;45.4437;11.89451
+ Cattolica Eraclea ;AG;Canale Martinelli;74;92011;37.43832;13.39282
+ Santa Maria Villiana ;BO;Canale Giovine;5;40041;44.24388;11.00476
+ Boscochiaro ;VE;Contrada Annunziata;879;30014;45.13876;12.11381
+ Stienta ;RO;Strada Badoglio;45;45039;44.94239;11.54309
+ Desana ;VC;Piazza Tonino;85;13034;45.24058;8.36675
+ Pietraperzia ;EN;Via Giradello;97;94016;37.41607;14.13263
+ Arsoli ;RM;Via Ferrata;523;00023;42.0216;12.74317
+ Ca' Della Terra ;PV;Contrada Montessori;63;27100;45.20521;9.19384
+ Cadorago ;CO;Borgo Gibilisco;28;22071;45.72409;9.03836
+ Tuili ;SU;Borgo Orazio;5;09029;39.71212;8.96079
+ Casi ;CE;Via Lopresti;47;81057;41.25866;14.03825
+ Trasanni ;PU;Contrada Soffici;289;61029;43.75658;12.6668
+ San Giorgio A Cremano ;NA;Incrocio Fernanda;44;80046;40.83068;14.34935
+ Campodarsego ;PD;Stretto Russo;92;35011;45.50142;11.90948
+ Albavilla ;CO;Viale Lara;80;22031;45.80205;9.18783
+ Sant Angelo di Cetraro;CS;Via Giuseppe Mazzini;12;87022;39.55561;15.95247
+ Rocca D Arce;FR;Via Roma;25;3010;41.58746;13.58388
+ Ciro Marina;KR;Viale delle Rose;9;88911;0.0;0.0
+ Ruffre;TN;Strada Provinciale 17;18;38010;46.41512;11.17773
+ Villanova D Asti;AT;Viale della Libertà;6;14050;44.89845;8.20779
+ Cassago Brianza;LC;Via San Giovanni;40;23894;45.73939;9.29504
+ Ospedaletto D Alpinolo;AV;Strada Provinciale 85;7;83020;40.93799;14.74528
+ Zerbolo;PV;Viale Italia;3;27020;45.20647;9.01585
+ Mazzarra SantAndrea;ME;Via Giuseppe Garibaldi;11;98040;38.08951;15.13247
+ Torre Passeri;PE;Via Roma;18;65020;42.24511;13.93577
+ Ca Della Terra;PV;Via delle Rose;5;27100;45.20705;9.19151
+ Ciro Marina;KR;Via Litoranea;23;88811;39.35831;17.13083
+ Ruffre;TN;Via dei Monti;15;38020;46.32338;10.84633
+ Ospedaletto;AV;Via del Bosco;7;83020;40.93799;14.74528

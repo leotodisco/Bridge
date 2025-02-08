@@ -31,6 +31,9 @@ public class CSVImportService {
     private IndirizzoDAO indirizzoDAO; // DAO per Indirizzo
 
     @Autowired
+    private AlloggioDAO alloggioDAO;
+
+    @Autowired
     private RifugiatoDAO rifugiatoDAO;
 
     @Autowired
@@ -318,5 +321,70 @@ public class CSVImportService {
         }
     }
 
+    public void importCSVAlloggi(String filePath) {
+        try (Reader reader = new FileReader(filePath)) {
+            CsvToBean<AlloggioCSV> csvToBean = new CsvToBeanBuilder<AlloggioCSV>(reader)
+                    .withType(AlloggioCSV.class)
+                    .withIgnoreLeadingWhiteSpace(true) // Ignora spazi all'inizio delle celle
+                    .withIgnoreQuotations(true) // Ignora eventuali doppi apici
+                    .withSeparator(';') // Assicurati che il separatore sia corretto
+                    .build();
+
+            List<AlloggioCSV> alloggi = csvToBean.parse();
+
+            for (AlloggioCSV alloggioCSV : alloggi) {
+                System.out.println("DEBUG Lettura CSV -> Titolo: [" + alloggioCSV.getTitolo() +
+                        "], Indirizzo ID: [" + alloggioCSV.getIndirizzo() +
+                        "], Max Persone: [" + alloggioCSV.getMaxPersone() +
+                        "], Metratura: [" + alloggioCSV.getMetratura() +
+                        "], Servizi: [" + alloggioCSV.getServizi() +
+                        "], Foto URL: [" + alloggioCSV.getFotoUrl() +
+                        "], Proprietario Email: [" + alloggioCSV.getProprietario() + "]");
+
+                saveAlloggio(alloggioCSV);
+            }
+
+            System.out.println("Importazione alloggi completata con successo!");
+
+        } catch (Exception e) {
+            throw new RuntimeException("Errore durante l'importazione del CSV degli alloggi: " + e.getMessage(), e);
+        }
+    }
+
+    private void saveAlloggio(AlloggioCSV alloggioCSV) {
+        try {
+            Volontario proprietario = volontarioDAO.findByEmail(alloggioCSV.getProprietario());
+
+            if (proprietario == null) {
+                throw new IllegalArgumentException("Proprietario con email " + alloggioCSV.getProprietario() + " non trovato.");
+            }
+
+            // Assicurati che l'indirizzo esista
+            Indirizzo indirizzo = indirizzoDAO.findById(Long.parseLong(alloggioCSV.getIndirizzo())).orElse(null);
+            if (indirizzo == null) {
+                throw new IllegalArgumentException("Indirizzo con ID " + alloggioCSV.getIndirizzo() + " non trovato.");
+            }
+
+            // Creazione dell'oggetto Alloggio
+            Alloggio alloggio = new Alloggio();
+            alloggio.setTitolo(alloggioCSV.getTitolo());
+            alloggio.setDescrizione(alloggioCSV.getDescrizione());
+            alloggio.setIndirizzo(indirizzo);
+            alloggio.setMaxPersone(alloggioCSV.getMaxPersone());
+            alloggio.setMetratura(alloggioCSV.getMetratura());
+            alloggio.setProprietario(proprietario);
+            alloggio.setServizi(Servizi.valueOf(alloggioCSV.getServizi()));
+            // Gestire le foto URL (ad esempio, separati da virgola nel CSV)
+            List<String> fotoUrlList = List.of(alloggioCSV.getFotoUrl().split(","));
+            alloggio.setFoto(fotoUrlList);
+
+            alloggioDAO.save(alloggio);
+            System.out.println("Alloggio salvato: " + alloggio.getTitolo());
+        } catch (Exception e) {
+            System.err.println("Errore nel salvataggio dell'alloggio: " + e.getMessage());
+        }
+    }
+
 
 }
+

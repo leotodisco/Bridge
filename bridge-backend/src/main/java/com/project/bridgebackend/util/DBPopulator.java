@@ -555,5 +555,8 @@ public class DBPopulator {
         //aggiungiamo 250 annunci di lavor
         csvImportService.importCSVLavori("bridge-backend/src/main/java/com/project/bridgebackend/ModuloFiaUtil/annunci_lav.csv");
 
+        //aggiungiamo 250 annunci di lavor
+        csvImportService.importCSVAlloggi("bridge-backend/src/main/java/com/project/bridgebackend/ModuloFiaUtil/alloggi.csv");
+
     }
 }
