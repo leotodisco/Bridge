@@ -26,7 +26,7 @@ public class PythonService {
 
         // Invia i dati come POST a Flask
         return webClient.post()
-                .uri("/post_data") // Assicurati che il percorso sia corretto per il tuo Flask
+                .uri("/send_data")
                 .contentType(MediaType.APPLICATION_JSON)
                 .bodyValue(data)  // Corpo della richiesta
                 .retrieve()

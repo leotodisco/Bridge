@@ -5,6 +5,7 @@ import '@fortawesome/fontawesome-free/css/all.min.css';
 import ModificaPassword from "./formModificaPassword.jsx";
 import ModificaUtente from "./formModificaUtente.jsx";
 import {toast} from "react-toastify";
+import RaccomandazioniLavoro from "../../aiFrontend/components/RaccomandazioniLavoro.jsx";
 
 // eslint-disable-next-line react/prop-types
 const AreaPersonale = ({ onLogout }) => {
@@ -18,7 +19,7 @@ const AreaPersonale = ({ onLogout }) => {
     const [showModifyForm, setShowModifyForm] = useState(false);  // Stato per la visibilità del form di modifica dati
     const [showPasswordForm, setShowPasswordForm] = useState(false);
     const [showDeletePopup, setShowDeletePopup] = useState(false);
-
+    const [showRaccomandazioni, setShowRaccomandazioni] = useState(false);
     const ruolo = localStorage.getItem('ruolo');
     const token = localStorage.getItem('authToken');
     const fetchUserData = async () => {
@@ -284,9 +285,15 @@ const AreaPersonale = ({ onLogout }) => {
                                 {ruolo === "Rifugiato" ? (
                                     <div>
                                         <button>Candidature Lavoro</button>
-                                        <button onClick={() => navigate('/view-my-alloggi/:email')}>Richieste di alloggio</button>
-                                        <button onClick={() => navigate('/eventi-utente')}>Partecipazione Eventi</button>
-                                        <button onClick={() => navigate('/consulenze-candidato')}>Richieste di Consulenza</button>
+                                        <button onClick={() => navigate('/view-my-alloggi/:email')}>Richieste di
+                                            alloggio
+                                        </button>
+                                        <button onClick={() => navigate('/eventi-utente')}>Partecipazione Eventi
+                                        </button>
+                                        <button onClick={() => navigate('/consulenze-candidato')}>Richieste di
+                                            Consulenza
+                                        </button>
+                                        <button onClick={() => setShowRaccomandazioni(true)}>Raccomandazioni</button>
                                     </div>
                                 ) : null}
 
@@ -403,6 +410,15 @@ const AreaPersonale = ({ onLogout }) => {
                                 Annulla
                             </button>
                         </div>
+                    </div>
+                </div>
+            )}
+
+            {showRaccomandazioni && (
+                <div className="popup-overlay">
+                    <div className="popup-content popupContainer">
+                        <button onClick={() => setShowRaccomandazioni(false)} className="close-popup">&times;</button>
+                        <RaccomandazioniLavoro />
                     </div>
                 </div>
             )}

@@ -371,6 +371,15 @@ public class AlloggioController {
         return alloggioService.getAllAlloggiByRifugiatoEmail(email);
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<Alloggio> getAlloggioById(@PathVariable long id) {
+        Alloggio alloggio = alloggioDAO.findAlloggioById(id);
+        if (alloggio == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        }
+        return ResponseEntity.ok(alloggio);
+    }
+
     @GetMapping("/random")
     public ResponseEntity<List<Alloggio>> getRandomAccommodations() throws IOException {
         List<Alloggio> alloggi = alloggioService.getRandomAlloggi();

@@ -29,6 +29,7 @@ import {FaRobot} from "react-icons/fa";
 import { ToastContainer } from 'react-toastify';
 import CorsiUtente from "./GestioneUtente/components/dashboardCorso.jsx";
 import IntroPage from "./Components/Homepage/IntroPage.jsx";
+import RaccomandazioniLavoro from "./aiFrontend/components/RaccomandazioniLavoro.jsx";
 
 function App() {
     const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -97,6 +98,7 @@ function App() {
                             <Route path="/about-us" element={<AboutUs />} />
                             <Route path="/view-my-alloggi/:email" element={<AlloggiByProprietario />} />
                             <Route path="/area-personale" element={<AreaPersonale onLogout={handleLogout} />} />
+                            <Route path="/raccomandazioni-lavoro" element={<RaccomandazioniLavoro />} />
                         </Routes>
                     </>
                 ) : (
@@ -114,6 +116,7 @@ function App() {
                             <Route path="/chatBot" element={<Chatbot/>}/>
                             <Route path="/about-us" element={<AboutUs />} />
                             <Route path="/view-my-alloggi/:email" element={<AlloggiByProprietario />} />
+                            <Route path="/raccomandazioni-lavoro" element={<RaccomandazioniLavoro />} />
                         </Routes>
                     </>
                 )}
